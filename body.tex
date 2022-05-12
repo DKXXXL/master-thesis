@@ -8,6 +8,27 @@
 \label{sec:intro}
 
 \section{Metatheory}
+\label{sec:metatheory}
+\subsection{Syntax}
+We start with the formulation of the syntax, which is based on the formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT) given by \cite{coquand2018canonicity}. Thus we will omit most of the discussion about MLTT here but focus on the new facility we introduced. Though we formulate in Latex, our thought process is mainly following \cite{kaposi2017type} where we use a type theoretical framework (like Agda) as our meta-logic instead of a the conventional constructive set theory as \cite{coquand2018canonicity}. 
+
+More concretely, we consider the syntax of our type theory as a \textit{Quotient Inductive Inductive Type} (QIIT), and most of the reasoning will be formulated using the \textit{algebra} of QIIT (mapping out function from this quotiented data-type). Each judgement will actually be represented by a QIIT type, which are mutual-recursively defined because those judgements are inter-dependently defined. Quotient is used to represent judgemental(definitional) equality, thanks to which we can have a concise representation.
+
+Compared to the conventional formulation of type theory, we highlight some details of difference in this style of formluation of dependent: 1. this modern formulation of type theory does't rely on any notion of operational semantic but only equality 
+%We will recover canonicity afterwards, which implies the computational ability of our theory. 
+;
+2. instead of using meta-level substitution, we use explicit substitution and debruijn indices. This is also called substitution calculus in the literature and is favoured due to its clear categorical semantic.
+
+
+\subsection{Standard Model, for Consistency}
+Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type} to interpret our theory. 
+
+
+Notice that we interpret the bottom type using empty set, and thus we won't have syntactically derived  
+
+
+\subsection{Canonicity}
+ 
 
 
 \section{Conclusion}
