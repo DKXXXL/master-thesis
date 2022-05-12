@@ -1,0 +1,20 @@
+\NeedsTeXFormat{LaTeX2e}[2.09]
+\ProvidesPackage{aplcomments}
+
+%% Usage: \usepackage[aplcomments]
+%%
+%% Options:
+%%
+%%  \usepackage[disabled]{aplcomments} : turn off all comments
+%%  \usepackage[checkNoComments]{aplcomments} : make comments appear inline
+%%
+%% If the file .nocomments exists, this will also turn off all comments
+
+
+\DeclareOption*{\PassOptionsToPackage{\CurrentOption}{authcomments}}
+\PassOptionsToPackage{checkNoComments}{authcomments}
+\ProcessOptions
+
+\usepackage{authcomments}
+
+\newcommenter{YZ}{0.5,0.8,1.0}     % light blue 

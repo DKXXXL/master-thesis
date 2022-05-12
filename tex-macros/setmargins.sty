@@ -1,0 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}[2.09]
+\ProvidesPackage{setmargins}
+% Compute margins automatically from text height and width and PDF
+% page size.
+
+\oddsidemargin 0.5\pdfpagewidth
+\advance \oddsidemargin -0.5\textwidth
+
+\topmargin \pdfpageheight
+\advance \topmargin -\textheight
+\topmargin 0.5 \topmargin
+\advance \topmargin -\headsep
+\advance \topmargin -\headheight
+
+\footskip \pdfpageheight
+\advance \footskip -\textheight
+\advance \footskip -\baselineskip
+\footskip 0.25\footskip
+
+% Correct for LaTeX's one-inch offset
+\advance \oddsidemargin -1in
+\advance \topmargin -1in
+
+\evensidemargin \oddsidemargin

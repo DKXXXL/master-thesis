@@ -1,0 +1,94 @@
+\documentclass[12pt]{article}
+\usepackage{times,graphicx}
+\IfFileExists{.comments}{
+\typeout{** Showing comments **}
+\usepackage{hyperref}
+\usepackage{aplcomments}
+}{
+\usepackage[disabled]{aplcomments}
+}
+%\usepackage[inline]{aplcomments}
+\textwidth 7in
+\advance\oddsidemargin -1.25in
+\usepackage{aplcomments}
+\newcommenter{Andrew}{0.0,0.5,1.0}
+\begin{document}
+
+This song was written for the Cornell Computer Science Department
+holiday party in December 2009. It was performed by Andrew Myers,
+with Dexter Kozen accompanying\Andrew{awesomely}.
+
+\Andrew{Lyrics by Andrew Myers.}
+
+This is another paragraph.
+\Andrew{and another comment}
+
+And here is a third paragraph, which should be indented even if
+comments are being used.
+
+\Andrew{A comment before a section heading might get eaten}
+
+\section{Lyrics follow this point}
+
+\Andrew{A comment after a section heading should be okay}
+
+{
+\obeylines
+\setlength\parskip{0.7em}
+\Andrew{The beginning}
+A new student came by just the other day
+to start some research right away
+But there were papers to review and grants to raise
+and he took courses while I was away
+And he gave talks 'fore I knew it, and good ones too
+He'd say, ``I'm gonna be like you, yeah"
+"You know I'm gonna be like you"
+\hrule
+Refrain:
+\fbox{
+\begin{minipage}{\linewidth}
+The committee meetings and the blind reviews,
+Writing homeworks and exams, and grading them too.
+``When can we meet, Professor?"
+``Don't know when, but we'll do some research then"
+``You know we'll do some nice work then"
+\end{minipage}
+}
+My student started third year just the other day
+He said, ``My first paper's going well now that I've got an RA"
+``Can you help me write the intro today?"
+I said, ``Not right now, I have exams to grade"
+And he walked away but his smile never dimmed
+He said, ``I'm gonna be like him, yeah"
+``You know I'm gonna be like him"
+\hrule
+(Refrain)
+\hrule
+Well, he finished his thesis just the other day
+Such a brilliant researcher I just had to say,
+``Hey, I'm proud of you, want to talk for a while?"
+He shook his head and then said with a smile
+``What I really need now is a very strong letter"
+``See you later, can you write it soon, please?
+See you later, can you write it soon?"
+\hrule
+And as I sent off the email it occurred to me
+He'd ended up just like me.
+Yeah, my student was just like me.
+}
+
+\begin{figure}
+
+
+\begin{center}
+\Andrew{comment in a figure}
+\fbox{Figure}
+\end{center}
+\caption{This is a caption\Andrew{and a comment in a caption}}
+\label{fig}
+\end{figure}
+
+\ref{fig}
+final paragraph
+
+\end{document}

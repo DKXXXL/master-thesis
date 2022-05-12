@@ -1,0 +1,178 @@
+% Sets options for different versions of a peer-reviewed paper. Cannot
+% be a LaTeX package because it must often be used _before_
+% \documentclass. Use as follows:
+%
+%   \def\paperversion{draft}
+%   \def\anonymoussubmission{0} % optional. Value should be 0 or 1 if defined.
+%   \input{paperversions}
+%
+% In addition to 'draft', the following document versions are
+% supported: markup, local, submission, final, finaldraft, web, tr,
+%            trdraft, blindtr
+%
+% markup:  internal draft for paper markup. Does not use submission
+%          formatting or show comments.
+% draft:   internal draft with standard layout (comments shown, blinded
+%          if necessary)
+% local:   version for local review (not blinded, warning re distribution)
+% submission: submission for review (blinded if necessary)
+% final: camera-ready (not blinded, no distribution warning)
+% finaldraft: like final, but comments shown.
+% web: version to post on a website. Like final, but with page
+%      numbers and possibly information about where paper was published.
+% tr: technical report
+% trdraft: technical report with comments shown
+% blindtr: technical report suitable for anonymous submission as
+%     auxiliary material
+% arxiv: like the web version, but with support for constructing a
+%   single .tex file that combines all the source. latexpand can be
+%   be used to do this.
+%
+% The following \if conditions are defined appropriately depending on
+% which version is chosen:
+%
+\newif\ifsinglecolumn\singlecolumnfalse
+\newif\ifwidemargins\widemarginsfalse
+\newif\ifwarning\warningfalse
+\newif\ifshowcomments\showcommentsfalse
+\newif\ifblinded\blindedfalse
+\newif\ifshowlinenums\showlinenumsfalse
+\newif\ifreport\reportfalse
+\newif\ifcopyrightspace\copyrightspacefalse
+\newif\ifacknowledgments\acknowledgmentsfalse
+\newif\ifshowpagenumbers\showpagenumberstrue
+\newif\iffinalformat\finalformatfalse
+\newif\ifweb\webfalse
+\newif\ifexternalize\externalizetrue
+
+% The condition \ifblinded is turned on if the file
+% .blinded exists or if \anonymoussubmission is defined to be 1, unless
+% overridden by the document version chosen. The local, final, tr,
+% trdraft, and web versions are not blinded.
+%
+\ifx\anonymoussubmission\undefined
+  \typeout{** Checking for .blinded file to see if venue has anonymous submission **}
+\else
+  \if\anonymoussubmission 1
+    \blindedtrue
+  \else
+    \blindedfalse
+  \fi
+\fi
+\IfFileExists{.blinded}{\blindedtrue}
+
+\def\xxmarkup{0}
+\def\xxdraft{1}
+\def\xxlocal{2}
+\def\xxsubmission{3}
+\def\xxfinal{4}
+\def\xxtr{5}
+\def\xxtrdraft{6}
+\def\xxfinaldraft{7}
+\def\xxweb{8}
+\def\xxblindtr{9}
+\def\xxarxiv{10}
+
+\ifx\paperversion\xxxxundefined
+\PackageError{paperversions}{*** No valid document version was specified.
+Macro paperversions must be defined as one of (markup, draft,
+local, submission, final, web, tr, trdraft)}
+\fi
+
+\def\xxversion{\csname xx\paperversion\endcsname}
+\newif\ifsawversion\sawversionfalse
+
+\ifcase\xxversion\relax
+%markup
+    \widemarginstrue
+    \singlecolumntrue
+    \warningtrue
+    \showlinenumstrue
+    \sawversiontrue
+    \blindedfalse
+\or %draft
+    \warningtrue
+    \showlinenumsfalse
+    \showcommentstrue
+    \sawversiontrue
+\or %local
+    \warningtrue
+    \showcommentsfalse
+    \blindedfalse
+    \sawversiontrue
+    \acknowledgmentstrue
+    \showlinenumstrue
+\or %submission
+    \sawversiontrue
+    \showlinenumstrue
+\or %final
+    \blindedfalse
+    \sawversiontrue
+    \copyrightspacetrue
+    \acknowledgmentstrue
+    \showpagenumbersfalse
+    \finalformattrue
+\or %tr
+    \singlecolumntrue
+    \blindedfalse
+    \sawversiontrue
+    \reporttrue
+    \acknowledgmentstrue
+    \webtrue
+\or %trdraft
+    \blindedfalse
+    \singlecolumntrue
+    \showcommentstrue
+    \sawversiontrue
+    \reporttrue
+    \showlinenumstrue
+    \warningtrue
+\or %finaldraft
+    \blindedfalse
+    \showcommentstrue
+    \copyrightspacetrue
+    \acknowledgmentstrue
+    \sawversiontrue
+    \finalformattrue
+    \showlinenumstrue
+    \warningtrue
+\or %web
+    \blindedfalse
+    \sawversiontrue
+    \copyrightspacetrue
+    \acknowledgmentstrue
+    \finalformattrue
+    \webtrue
+\or %blindtr
+    \singlecolumntrue
+    \blindedtrue
+    \acknowledgmentsfalse
+    \sawversiontrue
+    \reporttrue
+    \webtrue
+\or %arxiv
+    \blindedfalse
+    \sawversiontrue
+    \copyrightspacetrue
+    \acknowledgmentstrue
+    \finalformattrue
+    \externalizefalse
+    \webtrue
+\fi
+
+\ifsawversion
+\else
+    \typeout{*** Internal error: no valid document version processed! ***}
+\fi
+
+% Cleanup.
+\let\xxmarkup=\undefined
+\let\xxlocal=\undefined
+\let\xxsubmission=\undefined
+\let\xxfinal=\undefined
+\let\xxfinaldraft=\undefined
+\let\xxtr=\undefined
+\let\xxtrdraft=\undefined
+\let\xxweb=\undefined
+\let\xxblindtr=\undefined
+\let\xxversion=\undefined

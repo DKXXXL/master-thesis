@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+my @a;
+
+if ($#ARGV == -1) {
+    while (<STDIN>) {
+	chomp;
+	push @a, $_;
+    }
+} else {
+    @a = @ARGV;
+}
+
+my @b;
+
+foreach my $s (@a) {
+    $s =~ s/\\/\\\\/g;
+    $s =~ s/\(/\\(/g;
+    $s =~ s/\)/\\)/g;
+    $s =~ s/"/\\"/g;
+    $s =~ s/'/\\'/g;
+    $s =~ s/ /\\ /g;
+    $s =~ s/#/\\#/g;
+    $s =~ s/!/\\!/g;
+    $s =~ s/\$/\\\$/g;
+    push @b, $s;
+}
+
+print join(' ', @b), "\n";

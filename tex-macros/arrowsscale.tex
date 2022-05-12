@@ -1,0 +1,62 @@
+%
+% this code shamelessly stolen from Andrew Stacey's answer on
+% http://tex.stackexchange.com/questions/5461/is-it-possible-to-change-the-size-of-an-arrowhead-in-tikz-pgf
+%
+
+\makeatletter
+\pgfkeys{
+  /pgf/scalable arrows/.code={
+    \let\pgf@add@arrows@as@needed=\pgf@add@scalable@arrows@as@needed
+    \let\pgf@shorten@path@as@needed=\pgf@shorten@path@as@needed@for@scalable
+  },
+  /pgf/arrow scale factor/.initial=1,
+}
+
+\def\pgf@add@scalable@arrows@as@needed{%
+  \pgfkeysgetvalue{/pgf/arrow scale factor}{\pgf@temp}%
+  \let\pgf@restorelw=\pgfutil@empty
+  \ifx\pgf@temp\pgfutil@empty
+  \else
+  \edef\pgf@restorelw{\noexpand\pgfsetlinewidth{\the\pgflinewidth}}%
+  \pgfsetlinewidth{\pgf@temp\pgflinewidth}%
+  \fi
+  \ifx\pgf@startarrow\pgfutil@empty%
+  \else%
+    \pgflowlevelobj%
+      {\pgftransformarrow{\pgfpointsecondonpath}{\pgfpointfirstonpath}}
+      {\pgf@startarrow}%
+  \fi%
+  \ifx\pgf@endarrow\pgfutil@empty%
+  \else%
+    \pgflowlevelobj%
+      {\pgftransformarrow{\pgfpointsecondlastonpath}{\pgfpointlastonpath}}
+      {\pgf@endarrow}%
+  \fi%
+      \pgf@restorelw%
+}
+
+\def\pgf@shorten@path@as@needed@for@scalable{%
+  \pgfkeysgetvalue{/pgf/arrow scale factor}{\pgf@temp}%
+  \let\pgf@restorelw=\pgfutil@empty
+  \ifx\pgf@temp\pgfutil@empty
+  \else
+  \edef\pgf@restorelw{\noexpand\pgfsetlinewidth{\the\pgflinewidth}}%
+  \pgfsetlinewidth{\pgf@temp\pgflinewidth}%
+  \fi
+  \pgfprocesspathextractpoints{\pgf@arrowpath}%
+  \let\pgf@arrow@next=\pgf@shorten@now%
+  \ifx\pgf@shorten@start\pgfutil@empty%
+    \ifx\pgf@shorten@end\pgfutil@empty%
+      \ifdim\pgf@shorten@end@additional=0pt\relax%
+        \ifdim\pgf@shorten@start@additional=0pt\relax%
+          \let\pgf@arrow@next=\relax%
+        \fi%
+      \fi%
+    \fi%
+  \fi%
+  \pgf@arrow@next%
+  \pgf@restorelw%
+}
+
+\makeatother
+
