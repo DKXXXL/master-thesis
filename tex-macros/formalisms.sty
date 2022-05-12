@@ -1,0 +1,144 @@
+%\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathpartir}
+\usepackage{afterpage}
+\usepackage{url}
+\usepackage{mathtools}
+\usepackage{leftidx}
+\usepackage{xspace}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{lstautogobble}
+\usepackage{booktabs}
+\usepackage{pgf}
+\let\bigtimes=\@undefined % needed to resolve conflict between amssymb and mathabx in some tex versions
+\usepackage{thmtools}
+\usepackage[inline]{enumitem}
+\usepackage{xifthen}
+\usepackage{bbold}
+\usepackage{upgreek}
+\usepackage{relsize}
+\usepackage{bigints}
+\usepackage[makeroom]{cancel}
+\renewcommand{\CancelColor}{\color{gray}}
+
+\allowdisplaybreaks
+
+\DeclareMathSizes{10}{10}{7}{6}
+\DeclareMathAlphabet{\mathbfsf}{\encodingdefault}{\sfdefault}{bx}{n}
+
+\def\MathparLineskip{\lineskip=1.275ex}
+
+%%% inference rules
+\pgfkeys{
+    /Rule/.is family, /Rule,
+    vskip/.estore in = \inferrulevskip,
+    sep/.estore in = \inferrulesep,
+    labelsep/.estore in = \inferrulelabelsep,
+    name/.estore in = \inferrulename,
+    label/.estore in = \inferrulelabel,
+    default/.style = {vskip=default,sep=default,labelsep=1ex,name=0,label=0},
+}
+\newcommand{\Rule}[3][]{
+    \pgfkeys{/Rule, default, #1}%
+    \ifthenelse{\equal{\inferrulevskip}{default}}{%
+        \mprset{vskip=}%
+    }{%
+        \mprset{vskip=\inferrulevskip}
+    }%
+    \ifthenelse{\equal{\inferrulesep}{default}}{%
+        \mprset{sep=2em}%
+    }{%
+        \mprset{sep=\inferrulesep}
+    }%
+    \ifthenelse{\equal{\inferrulename}{0}}{%
+        \ensuremath{\inferrule{#2}{#3}}%
+    }{%
+        \ifthenelse{\equal{\inferrulelabel}{0}}{%
+            \rulelbl{\inferrulename}%
+        }{%
+            \rulelbl[\inferrulelabel]{\inferrulename}%
+        }%
+%        \hfill
+        \hspace{\inferrulelabelsep}
+        \ensuremath{\inferrule{#2}{#3}}
+%        \hfill
+    }%
+}
+
+%%% referencing an inference rule
+\newcommand\rulelblfont{\scshape\rmfamily}
+\newcommand\ruleref[1]{%
+    \@ifundefined{r@rule:#1}{%
+        \colorbox{red}{\rulelblfont\color{white}#1}%
+    }{{%
+%        \hypersetup{linkcolor=black,}%
+        \hyperref[rule:#1]{\textnormal{}\mbox{\rulelblfont#1}\textnormal{}}%
+    }}%
+}
+\newcommand\rulelbl[2][]{%
+%  \textnormal{[}%
+  {\color{black!75}{{\underline{\small\textsc{\rulelblfont#2}}}}}%
+%  \textnormal{]}
+  \ifthenelse{\isempty{#1}}{
+      \label{rule:#2}
+  }{
+      \label{rule:#1}
+  }
+}
+
+%\declaretheoremstyle[
+%    spaceabove=5pt, spacebelow=5pt,
+%    headfont=\normalfont\bfseries\sffamily,
+%    notefont=\normalfont,
+%    notebraces={(}{)},
+%    bodyfont=\normalfont,
+%    postheadspace=1em,
+%    qed=
+%]{plain}
+%\declaretheorem[numbered=yes,style=plain]{theorem}
+%\declaretheorem[numbered=yes,style=plain]{lemma}
+%\declaretheorem[numbered=yes,style=plain]{corollary}
+%\declaretheoremstyle[
+%    spaceabove=5pt, spacebelow=5pt,
+%    headfont=\normalfont\sffamily,
+%    notefont=,
+%    notebraces={(}{)},
+%    bodyfont=\normalfont,
+%    postheadspace=1em,
+%    qed=
+%]{definition}
+%\declaretheorem[numbered=yes,style=definition]{definition}
+%\declaretheorem[numbered=yes,style=definition]{example}
+%\declaretheoremstyle[
+%%    spaceabove=10pt, spacebelow=10pt,
+%    headfont=\normalfont\sffamily,
+%    notefont=,
+%    notebraces={(}{)},
+%    bodyfont=\normalfont,
+%    postheadspace=1em,
+%    qed=$\square$
+%]{proof}
+%\declaretheorem[name=Proof,numbered=no,style=proof]{sketch}
+
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+\crefformat{equation}{(#1)}
+\crefrangeformat{theorem}{\mbox{Theorems #3#1#4–#5#2#6}}
+\crefmultiformat{theorem}
+    {\mbox{Theorems #2#1#3}}
+    { and \mbox{#2#1#3}}
+    {, \mbox{#2#1#3}}
+    {, and \mbox{#2#1#3}}
+\crefrangeformat{lemma}{\mbox{Lemmas #3#1#4–#5#2#6}}
+\crefmultiformat{lemma}
+    {\mbox{Lemmas #2#1#3}}
+    { and \mbox{#2#1#3}}
+    {, \mbox{#2#1#3}}
+    {, and \mbox{#2#1#3}}
+\crefrangeformat{equation}{\mbox{(#3#1#4)–(#5#2#6)}}
+\crefmultiformat{equation}{\mbox{(#2#1#3)}}{ and \mbox{(#2#1#3)}}{, \mbox{(#2#1#3)}}{, and \mbox{(#2#1#3)}}
