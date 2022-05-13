@@ -1,8 +1,8 @@
 Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement, to make it more readable. After these, we will have four new kinds of judgement. 
 
-Because we consider each judgement as a (dependent) QIIT type, thus each judgement has a \textit{type} as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements. This \textit{well-formed-ness} might still be confusing thus we spell out their Agda counterpart to make things more understandable. Of course, a sequent is well-formed doesn't mean it is derivable. Every sequent, judgement and data we discuss here will be well-formed because we are working in a type-theoretical framework. Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that "Type-Universe" require a well-typed context, even though it did implicitly.
+Because we consider each judgement as a (dependent) QIIT type, thus each judgement has a \textit{type} as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements. This \textit{well-formed-ness} might still be confusing thus we spell out their Agda counterpart to make things more understandable. Of course, a sequent is well-formed doesn't mean it is derivable. Every sequent, judgement and data we discuss here will be well-formed because we are working in a type-theoretical framework. Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
-
+Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. Even though we will introduce rules for sealing judgement, we will later show that all these rules are derivable by term judgements.
 
 \begin{figure}[H]
   \begin{minipage}[b]{0.3\linewidth}
@@ -13,15 +13,15 @@ Because we consider each judgement as a (dependent) QIIT type, thus each judgeme
       $$
       \Rule[name=Seal]
       {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma, \tau}{n}}
-      {\goodSeal{\Gamma}{\sigma}{\tau} \text{ is well-formed}}
+      {\goodSeal{\Gamma}{\_}{\sigma}{\tau} \text{ is well-formed}}
       $$
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
       data Sig  : Con → ℕ → Set
       data WSig : Con i → ℕ → Set 
-      data Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
       data Inh  : (Γ : Con) → Sig Γ n → Sig Γ m → Set
+      Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
     \end{minted}
   \end{minipage}
 \end{figure}
@@ -30,7 +30,7 @@ Because we consider each judgement as a (dependent) QIIT type, thus each judgeme
 
 
 
-Now we spell out some of the typing rules, not meant to be comprehensive 
+Now we show case some of the typing rules, and demonstrate their typed encoding in our (fake) Agda, to help the reader  grasp the rough idea of our type system and understand the Agda-formulation of the typing rules easier.
 $$ 
 \Rule[name=Empty Context]{}{\goodCtx{\cdot}{0}} 
 \quad
@@ -64,9 +64,9 @@ $$
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodType{\Gamma}{T[\gamma]}{j}}
 \quad 
-\Rule[name=Function Subst]
+\Rule[name=Func Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
-{\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma \uparrow] }{j \cup k}}
+{\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}}
 $$
 $$
 \Rule[name=Base Type Subst]
@@ -76,3 +76,70 @@ $$
  \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
 }
 $$
+$$
+\Rule[name=Univ-1]
+{\goodType{\Gamma}{T}{j}}
+{\goodTerm{\Gamma}{c \ T}{\cU_j}
+}\quad
+\Rule[name=Univ-2]
+{\goodTerm{\Gamma}{T}{\cU_j}}
+{\goodType{\Gamma}{El \ T}{j}}
+\quad
+\Rule[name=True]
+{}
+{\goodTerm{\Gamma}{tt}{\cB}}
+\quad
+\Rule[name=False]
+{}
+{\goodTerm{\Gamma}{ff}{\cB}}
+$$
+$$
+\Rule[name=Term Subst]
+{\goodTerm{\Delta}{t}{T}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodTerm{\Gamma}{t[\gamma]}{T[\gamma]}}
+\quad 
+\Rule[name=Func intro]
+{\goodTerm{\Gamma, A}{t}{B}}
+{\goodTerm{\Gamma}{\lambda t}{\Pi A B}}
+\quad 
+\Rule[name=Lam Subst]
+{}
+{\goodTerm{\Gamma}{(\lambda t)[\gamma] \equiv \lambda (t[\gamma^\uparrow])}{\Pi A B}}
+$$
+$$
+\Rule[name=Base Type/Term Subst]
+{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodType{\Gamma}{(El \ T)[\gamma] \equiv El \ (T[\gamma]) }{j} \quad
+ \goodTerm{\Gamma}{tt[\gamma] \equiv tt}{\cB} \quad 
+ \goodTerm{\Gamma}{ff[\gamma] \equiv ff}{\cB} 
+}
+$$
+
+$$
+\Rule[name=Empty Subst]
+{}{\goodSub{\Gamma}{\epsilon}{\cdot}}
+\quad
+\Rule[name=Id Subst]
+{}{\goodSub{\Gamma}{id}{\Gamma}}
+\quad
+\Rule[name=Subst Extension]
+{\goodSub{\Gamma}{\sigma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
+{\goodSub{\Gamma}{(\sigma, t)}{(\Delta, A)}}
+$$
+
+$$
+\Rule[name=Proj Subst-1]
+{\goodSub{\Gamma}{\sigma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_1 \sigma}{\Delta}}
+\quad
+\Rule[name=Proj Subst-2]
+{\goodSub{\Gamma}{\sigma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_2 \sigma}{A[\pi_1 \sigma]}}
+\quad
+\Rule[name=Proj-Ext]
+{}
+{\goodSub{\Gamma}{(\pi_1 \sigma, \pi_2 \sigma) \equiv \sigma}{\Delta}}
+$$
+
+We have shown case some exemplar rules for all four standard type judgements, now we focus on the new equipments. 
