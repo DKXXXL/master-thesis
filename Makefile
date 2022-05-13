@@ -7,7 +7,7 @@ TARGETS = $(DOC).pdf
 
 # TeX source files
 TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
-	acmart.cls
+	acmart.cls syntax.tex
 
 # Included figures (usually .pdf files)
 FIGS = figures
@@ -41,6 +41,6 @@ LDIRT = local.tex markup.tex draft.tex submission.tex final.tex finaldraft.tex\
 GENERATED += local.* markup.* draft.* submission.* final.* finaldraft.* tr.*  \
     trdraft.* blindtr.* web.*
 
-LLATEXFLAGS = -halt-on-error
+LLATEXFLAGS = --shell-escape -halt-on-error
 
 include $(COMMONRULES)

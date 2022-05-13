@@ -1,0 +1,78 @@
+Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement, to make it more readable. After these, we will have four new kinds of judgement. 
+
+Because we consider each judgement as a (dependent) QIIT type, thus each judgement has a \textit{type} as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements. This \textit{well-formed-ness} might still be confusing thus we spell out their Agda counterpart to make things more understandable. Of course, a sequent is well-formed doesn't mean it is derivable. Every sequent, judgement and data we discuss here will be well-formed because we are working in a type-theoretical framework. Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that "Type-Universe" require a well-typed context, even though it did implicitly.
+
+
+
+\begin{figure}[H]
+  \begin{minipage}[b]{0.3\linewidth}
+      $$
+      \Rule[name=Sig]
+      {\goodCtx{\Gamma}{i} \quad n \in \nat}
+      {\goodSig{\Gamma}{\_}{n} \text{ is well-formed}}$$
+      $$
+      \Rule[name=Seal]
+      {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma, \tau}{n}}
+      {\goodSeal{\Gamma}{\sigma}{\tau} \text{ is well-formed}}
+      $$
+  \end{minipage}
+  \begin{minipage}[b]{0.6\linewidth}
+    \begin{minted}[]{agda}
+      data Sig  : Con → ℕ → Set
+      data WSig : Con i → ℕ → Set 
+      data Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
+      data Inh  : (Γ : Con) → Sig Γ n → Sig Γ m → Set
+    \end{minted}
+  \end{minipage}
+\end{figure}
+
+
+
+
+
+Now we spell out some of the typing rules, not meant to be comprehensive 
+$$ 
+\Rule[name=Empty Context]{}{\goodCtx{\cdot}{0}} 
+\quad
+\Rule[name=Context Extension]
+{\goodCtx{\Gamma}{i} \quad \goodType{\Gamma}{A}{j}}
+{\goodCtx{\Gamma, A}{i \cup j}}  
+$$
+
+$$
+\Rule[name=Type Universe]
+{}
+{\goodType{\Gamma}{\cU_j}{j + 1}}
+\quad 
+\Rule[name=Boolean]
+{}
+{\goodType{\Gamma}{\cB}{0}}
+\quad 
+\Rule[name=Bottom]
+{}
+{\goodType{\Gamma}{\bot}{0}}
+\quad 
+\Rule[name=Function]
+{\goodType{\Gamma}{A}{j} 
+  \quad \goodType{\Gamma, A}{B}{k}}
+{\goodType{\Gamma}{\Pi A B}{j \cup k}}
+$$
+
+$$
+\Rule[name=Type Subst]
+{\goodType{\Delta}{T}{j} 
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodType{\Gamma}{T[\gamma]}{j}}
+\quad 
+\Rule[name=Function Subst]
+{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma \uparrow] }{j \cup k}}
+$$
+$$
+\Rule[name=Base Type Subst]
+{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodType{\Gamma}{\cU_j[\gamma] \equiv \cU_j }{j + 1} \quad
+ \goodType{\Gamma}{\cB[\gamma] \equiv \cB}{0} \quad 
+ \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
+}
+$$
