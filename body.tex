@@ -9,55 +9,7 @@
 
 \section{Metatheory}
 \label{sec:metatheory}
-
-We start with the formulation of the syntax, which is based on the formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT) given by \citep{coquand2018canonicity}. Thus we will omit most of the discussion about MLTT here but focus on the new facility we introduced. 
-
-Though formulated in Latex, we are following \citep{kaposi2017type} to use a type theoretical framework (like Agda) as our meta-logic, 
-and using \textit{Quotient Inductive Inductive Type} (QIIT) to represent judgemental equality. Each judgement will actually be represented by a QIIT type, which are mutual-recursively defined together. Quotient is used to represent judgemental(definitional) equality, thanks to which we can have a concise representation. This way, for all four kinds of judgement we are using, there are always equality among these data. Doing so, we can omit some obvious equality judgement. 
-
-Most of the reasoning can be formulated using the \textit{algebra} of QIIT (mapping out function from this quotient data-type). 
-
-We also highlight some special feature in this style of formulation of dependent type theory: 1. this modern formulation of type theory does't have operational semantic but only equality 
-%We will recover canonicity afterwards, which implies the computational ability of our theory. 
-;
-2. instead of using meta-level substitution, we use explicit substitution and debruijn indices in our intrinsic formulation. This is also called substitution calculus in the literature and is favoured due to its clear categorical semantic; 
-3. we are dealing with quotient data, so we are actually manipulating equivalence classes of terms. 
-
-We will write out the syntax of the whole type theory for completeness.
-
-
-\newcommand{\denotes}[1]{{\llbracket {#1} \rrbracket}}
-\newcommand{\goodCtx}[2]{{ {#1} \ ok }}
-\newcommand{\goodType}[3]{{ {#1} \vdash {#2} }}
-\newcommand{\goodTerm}[3]{{ {#1} \vdash {#2} : {#3} }}
-\newcommand{\goodSub}[3]{{ {#1} \vdash {#2} : {#3} }}
-\newcommand{\goodSig}[3]{{ {#1} \vdash {#2} \ \  Sig^{#3} }}
-\newcommand{\goodWSig}[3]{{ {#1} \vdash {#2} \ \ WSig^{#3} }}
-\newcommand{\goodSeal}[4]{{ {#1} \vdash {#2} : {#3} \  |\  {#4} }}
-\newcommand{\goodInh}[3]{{ {#1} \vdash {#2} \twoheadrightarrow {#3}}}
-\newcommand{\nat}{\mathbf{N}}
-
-\newcommand{\cU}{{\mathcal{U}}}
-\newcommand{\cB}{{\mathbb{B}}}
-\newcommand{\cL}{{\mathcal{L}}}
-
-
-\subsection{Syntax}
-
-
-\input{syntax}
-
-
-\subsection{Standard Model for Consistency}
-Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type} to interpret our theory. 
-
-
-Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we interpret this derivation in our standard model and we can conclude $\denotes{t} \in \emptyset$, which is a contradiction.
-
-
-\subsection{Proof Relevant Logical Relation for Canonicity}
-We follow \citep{sterling2019algebraic,coquand2018canonicity} to construct the canonicity model. 
-
+\input{metatheory.tex}
 
 \section{Conclusion}
 \label{sec:conclusion}
