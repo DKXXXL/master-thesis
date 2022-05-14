@@ -21,7 +21,7 @@ We will write out the syntax of the whole type theory for completeness.
 \newcommand{\goodSig}[3]{{ {#1} \vdash {#2} \ \  Sig^{#3} }}
 \newcommand{\goodWSig}[3]{{ {#1} \vdash {#2} \ \ WSig^{#3} }}
 \newcommand{\goodSeal}[4]{{ {#1} \vdash {#2} : {#3} \  |\  {#4} }}
-\newcommand{\goodInh}[3]{{ {#1} \vdash {#2} \twoheadrightarrow {#3}}}
+\newcommand{\goodInh}[4]{{ {#1} \vdash {#2} : {#3} \twoheadrightarrow {#4}}}
 \newcommand{\nat}{\mathbf{N}}
 
 \newcommand{\cU}{{\mathcal{U}}}
@@ -38,10 +38,8 @@ We will write out the syntax of the whole type theory for completeness.
 
 
 \subsection{Standard Model for Consistency}
-Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type} to interpret our theory. 
 
-
-Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we interpret this derivation in our standard model and we can conclude $\denotes{t} \in \emptyset$, which is a contradiction.
+\input{standardmodel.tex}
 
 
 \subsection{Proof Relevant Logical Relation for Canonicity}

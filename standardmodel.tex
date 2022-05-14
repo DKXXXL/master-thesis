@@ -1,0 +1,11 @@
+Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into Agda components that is also respecting judgemental equalities.\footnote{Of course, it is also possible to interpret to constructive set theory.} 
+Here we will only show some interpretation, the complete version please refer to appendix.
+
+\begin{align*}
+  ss
+\end{align*}
+
+
+Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we interpret this derivation in our standard model and we can conclude $\denotes{t} : Data.Empty$, 
+% which is basically $\denotes{t} \in \emptyset$ set theoretically, 
+and that is a contradiction.

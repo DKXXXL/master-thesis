@@ -7,7 +7,7 @@ TARGETS = $(DOC).pdf
 
 # TeX source files
 TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
-	acmart.cls syntax.tex metatheory.tex
+	acmart.cls syntax.tex metatheory.tex standardmodel.tex canonicitymodel.tex
 
 # Included figures (usually .pdf files)
 FIGS = figures

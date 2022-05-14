@@ -8,9 +8,20 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
 \begin{figure}[H]
   \begin{minipage}[b]{0.3\linewidth}
       $$
+      \Rule[name=Tm]
+      {\goodCtx{\Gamma}{i} \quad \goodType{\Gamma}{T}{j}}
+      {\goodTerm{\Gamma}{\_}{T}}
+      $$
+      $$
+      \Rule[name=Tms]
+      {\goodCtx{\Gamma}{i} \quad \goodCtx{\Delta}{i}}
+      {\goodSub{\Gamma}{\_}{\Delta} \text{ is well-formed}}
+      $$
+      $$
       \Rule[name=Sig]
       {\goodCtx{\Gamma}{i} \quad n \in \nat}
-      {\goodSig{\Gamma}{\_}{n} \text{ is well-formed}}$$
+      {\goodSig{\Gamma}{\_}{n} \text{ is well-formed}}
+      $$
       $$
       \Rule[name=Seal]
       {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma, \tau}{n}}
@@ -19,6 +30,10 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
+      data Con   : Set 
+      data Ty    : Con → Set   
+      data Tms   : Con → Con → Set 
+      data Tm    : (Γ : Con) → Ty Γ  → Set 
       data Sig  : Con → ℕ → Set
       data WSig : Con → ℕ → Set 
       data Inh  : (Γ : Con) → Sig Γ n → Sig Γ m → Set
@@ -156,16 +171,27 @@ We have shown case some exemplar rules for all four standard type judgments, now
 
 We have two kinds of signatures, one for extensible inductive type, the other for linkages.
 
-Recall in W-type, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. We only formulate non-dependent eliminator, \textit{recursor}. Each recursor is decided by a given linkage.
-
-$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. Of course we need to put an eye on the substitution lemma.
 
 
+\judgebox{\goodWSig{\Gamma}{\sigma}{n}}
+$$
+\Rule[name=Inductive Type]
+{\goodWSig{\Gamma}{\sigma}{n}}
+{\goodType{\Gamma}{W\sigma}{i}}
+\quad
+\Rule[name=Inductive Sig]
+{\goodWSig{\Delta}{\sigma}{n}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodWSig{\Gamma}{\sigma[\gamma]}{n}
+  \quad \goodType{\Gamma}{W (\sigma[\gamma]) \equiv (W \sigma)[\gamma]}{i}}
+$$
 
-Signatures and Linkages are both constructed from the empty stuff, and respect substitution lemma for sure. Intuitively, both of their rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there? 
 
-The sealing judgement is like a syntactic sugar helpful for future inheritance. Consider the scenario we have constructed a linkage meant to be recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{coverage checking} (because we don't have to inherits coverage checking -- we should redo it everytime we program) 
+Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. 
+Of course we need to put an eye on the substitution law for each piece of the syntax. In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions dealing with each case. Thus code-reuse for recursor is delegated by the inheritance for linkage.
 
+
+\judgebox{\goodSig{\Gamma}{\sigma}{n} }
 $$
 \Rule[name=Linkage Type]
 {\goodSig{\Gamma}{\sigma}{n}}
@@ -175,6 +201,92 @@ $$
 {\goodSig{\Delta}{\sigma}{n}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodSig{\Gamma}{\sigma[\gamma]}{n}
-  \quad \goodType{\Gamma}{\cL (\sigma[\gamma]) \equiv (\cL \sigma)[\gamma]}{i}
-}
+  \quad \goodType{\Gamma}{\cL (\sigma[\gamma]) \equiv (\cL \sigma)[\gamma]}{i}}
 $$
+
+$$
+\Rule[name=Empty Sig]
+{}
+{\goodSig{\Gamma}{\nu\cdot}{0}}
+\quad
+\Rule[name=Sig Add]
+{\goodSig{\Gamma}{\sigma}{n} 
+ \quad \goodSeal{\Gamma}{f}{\sigma}{\sigma'}
+ \quad \goodType{\Gamma, \sigma'}{T}{i}}
+{\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
+$$
+$$
+\Rule[name=Empty Lnkg]
+{}
+{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot}}
+\quad
+\Rule[name=Lnkg Add]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad  \goodSeal{\Gamma}{f}{\sigma}{\sigma'} 
+ \quad \goodTerm{\Gamma, \cL \sigma'}{t}{T}
+}
+{\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+$$
+
+$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. 
+
+
+The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.
+
+
+Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there? 
+
+\judgebox{[\goodSeal{\Gamma}{s}{\sigma}{\sigma'}] = [\goodTerm{\Gamma, \cL\sigma}{s}{\cL \sigma'[\pi_1]}] }
+$$
+\Rule[name=Seal Subst]
+{\goodSeal{\Delta}{s}{\sigma}{\sigma'}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{\sigma'[\gamma]}}
+=
+\frac
+{\goodTerm{\Delta, \cL\sigma}{s}{\cL\sigma'[\pi_1]}
+  \quad  \goodSub{\Gamma}{\gamma}{\Delta}  }
+{\goodTerm{\Gamma,\cL\sigma[\gamma]}{s[\gamma^\uparrow]}{\cL\sigma'[\pi_1][\gamma^\uparrow]\equiv\cL\sigma'[\gamma][\pi_1]}}
+$$
+$$
+\Rule[name=Seal-Id]
+{}
+{\goodSeal{\Gamma}{id_s}{\sigma}{\sigma}}
+= \goodTerm{\Gamma, \cL\sigma}{\pi_2}{\cL\sigma[\pi_1]}
+$$
+\begin{figure}[H]
+
+\centering
+\captionsetup{justification=centering}
+
+\caption{Seal Judgement, and its Agda Representation \\ (or What do we mean when we say one judgement is a short hand of the other)}
+
+\begin{minted}[]{agda}
+Seal : (Γ : Con) → (σ : Sig Γ n) → (τ : Sig Γ n) → Set 
+Seal Γ σ τ = Tm (Γ, 𝓛σ) 𝓛τ[p₁]
+
+-[-]S : (f : Seal Γ σ₁ σ₂) → (τ : Tms Θ Γ) → Seal Θ σ₁[τ] σ₂[τ]
+f[τ]S = t[τ ↑ 𝓛σ₁]
+
+idₛ : Seal Γ σ σ
+idₛ = π₁
+\end{minted}
+
+\end{figure}
+
+
+
+
+As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{\sigma'}$ is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. The substitution law should understand as a lemma, and easily derivable by using $\gamma^\uparrow$. 
+
+The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance. Consider the scenario we have constructed a linkage meant to be a recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{recursor term}  $.. (T : \bW(\sigma)), L : \cL(\tau) \vdash \ \text{ Recursor } \ T \ L .. : R $ also functioning as \textit{coverage checking}. (Because we don't need to inherit coverage checking -- we should redo it in every linkage) Here, the recursor should also be \textit{seal-ed} so that every field is relying on an abstract, overridable recursor. Thus the sealing judgement will be helpful to shift the context from $.. (T : \bW(\sigma)) .. $ to $.. (T : \cU) ..$ 
+
+However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
+
+
+
+
+\judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
+
+Finally we introduce the inheritance judgement. Inheritance is represented by judgement so naturally first order data (i.e. not something function can return), but it itself looks very much alike a function that transform a given linkage. 
+
