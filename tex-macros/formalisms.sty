@@ -89,7 +89,11 @@
       \label{rule:#1}
   }
 }
-
+\newcommand\judgebox[1]{
+  \begin{flushleft}
+  \fcolorbox{black}{faint-gray}{\ensuremath{#1}}
+  \end{flushleft}
+}
 
 %\declaretheoremstyle[
 %    spaceabove=5pt, spacebelow=5pt,

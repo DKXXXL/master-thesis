@@ -1,6 +1,7 @@
-Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement, to make it more readable. After these, we will have four new kinds of judgement. 
+Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement. 
 
-Because we consider each judgement as a (dependent) QIIT type, thus each judgement has a \textit{type} as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements. This \textit{well-formed-ness} might still be confusing thus we spell out their Agda counterpart to make things more understandable. Of course, a sequent is well-formed doesn't mean it is derivable. Every sequent, judgement and data we discuss here will be well-formed because we are working in a type-theoretical framework. Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
+Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more understandable. Of course, a well-formed sequent  is not necessarily derivable. 
+Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. Even though we will introduce rules for sealing judgement, we will later show that all these rules are derivable by term judgements.
 
@@ -19,11 +20,12 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
       data Sig  : Con → ℕ → Set
-      data WSig : Con i → ℕ → Set 
+      data WSig : Con → ℕ → Set 
       data Inh  : (Γ : Con) → Sig Γ n → Sig Γ m → Set
       Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
     \end{minted}
   \end{minipage}
+  \caption{Well-formed-ness of Four New Judgements}
 \end{figure}
 
 
@@ -31,6 +33,10 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
 
 
 Now we show case some of the typing rules, and demonstrate their typed encoding in our (fake) Agda, to help the reader  grasp the rough idea of our type system and understand the Agda-formulation of the typing rules easier.
+
+
+  \label{fig:rules:well-typed-ctx}
+\judgebox{\goodCtx{\Gamma}{i}}
 $$ 
 \Rule[name=Empty Context]{}{\goodCtx{\cdot}{0}} 
 \quad
@@ -39,6 +45,8 @@ $$
 {\goodCtx{\Gamma, A}{i \cup j}}  
 $$
 
+
+\judgebox{ \goodType{\Gamma}{T}{i} }
 $$
 \Rule[name=Type Universe]
 {}
@@ -72,10 +80,11 @@ $$
 \Rule[name=Base Type Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
 {\goodType{\Gamma}{\cU_j[\gamma] \equiv \cU_j }{j + 1} \quad
- \goodType{\Gamma}{\cB[\gamma] \equiv \cB}{0} \quad 
- \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
+  \goodType{\Gamma}{\cB[\gamma] \equiv \cB}{0} \quad 
+  \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
 }
 $$
+\judgebox{ \goodTerm{\Gamma}{t}{T} }
 $$
 \Rule[name=Univ-1]
 {\goodType{\Gamma}{T}{j}}
@@ -115,7 +124,7 @@ $$
  \goodTerm{\Gamma}{ff[\gamma] \equiv ff}{\cB} 
 }
 $$
-
+\judgebox{\goodSub{\Gamma}{\sigma}{\Delta}}
 $$
 \Rule[name=Empty Subst]
 {}{\goodSub{\Gamma}{\epsilon}{\cdot}}
@@ -142,4 +151,30 @@ $$
 {\goodSub{\Gamma}{(\pi_1 \sigma, \pi_2 \sigma) \equiv \sigma}{\Delta}}
 $$
 
-We have shown case some exemplar rules for all four standard type judgements, now we focus on the new equipments. 
+We have shown case some exemplar rules for all four standard type judgments, now we focus on the newly introduced facility. 
+
+
+We have two kinds of signatures, one for extensible inductive type, the other for linkages.
+
+Recall in W-type, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. We only formulate non-dependent eliminator, \textit{recursor}. Each recursor is decided by a given linkage.
+
+$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. Of course we need to put an eye on the substitution lemma.
+
+
+
+Signatures and Linkages are both constructed from the empty stuff, and respect substitution lemma for sure. Intuitively, both of their rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there? 
+
+The sealing judgement is like a syntactic sugar helpful for future inheritance. Consider the scenario we have constructed a linkage meant to be recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{coverage checking} (because we don't have to inherits coverage checking -- we should redo it everytime we program) 
+
+$$
+\Rule[name=Linkage Type]
+{\goodSig{\Gamma}{\sigma}{n}}
+{\goodType{\Gamma}{\cL \sigma}{i}}
+\quad
+\Rule[name=Sig/Linkage Subst]
+{\goodSig{\Delta}{\sigma}{n}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodSig{\Gamma}{\sigma[\gamma]}{n}
+  \quad \goodType{\Gamma}{\cL (\sigma[\gamma]) \equiv (\cL \sigma)[\gamma]}{i}
+}
+$$
