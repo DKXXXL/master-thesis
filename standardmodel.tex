@@ -47,9 +47,9 @@ We will take some examples on the verification of validity of this model: 1. to 
 
 Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cL\sigma}{i}}$ is mutual recursively defined together. What's more, the substitution law around these two are also proved together by induction.
 
-We omit the model here for extensible inductive type and inheritance judgement because they require inductive facility in meta-logic. In set theory, that would be using \textit{rule sets}\citep{timany2017consistency,aczel1998relating}, which would be more confusing for the reader. In appendix we will use the native inductive notion from Agda to construct models. 
+We omit the model here for extensible inductive type and inheritance judgement because they require inductive facility in meta-logic. In set theory, that would be using \textit{rule sets}~\citep{timany2017consistency,aczel1998relating}, which would be more confusing for the reader. In appendix we will use the native inductive notion from Agda to construct models. 
 
-But we can sketch out their construction -- 1. for extensible W type, we simply construct a similar inductive type reflect the same idea, and the challenge mainly lies in satisfying the substitution law; 2. for inheritance judgement, we inductively define an almost-identical syntactic structure as model, but not a QIIT, and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law.
+But we can sketch out their construction -- 1. for extensible W type, we simply construct a similar inductive type reflect the same idea, and the challenge mainly lies in satisfying the substitution law; 2. for inheritance judgement, we inductively define an almost-identical syntactic structure as model, (but not a QIIT), and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law.
 
 
 
