@@ -1,8 +1,8 @@
-Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into naive set theory that is also respecting judgemental equalities for accessibility\footnote{In our appendix, we still interpret into Agda component to be more precise and less error-prone, also we need the inductive facility from Agda.} 
+Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into naive set theory that is also respecting judgemental equalities for accessibility\footnote{In our appendix, we still interpret into Agda component to be more precise and less error-prone, also we need the inductive facility from Agda.} The main idea of the proof is that: 1. we use $\denotesS{}$ to map each intrinsic well-typed syntax piece into a mathematical object; 2. we define proof-irrelevant proposition $\models_S$ for each syntactical $\vdash$, and derive compatibility lemma. We will mainly focus on the definition of $\denotesS{}$ and omit the verification of $\models_S$, and also we omit the verification of equality (i.e. the judgementally-equal syntax needs to be mapped to the same data for well-defined-ness).
 
-Here we will only show some interpretation and also omit the universe level to sketch out the idea, please refer to appendix for the complete version.
+Here we will only show some interpretation and also omit the universe level to sketch out the idea, please refer to appendix for the complete version. 
 
-
+\newcommand{\goodCtxS}[2]{{ {#1} \ \models_S }}
 \newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
 \newcommand{\goodTermS}[3]{{ {#1} \models_S {#2} : {#3} }}
 \newcommand{\goodSubS}[3]{{ {#1} \models_S {#2} : {#3} }}
@@ -12,12 +12,13 @@ Here we will only show some interpretation and also omit the universe level to s
 \newcommand{\goodInhS}[4]{{ {#1} \models_S {#2} : {#3} \twoheadrightarrow {#4}}}
 
 \begin{align*}
-  \denotesS{\goodCtx{\Gamma}{i}} & \text{ is a Set} \\
+  \denotesS{\goodCtx{\Gamma}{i}} & \text{ is a Set and we define } \goodCtxS{\Gamma}{i} :\iff \denotesS{\goodCtx{\Gamma}{i}} \text{ is defined} \\
+  \denotesS{\goodCtx{\cdot}{i}} &= \{\star\} \quad \text{ a specific singleton set} \\
   \denotesS{\goodType{\Gamma}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gamma}{i}} \\
   & \text{ and we define } \goodTypeS{\Gamma}{T}{i} : \iff \denotesS{\goodType{\Gamma}{T}{i}} \text{ is defined } \\
   \denotesS{\goodSub{\Gamma}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gamma}{\gamma}{\Delta}} : \iff \denotesS{\gamma} \in \denotesS{\goodSub{\Gamma}{\_}{\Delta}} \\
   \denotesS{\goodSub{\Gamma}{\_}{\Delta}} & = \denotesS{\goodCtx{\Gamma}{i}} \rightarrow \denotesS{\goodCtx{\Delta}{j}} \\
-  \denotesS{\goodTerm{\Gamma}{\_}{T}} & \text{ is a Set (of dependent function) where }   {\goodTermS{\Gamma}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gamma}{\_}{T}} \\
+  \denotesS{\goodTerm{\Gamma}{\_}{T}} & \text{ is a Set (of dependent function) } \\& \text{and we define }  {\goodTermS{\Gamma}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gamma}{\_}{T}} \\
   \denotesS{\goodTerm{\Gamma}{\_}{T}} & = \prod_{\gamma \in \denotesS{\goodCtx{\Gamma}{i}}}\denotesS{T}(\gamma) \\
   % 
   \denotesS{\goodSig{\Gamma}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gamma}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gamma}{\_}{n}} \\
@@ -32,9 +33,25 @@ Here we will only show some interpretation and also omit the universe level to s
   \denotesS{\goodSig{\Gamma}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
   \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{(m, f) :  m \in \denotesS{\cL \tau}(\gamma) \land f \in \prod_{m' \in \denotesS{\cL \tau'}(\gamma)}\denotesS{T}(\gamma, m')  \}  \\
   & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{\tau'}, \_ , \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
-  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} \ (\gamma)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
+  \denotesS{\goodSig{\Gamma}{\nu\cdot}{0}} &= \star \\
+  \denotesS{\goodSig{\Gamma}{\nu^+ \ \sigma \ f \ T}{n+1}} &= (\sigma, \sigma', f, T) \\
+  \denotesS{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot} } \ (\gamma) &= \star \\
+  \denotesS{\goodTerm{\Gamma}{\mu^+ \ o \ t}{\cL(\nu^+ \ \sigma  \ T)}} \ (\gamma)&= (o(\gamma), (\lambda \ m' . t'(\gamma, m'))) \\
+  \denotesS{\goodType{\Gamma}{\bot}{i}} \ (\gamma) &= \emptyset \\
+  \denotesS{\goodType{\Gamma}{\cB}{i}} \ (\gamma) &= \{0, 1\} \quad \text{a specific two element set} \\
 \end{align*}
 
 
-Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have  $\denotesS{t}() \in \denotesS{\bot}() = \emptyset$ 
+We will take some examples on the verification of validity of this model: 1. to verify compatibility lemma ; 2. to verify the well-defined-ness of this model,  
+
+Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cL\sigma}{i}}$ is mutual recursively defined together. What's more, the substitution law around these two are also proved together by induction.
+
+We omit the model here for extensible inductive type and inheritance judgement because they require inductive facility in meta-logic. In set theory, that would be using \textit{rule sets}\citep{timany2017consistency,aczel1998relating}, which would be more confusing for the reader. In appendix we will use the native inductive notion from Agda to construct models. 
+
+But we can sketch out their construction -- 1. for extensible W type, we simply construct a similar inductive type reflect the same idea, and the challenge mainly lies in satisfying the substitution law; 2. for inheritance judgement, we inductively define an almost-identical syntactic structure as model, but not a QIIT, and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law.
+
+
+
+Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have $\cdot \models_S t : \bot \Rightarrow \denotesS{t}(\star) \in \denotesS{\bot}(\star) = \emptyset$ 
 and that is a contradiction.

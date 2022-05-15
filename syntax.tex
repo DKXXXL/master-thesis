@@ -175,15 +175,43 @@ We have two kinds of signatures, one for extensible inductive type, the other fo
 
 \judgebox{\goodWSig{\Gamma}{\sigma}{n}}
 $$
-\Rule[name=Inductive Type]
-{\goodWSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{W\sigma}{i}}
+\Rule[name=Emp WSig]
+{}
+{\goodWSig{\Gamma}{w\cdot}{0}}
 \quad
-\Rule[name=Inductive Sig]
+\Rule[name=WSig Add]
+{\goodWSig{\Gamma}{s}{n}
+  \quad \goodType{\Gamma}{A}{i}
+  \quad \goodType{\Gamma, A}{B}{i}}
+{\goodWSig{\Gamma}{w^+ \  s \  A \  B}{n+1}}
+\quad
+\Rule[name=Ind Univ]
+{\goodWSig{\Gamma}{\sigma}{n}}
+{\goodType{\Gamma}{\bW \sigma}{i}}
+$$
+
+$$
+\Rule[name=WSig Proj]
+{\goodWSig{\Gamma}{s}{n} \quad j < n}
+{\goodType{\Gamma}{\pi^j_1 s}{i} \quad \goodType{\Gamma, \pi^j_1 s}{\pi^j_2  s}{i}}
+\quad
+\Rule[name=Ind Sig]
 {\goodWSig{\Delta}{\sigma}{n}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodWSig{\Gamma}{\sigma[\gamma]}{n}
   \quad \goodType{\Gamma}{W (\sigma[\gamma]) \equiv (W \sigma)[\gamma]}{i}}
+$$
+
+$$
+\Rule[name=Ind Type]
+{\goodTerm{\Gamma}{T}{\bW \sigma}}
+{\goodTerm{\Gamma}{W \ T}{\cU}}
+\quad
+\Rule[name=Ind Term]
+{\goodTerm{\Gamma}{T}{\bW \sigma}
+  \quad \goodTerm{\Gamma}{a}{\pi^j_1\sigma}
+  \quad \goodTerm{\Gamma, \pi^j_1\sigma}{b}{\pi^j_2\sigma}}
+{\goodTerm{\Gamma}{Wsup \ T \ a \ b}{El\ (W\ T)} }
 $$
 
 
