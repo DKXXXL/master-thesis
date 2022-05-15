@@ -1,11 +1,40 @@
-Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into Agda components that is also respecting judgemental equalities.\footnote{Of course, it is also possible to interpret to constructive set theory.} 
-Here we will only show some interpretation, the complete version please refer to appendix.
+Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into naive set theory that is also respecting judgemental equalities for accessibility\footnote{In our appendix, we still interpret into Agda component to be more precise and less error-prone, also we need the inductive facility from Agda.} 
+
+Here we will only show some interpretation and also omit the universe level to sketch out the idea, please refer to appendix for the complete version.
+
+
+\newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
+\newcommand{\goodTermS}[3]{{ {#1} \models_S {#2} : {#3} }}
+\newcommand{\goodSubS}[3]{{ {#1} \models_S {#2} : {#3} }}
+\newcommand{\goodSigS}[3]{{ {#1} \models_S {#2} \ \  Sig^{#3} }}
+\newcommand{\goodWSigS}[3]{{ {#1} \models_S {#2} \ \ WSig^{#3} }}
+\newcommand{\goodSealS}[4]{{ {#1} \models_S {#2} : {#3} \  |\  {#4} }}
+\newcommand{\goodInhS}[4]{{ {#1} \models_S {#2} : {#3} \twoheadrightarrow {#4}}}
 
 \begin{align*}
-  ss
+  \denotesS{\goodCtx{\Gamma}{i}} & \text{ is a Set} \\
+  \denotesS{\goodType{\Gamma}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gamma}{i}} \\
+  & \text{ and we define } \goodTypeS{\Gamma}{T}{i} : \iff \denotesS{\goodType{\Gamma}{T}{i}} \text{ is defined } \\
+  \denotesS{\goodSub{\Gamma}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gamma}{\gamma}{\Delta}} : \iff \denotesS{\gamma} \in \denotesS{\goodSub{\Gamma}{\_}{\Delta}} \\
+  \denotesS{\goodSub{\Gamma}{\_}{\Delta}} & = \denotesS{\goodCtx{\Gamma}{i}} \rightarrow \denotesS{\goodCtx{\Delta}{j}} \\
+  \denotesS{\goodTerm{\Gamma}{\_}{T}} & \text{ is a Set (of dependent function) where }   {\goodTermS{\Gamma}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gamma}{\_}{T}} \\
+  \denotesS{\goodTerm{\Gamma}{\_}{T}} & = \prod_{\gamma \in \denotesS{\goodCtx{\Gamma}{i}}}\denotesS{T}(\gamma) \\
+  % 
+  \denotesS{\goodSig{\Gamma}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gamma}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gamma}{\_}{n}} \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} & \text{ is a family of sets, dependent on } \denotesS{\sigma}  \\
+  \denotesS{\goodSig{\Gamma}{\_}{n+1}} &= \{
+    (\denotesS{\sigma}, \denotesS{\sigma'}, \denotesS{f}, \denotesS{T}) :
+      {\goodSigS{\Gamma}{\sigma}{n}}
+      \land  {\goodSigS{\Gamma}{\sigma'}{n}} \\  
+      & \quad \quad \quad \land  {\goodSealS{\Gamma}{f}{\sigma}{\sigma'}}
+      \land  {\goodTypeS{\Gamma, \cL \sigma'}{T}{i}} 
+  \} \\ 
+  \denotesS{\goodSig{\Gamma}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{(m, f) :  m \in \denotesS{\cL \tau}(\gamma) \land f \in \prod_{m' \in \denotesS{\cL \tau'}(\gamma)}\denotesS{T}(\gamma, m')  \}  \\
+  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{\tau'}, \_ , \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
 \end{align*}
 
 
-Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we interpret this derivation in our standard model and we can conclude $\denotes{t} : Data.Empty$, 
-% which is basically $\denotes{t} \in \emptyset$ set theoretically, 
+Notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have  $\denotesS{t}() \in \denotesS{\bot}() = \emptyset$ 
 and that is a contradiction.
