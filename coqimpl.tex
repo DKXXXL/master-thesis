@@ -1,8 +1,32 @@
-After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular command and translate each command into a bunch of Coq commands (the surface Vernacular command) instead of modify the code-base of Coq. 
+After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular command and translate each command into a bunch of Coq commands (the surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
 
 Doing so, Despite of the possible difficulty of the future maintenance, this approach has various advantages: 1. it is the most easy and accessible way to prototype; 2. we have a clear definition of trusted-base -- the whole Coq; 3. it is easy to debug -- we just need to check the translated commands; 4. it can be well-incorporated with the VSCoq (and proof general I believe); 5. it is more accessible for the the interested audience who can easily adapt our plugin and give a try -- otherwise they have to download and re-build the whole customized Coq; 6. it is more stable because the surface syntax of Coq should be stable across different versions; 7. still, this plugin can capture the key ingredients of implementing family polymorphism inside Coq and act as a reference for guiding an appropriate implementation of Family Polymorphism inside all sorts of proof assistants.
 
+\textbf{Family compiled into module, Family type into module type and Context into module parameter} This is the main idea of compiling family components into Coq's primitives. To achieve incremental type checking, we notice the nature of late binding: for each defining field $ .. \cL\sigma \vdash t : T $, we can compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda \cL \sigma. t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we use module and module parameters to achieve this wrapping -- each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each term of the field will compile into a parametrized module (functor). Doing so we can also get rapid feedback from type checking when the users are defining each field. Overriding is achieved in the same manner -- we just need to make sure the Overriding term has the same type as the original term. 
 
+% Concrete details of compilation of a family term data structure
+Now that we know a family data structure is actually a list of compiled modules, we need to aggregate them into a complete compiled module. Thankfully, Coq's \textit{Include} command makes things easy and reasonably fast.  
+
+% Compilation into Coq can give us computational interpretation for free.
+
+
+
+\textbf{Only deal with inheritance judgement} 
+
+
+
+\textbf{Reasoning Requires Non-Overridable}
+However, unlike general-purposed programming, Coq should be able to  \textit{reason} about each program. However, sometimes reasoning requires a specific program and overriding on them is unacceptable. For example, we may define a field $add : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to proving its commutativity in the following field $comm$. However, to prove so, we need to know more than just a type interface of $add$ but also its \textbf{concrete definition}. Otherwise, in the future, once $add$ is overridden into a subtraction function and $comm$ will have problem to be  inherited. To achieve such exposure of definition in meta-theory we only need to expose the information as propositional equality as part of the signature, but in our Coq plugin, we can achieve that even easier by exposing the whole definition directly into module type. Doing so we can have a better judgemental equality and we can avoid overriding because subtraction doesn't have the same definition as $add$. We require the users to decorate field as `Final' so that the plugin will proceed with this special treatment.
+
+\textbf{Special Fields: Overridable Family and Sealing as Interface}
+
+
+
+\textbf{Special Fields : Extensible Inductive Type and Recursor}
+
+We also provide the tool of `FTheorem' to wrap the proof-irrelevant recursor. This tool can avoid most boiler-plate code when writing a standard recursor, and is also open to extension like `FRecursor'.
+
+\textbf{Propositional Partial Recursor}
 Propositional Partial Recursor can prove injection and discrimination of the constructors.
 Propositional Partial Recursor is good enough because it and its computational axiom can prove that the vanilla inductive type can "embed" into the extensible inductive type. 
 (i.e. there will be an left inversion of that injection, which is also witnessing the fact that those "constructors" can really act as constructors) 
