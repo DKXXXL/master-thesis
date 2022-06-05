@@ -316,5 +316,10 @@ However, in most of the cases, we don't need to seal anything, and thus the "Sea
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
-Finally we introduce the inheritance judgement. Inheritance is represented by judgement so naturally first order data (i.e. not something function can return), but it itself looks very much alike a function that transform a given linkage. 
+Finally we introduce the inheritance judgement. Inheritance are judgement so naturally second class citizen data (i.e. not something function can return), and it itself looks very much alike a function that transform a given linkage. 
+
+The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax -- a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance -- because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism.
+
+
+
 
