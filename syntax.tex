@@ -362,7 +362,10 @@ $$
 {\goodTerm{\Gamma}{("inh" \ h \ l)}{\cL \sigma_2}} 
 \quad 
 \Rule[name=Inh-Inh-beta]
-{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}}
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+  \quad \goodTerm{\Gamma}{m}{\cL \sigma_1}
+  \quad \goodTerm{\Gamma, \cL\sigma_1'}{t}{T}
+}
 {\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \ t) \equiv \mu^+ \ ("inh" \ h \ m) \ t[(\pi_1, \uparrow^s)]}{}} 
 $$
 
