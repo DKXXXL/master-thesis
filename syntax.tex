@@ -1,6 +1,7 @@
 Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement. 
 
-Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?). Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more understandable. Of course, a well-formed sequent  is not necessarily derivable. 
+Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?)\YZ{What's the distinction of judgments vs. sequents?}.
+Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more understandable. Of course, a well-formed sequent  is not necessarily derivable. 
 Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. Even though we will introduce rules for sealing judgement, we will later show that all these rules are derivable by term judgements.
@@ -88,7 +89,7 @@ $$
 {\goodType{\Gamma}{T[\gamma]}{j}}
 \quad 
 \Rule[name=Func Subst]
-{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodSub{\Gamma}{\gamma}{\Delta}\YZ{What is the requirement on Delta?}}
 {\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}}
 $$
 $$
@@ -187,7 +188,7 @@ $$
 \quad
 \Rule[name=Ind Univ]
 {\goodWSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{\bW \sigma}{i}}
+{\goodType{\Gamma}{\bW \sigma}{i}\YZ{Is there an introduction rule for terms of type 'bW sigma'?}}
 $$
 
 $$
@@ -262,7 +263,7 @@ $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linka
 The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.
 
 
-Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there? 
+Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there?
 
 \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{\sigma'}] = [\goodTerm{\Gamma, \cL\sigma}{s}{\cL \sigma'[\pi_1]}] }
 $$
@@ -307,7 +308,15 @@ idₛ = π₁
 
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{\sigma'}$ is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. The substitution law should understand as a lemma, and easily derivable by using $\gamma^\uparrow$. 
 
-The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance. Consider the scenario we have constructed a linkage meant to be a recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{recursor term}  $.. (T : \bW(\sigma)), L : \cL(\tau) \vdash \ \text{ Recursor } \ T \ L .. : R $ also functioning as \textit{coverage checking}. (Because we don't need to inherit coverage checking -- we should redo it in every linkage) Here, the recursor should also be \textit{seal-ed} so that every field is relying on an abstract, overridable recursor. Thus the sealing judgement will be helpful to shift the context from $.. (T : \bW(\sigma)) .. $ to $.. (T : \cU) ..$ 
+The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance. Consider the scenario we have constructed a linkage meant to be a recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{recursor term}  $.. (T : \bW(\sigma)), L : \cL(\tau) \vdash \ \text{ Recursor } \ T \ L .. : R $ also functioning as \textit{coverage checking}.
+\YZ{Does coverage checking mean exhaustiveness checking?}
+(Because we don't need to inherit coverage checking -- we should redo it in every linkage) Here, the recursor should also be \textit{seal-ed} so that every field is relying on an abstract, overridable recursor.
+\YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
+ML, sealing has the connotation of hiding things behind an existential
+type. So using the same word may cause the reader to have false
+presumptions about what is going on here.}
+Thus the sealing judgement will be helpful to shift the context from $.. (T : \bW(\sigma)) .. $ to $.. (T : \cU) ..$
+\YZ{Can we have a more concrete example of how the judgment is useful?}
 
 However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 

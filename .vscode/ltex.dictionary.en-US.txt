@@ -1,0 +1,6 @@
+sequent
+QIIT
+Agda
+sequents
+recursor
+overridable
