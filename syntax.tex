@@ -215,8 +215,9 @@ $$
 $$
 
 
-Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. 
-Of course we need to put an eye on the substitution law for each piece of the syntax. In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions dealing with each case. Thus code-reuse for recursor is delegated by the inheritance for linkage.
+Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Of course we need to put an eye on the substitution law for each piece of the syntax. 
+
+In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions/handlers/pattern-matching cases dealing with each constructor. Thus code-reuse for recursor is delegated by the inheritance of linkage -- to reuse one particular pattern-matching case, we just inherit the function/handler. This greatly simplifies the metatheory development. 
 
 
 \judgebox{\goodSig{\Gamma}{\sigma}{n} }
@@ -312,13 +313,70 @@ The motivation for sealing judgement is acting like a syntactic sugar helpful fo
 However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 
 
-
+Note that, there will be a lot of $\sigma_1, \sigma_1'$ and $\sigma_2, \sigma_2'$, in these cases, $\sigma_1'$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{\sigma_1'}, \goodSeal{\Gamma}{f_2}{\sigma_2}{\sigma_2'}$ when needed.
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
-Finally we introduce the inheritance judgement. Inheritance are judgement so naturally second class citizen data (i.e. not something function can return), and it itself looks very much alike a function that transform a given linkage. 
+$$
+\Rule[name=Inh-Id]
+{}
+{\goodInh{\Gamma}{"inhid"}{\sigma}{\sigma}}
+\quad
+\Rule[name=Inh-Override]
+{
+\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}  
+\quad \goodType{\Gamma, \cL\sigma_1'}{T_1}{}
+\quad \goodType{\Gamma, \cL\sigma_2'}{T_2}{}
+  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T_2}}
+{\goodInh{\Gamma}{"inhov" \ h \ t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}}
+$$
 
-The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax -- a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance -- because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism.
+$$
+\Rule[name=Inh-Ext]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T}}
+{\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
+\quad
+\Rule[name=Inh-Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodType{\Gamma, \cL\sigma_1'}{T}{}
+\quad \goodTerm{\Gamma, \cL\sigma_2'}{\uparrow^s}{\cL\sigma_1'[\pi_1]}
+}
+{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}
+$$
+$$
+\Rule[name=Inh+Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodTerm{\Gamma, \cL\sigma_2'}{\uparrow^s}{\cL\sigma_1'[\pi_1]}
+\quad 
+\goodInh{\Gamma, \cL\sigma_2'}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+{\goodInh{\Gamma}{"inhnest" \ h \ i}{(\nu^+ \  \sigma_1\  \cL\tau_1)}{(\nu^+ \  \sigma_2\  \cL\tau_2)}}
+\quad
+$$
+
+$$
+\Rule[name=Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodTerm{\Gamma}{l}{\cL \sigma_1}
+}
+{\goodTerm{\Gamma}{("inh" \ h \ l)}{\cL \sigma_2}} 
+\quad 
+\Rule[name=Inh-Inh-beta]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}}
+{\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \ t) \equiv \mu^+ \ ("inh" \ h \ m) \ t[(\pi_1, \uparrow^s)]}{}} 
+$$
+
+Finally we introduce the inheritance judgement. Inheritance are judgement so naturally second class citizen data (i.e. not something function can return and cannot be assigned to variables), and it looks very much alike a function that transform a given linkage. 
+
+The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax -- a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance -- because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism. 
+
+"inhid" and "inhext" are simple as expected -- the former corresponds to empty inheritance, and the latter gives the programmer the ability to add new field. 
+
+"inhinh" is special because it requires user to provide a proof of ``upcasting'' from the context of the children to that of the parent. In other words, if I want to inherit a specific field from the parent, I have to convince the type checker that my current context can ``accommodate'' the inherited field. 
+
+Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance -- family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping.
+
+Finally we need to introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need "upcasting" again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement to derive children family and how the beta rule is defined. We omit most of the other substitution laws here.
 
 
 
