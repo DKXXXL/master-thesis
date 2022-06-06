@@ -49,10 +49,10 @@ We will take some examples on the verification of validity of this model: 1. to 
 
 Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cL\sigma}{i}}$ is mutual recursively defined together. What's more, the substitution law around these two are also proved together by induction.
 
-% We omit the model here for extensible inductive type and inheritance judgement because they require inductive facility in meta-logic. 
-We spell-out the model for extensible type and inheritance judgement here, and both of them require inductive facility in meta-logic. In set theory, that would be using \textit{Rule sets}~\citep{timany2017consistency,aczel1998relating}, but we are using Agda's Inductive facility instead. 
+% We omit the model here for inductive type and inheritance judgement because they require inductive facility in meta-logic. 
+We spell-out the model for the inductive type and inheritance judgement here, and both of them require inductive facility in meta-logic. In set theory, that would be using \textit{Rule sets}~\citep{timany2017consistency,aczel1998relating}, but we are using Agda's Inductive facility instead. 
 % In appendix we will use the native inductive notion from Agda to construct models. 
-As expected, we use an inductive type with the constructor from W-type to model our extensible inductive type, and the recursor for the inductive type is directly modelling the recursor for our extensible inductive type. For inheritance judgement, we inductively define an almost-identical syntactic structure as model, (but not a QIIT), and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law. Basically both ideas are using the syntax of themselves in meta-logic to model, because its definition is pretty "well-founded". Most importantly, this doesn't affect our aim to model bottom type using empty set to derive consistency.
+As expected, we use an inductive type in the meta-logic with the constructor from W-type to model our inductive type, and the recursor for the inductive type in the meta-logic is directly modelling the recursor for our inductive type in our theory. For inheritance judgement, we inductively define an almost-identical syntactic structure as model, (but not a QIIT), and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law. Basically both ideas are using the syntax of themselves in meta-logic to model, because its definition is pretty "well-founded". Most importantly, this doesn't affect our aim to model bottom type using empty set to derive consistency.
 
 
 
