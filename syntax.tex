@@ -1,9 +1,10 @@
 Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement. 
 
-Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?)
-%\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}
-Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more understandable. Of course, a well-formed sequent  is not necessarily derivable. 
-Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
+Because we consider each kind of judgement as a (dependent) QIIT type, thus each judgement has a \textit{type} and all the derivation of judgements are well-typed (QIIT terms) as well (otherwise how can they be encoded in Agda?)
+\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
+Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more accessible. Of course, a well-formed judgement is not necessarily derivable, just like a well-typed QIIT type is not necessarily inhabited. 
+
+Due to our intrinsic setting, \textbf{we can and will omit a lot of presumption of the typing rules}, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. Even though we will introduce rules for sealing judgement, we will later show that all these rules are derivable by term judgements.
 
@@ -91,7 +92,9 @@ $$
 \quad 
 \Rule[name=Func Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}\YZ{What is the requirement on Delta?}
-\EDJreply{ Delta here is of type Con and thus Delta here should be a well-typed Context. This is another issue I want to talk about, in Agda these kinds of stuff is inferred (so the reader can infer them as well). For example, we know delta is at the place of context, so it is a context, but we don't need to specify that it is a ``well-typed context'' because every context is well-typed in this intrinsic-typing. What's more, I think adding this extra judgement here just cause significant code bloat (like what I complained to you before I know how to use implcit variable in agda. For example, TYPE SUBST, there will be two more judgements (with no more information there) ) (Another reason I prefer fake agda formulation) }\YZreply{I was thinking about 'Delta |- A'. I suppose it is also implicitly enforced via intrinsically typed syntax. Seems to me it is worth stating, however, or otherwise the rule appears to say that Delta can be any context as long as Gamma |- gamma : Delta.}
+\EDJreply{ Delta here is of type Con and thus Delta here should be a well-typed Context. This is another issue I want to talk about, in Agda these kinds of stuff is inferred (so the reader can infer them as well). For example, we know delta is at the place of context, so it is a context, but we don't need to specify that it is a ``well-typed context'' because every context is well-typed in this intrinsic-typing. What's more, I think adding this extra judgement here just cause significant code bloat (like what I complained to you before I know how to use implcit variable in agda. For example, TYPE SUBST, there will be two more judgements (with no more information there) ) (Another reason I prefer fake agda formulation) }\YZreply{I was thinking about 'Delta |- A'. I suppose it is also implicitly enforced via intrinsically typed syntax. Seems to me it is worth stating, however, or otherwise the rule appears to say that Delta can be any context as long as Gamma |- gamma : Delta.}\EDJreply{You are absolutely right! I think Delta |- A, even though inferrable, mentioning it is good, also some information are B is also ok, please check, resolve if ok, thanks!}
+\quad \goodType{\Delta}{A}{} 
+\quad \goodType{\Delta, A}{B}{}
 }
 {\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}}
 $$
@@ -222,7 +225,7 @@ $$
 
 
 Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}.
-Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be an abstract field element at the same time exposing the constructors for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}
+Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be an abstract field element at the same time exposing the constructors for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}
 
 In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions/handlers/pattern-matching cases dealing with each constructor. Thus code-reuse for recursor is delegated by the inheritance of linkage -- to reuse one particular pattern-matching case, we just inherit the function/handler. This greatly simplifies the meta\-theory development. 
 
@@ -316,14 +319,14 @@ idₛ = π₁
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{\sigma'}$ is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. The substitution law should understand as a lemma, and easily derivable by using $\gamma^\uparrow$. 
 
 The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance. Consider the scenario we have constructed a linkage meant to be a recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{recursor term}  $.. (T : \bW(\sigma)), L : \cL(\tau) \vdash \ \text{ Recursor } \ T \ L .. : R $ also functioning as \textit{coverage checking}.
-\YZ{Does coverage checking mean exhaustiveness checking?}
+\YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }
 (Because we don't need to inherit coverage checking -- we should redo it in every linkage) Here, the recursor should also be \textit{seal-ed} so that every field is relying on an abstract, overridable recursor.
-%\YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
-%ML, sealing has the connotation of hiding things behind an existential
-%type. So using the same word may cause the reader to have false
-%presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}
+\YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
+ML, sealing has the connotation of hiding things behind an existential
+type. So using the same word may cause the reader to have false
+presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear -- because I haven't changed any text}
 Thus the sealing judgement will be helpful to shift the context from $.. (T : \bW(\sigma)) .. $ to $.. (T : \cU) ..$
-\YZ{Can we have a more concrete example of how the judgment is useful?}\EDJreply{}
+\YZ{Can we have a more concrete example of how the judgment is useful?}\EDJreply{Working on it, don't resolve}
 
 However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 
