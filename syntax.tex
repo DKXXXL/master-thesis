@@ -1,6 +1,6 @@
 Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement. 
 
-Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?)\YZ{What's the distinction of judgments vs. sequents?}.
+Because we consider each judgement as a (dependent) QIIT type, each judgement has a \textit{type} and each sequent is well-typed as well (otherwise how can they be encoded in Agda?)\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}
 Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more understandable. Of course, a well-formed sequent  is not necessarily derivable. 
 Due to our intrinsic setting, we can omit a lot of presumption, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
@@ -89,7 +89,9 @@ $$
 {\goodType{\Gamma}{T[\gamma]}{j}}
 \quad 
 \Rule[name=Func Subst]
-{\goodSub{\Gamma}{\gamma}{\Delta}\YZ{What is the requirement on Delta?}}
+{\goodSub{\Gamma}{\gamma}{\Delta}\YZ{What is the requirement on Delta?}
+\EDJreply{ Delta here is of type Con and thus Delta here should be a well-typed Context. This is another issue I want to talk about, in Agda these kinds of stuff is inferred (so the reader can infer them as well). For example, we know delta is at the place of context, so it is a context, but we don't need to specify that it is a ``well-typed context'' because every context is well-typed in this intrinsic-typing. What's more, I think adding this extra judgement here just cause significant code bloat (like what I complained to you before I know how to use implcit variable in agda. For example, TYPE SUBST, there will be two more judgements (with no more information there) ) (Another reason I prefer fake agda formulation) }
+}
 {\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}}
 $$
 $$
@@ -188,7 +190,7 @@ $$
 \quad
 \Rule[name=Ind Univ]
 {\goodWSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{\bW \sigma}{i}\YZ{Is there an introduction rule for terms of type 'bW sigma'?}}
+{\goodType{\Gamma}{\bW \sigma}{i}\YZ{Is there an introduction rule for terms of type 'bW sigma'?}\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation at below.}}
 $$
 
 $$
@@ -216,7 +218,7 @@ $$
 $$
 
 
-Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Of course we need to put an eye on the substitution law for each piece of the syntax. 
+Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. For simplicity,  we use a list of pairs of such $A, B$ as the signature for a given inductive type. Doing so, all the constructors will have a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element at the same time exposing the constructors for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed)\EDJ{Here}.
 
 In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions/handlers/pattern-matching cases dealing with each constructor. Thus code-reuse for recursor is delegated by the inheritance of linkage -- to reuse one particular pattern-matching case, we just inherit the function/handler. This greatly simplifies the metatheory development. 
 
@@ -261,7 +263,7 @@ $$
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. 
 
 
-The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.
+The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using }.
 
 
 Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there?
@@ -315,9 +317,9 @@ The motivation for sealing judgement is acting like a syntactic sugar helpful fo
 \YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
 ML, sealing has the connotation of hiding things behind an existential
 type. So using the same word may cause the reader to have false
-presumptions about what is going on here.}
+presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}
 Thus the sealing judgement will be helpful to shift the context from $.. (T : \bW(\sigma)) .. $ to $.. (T : \cU) ..$
-\YZ{Can we have a more concrete example of how the judgment is useful?}
+\YZ{Can we have a more concrete example of how the judgment is useful?}\EDJreply{}
 
 However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 
