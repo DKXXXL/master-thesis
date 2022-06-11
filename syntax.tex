@@ -1,12 +1,12 @@
-Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement. 
+Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement to model our linkage. 
 
-Because we formalize our language as a shallow embedding in a type theory with QIIT types, every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms (otherwise how can they be encoded in Agda?)
+Because we formalize our language as a deep embedding in a type theory with QIIT types, every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms (otherwise how can they be encoded in Agda?)
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
 Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more accessible. Of course, a well-formed judgement is not necessarily derivable, just like a well-typed QIIT type is not necessarily inhabited. 
 
-Due to our intrinsic setting, \textbf{we can and will omit a lot of presumption of the typing rules}, for example we don't spell out that the rule "Type-Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
+Due to our intrinsic setting, \textbf{we can and will omit a lot of presumption of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
-Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. Even though we will introduce rules for sealing judgement, we will later show that all these rules are derivable by term judgements.
+Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$.  Though we will still introduce rules for sealing judgement, and show that all these rules are derivable by term judgements.
 
 \begin{figure}[H]
   \begin{minipage}[b]{0.3\linewidth}
@@ -27,8 +27,9 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
       $$
       $$
       \Rule[name=Seal]
-      {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma, \tau}{n}}
-      {\goodSeal{\Gamma}{\_}{\sigma}{\tau} \text{ is well-formed}}
+      {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma}{n} 
+      \quad \goodType{\Gamma}{A}{} }
+      {\goodSeal{\Gamma}{\_}{\sigma}{A} \text{ is well-formed}}
       $$
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
@@ -50,8 +51,7 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{\tau}$ is the most 
 
 
 
-Now we show case some of the typing rules, and demonstrate their typed encoding in our (fake) Agda, to help the reader  grasp the rough idea of our type system and understand the Agda-formulation of the typing rules easier.
-
+Now we show case some of the typing rules, we will have dependent function type and dependent pair type. Dependent pair type is used to model Coq module, which is useful when we need to model the ``compilation'' from linkages to modules.
 
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
@@ -85,21 +85,26 @@ $$
 $$
 
 $$
-\Rule[name=Type Subst]
-{\goodType{\Delta}{T}{j} 
-  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
-{\goodType{\Gamma}{T[\gamma]}{j}}
 \quad 
-\Rule[name=Func Subst]
+\Rule[name=Func/DPair Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}
 \quad \goodType{\Delta}{A}{} 
 \quad \goodType{\Delta, A}{B}{}
 }
-{\goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}}
+{
+  \goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}
+  \quad 
+  \goodType{\Gamma}{(\Sigma A B)[\gamma] \equiv \Sigma A[\gamma] B[\gamma^\uparrow] }{j \cup k}
+}
 $$
 %\YZ{What is the requirement on Delta?}
 %\EDJreply{ Delta here is of type Con and thus Delta here should be a well-typed Context. This is another issue I want to talk about, in Agda these kinds of stuff is inferred (so the reader can infer them as well). For example, we know delta is at the place of context, so it is a context, but we don't need to specify that it is a ``well-typed context'' because every context is well-typed in this intrinsic-typing. What's more, I think adding this extra judgement here just cause significant code bloat (like what I complained to you before I know how to use implcit variable in agda. For example, TYPE SUBST, there will be two more judgements (with no more information there) ) (Another reason I prefer fake agda formulation) }\YZreply{I was thinking about 'Delta |- A'. I suppose it is also implicitly enforced via intrinsically typed syntax. Seems to me it is worth stating, however, or otherwise the rule appears to say that Delta can be any context as long as Gamma |- gamma : Delta.}\EDJreply{You are absolutely right! I think Delta |- A, even though inferrable, mentioning it is good, also some information are B is also ok, please check, resolve if ok, thanks!}
 $$
+\Rule[name=Type Subst]
+{\goodType{\Delta}{T}{j} 
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodType{\Gamma}{T[\gamma]}{j}}
+\quad
 \Rule[name=Base Type Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
 {\goodType{\Gamma}{\cU_j[\gamma] \equiv \cU_j }{j + 1} \quad
@@ -111,7 +116,7 @@ $$
 $$
 \Rule[name=Univ-1]
 {\goodType{\Gamma}{T}{j}}
-{\goodTerm{\Gamma}{c \ T}{\cU_j}
+{\goodTerm{\Gamma}{"c" \ T}{\cU_j}
 }\quad
 \Rule[name=Univ-2]
 {\goodTerm{\Gamma}{T}{\cU_j}}
@@ -119,11 +124,11 @@ $$
 \quad
 \Rule[name=True]
 {}
-{\goodTerm{\Gamma}{tt}{\cB}}
+{\goodTerm{\Gamma}{"tt"}{\cB}}
 \quad
 \Rule[name=False]
 {}
-{\goodTerm{\Gamma}{ff}{\cB}}
+{\goodTerm{\Gamma}{"ff"}{\cB}}
 $$
 $$
 \Rule[name=Term Subst]
@@ -143,8 +148,8 @@ $$
 \Rule[name=Base Type/Term Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
 {\goodType{\Gamma}{(El \ T)[\gamma] \equiv El \ (T[\gamma]) }{j} \quad
- \goodTerm{\Gamma}{tt[\gamma] \equiv tt}{\cB} \quad 
- \goodTerm{\Gamma}{ff[\gamma] \equiv ff}{\cB} 
+ \goodTerm{\Gamma}{"tt"[\gamma] \equiv "tt"}{\cB} \quad 
+ \goodTerm{\Gamma}{"ff"[\gamma] \equiv "ff"}{\cB} 
 }
 $$
 \judgebox{\goodSub{\Gamma}{\sigma}{\Delta}}
@@ -153,7 +158,7 @@ $$
 {}{\goodSub{\Gamma}{\epsilon}{\cdot}}
 \quad
 \Rule[name=Id Subst]
-{}{\goodSub{\Gamma}{id}{\Gamma}}
+{}{\goodSub{\Gamma}{"id"}{\Gamma}}
 \quad
 \Rule[name=Subst Extension]
 {\goodSub{\Gamma}{\sigma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
@@ -215,19 +220,19 @@ $$
 $$
 \Rule[name=Ind Type]
 {\goodTerm{\Gamma}{T}{\bW \sigma}}
-{\goodTerm{\Gamma}{W \ T}{\cU}}
+{\goodTerm{\Gamma}{"W" \ T}{\cU}}
 \quad
 \Rule[name=Ind Term]
 {\goodTerm{\Gamma}{T}{\bW \sigma}
   \quad \goodTerm{\Gamma}{a}{\pi^j_1\sigma}
   \quad \goodTerm{\Gamma, \pi^j_1\sigma}{b}{\pi^j_2\sigma}}
-{\goodTerm{\Gamma}{Wsup \ T \ a \ b}{El\ (W\ T)} }
+{\goodTerm{\Gamma}{"Wsup" \ T \ a \ b}{El\ ("W" \ T)} }
 $$
 
 
-Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for a given inductive type.
+Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type.
 
-Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be an abstract field element at the same time exposing the constructors for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}
+Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$ -- in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
 
 In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit{recursor}. Each recursor is constructed by a linkage contained with functions/handlers/pattern-matching cases dealing with each constructor. Thus code-reuse for recursor is delegated by the inheritance of linkage -- to reuse one particular pattern-matching case, we just inherit the function/handler. This greatly simplifies the meta\-theory development. 
 
@@ -252,8 +257,8 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodSeal{\Gamma}{f}{\sigma}{\sigma'}
- \quad \goodType{\Gamma, \sigma'}{T}{i}}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}
+ \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
 $$
@@ -263,8 +268,8 @@ $$
 \quad
 \Rule[name=Lnkg Add]
 { \goodTerm{\Gamma}{o}{\cL \sigma} 
-\quad  \goodSeal{\Gamma}{f}{\sigma}{\sigma'} 
- \quad \goodTerm{\Gamma, \cL \sigma'}{t}{T}
+\quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
+ \quad \goodTerm{\Gamma, A}{t}{T}
 }
 {\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
 $$
@@ -272,28 +277,29 @@ $$
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. 
 
 
-The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using }.
+The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using Implicit Arguments}.
 
 
-Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by that of dependent pairs, so an obvious question is why is that sealing judgement there?
+Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by the design of our linkage, so an obvious question is why is that sealing judgement there?
 
-\judgebox{[\goodSeal{\Gamma}{s}{\sigma}{\sigma'}] = [\goodTerm{\Gamma, \cL\sigma}{s}{\cL \sigma'[\pi_1]}] }
+\judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
+= [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
 $$
 \Rule[name=Seal Subst]
-{\goodSeal{\Delta}{s}{\sigma}{\sigma'}
+{\goodSeal{\Delta}{s}{\sigma}{A}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
-{\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{\sigma'[\gamma]}}
+{\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{A[\gamma]}}
 =
 \frac
-{\goodTerm{\Delta, \cL\sigma}{s}{\cL\sigma'[\pi_1]}
+{\goodTerm{\Delta, \cC\sigma}{s}{A[\pi_1]}
   \quad  \goodSub{\Gamma}{\gamma}{\Delta}  }
-{\goodTerm{\Gamma,\cL\sigma[\gamma]}{s[\gamma^\uparrow]}{\cL\sigma'[\pi_1][\gamma^\uparrow]\equiv\cL\sigma'[\gamma][\pi_1]}}
+{\goodTerm{\Gamma,\cC\sigma[\gamma]}{s[\gamma^\uparrow]}{A[\pi_1][\gamma^\uparrow]\equiv A[\gamma][\pi_1]}}
 $$
 $$
 \Rule[name=Seal-Id]
 {}
-{\goodSeal{\Gamma}{id_s}{\sigma}{\sigma}}
-= \goodTerm{\Gamma, \cL\sigma}{\pi_2}{\cL\sigma[\pi_1]}
+{\goodSeal{\Gamma}{id_s}{\sigma}{\cC \sigma}}
+= \goodTerm{\Gamma, \cC\sigma}{\pi_2}{\cC\sigma[\pi_1]}
 $$
 \begin{figure}[H]
 
@@ -318,7 +324,7 @@ idₛ = π₁
 
 
 
-As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{\sigma'}$ is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$. The substitution law should understand as a lemma, and easily derivable by using $\gamma^\uparrow$. 
+As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just a short hand of term judgement $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$. The substitution law should understand as a lemma, and easily derivable by using $\gamma^\uparrow$. 
 
 The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance. Consider the scenario we have constructed a linkage meant to be a recursor $  .. (T : \bW(\sigma)) \vdash L : \cL(\tau)$. Now we extend $\sigma$ with more constructors into $\sigma'$, but we don't have any rules to transfer $L$ to the context of $\bW(\sigma')$. Thus the correct way is to construct $L$ in an \textit{sealed} context, $  .. (T : \cU) \vdash L : \cL(\tau)$, and single out the \textit{recursor term}  $.. (T : \bW(\sigma)), L : \cL(\tau) \vdash \ \text{ Recursor } \ T \ L .. : R $ also functioning as \textit{coverage checking}.
 \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}
@@ -333,7 +339,7 @@ Thus the sealing judgement will be helpful to shift the context from $.. (T : \b
 However, in most of the cases, we don't need to seal anything, and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 
 
-Note that, there will be a lot of $\sigma_1, \sigma_1'$ and $\sigma_2, \sigma_2'$, in these cases, $\sigma_1'$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{\sigma_1'}, \goodSeal{\Gamma}{f_2}{\sigma_2}{\sigma_2'}$ when needed.
+Note that, there will be a lot of $\sigma_1, \sigma_1'$ and $\sigma_2, \sigma_2'$, in these cases, $\sigma_1'$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}, \goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption when needed.
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
@@ -345,8 +351,8 @@ $$
 \Rule[name=Inh-Override]
 {
 \goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}  
-\quad \goodType{\Gamma, \cL\sigma_1'}{T_1}{}
-\quad \goodType{\Gamma, \cL\sigma_2'}{T_2}{}
+\quad \goodType{\Gamma, A_1}{T_1}{}
+\quad \goodType{\Gamma, A_2}{T_2}{}
   \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T_2}}
 {\goodInh{\Gamma}{"inhov" \ h \ t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}}
 $$
@@ -359,17 +365,17 @@ $$
 \quad
 \Rule[name=Inh-Inh]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-\quad \goodType{\Gamma, \cL\sigma_1'}{T}{}
-\quad \goodTerm{\Gamma, \cL\sigma_2'}{\uparrow^s}{\cL\sigma_1'[\pi_1]}
+\quad \goodType{\Gamma, A_1}{T}{}
+\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
 }
 {\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}
 $$
 $$
 \Rule[name=Inh+Inh]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-\quad \goodTerm{\Gamma, \cL\sigma_2'}{\uparrow^s}{\cL\sigma_1'[\pi_1]}
+\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
 \quad 
-\goodInh{\Gamma, \cL\sigma_2'}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+\goodInh{\Gamma, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
 {\goodInh{\Gamma}{"inhnest" \ h \ i}{(\nu^+ \  \sigma_1\  \cL\tau_1)}{(\nu^+ \  \sigma_2\  \cL\tau_2)}}
 \quad
 $$
@@ -384,7 +390,7 @@ $$
 \Rule[name=Inh-Inh-beta]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
   \quad \goodTerm{\Gamma}{m}{\cL \sigma_1}
-  \quad \goodTerm{\Gamma, \cL\sigma_1'}{t}{T}
+  \quad \goodTerm{\Gamma, A_1}{t}{T}
 }
 {\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \ t) \equiv \mu^+ \ ("inh" \ h \ m) \ t[(\pi_1, \uparrow^s)]}{}} 
 $$
