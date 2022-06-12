@@ -239,11 +239,12 @@ In our meta-theory, we only formulate non-dependent eliminator, i.e. the \textit
 
 \judgebox{\goodSig{\Gamma}{\sigma}{n} }
 $$
-\Rule[name=Linkage Type]
+\Rule[name=Lnkg Type/Compile]
 {\goodSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{\cL \sigma}{i}}
+{\goodType{\Gamma}{\cL \sigma}{i}
+\quad \goodType{\Gamma}{\cC \sigma}{}}
 \quad
-\Rule[name=Sig/Linkage Subst]
+\Rule[name=Sig/Lnkg Subst]
 {\goodSig{\Delta}{\sigma}{n}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodSig{\Gamma}{\sigma[\gamma]}{n}
@@ -251,7 +252,7 @@ $$
 $$
 
 $$
-\Rule[name=Empty Sig]
+\Rule[name=Ept Sig]
 {}
 {\goodSig{\Gamma}{\nu\cdot}{0}}
 \quad
@@ -262,7 +263,7 @@ $$
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
 $$
-\Rule[name=Empty Lnkg]
+\Rule[name=Ept Lnkg]
 {}
 {\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot}}
 \quad
@@ -272,7 +273,33 @@ $$
  \quad \goodTerm{\Gamma, A}{t}{T}
 }
 {\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+\quad 
+\Rule[name=Lnkg Compile]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+}
+{
+  \goodTerm{\Gamma}{\cCt o}{\cC \sigma}
+}
 $$
+
+$$
+\Rule[name=Compile]
+{}
+{\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
+\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}
+\\
+\goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
+    \Sigma (\cC \sigma) T[sf \ f]}{}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t[sf \ f][(id, \cCt \ o)]) }{}
+}
+$$
+% $$
+% \Rule
+% { \goodSeal{\Gamma}{f}{\sigma}{A}
+% \\ \goodType{\Gamma, A}{T}{}
+% \\ \goodTerm{\Gamma}{t}{T}
+% }{}
+% $$
 
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. 
 

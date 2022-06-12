@@ -1,4 +1,4 @@
-Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type, kaposi2019gluing}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into naive set theory that is also respecting judgemental equalities for accessibility\footnote{In our appendix, we still interpret into Agda component to be more precise and less error-prone, also we need the inductive facility from Agda.} The main idea of the proof is that: 1. we use $\denotesS{}$ to map each intrinsic well-typed syntax piece into a mathematical object; 2. we define proof-irrelevant proposition $\models_S$ for each syntactical $\vdash$, and derive compatibility lemma. We will mainly focus on the definition of $\denotesS{}$ and omit the verification of $\models_S$\footnote{Actually our 1 is acting exactly as an interpretation function, and in our agda formulation we only do 1 because 2 is automatic; here we make 2 explicit to make our formulation more accessible and uniform}, and also we omit the verification of equality (i.e. the judgementally-equal syntax needs to be mapped to the same data for well-defined-ness).
+Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from \citep{kaposi2017type, kaposi2019gluing}, where they formally resort to the concept of \textit{algebra} of QIIT, here we only consider inductively interpreting each syntax piece into naive set theory that is also respecting judgemental equalities\footnote{In our appendix, we still interpret into Agda component to be more precise and less error-prone, also we need the inductive facility from Agda.} The main idea of the proof is that: 1. we use $\denotesS{}$ to map each intrinsic well-typed syntax piece into a mathematical object; 2. we define proof-irrelevant proposition $\models_S$ for each syntactical $\vdash$, and derive compatibility lemma. We will mainly focus on the definition of $\denotesS{}$ and omit the verification of $\models_S$\footnote{Actually our 1 is acting exactly as an interpretation function, and in our agda formulation we only do 1 because 2 is automatic; here we make 2 explicit to make our formulation more accessible and uniform}, and also we omit the verification of equality (i.e. the judgementally-equal syntax needs to be mapped to the same data for well-defined-ness).
 
 Note that, since every piece is intrinsic well-typed, $\denotesS{t}$ means the same as $\denotesS{\goodTerm{\Gamma}{t}{T}}$ (i.e. every term is tracking its context and type)
 
@@ -24,22 +24,32 @@ Here we will only show some interpretation and also omit the universe level to s
   \denotesS{\goodTerm{\Gamma}{\_}{T}} & = \prod_{\gamma \in \denotesS{\goodCtx{\Gamma}{i}}}\denotesS{T}(\gamma) \\
   % 
   \denotesS{\goodSig{\Gamma}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gamma}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gamma}{\_}{n}} \\
-  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} & \text{ is a family of sets, dependent on } \denotesS{\sigma}  \\
+  \denotesS{\goodType{\Gamma}{\cC \sigma}{}} & \text{ is a family of sets, dependent on and defined inductively on } \denotesS{\sigma} \\   
   \denotesS{\goodSig{\Gamma}{\_}{n+1}} &= \{
-    (\denotesS{\sigma}, \denotesS{\sigma'}, \denotesS{f}, \denotesS{T}) :
+    (\denotesS{\sigma}, \denotesS{A}, \denotesS{f}, \denotesS{T}) :
       {\goodSigS{\Gamma}{\sigma}{n}}
-      \land  {\goodSigS{\Gamma}{\sigma'}{n}} \\  
-      & \quad \quad \quad \land  {\goodSealS{\Gamma}{f}{\sigma}{\sigma'}}
-      \land  {\goodTypeS{\Gamma, \cL \sigma'}{T}{i}} 
+      \land  {\goodTypeS{\Gamma}{A}{}} \\  
+      & \quad \quad \quad \land  {\goodSealS{\Gamma}{f}{\sigma}{A}}
+      \land  {\goodTypeS{\Gamma, A}{T}{i}} 
   \} \\ 
   \denotesS{\goodSig{\Gamma}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{(m, f) :  m \in \denotesS{\cL \tau}(\gamma) \land f \in \prod_{m' \in \denotesS{\cL \tau'}(\gamma)}\denotesS{T}(\gamma, m')  \}  \\
-  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{\tau'}, \_ , \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
+  \denotesS{\goodType{\Gamma}{\cC \sigma}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gamma}{\cC \tau}{}} \denotesS{T[sf \ f]} \\
+  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \denotesS{f} , \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
+  \denotesS{\goodType{\Gamma}{\cC \sigma}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} & \text{ is a family of sets, dependent on } \denotesS{\sigma}  \\
+  \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} (\gamma)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\gamma) \land t \in \prod_{m' \in \denotesS{A}(\gamma)}\denotesS{T}(\gamma, m')  \}  \\
+  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \_, \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
   \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} \ (\gamma)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
   \denotesS{\goodSig{\Gamma}{\nu\cdot}{0}} &= \star \\
-  \denotesS{\goodSig{\Gamma}{\nu^+ \ \sigma \ f \ T}{n+1}} &= (\sigma, \sigma', f, T) \\
+  \denotesS{\goodSig{\Gamma}{\nu^+ \ \sigma \ f \ T}{n+1}} &= (\sigma, A, f, T) \\
   \denotesS{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot} } \ (\gamma) &= \star \\
   \denotesS{\goodTerm{\Gamma}{\mu^+ \ o \ t}{\cL(\nu^+ \ \sigma  \ T)}} \ (\gamma)&= (o(\gamma), (\lambda \ m' . t'(\gamma, m'))) \\
+  \denotesS{\goodTerm{\Gamma}{\cCt \{\sigma\} o}{\cC\sigma}} & \text{ is a dependent function, defined inductively on } \denotesS{\sigma} \\
+  \denotesS{\goodTerm{\Gamma}{\cCt o}{\cC\sigma}}
+  &= \denotesS{\goodTerm{\Gamma}{\cCt (p_1\mu \ o)}{...}}, \denotesS{(p_2\mu \ o)[sf \ f][(id, \cCt (p_1\mu \ o))]} \\
+  & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
+  \denotesS{\goodTerm{\Gamma}{\cCt o}{\cC\sigma}}
+  &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
   \denotesS{\goodType{\Gamma}{\bot}{i}} \ (\gamma) &= \emptyset \\
   \denotesS{\goodType{\Gamma}{\cB}{i}} \ (\gamma) &= \{0, 1\} \quad \text{a specific two element set} \\
 \end{align*}
@@ -47,7 +57,7 @@ Here we will only show some interpretation and also omit the universe level to s
 
 We will take some examples on the verification of validity of this model: 1. to verify compatibility lemma ; 2. to verify the well-defined-ness of this model,  
 
-Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cL\sigma}{i}}$ is mutual recursively defined together. What's more, the substitution law around these two are also proved together by induction.
+Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cC\sigma}{i}}$ is mutual recursively defined together -- because $\goodSealS{\Gamma}{f}{\sigma}{A}$ relies on $\cC$. What's more, the substitution law around these two are also proved together by induction.
 
 % We omit the model here for inductive type and inheritance judgement because they require inductive facility in meta-logic. 
 We spell-out the model for the inductive type and inheritance judgement here, and both of them require inductive facility in meta-logic. In set theory, that would be using \textit{Rule sets}~\citep{timany2017consistency,aczel1998relating}, but we are using Agda's Inductive facility instead. 
