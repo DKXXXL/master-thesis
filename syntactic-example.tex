@@ -1,15 +1,11 @@
 We use an example to better demonstrate different components of the syntax of our formulation. Our example will be the meta-theory encoding of the following pseudo-code.
 
-First Note that how inductive type is written in our format. We use 1, 0 here to indicate unit type and bottom type:
-\begin{minted}{Coq}
-Inductive N :=
- | O : 1 -> (0 -> N) -> N 
- | S : 1 -> (1 -> N) -> N
-(* For example, Number 1 is encoded using
-   1 = S () (fun _ -> O () (fun x -> elim-⊥ x)) *)
-\end{minted}
+We provide one example in its surface syntax as pseudocode, and their meta-theory encoding. This example is computing the predecessor of a mundane natural number -- however we split the inductive definition into two parts and making "O" and "S" standing alone. "pred" is defined as $n \mapsto ("pred" n, n)$, and thus a predecessor.
 
-\begin{figure}[H]
+
+
+
+\begin{figure}[H]\label{fig:example-pseudocode}
 \begin{minipage}[t]{0.5\linewidth}
 \begin{minted}{Coq}
 Family A.
@@ -50,10 +46,20 @@ Family A₂ extends A.
 EndFamily.
     \end{minted}
   \end{minipage}
-  \caption{}
+  \caption{Demonstrating Pseudo-Code}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
+  \begin{minipage}{\linewidth}
+    \begin{minted}{Coq}
+      Inductive N :=
+       | O : 1 -> (0 -> N) -> N 
+       | S : 1 -> (1 -> N) -> N
+      (* For example, Number 1 is encoded using
+         1 = S () (fun _ -> O () (fun x -> elim-⊥ x)) *)
+    \end{minted}
+  \end{minipage}
+
   \begin{minipage}[t]{0.4\linewidth}
 \begin{align*}
   "Osig" &:= \goodWSig{\cdot}{w+ \ \top \ \bot \  w\cdot}{1} \\
@@ -84,7 +90,7 @@ EndFamily.
 \begin{align*}
   "Nsig" &:= \goodWSig{\cdot}{w+ \ \top \ \bot \  "Osig"}{1} \\ 
   "sig"_{11} &:= \goodSig{\cdot}{\nu^+ \ \nu\cdot  \ (\bW \ "Nsig"[\pi_1])}{1} \\
-  "inh"_1 &:= \goodInh{\cdot}{"inhid"}{"sig"_1}{"sig"_{11}}\\
+  "inh"_1 &:= \goodInh{\cdot}{"inhov" \  "inhid" \ *}{"sig"_1}{"sig"_{11}}\\
   "O"_2 &:= {"Wsup" \ ("pjr" \pi_2) \ () \ ("elim-"\bot \ \pi_2)}  \\ 
   & \text{ but }  \goodTerm{\cdot, \cC"sig"_{11}}{"O"_2}{El ("W" ("pjr" \pi_2))} \\
   "sig"_{21} &:= \nu^+ \ "sig"_{11} \ \{id_s\} (El (W (pjr p₂))) \\ 
@@ -95,27 +101,40 @@ EndFamily.
   "sig"_{21}' &:= \goodType{\cdot}{\Sigma (\Sigma \top \cU) (El ("pjr" \pi_2))}{} \\
   "sig"_{22}' &:= \Sigma "sig"_{21}' (\Pi \ El ("pjr"  ("pjl" \pi_2)) \  ...) \\
   "sl"_{22} &:= \goodSeal{\cdot}{\_}{"sig"_{22}}{"sig"_{22}'} \\ 
-  \uparrow^s &:= \goodTerm{\cdot, "sig"_{22}'}{\_}{"sig"_2'[\pi_1]} \\ 
   "inh"_3 &:= \goodInh{\cdot}{\_}{"sig"_2}{"sig"_{22}} \\ 
+  \uparrow^s &:= \goodTerm{\cdot, "sig"_{22}'}{\_}{"sig"_2'[\pi_1]} \\ 
   "pN"_3 &:= "pN"_1[(\pi_1, \uparrow^s)] \\ 
 \end{align*}
   \end{minipage}
 
-  \begin{minipage}{\linewidth}
+  \begin{minipage}{0.8\linewidth}
+    \centering
     \begin{align*}
       "inh"_{in0} &:= \goodInh{\cdot, "sig"_{22}'}{"inhid"}{(\nu^+ \ \nu\cdot \ ("pN"_1[\pi_1]))[(\pi_1, \uparrow^s)]}{(\nu^+ \cdot ("pN"_3[\pi_1]))} \\
       "inh"_{in} &:= \goodInh{\cdot , "sig"_{22}'}{\_}{(\nu^+ \ \nu\cdot \ "pN"_1[\pi_1])[(\pi_1, \uparrow^s)]}{(\nu^+ \ \cdot \ ("pN"_3[\pi_1]) \ \{id_s\} (\Pi "pN"_3 ("pN"_3[\pi_1])) )[\pi_1]}\\
       "sig"_{31} &:=  \nu^+ \ "sig"_{22} \ {"sl"_{22}}\  \cL(\nu^+ \cdot ("pN"_3[\pi_1])  (\Pi "pN"_3 ("pN"_3[\pi_1]))[\pi_1]) \\ 
-      "inh"_4 &:= \goodInh{\cdot}{"inh+inh" \ "inh"_3 \uparrow^s "inh"_{in}}{"sig"_3}{"sig"_{31}} \\
+      "inh"_4 &:= \goodInh{\cdot}{"inhnest" \ "inh"_3 \uparrow^s "inh"_{in}}{"sig"_3}{"sig"_{31}} \\
       "sig"_{41} &:= {\nu^+ \ "sig"_{31} \ (\Pi (El ("W" ("pjr" ("pjl"^4 \pi_2)))) (El ("W" ("pjr" ("pjl"^4 \pi_2))))[\pi_1])} \\ 
-      "inh"_5 &:= \goodInh{\cdot}{\_}{"sig"_4}{"sig"_{41}} \\ 
+      "inh"_5 &:= \goodInh{\cdot}{inhov \ \_}{"sig"_4}{"sig"_{41}} \\ 
       "sl"_{41} &:= \goodSeal{\cdot}{\_}{"sig"_{41}}{"sig"_{41}'} \\ 
       \uparrow^s_2 &:= \goodTerm{\cdot, "sig"_{41}}{\_}{"sig"_4'[\pi_1]} \\ 
-      "inh"_6 &:= \goodInh{\cdot}{\_}{"inh"_5}{\uparrow^s_2}
+      "inh"_6 &:= \goodInh{\cdot}{"inhinh" \ "inh"_5 \ \uparrow^s_2}{"sig"_5}{(\nu^+ \ "sig"_{41} \{"sl"_{41}\} \ "pN"_2[(\pi_1, \uparrow^s_2)])}
     \end{align*}  
   \end{minipage}
-  \caption{Detailed Construction}
+  \caption{Detailed Construction}\label{fig:example-construction}
 \end{figure}
+
+Here we explain how  our detailed construction in Figure \ref{fig:example-construction} is constructed. We first elaborate that how our inductive type "N" is written in the specific format (the style of W-type). We use 1, 0 here to indicate unit type and bottom type. 
+
+Next, we alias each part of the derivation with a name. Every derivation here is well-typed term. We also annotate in the original pseudocode the name of the related derivation. 
+
+We start with the construction of "Osig" which is the signature of a standalone "O" constructor. With this we will have $"sig"_1, "obj"_1, "sig"_2, "obj"_2$ as the signature and object of the linkage with that inductive type, and the signature and the linkage once we export the concrete constructor $"O"_1$. 
+
+Now sealing comes in to seal these concrete component into an abstract interface $"sig"_2'$ for decoupling the following fields. To make sure the sealing exists, we take a look at the resulting $\cC "sig"_2$, and doing abstraction on it to get $"sl"_1$. 
+
+Now we construct the recursor, with the help of the handler module $"handler"_1$, with which we can construct the real recursor $"pred"_1$. Both detailed constructions are omitted. Then we again abstract the concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$ can applys it without resorting to the concrete recursor. Finally we have $"sig"_5$ as final signature. 
+
+Now we construct the inheritance judgement for $"A"_2$. Still, we start with signature for inductive type, "Nsig". But to ``extend'' the inductive type, we actually \textit{override} the inductive type with the enriched inductive type in $"inh"_1$. Because inductive type is overridden, inheritance on the constructors are not pausible and thus we need to override the old $"O"_1$ constructor using $"O"_2$ and extend with new constructor for "S", resulting $"inh"_3$. These newly overridden constructors are sealed by $"sl"_{22}$. However, look closely, our sealed abstract interface in the children still has more fields than the sealed abstract interface in the parent. We still need $\uparrow^s$ to indicate the ``compatibility'' between two abstract interfaces so that the inheritance from the parents can work. It can be understood as ``upcasting'', but this ``upcasting'' is used to upcast the context of the children. We immeidately see its usage in $"pN"_3$ and $"inh"_{in0}$. Upon this, we construct the complete inner-inheritance $"inh"_{in}$ that is responsible for extending "handler". Then we continue the construction for $"inh"_4$ that ``nest'' the inner-inheritance into the whole $"inh"_3$, and we re-do exhaustiveness checking when constructing $"inh"_5$ using $"inhov"$ and "Wrec". Since it is another recursor requiring concrete inductive definition, we do another abstraction on it using $"sl"_41$. After that, $\uparrow^s_2$ again witnesses the compatibility of the abstract interface, and the two are both used for constructing $"inh"_6$, which is responsible for inheriting field "k". 
 
 
 
