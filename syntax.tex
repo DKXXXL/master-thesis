@@ -6,7 +6,7 @@ Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements
 
 Due to our intrinsic setting, \textbf{we can and will omit a lot of presumption of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
-Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{\cL\tau[\pi_1]}$.  Though we will still introduce rules for sealing judgement, and show that all these rules are derivable by term judgements.
+Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$. 
 
 \begin{figure}[H]
   \begin{minipage}[b]{0.3\linewidth}
@@ -179,7 +179,7 @@ $$
 {\goodSub{\Gamma}{(\pi_1 \sigma, \pi_2 \sigma) \equiv \sigma}{\Delta}}
 $$
 
-We have shown case some exemplar rules for all four standard type judgments, now we focus on the newly introduced facility. 
+We have shown case some exemplar rules for all four standard type judgments, and now we focus on the newly introduced facility. 
 
 
 We have two kinds of signatures, one for inductive type, the other for linkages.
@@ -230,7 +230,7 @@ $$
 $$
 
 
-Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type.
+Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type, and given an inductive type signature, we use \ruleref{WSig Proj} to extract and corresponding $A_i, B_i$.
 
 Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$ -- in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
 
@@ -262,6 +262,17 @@ $$
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
+
+$$ 
+\Rule[name=Sig Proj]
+{\goodSig{\Gamma}{\sigma}{n+1}}
+{\goodSig{\Gamma}{p_1\nu \ \sigma}{n}
+\\ \goodType{\Gamma}{p_1\nu' \ \sigma}{}
+\\ \goodSeal{\Gamma}{p_f\nu \  \sigma}{p_1\nu \  \sigma}{p_1\nu' \sigma}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ \sigma}{}
+}
+$$
+
 $$
 \Rule[name=Ept Lnkg]
 {}
@@ -273,6 +284,14 @@ $$
  \quad \goodTerm{\Gamma, A}{t}{T}
 }
 {\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+$$
+
+$$
+\Rule[name=Lnkg Proj]
+{\goodTerm{\Gamma}{o}{\cL\sigma}}
+{\goodTerm{\Gamma}{p_1\mu \ o}{\cL (p_1\nu \ \sigma)}
+\\ \goodTerm{\Gamma, p_1\nu' \ \sigma}{p_2\mu \ o}{p_2\nu \ \sigma}
+}
 \quad 
 \Rule[name=Lnkg Compile]
 { \goodTerm{\Gamma}{o}{\cL \sigma} 
@@ -290,7 +309,7 @@ $$
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T[sf \ f]}{}
-\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t[sf \ f][(id, \cCt \ o)]) }{}
+\\\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t[sf \ f][(id, \cCt \ o)]) }{}
 }
 $$
 % $$
@@ -301,13 +320,13 @@ $$
 % }{}
 % $$
 
-$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature. Our signature corresponds to Coq's Module Type and our linkage corresponds to Coq's Module. 
+$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type). 
 
 
-The signature for linkage closely follows the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have projection for each componenet due to harmony \citep{pfenning2009lecture} (local soundness and completeness), but we omit them and the substitution laws for either concatenation and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using Implicit Arguments}.
+The signature (for the linkage) and the linkage rules are quite similar the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each componenet due to harmony \citep{pfenning2009lecture} thus we have local soundness and local completeness ($\beta,\eta$ rules). We omit them and the substitution laws for either field addition and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using Implicit Arguments}.
 
 
-Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by the design of our linkage, so an obvious question is why is that sealing judgement there?
+Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by the implementation of our linkage, so an obvious question is what is this sealing judgement for?
 
 \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
 = [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
@@ -336,13 +355,13 @@ $$
 \caption{Seal Judgement, and its Agda Representation \\ (or What do we mean when we say one judgement is a short hand of the other)}
 
 \begin{minted}[]{agda}
-Seal : (Γ : Con) → (σ : Sig Γ n) → (τ : Sig Γ n) → Set 
-Seal Γ σ τ = Tm (Γ, 𝓛σ) 𝓛τ[p₁]
+Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
+Seal Γ A τ = Tm (Γ, 𝓛σ) A[p₁]
 
--[-]S : (f : Seal Γ σ₁ σ₂) → (τ : Tms Θ Γ) → Seal Θ σ₁[τ] σ₂[τ]
-f[τ]S = t[τ ↑ 𝓛σ₁]
+-[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
+f[τ]S = t[τ ↑ A]
 
-idₛ : Seal Γ σ σ
+idₛ : Seal Γ σ 𝓒σ
 idₛ = π₁
 \end{minted}
 
@@ -368,8 +387,9 @@ presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing"
 
 And these are also the cases we don't need to seal anything (i.e. doing exhaustiveness checking when using recursor), and thus the "Seal-Id" is used. For notation clearance, we will sometime use $sf'$ to emphasize that we consider that seal $s$ as a term $(sf' \ s)$. 
 
+With the definition of sealing judgement in mind, we can see \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the implementation. In the implementation, we will have "self__" all around when defining new fields in our plugin, and this "self__" is exactly the $A$ in the context of the two fields -- especially when we don't do any sealing, this $A = \cC \sigma$, which is exactly how the implementation expose "self__" as a module parameter. 
 
-Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}, \goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption when needed.
+Next we talk about inheritance judgement. Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}, \goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption of judgements when needed.
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
