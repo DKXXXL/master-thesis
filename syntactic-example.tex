@@ -54,17 +54,7 @@ EndFamily.
 \end{figure}
 
 \begin{figure}[H]
-  \begin{minipage}[b]{0.3\linewidth}
-
-
-
-  \end{minipage}
-  \begin{minipage}[b]{0.6\linewidth}
-
-  \end{minipage}
-  \caption{}
-\end{figure}
-
+  \begin{minipage}[t]{0.4\linewidth}
 \begin{align*}
   "Osig" &:= \goodWSig{\cdot}{w+ \ \top \ \bot \  w\cdot}{1} \\
   "sig"_1 &:= \goodSig{\cdot}{\nu^+ \ \nu\cdot  \ (\bW \ "Osig"[\pi_1])}{1}  \\
@@ -88,6 +78,10 @@ EndFamily.
   "sl"_4 &:= \goodSeal{\cdot}{\_}{"sig"_4}{"sig"_4'} \\ 
   "pN"_2 &:= \goodType{\cdot, "sig"_4'}{El ("pjr" ("pjl" \pi_2)) * El ("pjr" ("pjl" \pi_2))}{} \\
   "sig"_5 &:= \nu^+ \ "sig"_4 \ \{"sl"_4\} \  "pN"_2 \\ 
+\end{align*}
+\end{minipage}%
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
   "Nsig" &:= \goodWSig{\cdot}{w+ \ \top \ \bot \  "Osig"}{1} \\ 
   "sig"_{11} &:= \goodSig{\cdot}{\nu^+ \ \nu\cdot  \ (\bW \ "Nsig"[\pi_1])}{1} \\
   "inh"_1 &:= \goodInh{\cdot}{"inhid"}{"sig"_1}{"sig"_{11}}\\
@@ -99,18 +93,29 @@ EndFamily.
   & (El ("W" ("pjr" ("pjl"  \pi_2)))[\pi_1])) \\
   "sig"_{22} &:= \nu^+ \ "sig"_{21} \ \{id_s\} \ "S"_T \\ 
   "sig"_{21}' &:= \goodType{\cdot}{\Sigma (\Sigma \top \cU) (El ("pjr" \pi_2))}{} \\
-  "sig"_{22}' &:= \goodType{\cdot}{\Sigma "sig"_{21}' (\Pi \ El ("pjr"  ("pjl" \pi_2)) (El  ("pjr" ("pjl"  \pi_2))[\pi_1]))}{} \\
+  "sig"_{22}' &:= \Sigma "sig"_{21}' (\Pi \ El ("pjr"  ("pjl" \pi_2)) \  ...) \\
   "sl"_{22} &:= \goodSeal{\cdot}{\_}{"sig"_{22}}{"sig"_{22}'} \\ 
   \uparrow^s &:= \goodTerm{\cdot, "sig"_{22}'}{\_}{"sig"_2'[\pi_1]} \\ 
   "inh"_3 &:= \goodInh{\cdot}{\_}{"sig"_2}{"sig"_{22}} \\ 
   "pN"_3 &:= "pN"_1[(\pi_1, \uparrow^s)] \\ 
-  "inh"_{in0} &:= \goodInh{\cdot, "sig"_{22}'}{"inhid"}{(\nu^+ \ \nu\cdot \ ("pN"_1[\pi_1]))[(\pi_1, \uparrow^s)]}{(\nu^+ \cdot ("pN"_3[\pi_1]))} \\
-  "inh"_{in} &:= \goodInh{\cdot , "sig"_{22}'}{\_}{(\nu^+ \ \nu\cdot \ "pN"_1[\pi_1])[(\pi_1, \uparrow^s)]}{(\nu^+ \ \cdot \ ("pN"_3[\pi_1]) \ \{id_s\} (\Pi "pN"_3 ("pN"_3[\pi_1])) )[\pi_1]}\\
-  "sig"_{31} &:=  \nu^+ \ "sig"_{22} \ {"sl"_{22}}\  \cL(\nu^+ \cdot ("pN"_3[\pi_1])  (\Pi "pN"_3 ("pN"_3[\pi_1]))[\pi_1]) \\ 
-  "inh"_4 &:= \goodInh{\cdot}{"inh+inh" \ "inh"_3 \uparrow^s "inh"_{in}}{"sig"_3}{"sig"_{31}} \\
-  "sig"_{41} &:= {\nu^+ \ "sig"_{31} \ (\Pi (El ("W" ("pjr" ("pjl"^4 \pi_2)))) (El ("W" ("pjr" ("pjl"^4 \pi_2))))[\pi_1])} \\ 
-  "inh"_5 &:= \goodInh{\cdot}{\_}{"sig"_4}{"sig"_{41}} \\ 
-  "sl"_{41} &:= \goodSeal{\cdot}{\_}{"sig"_{41}}{"sig"_{41}'} \\ 
-  \uparrow^s_2 &:= \goodTerm{\cdot, "sig"_{41}}{\_}{"sig"_4'[\pi_1]} \\ 
-  "inh"_6 &:= \goodInh{\cdot}{\_}{"inh"_5}{\uparrow^s_2}
 \end{align*}
+  \end{minipage}
+
+  \begin{minipage}{\linewidth}
+    \begin{align*}
+      "inh"_{in0} &:= \goodInh{\cdot, "sig"_{22}'}{"inhid"}{(\nu^+ \ \nu\cdot \ ("pN"_1[\pi_1]))[(\pi_1, \uparrow^s)]}{(\nu^+ \cdot ("pN"_3[\pi_1]))} \\
+      "inh"_{in} &:= \goodInh{\cdot , "sig"_{22}'}{\_}{(\nu^+ \ \nu\cdot \ "pN"_1[\pi_1])[(\pi_1, \uparrow^s)]}{(\nu^+ \ \cdot \ ("pN"_3[\pi_1]) \ \{id_s\} (\Pi "pN"_3 ("pN"_3[\pi_1])) )[\pi_1]}\\
+      "sig"_{31} &:=  \nu^+ \ "sig"_{22} \ {"sl"_{22}}\  \cL(\nu^+ \cdot ("pN"_3[\pi_1])  (\Pi "pN"_3 ("pN"_3[\pi_1]))[\pi_1]) \\ 
+      "inh"_4 &:= \goodInh{\cdot}{"inh+inh" \ "inh"_3 \uparrow^s "inh"_{in}}{"sig"_3}{"sig"_{31}} \\
+      "sig"_{41} &:= {\nu^+ \ "sig"_{31} \ (\Pi (El ("W" ("pjr" ("pjl"^4 \pi_2)))) (El ("W" ("pjr" ("pjl"^4 \pi_2))))[\pi_1])} \\ 
+      "inh"_5 &:= \goodInh{\cdot}{\_}{"sig"_4}{"sig"_{41}} \\ 
+      "sl"_{41} &:= \goodSeal{\cdot}{\_}{"sig"_{41}}{"sig"_{41}'} \\ 
+      \uparrow^s_2 &:= \goodTerm{\cdot, "sig"_{41}}{\_}{"sig"_4'[\pi_1]} \\ 
+      "inh"_6 &:= \goodInh{\cdot}{\_}{"inh"_5}{\uparrow^s_2}
+    \end{align*}  
+  \end{minipage}
+  \caption{Detailed Construction}
+\end{figure}
+
+
+
