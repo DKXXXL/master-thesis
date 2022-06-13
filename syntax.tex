@@ -4,9 +4,13 @@ Because we formalize our language as a deep embedding in a type theory with QIIT
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
 Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more accessible. Of course, a well-formed judgement is not necessarily derivable, just like a well-typed QIIT type is not necessarily inhabited. 
 
-Due to our intrinsic setting, \textbf{we can and will omit a lot of presumption of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
+Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$. 
+
+\newcommand\mathboxtext[1]{
+  \fcolorbox{black}{faint-gray}{\ensuremath{#1}}
+}
 
 \begin{figure}[H]
   \begin{minipage}[b]{0.3\linewidth}
@@ -44,14 +48,23 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most spe
       Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
     \end{minted}
   \end{minipage}
-  \caption{Well-formed-ness of Four New Judgements}
+\begin{align*}
+  &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
+  &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}
+\end{align*}
+\caption{Well-formed-ness of Four New Judgements, and Agda-encoding-Judgements correspondence}
 \end{figure}
 
+% \begin{minted}[texcomments]{Coq}
+%   Γ : Con  (* $\goodCtx{\Gamma}{}$ *) 
+% \end{minted}
+% T : Ty Γ (* $\goodType{\Gamma}{T}{}$ *)       σ : Tms Γ Δ {- $\goodSub{\Gamma}{\sigma}{\Delta}$ -}        t : Tm Γ T {- $\goodTerm{\Gamma}{t}{T}$ -}
 
 
 
 
-Now we show case some of the typing rules, we will have dependent function type and dependent pair type. Dependent pair type is used to model Coq module, which is useful when we need to model the ``compilation'' from linkages to modules.
+
+Now we show case some of the typing rules, we will have dependent function type and dependent pair type. Dependent pair type is used to model Coq module, which is useful when we need to model the ``compilation'' from linkages to modules. We also have $\beta,\eta$-rule for both dependent function type and dependent pair type.
 
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
@@ -122,28 +135,40 @@ $$
 {\goodTerm{\Gamma}{T}{\cU_j}}
 {\goodType{\Gamma}{El \ T}{j}}
 \quad
-\Rule[name=True]
+\Rule
 {}
-{\goodTerm{\Gamma}{"tt"}{\cB}}
-\quad
-\Rule[name=False]
-{}
-{\goodTerm{\Gamma}{"ff"}{\cB}}
-$$
-$$
+{\goodTerm{\Gamma}{"tt", "ff"}{\cB}}
+\quad 
 \Rule[name=Term Subst]
 {\goodTerm{\Delta}{t}{T}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodTerm{\Gamma}{t[\gamma]}{T[\gamma]}}
-\quad 
-\Rule[name=Func intro]
+$$
+$$
+\Rule[]
 {\goodTerm{\Gamma, A}{t}{B}}
 {\goodTerm{\Gamma}{\lambda t}{\Pi A B}}
 \quad 
-\Rule[name=Lam Subst]
-{}
-{\goodTerm{\Gamma}{(\lambda t)[\gamma] \equiv \lambda (t[\gamma^\uparrow])}{\Pi A B}}
+\Rule[]
+{\goodTerm{\Gamma}{u}{A} 
+\quad \goodTerm{\Gamma}{v}{B[(id, u)]}}
+{\goodTerm{\Gamma}{(u,v)}{\Sigma A B}}
+\quad 
+\Rule[]
+{\goodTerm{\Gamma}{t}{\Sigma A B}}
+{\goodTerm{\Gamma}{"pjl" \ t}{A}
+\quad \goodTerm{\Gamma}{"pjr" \  t}{B[(id, "pjl" \  t)]}
+}
 $$
+$$
+\Rule
+{}
+{\goodTerm{\Gamma}{(\lambda t)[\gamma] \equiv \lambda (t[\gamma^\uparrow])}{\Pi A B}
+\quad \goodTerm{\Gamma}{(u,v)[\gamma] \equiv (u[\gamma],v[\gamma])}{\Sigma A B}
+\quad \goodType{\Gamma}{El \ (T[\gamma]) \equiv (El \ T) [\gamma]}{}
+}
+$$
+
 $$
 \Rule[name=Base Type/Term Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
@@ -389,7 +414,7 @@ And these are also the cases we don't need to seal anything (i.e. doing exhausti
 
 With the definition of sealing judgement in mind, we can see \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the implementation. In the implementation, we will have "self__" all around when defining new fields in our plugin, and this "self__" is exactly the $A$ in the context of the two fields -- especially when we don't do any sealing, this $A = \cC \sigma$, which is exactly how the implementation expose "self__" as a module parameter. 
 
-Next we talk about inheritance judgement. Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}, \goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption of judgements when needed.
+Next we talk about inheritance judgement. Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$, $\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption of judgements when needed.
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
