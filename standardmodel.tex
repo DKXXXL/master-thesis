@@ -55,20 +55,41 @@ Here we will only show some interpretation and also omit the universe level to s
   &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
   \denotesS{\goodType{\Gamma}{\bot}{i}} \ (\gamma) &= \emptyset \\
   \denotesS{\goodType{\Gamma}{\cB}{i}} \ (\gamma) &= \{0, 1\} \quad \text{a specific two element set} \\
+  \denotesS{\goodWSig{\Gamma}{\_}{n}} &\text{ is a Set of list of pairs of type interpretation of length } n \\
+  & \text{ and we define } \goodWSigS{\Gamma}{w}{n} :\iff \denotesS{\goodWSig{\Gamma}{w}{n}} \in \denotesS{\goodWSig{\Gamma}{\_}{n}}\\
+  \denotesS{\goodWSig{\Gamma}{w\cdot}{0}} &= [] \quad \text{ an empty list} \\ 
+  \denotesS{\goodWSig{\Gamma}{(w^+ \ A \ B \ w)}{n+1}}
+  &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gamma}{w}{n}} \\ 
+  \denotesS{\goodType{\Gamma}{\pi^j_1~\sigma}{}} &= "fst"~({\denotesS{\sigma}}_{j})\\
+  \denotesS{\goodType{\Gamma, \pi^j_1~\sigma}{\pi^j_2~\sigma}{}} &= "snd"~({\denotesS{\sigma}}_j)\\
 \end{align*}
 
 
-We still encourage the reader to read the (fake) Agda version because most of the parts are similar but with more type annotation so it is clearer about the mathematical object doing the interpretation. Here, we need to clarify some ambiguity in our conventional math formulation. For example, when we wrote ``$\denotesS{\goodType{\Gamma}{\cC \sigma}{}}$ defined inductively on $\denotesS{\Sigma}$'', the best way to understand is to consider we are defining a function $\denotesS{\goodType{\Gamma}{\cC \_}{}}$ as the interpretation for $\goodType{\Gamma}{\cC \_}{}$ that mapping $\denotesS{\sigma}$ to $\denotesS{\goodType{\Gamma}{\cC \sigma}{}}$ also defined inductively on the length of the signature. The case is similar for $\denotesS{\cL \_}$, $\denotesS{\cCt \_}$ and  $\denotesS{\Sigma \ \_ \ \_}$. This is actually the formulation in Agda -- QIIT syntax consider $\cC$ as a constructor and our model needs to interpret this constructor to a function. 
+We still encourage the reader to read the (fake) Agda version because most of the parts are similar but with more type annotation so it is clearer about the mathematical object doing the interpretation. Here, we need to clarify some ambiguity in our conventional math formulation. For example, when we wrote ``$\denotesS{\goodType{\Gamma}{\cC \sigma}{}}$ defined inductively on $\denotesS{\Sigma}$'', the best way to understand is to consider we are defining a function $\denotesS{\goodType{\Gamma}{\cC \_}{}}$ as the interpretation for $\goodType{\Gamma}{\cC \_}{}$ that mapping $\denotesS{\sigma}$ to $\denotesS{\goodType{\Gamma}{\cC \sigma}{}}$ also defined inductively on the length of the signature. The case is similar for $\denotesS{\cL \_}$, $\denotesS{\cCt \_}$ and  $\denotesS{\Sigma \ \_ \ \_}$.
+
+
+\textit{This is actually the formulation in Agda} -- QIIT syntax consider $\cC : "Sig"~\Gamma~n \to "Ty"~\Gamma$ as a constructor and our model needs to interpret this constructor to a function $\cC^M : "Sig"^M \Gamma^M~n \to "Ty"^M~\Gamma^M$ with each judgement type also interpreted. Basically we are simply constructing a function that mapping our QIIT data-type to some other data -- $"Con"$ to $"Con"^M$, "Ty : Con → Set" to "Ty$^M$ : Con$^M$ → Set" and etc. What's more, since judgemental equality in our meta-theory is represented by equality in QIIT, and the well-defined-ness of this mapping-out function implies that ``judgementally equal syntax is interpreted by the same semantic in the model''. 
 
 Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}{\cC\sigma}{i}}$ is mutual recursively defined together -- because $\goodSealS{\Gamma}{f}{\sigma}{A}$ relies on $\cC$. What's more, the substitution law around these two are also proved together by induction.
 
-% We omit the model here for inductive type and inheritance judgement because they require inductive facility in meta-logic. 
-We spell-out the model for the inductive type and inheritance judgement here, and both of them require inductive facility in meta-logic. In set theory, that would be using \textit{Rule sets}~\citep{timany2017consistency,aczel1998relating}, but we are using Agda's Inductive facility instead. 
-% In appendix we will use the native inductive notion from Agda to construct models. 
-As expected, we use an inductive type in the meta-logic with the constructor from W-type to model our inductive type, and the recursor for the inductive type in the meta-logic is directly modelling the recursor for our inductive type in our theory. For inheritance judgement, we inductively define an almost-identical syntactic structure as model, (but not a QIIT), and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law. Basically both ideas are using the syntax of themselves in meta-logic to model, because its definition is pretty "well-founded". Most importantly, this doesn't affect our aim to model bottom type using empty set to derive consistency.
+\begin{figure}
+  \centering
+\begin{minipage}{0.8\linewidth}
+  \begin{minted}[mathescape, escapeinside=||]{Agda}
+    data MW {i}{j} (σ : |$\denotesS{\texttt{WSig i }\cdot\texttt{ S}}$|) : Set (lsuc i) where
+      MWsup : |$n$| < S → (a : |$\pi^n_1$| σ) → ((|$\pi^n_2$| σ) a → MW σ) 
+              → MW σ
+      \end{minted}
+\end{minipage}
+\caption{Modeling Inductive Type}\label{fig:model-ind-type}
+\end{figure}
+
+We sketch the model for the inductive type and inheritance judgement here, and both of them require inductive facility in meta-logic. In set theory, that would be using \textit{Rule sets}~\citep{timany2017consistency,aczel1998relating}, but we are using Agda's Inductive facility instead. Both of them are somewhat ``interpreted by themselves'' in Agda, because their syntactic definition is pretty ``well-founded''. For inductive type, for each grounded signature, we have an inductive type using introduction rule of W-type as constructor, shown in Figure \ref*{fig:model-ind-type}. This "MWsup" when applying to $n$ will use the $n$-th constructor specify in the signature. This grounded-ness is required to verify the substitution laws. For inheritance judgement, we simply construct a term model of inheritance judgement using vanilla inductive type (instead of QIIT). Then we use meta-level substitution to model the explicit substitution, and we can define $\denotesS{"inh"~\_ ~\_}$ by induction on this term model. 
+
+% As expected, we use an inductive type in the meta-logic with the constructor from W-type to model our inductive type, and the recursor for the inductive type in the meta-logic is directly modelling the recursor for our inductive type in our theory. For inheritance judgement, we inductively define an almost-identical syntactic structure as model, (but not a QIIT), and we inductively define meta-level substitution to implement the explicit substitution. We also define $inh$ operation by induction strictly following $\beta$-law. Basically both ideas are using the syntax of themselves in meta-logic to model, because its definition is pretty "well-founded". Most importantly, this doesn't affect our aim to model bottom type using empty set to derive consistency.
 
 
-We will take some examples on the verification of validity of this model: 1. to verify the well-defined-ness of this model; 2. to verify compatibility lemma.
+We will take some examples on the verification of validity of this model: 1. to verify the well-defined-ness of this model (i.e. judgemental equality is modeled by equality inside the model); 2. to verify compatibility lemma.
 
 
 Finally, notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have $\cdot \models_S t : \bot$ which exactly means $\denotesS{t}(\star) \in \denotesS{\bot}(\star) = \emptyset$ 
