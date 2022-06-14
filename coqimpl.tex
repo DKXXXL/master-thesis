@@ -2,31 +2,49 @@ After considering the pros and cons, we decide to implement a Coq Plugin in whic
 
 Despite of the possible difficulty of the future maintenance, this approach has various advantages: 1. it is the easiest and the most accessible way to prototype as it relieves us the necessity of familarity of Coq base, especially for the implementation of the module and functor; 2. we have a clear definition of trusted-base -- the whole Coq; 3. it is easy to debug -- we just need to check the translated commands; 4. it can be well-incorporated with the existent tools like VSCoq; 5. it is more accessible for the the interested audience who can then easily adapt our plugin and give a try -- otherwise they have to download and re-build the whole customized Coq; 6. it is more stable because the surface syntax of Coq should be stable across different versions; 7. still, this plugin can capture the key ingredients of implementing family polymorphism inside Coq and act as a reference for guiding an appropriate implementation of Family Polymorphism inside all sorts of proof assistants.
 
-\textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. To achieve incremental type checking, we notice the nature of late binding: for each defining field $ .. \cL\sigma \vdash t : T $, we can compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda \cL \sigma. t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we use module and module parameters to achieve this wrapping -- each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each term of the field will compile into a parametrized module (functor). Doing so we can also get rapid feedback from type checking when the users are defining each field. Overriding is achieved in the same manner -- we just need to make sure the Overriding term has the same type as the original term. 
+\textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. To achieve incremental type checking, we notice the nature of late binding: for each defining field $ .. \cL\sigma \vdash t : T $, we can compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we use module and module parameters to achieve this wrapping -- each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each term of the field will compile into a parametrized module (functor). Doing so we can also get rapid feedback from type checking when the users are defining each field interactively with Coq. Overriding is achieved in the same manner -- we just need to make sure the overriding term has the same type as the original term. 
 
+% Insert one pseudo-code example for explanation of the mechanism
 
-Now that we know a family data structure is actually a list of compiled modules, we need to aggregate them into a complete compiled module. Thankfully, Coq's \textit{Include} command makes things easy and reasonably fast.  
 % Concrete details of compilation of a family term data structure
+
+% Explain the whole procedure using this pseudo-code example
+Now that we know a family data structure is actually a list of compiled modules, we need to aggregate them into a complete compiled module. Thankfully, Coq's \textit{Include} command makes things easy and reasonably fast. One key feature of Coq's \textit{Include} is that, it can include not-completely instantiated functor (i.e. module with non-instantiated parameters) and it will try to find appropriate fields in the current surrounding module to instantiate those parameters. This feature can solve the fact that each defining field requires a ``self'' parameter.  
+
+
+
 
 % Compilation into Coq can give us computational interpretation for free.
 
 
-In meta-theory, we consider each family (including children family) as an inheritance judgement -- thus we directly construct the data structure representing inheritance judgement during interactive proving. As before, an empty family would be an inheritance judgement with empty family as input. Consider inheritance judgement as data gives us the ability to consider mix-in -- even though we didn't provide a formal definition here, we will illustrate its usage in the example. 
-% {Only deal with inheritance judgement} 
+% explaining inheritance
+To simplify the implementation, we can consider each family as an inheritance and the standalone family are extending empty family. Thus we directly construct the data structure representing inheritance during interactive proving. An inheritance will fix the type for the input family and output family, and generally has three kinds of inheritance in OO language -- extend, override and inherit. Extending corresponds to adding new fields, overriding corresponds to modify existent fields and inheriting corresponds to directly taking fields from the parent. It is possible to consider inheritance as solely a data rather than a functor, and this actually provides us the ability to \text{mix-in} inheritance data. 
+
 
 
 
 \textbf{Reasoning Requires Non-Overridable.}
-However, unlike general-purposed programming, Coq should be able to  \textit{reason} about each program. However, sometimes reasoning requires a specific program and overriding on them is unacceptable. For example, we may define a field $add : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to proving its commutativity in the following field $comm$. However, to prove so, we need to know more than just a type interface of $add$ but also its \textbf{concrete definition}. Otherwise, in the future, once $add$ is overridden into a subtraction function and $comm$ will have problem to be  inherited. To achieve such exposure of definition in meta-theory we only need to expose the information as propositional equality as part of the signature, but in our Coq plugin, we can achieve that even easier by exposing the whole definition directly into module type. Doing so we can have a better judgemental equality and we can avoid overriding because subtraction doesn't have the same definition as $add$. We require the users to decorate field as `Final' so that the plugin will proceed with this special treatment.
+Unlike general-purposed programming, Coq should be able to  \textit{reason} about each program. However, sometimes reasoning requires a specific program and overriding on them is unacceptable. For example, we may define a field $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to proving its commutativity in a following field $"comm"$. But to prove so, we need to know more than just a type interface of $"add"$ but also its \textbf{concrete definition}. Otherwise, in the future, once $"add"$ is overridden into a subtraction function then $"comm"$ will have problem to be  inherited. To achieve such exposure of definition, in meta-theory we only need to expose the information as propositional equality as part of the signature, and in our Coq plugin, we can achieve that even easier by exposing the whole definition directly into module type. Doing so we can have a better judgemental equality and we can avoid overriding because subtraction doesn't have the same definition as $add$. We require the users to decorate field as `Final' so that the plugin will proceed with this special treatment.
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.}
+But there are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. 
+% Basically, {a : int -> int; property : a is monotonic}, in this case
+%   we may want to override "a" using different computation, but we still wnat
+%   this refinement/property
 
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
+We don't actually support extensible inductive type in Coq (because that require non-trivial research effort on theory side\footnote{What is the semantic of extensible inductive type?} and engineering), but we simulate extensible inductive type using overriding -- when extending an inductive type with new constructors $c$ to type $A$, our plugin will generate a new inductive type data structure $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (module type) for the following field.  
 
-Even though in our metatheory there is no notion of extensible inductive type, but in our implementation we have the syntax of extensible inductive type.
+% Insert one pseudo-code example for explanation of the mechanism
 
+% Explain why the module type need extra care
+
+% explain how recursor is constructed
+% explain we have the incremental-checking for any recursor 
+
+% explain ftheorem wrapping this complicated recursor
 We also provide the tool of `FTheorem' to wrap the proof-irrelevant recursor. This tool can avoid most boiler-plate code when writing a standard recursor, and is also open to extension like `FRecursor'.
 
 \textbf{Propositional Partial Recursor.}
@@ -35,7 +53,12 @@ Propositional Partial Recursor is good enough because it and its computational a
 (i.e. there will be an left inversion of that injection, which is also witnessing the fact that those "constructors" can really act as constructors) 
 Thus 1. every future extension can support this partial recursion; 2. every type support this partial recursor with its computational axiom at least "support these constructors" (because of the embedding).
 
-\textbf{Hack: Delayed Verifying Fact.}
+% Mention still needing total recursor, for exhaustiveness checking
+
+\textbf{Hack: Global Reasoning.}
+% explain the places using ``Closing Fact''
+% 1. No need to export partial recursor
+% 2. Computational rule for the total recursor
 
 
 \section{Example}
@@ -44,13 +67,13 @@ We provide two examples here for illustration and evaluation.
 \subsection{Type Safety for STLC}
 We start with the very basic type safety proof of STLC, largely adapted from Software Foundation, which is also one of the primal motivating example of this project. 
 
-Our emphasis here is that, we singled out some programming language features from STLC and prove the type safety for each feature separately, following the examples of MTC\citep{delaware2013,forsta2020}. And we use a \textit{not-yet-completely-defined} \textbf{mix-in} feature to mix the semantic and properties of two programming language feature -- product and boolean -- with vanilla STLC. This way, we can say precisely, \textit{a programming language feature itself is a piece of data/inheritance judgement/inherited family}. Compared to MTC, our example uses small-step operational semantic by exploiting the extensible inductive type, and most of the proof is directly adapted from the one in Software Foundation, resulting a more accessible proof. 
+Our emphasis here is that, we singled out some programming language features from STLC and prove the type safety for each feature separately, following the style of the examples in MTC\citep{delaware2013,forsta2020}. And we use a \textit{not-yet-completely-defined} \textbf{mix-in} feature to mix the semantic and properties of two programming language feature -- product and boolean -- with vanilla STLC. This way, we can say precisely, \textit{a programming language feature itself is a piece of data/inheritance judgement/inherited family}. Compared to MTC, our example uses small-step operational semantic by exploiting the extensible inductive type, and most of the proof is directly adapted from the one in Software Foundation, resulting a more accessible proof. 
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users -- which can be reflected from the distance of their approach and text-book Software Foundation proof. 
 
 % We have problem on inversion lemma. Check if it is the same problem as MTC
 We use `Closing Fact' to state and prove the inversion lemma instead of using the extensible proving mechanism `FTheorem'. The reason is that 1. it introduce much less boilerplate code because the proof for these inversion lemma should be just simple case analysis and we should rely on Coq to auto-generate them; 2. it shouldn't bother us in the future because any extension on the syntax should still satisfy these inversion lemmas; 3. most importantly, we believe this inversion ``lemma'' should be part of the definition of the syntax instead of considering the syntax as a mere concrete inductive type. We should postulate this inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify that our inductive definition did satisfy the constraint, which is exactly what we expect from `Closing Fact'.
 
 \subsection{Abstract Interpreters for Imp}
-The second example is adapted and modified from the Familia paper
+The second example is adapted and modified from the Familia\citep{zhang2017familia}
 % citation needed here
 -- contrary to our first example, we use big-step interpreter and fuel to indicate the operational semantic on an imperative language with side-effect, and we specify the abstract interpretation and prove its soundness, with some of postulation on both computation and property. Then we extend the language feature and we instantiate the postulation on computation for both concrete interpreters and abstract interpreters. Thanks to the compilation, we can directly run the resulting abstract interpreters.
