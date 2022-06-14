@@ -1,8 +1,18 @@
-Firstly, there are four standard kinds of judgement in MLTT, well-typed context $\goodCtx{\Gamma}{l}$, well-typed type $\goodType{\Gamma}{T}{l}$, well-typed term $\goodTerm{\Gamma}{t}{T}$ and well-typed substitution $\goodSub{\Gamma}{\gamma}{\Delta}$. We are following \citep{kaposi2019gluing} but we will omit the universe level attached to the judgement here, to make it more readable. After these, we will have four new kinds of judgement to model our linkage. 
+Firstly, there are four standard judgement forms in MLTT,
+well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
+$\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
+well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. Our presentation
+follows the style of \citep{kaposi2019gluing}, but for readability we
+omit universe levels attached to judgements.
+After these,
+we will have four new kinds of judgement to model our linkage.
 
 Because we formalize our language as a deep embedding in a type theory with QIIT types, every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms (otherwise how can they be encoded in Agda?)
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
-Latex-wise, we spell out these \textit{well-formed-ness rule} of type judgements and their Agda counterpart to make things more accessible. Of course, a well-formed judgement is not necessarily derivable, just like a well-typed QIIT type is not necessarily inhabited. 
+Latex-wise, we spell out these \textit{well-formedness rule} of type
+judgements and their Agda counterpart to make things more accessible. Of
+course, a well-formed judgement is not necessarily derivable, just like
+a well-typed QIIT type is not necessarily inhabited.
 
 Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
 
@@ -204,7 +214,8 @@ $$
 {\goodSub{\Gamma}{(\pi_1 \sigma, \pi_2 \sigma) \equiv \sigma}{\Delta}}
 $$
 
-We have shown case some exemplar rules for all four standard type judgments, and now we focus on the newly introduced facility. 
+We have shown case some exemplar rules for all four standard type
+judgments, and now we focus on the newly introduced facility. 
 
 
 We have two kinds of signatures, one for inductive type, the other for linkages.
