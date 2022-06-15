@@ -9,16 +9,17 @@ We provide one example in its surface syntax as pseudocode, and their meta-theor
 \begin{minipage}[t]{0.5\linewidth}
 \begin{minted}{Coq}
 Family A.
- Inductive N := O : N. 
+ FInductive N := O : N. 
  (* Osig, sig₁, obj₁, sig₂,
     O₁, obj₂, sig₂', sl₁ *)
  Family handler.
-   O :self[A].N * self[A].N 
+   O :self[A].N × self[A].N 
      := (self[A].O, self[A].O). 
+
 
  EndFamily. (* pN₁, handler₁, sig₃ *)
  pred 
-  : self[A].N → self[A].N×self[A].N 
+  : self[A].N → self[A].N × self[A].N 
   := ... 
   (* predT, pred₁, sig₄, sig₄', sl₄ *) 
  k := self[A].pred self[A].O 
@@ -29,12 +30,13 @@ EndFamily.
   \begin{minipage}[t]{0.45\linewidth}
 \begin{minted}{Coq}
 Family A₂ extends A.
- Extend Inductive N := S : N -> N.
+ Extend FInductive N := S : N → N.
  (* Nsig, sig₁₁, inh₁, O₂, sig₂₁, inh₂, 
     sig₂₂, sig₂₁', sig₂₂', sl₂₂, inh₃ *)
  Extend Family handler.
    Inherit O. (* inhᵢₙ₀, pN₃ *)
-   S : N*N -> N*N 
+   S : self[A].N × self[A].N 
+       → self[A].N × self[A].N 
      := fun (x,y) => (y, self[A₂].S y).
  EndFamily. (* inhᵢₙ, sig₃₁, inh₄*)
  pred 

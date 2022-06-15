@@ -2,7 +2,7 @@ After considering the pros and cons, we decide to implement a Coq Plugin in whic
 
 Despite of the possible difficulty of the future maintenance, this approach has various advantages: 1. it is the easiest and the most accessible way to prototype as it relieves us the necessity of familarity of Coq base, especially for the implementation of the module and functor; 2. we have a clear definition of trusted-base -- the whole Coq; 3. it is easy to debug -- we just need to check the translated commands; 4. it can be well-incorporated with the existent tools like VSCoq; 5. it is more accessible for the the interested audience who can then easily adapt our plugin and give a try -- otherwise they have to download and re-build the whole customized Coq; 6. it is more stable because the surface syntax of Coq should be stable across different versions; 7. still, this plugin can capture the key ingredients of implementing family polymorphism inside Coq and act as a reference for guiding an appropriate implementation of Family Polymorphism inside all sorts of proof assistants.
 
-\textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. To achieve incremental type checking, we notice the nature of late binding: for each defining field $ .. \cL\sigma \vdash t : T $, we can compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we use module and module parameters to achieve this wrapping -- each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each term of the field will compile into a parametrized module (functor). Doing so we can also get rapid feedback from type checking when the users are defining each field interactively with Coq.
+\textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. To achieve incremental type checking, we notice the nature of late binding: for each defining field $ .. \cL\sigma \vdash t : T $, we can compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we use module and module parameters to achieve this wrapping -- each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each field of the family will compile into a parametrized module (functor). Doing so we can also get rapid feedback from type checking when the users are defining each field interactively with Coq.
 % Insert one pseudo-code example for explanation of the mechanism
 \begin{figure}
   \begin{minipage}[t]{0.25\linewidth}
@@ -22,7 +22,7 @@ Module a_4 (self_A: EmptySig).
 Definition a : nat := 1. End a_4.
 Module Type a_5 (self_A: EmptySig).
 Parameter (a : nat). End a_5.
-Module Type a_6 := a_5 EmptySig.
+Module Type a_6 := a_5 EmptyMod.
 \end{minted}
   \end{minipage}
   \begin{minipage}[t]{0.3\linewidth}
@@ -41,14 +41,14 @@ Include a_4. Include b_7. End A.
 
 
 % Concrete details of compilation of a family term data structure
-Taking Figure \ref*{fig:plugin-example1} as an example: when the user interactively input the line "Field a : nat := ..", our plugin will translate this statement into the "Module a_9", "Module Type a_10, a_11" three components. {The "EmptySig" is just empty module type.} These modules and module types will be type-checked by Coq on the fly. The computed "Module a_10" is then part of the context of "Field b" (as the module type of "self__A") for "b" to refer to. The internal representation of family "A" is simply the list of these ``compiled'' modules and module types. We can simply achieve incremental checking and overriding -- for example, we want to override "Field a", we simply replace that compiled module with the new module inside the list. 
+Taking Figure \ref*{fig:plugin-example1} as an example: when the user interactively input the line "Field a : nat := ..", our plugin will translate this statement into the "Module a_9", "Module Type a_10, a_11" three components. {The "EmptySig" is just empty module type.} Then, these modules and module types will be generated and type-checked by Coq immediately. The computed "Module a_10" is then part of the context of "Field b" (as the module type of "self__A") for "b" to refer to. The internal representation of family "A" is simply the list of these ``compiled'' modules and module types. We can simply achieve incremental checking and overriding -- for example, we want to override "Field a", we simply replace that compiled module with the new module inside the list. 
 
 Now that we know a family data structure is actually a list of compiled modules, we may want to aggregate them into one complete compiled module. We achieve that by repeatedly using Coq's "Include" command as the example illustrated. Note that, in our example, we include two functors without arguments -- this is due to one of the feature of "Include": non-instantiated parameters will be automatically instantiated by the appropriate fields in the surrounding defining module. The resulting module is just like mundane Coq's module and thus enjoy all the computational mechanism from Coq for free. 
 
 
 
 % explaining inheritance
-Besides standalone family, we also need to implement family inheritance. To simplify the implementation, we can consider each family as an inheritance and the standalone family are extending empty family. Thus we directly construct the data structure representing inheritance during interactive proving. 
+Besides standalone family, we also need to implement family inheritance. To simplify the implementation, we can consider all families as inheritance and the standalone families are extending empty family. Thus we only need to deal with inheritance during interactive proving. 
 
 An inheritance data will be annotated with the type for the input family and output family, and generally there are three kinds of inheritance -- extend, override and inherit. Extending corresponds to adding new fields, overriding corresponds to modify existent fields and inheriting corresponds to directly taking fields from the parent. Thus it is possible to consider inheritance as solely a data rather than a functor, and this actually provides us the ability to \text{mix-in} inheritance data. 
 
@@ -56,12 +56,16 @@ An inheritance data will be annotated with the type for the input family and out
 
 
 \textbf{Reasoning Requires Non-Overridable.}
-Unlike general-purposed programming, Coq should be able to  \textit{reason} about each program. However, sometimes reasoning requires a specific program and overriding on them is unacceptable. For example, we may define a field $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to proving its commutativity in a following field $"comm"$. But to prove so, we need to know more than just a type interface of $"add"$ but also its \textbf{concrete definition}. Otherwise, in the future, once $"add"$ is overridden into a subtraction function then $"comm"$ will have problem to be  inherited. A more concrete example is in Figure \ref*{fig:plugin-example1}, consider we have "Field b : self_A.a = 1 := .." instead, then our compilation and Coq's type check will both fail: in the context of "b" (module type "a_6") we only know "a" is of type nat but nothing more.  
+Unlike general-purposed programming, Coq should be able to  \textit{reason} about each program. However, sometimes reasoning requires a specific program and overriding on them is unacceptable. For example, we may define a field $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to proving its commutativity in a following field $"comm"$. But to prove so, we need to know more than just a type interface of $"add"$ but also its \textbf{concrete definition}. Otherwise, in the future, once $"add"$ is overridden into a subtraction function then $"comm"$ will have problem to be  inherited. A more concrete example is in Figure \ref*{fig:plugin-example1}, consider we have "Field b : self_A.a = 1 := .." instead, then our compilation and Coq's type check will both fail: in the context of "b" (module type "a_6") we only know "a" is of type nat but nothing more.  To fix that, we need more information on "a" than its type -- we need to expose its concrete definition "a = 1" to appear in the context of "b".
 
 To achieve such exposure of definition, in meta-theory we only need to expose the information as propositional equality as part of the signature, and in our Coq plugin, we can achieve that even easier by exposing the whole definition directly into module type. Doing so we can have a better judgemental equality and we can avoid overriding because subtraction doesn't have the same definition as $add$. We require the users to decorate field as `Final' so that the plugin will proceed with this special treatment.
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.}
-But there are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. 
+But there are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat, p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
+
+To resolve this, we provide family sealing mechanism -- basically we allow the users to specify the family/module type, and thus we can have a ``local'' transparent, non-overridable field located in a overridable family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an overridable family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family. 
+
+This ``sealed'' family actually simulate interface to a certain level -- we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}  , and later instantiate them with concrete implementation by overriding this family.
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property
@@ -69,9 +73,78 @@ But there are cases reasoning and overriding are both required, especially when 
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
-We don't actually support extensible inductive type in Coq (because that require non-trivial research effort on theory side\footnote{What is the semantic of extensible inductive type?} and engineering), but we simulate extensible inductive type using overriding -- when extending an inductive type with new constructors $c$ to type $A$, our plugin will generate a new inductive type data structure $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (module type) for the following field.  
+We don't actually support extensible inductive type in Coq (because that require non-trivial research effort on theory side -- i.e. {What is the semantic of extensible inductive type?} -- and engineering), but we simulate extensible inductive type using overriding -- when extending an inductive type $A$ with new constructors $c$, our plugin will generate a new inductive definition $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (module type) for the following field.  
 
 % Insert one pseudo-code example for explanation of the mechanism
+% Use the natural number example
+\begin{figure}
+  \begin{minipage}[t]{0.3\linewidth}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+Family B.
+  FInductive b : Set 
+    := tt : b | ff : b.
+  Family neg_handler. 
+    Field tt : self_B.b 
+      := self_B.ff.
+    Field ff : self_B.b 
+      := self_B.tt.
+  EndFamily.
+FRecursor neg 
+  about self_B.b 
+  motive (fun _ => self_B.b)
+  using self_B.neg_handler
+  by _rec.
+EndFamily.
+
+Family B2 extends B.
+  Extend FInductive b : Set 
+    := uu : b.
+  Extend Family neg_handler. 
+    Field uu : self_B2.b 
+      := self_B2.uu.
+  EndFamily. 
+EndFamily.
+\end{minted}
+  \end{minipage}
+  \begin{minipage}[t]{0.65\linewidth}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+  (* Abstraction for Inductive Type *)
+Module Type b_3 (self__B: EmptySig_4).
+Parameter (b : Set). Parameter (tt ff : b). End b_3.      
+Module Type b_6 := b_3 EmptyMod.
+  (* Recursor to Set for b *)
+Module b_rec_12 (self__B: b_6).
+Definition __recursor_type_b_rec :=
+  forall P : self__B.b -> Set,
+  P self__B.tt -> P self__B.ff 
+  -> forall __i : self__B.b, P __i. End b_rec_12. 
+  (* Field B.neg_handler.ff *)
+Module ff_24 (self__B: b_6) 
+             (self__neg_handler: tt_23 self__B).
+Definition ff : self__B.b := self__B.tt. End ff_24.
+  (* Intermediate Module solely for type checking *)
+Module v_33_34 (self__B: neg_handler_26).
+Include b_rec_12 self__B.
+Parameter (recursor_for_type_checking : __recursor_type_b_rec).
+Definition term_for_type_checking :=
+  recursor_for_type_checking (fun _ : self__B.b => self__B.b.)
+    self__B.neg_handler.tt
+    self__B.neg_handler.ff.  
+End v_33_34.
+\end{minted}
+  \end{minipage}
+\caption{Example Code for Inductive Type}\label{fig:plugin-example2}
+\end{figure}
+
+Taking \cref{fig:plugin-example2} as an example, when we define inductive type "W", the following "Field b" can only know "W" is a type (of "Set") and there are at least two constructors for it, just like what we do in module type "W_3". We cannot export the eliminator of "W" inside "W_3" because doing so "b" (and "b_19") will not be able to be inherited to the context where "W" is extended with a third constructor. Since the inhabited recursor is generally asserting there are only two constructors in "W". 
+
+But we do have to provide a way to construct a recursor, and do type-checking (or exhaustiveness checking). Thus we need to extract a elimination principle for future usage. Here we show one exemplar result when extracting the inductive principle.
+
+To construct a recursor, we make each handler 
+
+The key insight here is that, to make each recursor handler inheritable, we need to seal an abstraction around the inductive type; but to construct a recursor (and carry out the exhaustiveness checking), we need to break this abstraction and see the concrete definition of the inductive type. Our meta-theory need to handler these two seemingly contradicting ideas simultaneously. 
+
+Since the recursor is constructed knowing a concrete inductive type, thus not inheritable, for all the children, we have to reconstruct and override with a new recursor (acting like an extra exhaustiveness checking). This is affordable since each recursor handler doesn't need to be rechecked.  
 
 % Explain why the module type need extra care
 
@@ -79,7 +152,7 @@ We don't actually support extensible inductive type in Coq (because that require
 % explain we have the incremental-checking for any recursor 
 
 % explain ftheorem wrapping this complicated recursor
-We also provide the tool of `FTheorem' to wrap the proof-irrelevant recursor. This tool can avoid most boiler-plate code when writing a standard recursor, and is also open to extension like `FRecursor'.
+We also provide the tool of `FTheorem' to wrap the proof-irrelevant recursor (i.e. when reasoning stuff in "Prop"). This tool can avoid most boiler-plate code when writing a standard recursor, and is also open to extension like `FRecursor'.
 
 \textbf{Propositional Partial Recursor.}
 Propositional Partial Recursor can prove injection and discrimination of the constructors.
