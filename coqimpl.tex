@@ -218,7 +218,11 @@ We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can actuall
 % explain the places using ``Closing Fact''
 % 1. No need to export partial recursor
 % 2. Computational rule for the total recursor
+However, to verify and prove the recursor and partial recursor (and their computational rules), our plugin has to compile the extensible family into a non-extensible Coq Module and prove the recursors by instantiating the content of Coq module with concrete inductive type.  
 
+This style of ``Global Reasoning'' is that we can only prove the corresponding theorem when we know the ``full pictures'' of the inductive type. We provide "Closing Fact" as a command to carry out this global reasoning -- we can attach "Closing Fact" with either (proof) terms or Coq's proof script, then only when compilation to module happens, the term/proof script will put into type-check to see if a "Closing Fact" statement can be proved. Note that, "Closing Fact" cannot immeidately check the correctness of the term/proof script because this verification only happens when we finished defining a family, and thus not easy to handle.
+
+This "Closing Fact" can ease us from the necessity to let plugin generate proof for recursors and partial recursors, and thus making plugin development easier. For example, the computation rule for a concrete recursor like "B.neg" and partial recursors in \cref*{fig:plugin-example2} can be directly asserted by using "Closing Fact" and verified later during compilation. This ``Global Reasoning'' will be again useful in the later examples.
 
 \section{Example}
 We provide two examples here for illustration and evaluation. 
