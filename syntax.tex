@@ -246,11 +246,11 @@ $$
 %\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation below.}
 
 $$
-\Rule[name=WSig Proj]
+\Rule[name=WSig-Proj]
 {\goodWSig{\Gamma}{s}{n} \quad j < n}
 {\goodType{\Gamma}{\pi^j_1 s}{i} \quad \goodType{\Gamma, \pi^j_1 s}{\pi^j_2  s}{i}}
 \quad
-\Rule[name=Ind Sig]
+\Rule[name=Ind-Sig]
 {\goodWSig{\Delta}{\sigma}{n}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
 {\goodWSig{\Gamma}{\sigma[\gamma]}{n}
@@ -258,11 +258,11 @@ $$
 $$
 
 $$
-\Rule[name=Ind Type]
+\Rule[name=Ind-Type]
 {\goodTerm{\Gamma}{T}{\bW \sigma}}
 {\goodTerm{\Gamma}{"W" \ T}{\cU}}
 \quad
-\Rule[name=Ind Term]
+\Rule[name=Ind-Term]
 {\goodTerm{\Gamma}{T}{\bW \sigma}
   \quad \goodTerm{\Gamma}{a}{\pi^j_1\sigma}
   \quad \goodTerm{\Gamma, \pi^j_2\sigma[(id, a)]}{b}{El~("W"~T)}}
@@ -272,15 +272,11 @@ $$
 
 Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type, and given an inductive type signature, we use \ruleref{WSig Proj} to extract and corresponding $A_i, B_i$.
 
-Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one "element", the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$ -- in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
+Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one ``element'', the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$ -- in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
 
-In our meta-theory, we only formulate non-dependent eliminator, i.e. the
-\textit{recursor}. Each recursor is constructed by a linkage containing
-functions/handlers/pattern-matching cases dealing with each
-constructor. Thus code reuse for recursor is delegated to linkage
-inheritance---to reuse one particular pattern-matching case,
-we just inherit the function/handler. This greatly simplifies the
-meta\-theory development. 
+The formulation of our recursor is closely related to the linkage, so we will postpone their description. 
+
+
 
 
 \judgebox{\goodSig{\Gamma}{\sigma}{n} }
@@ -372,7 +368,53 @@ $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linka
 The signature (for the linkage) and the linkage rules are quite similar the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each componenet due to harmony \citep{pfenning2009lecture} thus we have local soundness and local completeness ($\beta,\eta$ rules). We omit them and the substitution laws for either field addition and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using Implicit Arguments}.
 
 
-Intuitively, both of the $\mu^+, \nu^+$ rules should be motivated by the implementation of our linkage, so an obvious question is what is this sealing judgement for?
+Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
+
+$$
+\Rule[name=Hdler]
+{\goodType{\Gamma}{A}{}
+\quad \goodType{\Gamma, A}{B}{}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
+\quad 
+\Rule[name=Hdlers]
+{\goodWSig{\Gamma}{\sigma}{n}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodSig{\Gamma}{"RecSig"~\sigma~R}{}}
+$$
+$$
+\Rule[name=Hdler-Proj]
+{ \goodWSig{\Gamma}{\sigma}{N}
+\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\sigma~R)}
+\quad n < N
+}
+{\goodTerm{\Gamma}{"prjR"~n~o}{("RecSig1"~(\pi_1^n \sigma)~(\pi_2^n \sigma)~R)[\pi_1]}}
+$$
+$$
+\Rule[name=Rec-Constr]
+{ \goodWSig{\Gamma}{\sigma}{N}
+\quad \goodType{\Gamma}{T}{\bW \sigma}
+\quad \goodType{\Gamma}{R}{}
+\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
+\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
+}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+$$
+
+In our meta-theory, we only formulate non-dependent eliminator, i.e. the
+\textit{recursor}. Each recursor is constructed by a linkage containing
+functions/handlers/pattern-matching cases dealing with each
+constructor. Thus code reuse for recursor is delegated to linkage
+inheritance---to reuse one particular pattern-matching case,
+we just inherit the function/handler. This greatly simplifies the
+metatheory development. 
+
+Intuitively \ruleref{Hdler} is indicating the type of recursor handler for one specific constructor, and \ruleref{Hdlers} is the linkage type of the bundle of all recursor handlers of one given inductive type. We omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its (apparent) internal definition. "prjR" is also the handler selection from the handler linkage, and is helpful for the formulation of $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is the used to construct a concrete recursor given a specific linkage of handlers. All these rules satisfy substitution laws and omitted here.
+
+
+Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that -- then what is this sealing judgement for?
 
 \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
 = [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
@@ -425,7 +467,7 @@ The motivation for sealing judgement is acting like a syntactic sugar helpful fo
 
 Sealing is used to exploit this fact -- with sealing, we can add well-typed terms $X_1 : \cU \vdash t : T$, into the parent family, in the context of $ X_1 : \bW \sigma_1$. Later when we want to inherit $t$, because $t$ only consider $X_1$ as an arbitrary type, inheritance is plausible.
 
-Of course, any fields using "Wsup" and "Wrec" directly relies on the $\bW(\sigma)$ and thus non-inheritable -- in these cases, "Wsup" can be understood as concrete constructors and "Wrec" are \textit{exhaustiveness checking}. These fields together with inductive types are the one sealing responsible for hiding. After compilation of linkage type into existential type, we can easily hide the \textit{concrete} definition of the inductive type while exposing all the fields using "Wsup" and "Wrec" like an abstract interface. Apparently, future fields relies on this abstract interface will have no problem on inheritance. \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}
+Of course, any fields using "Wsup" and "Wrec" directly relies on the $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and \ruleref{Rec-Constr}) and thus non-inheritable -- in these cases, "Wsup" can be understood as concrete constructors and "Wrec" are \textit{exhaustiveness checking}. These fields together with inductive types are the one sealing responsible for hiding. After compilation of linkage type into existential type, we can easily hide the \textit{concrete} definition of the inductive type while exposing all the fields using "Wsup" and "Wrec" like an abstract interface. Apparently, future fields relies on this abstract interface will have no problem on inheritance. \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}
 Of course, since "Wsup" and "Wrec" directly rely on the concrete inductive definition, we will have to override these fields whenever inductive type is overridden. For "Wsup" we only need to override each constructor and for "Wrec" it is just doing exhaustiveness checking inside each children family. The recursor handlers however, can be safely inherited.
 \YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
 ML, sealing has the connotation of hiding things behind an existential
@@ -444,7 +486,10 @@ $A$ in the context of the two fields -- especially when we don't do any
 sealing, this $A = \cC \sigma$, which is exactly how the implementation
 exposes "self__" as a module parameter. 
 
+
+
 Next we talk about inheritance judgement. Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$, $\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the assumption of judgements when needed.
+
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
 
