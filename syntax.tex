@@ -228,17 +228,17 @@ We have two kinds of signatures, one for inductive type, the other for linkages.
 
 \judgebox{\goodWSig{\Gamma}{\sigma}{n}}
 $$
-\Rule[name=Emp WSig]
+\Rule[name=Emp-WSig]
 {}
 {\goodWSig{\Gamma}{w\cdot}{0}}
 \quad
-\Rule[name=WSig Add]
+\Rule[name=WSig-Add]
 {\goodWSig{\Gamma}{s}{n}
   \quad \goodType{\Gamma}{A}{i}
   \quad \goodType{\Gamma, A}{B}{i}}
 {\goodWSig{\Gamma}{w^+ \  s \  A \  B}{n+1}}
 \quad
-\Rule[name=Ind Univ]
+\Rule[name=Ind-Univ]
 {\goodWSig{\Gamma}{\sigma}{n}}
 {\goodType{\Gamma}{\bW \sigma}{i}}
 $$
