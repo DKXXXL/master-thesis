@@ -17,7 +17,7 @@ The biggest difference in the proof script comes from the fact that we are handl
 Another difference comes from the fact that we need to use "Closing Fact" to manually verify the computational rules for each recursor and use tactic to ``run'' the recursor by repeatedly "rewrite" using those verified computational rules. This part is possible to be automatically handled by the plugin, but still it will result propositional computational rules.  
 
 \subsection{Abstract Interpreters for Imp}
-The second example is adapted and modified from the Familia\citep{zhang2017familia}
+The second example is adapted and modified from the Familia\citep{zm2017}
 -- contrary to our first example, we use big-step interpreter and fuel to indicate the operational semantic on an imperative language with side-effect, and we specify the abstract interpretation and prove its soundness, with some of postulation on both computation and property. Then we extend the language feature and we instantiate the postulation on computation for both concrete interpreters and abstract interpreters. Thanks to the compilation, we can directly run the resulting abstract interpreters.
 
 We construct four families, in one inheritance chain. 

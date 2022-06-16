@@ -5,7 +5,7 @@ We follow the reducibility argument from \citep{coquand2018canonicity,sterling20
 \end{theorem}
 
 Canonicity is one of the basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}.
-We can even argue that, if this theorem is proven in a constructive meta-logic\footnote{QIIT does have computational content\citep{altenkirch2016type}}, 
+We can even argue that, if this theorem is proven in a constructive meta-logic\footnote{QIIT does have computational content\citep{altkap2016}}, 
 then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.
 
 Now we sketch out the big picture of the proof. The canonicity model $"Tm"^C~\Gamma^C~"T"^C$ will map each syntax piece $("t : Tm Γ T") \mapsto "(t, tₚ) :" "Tm"^C~\Gamma^C~"T"^C = \sum~("t : Tm Γ T")."Tm"_p~\Gamma^C~"T"^C~"t"$ to a dependent pair\footnote{This $"Tm"_p$ is usually called dependent model.}, of which the first part will be the same as the input syntax. Using this mapping on closed boolean term $"t : Tm ⋅ "\mathbb{B}$ will give us $"Tm"_p~\cdot^C~\mathbb{B}^C~"t"$, which will unfolds to our final goal $"t" \equiv "tt" + "t" \equiv "ff"$. Roughly, this can read as ``every closed boolean term is reducible''.  Thus once we can ``propagate'' $(\cdot)^C$ into every syntactic piece, and construct this model, we are done. In our (fake) Agda formulation, we use $(\cdot)_2$ to replace the notation of $(\cdot)^C$ because we consider most parts of this model are actually a dependent pair.
