@@ -1,6 +1,6 @@
 We use an example to better demonstrate different components of the syntax of our formulation. Our example will be the meta-theory encoding of the following pseudo-code.
 
-We provide one example in its surface syntax as pseudocode, and their meta-theory encoding. This example is computing the predecessor of a mundane natural number -- however we split the inductive definition into two parts and making "O" and "S" standing alone. "pred" is defined as $n \mapsto ("pred" n, n)$, and thus a predecessor.
+We provide one example in its surface syntax as pseudocode, and their meta-theory encoding. This example is computing the predecessor of a mundane natural number, but we split the inductive definition into two parts and making "O" and "S" standing alone. "pred" is defined as $n \mapsto ("pred" n, n)$, and thus a predecessor.
 
 
 
@@ -126,7 +126,7 @@ EndFamily.
   \caption{Detailed Construction}\label{fig:example-construction}
 \end{figure}
 
-Here we explain how  our detailed construction in Figure \ref{fig:example-construction} is constructed. We first elaborate that how our inductive type "N" is written in the specific format (the style of W-type). We use 1, 0 here to indicate unit type and bottom type. 
+Here we explain how  our detailed construction in Figure \cref{fig:example-construction} is constructed. We first elaborate that how our inductive type "N" is written in the specific format (the style of W-type). We use 1, 0 here to indicate unit type and bottom type. 
 
 Next, we alias each part of the derivation with a name. Every derivation here is well-typed term. We also annotate in the original pseudocode the name of the related derivation. 
 

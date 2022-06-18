@@ -2,7 +2,7 @@ Firstly, there are four standard judgement forms in MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
 well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. Our presentation
-follows the style of \citep{kaposi2019gluing}, but for readability we
+follows the style of~\citet{kaposi2019gluing}, but for readability we
 omit universe levels attached to judgements.
 After these,
 we will have four new kinds of judgement to model our linkage.
@@ -14,7 +14,7 @@ judgements and their Agda counterpart to make things more accessible. Of
 course, a well-formed judgement is not necessarily derivable, just like
 a well-typed QIIT type is not necessarily inhabited.
 
-Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly -- because it is not possible to have "not-well-formed" context in our setting.
+Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly---because it is not possible to have "not-well-formed" context in our setting.
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$. 
 
@@ -270,9 +270,9 @@ $$
 $$
 
 
-Recall in W-type \citep{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type, and given an inductive type signature, we use \ruleref{WSig Proj} to extract and corresponding $A_i, B_i$.
+Recall in W-type~\cite{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type, and given an inductive type signature, we use \ruleref{WSig Proj} to extract and corresponding $A_i, B_i$.
 
-Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type \cite{stone2000}, and it only has one ``element'', the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$ -- in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
+Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type~\cite{stone2000}, and it only has one ``element'', the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$---in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
 
 The formulation of our recursor is closely related to the linkage, so we will postpone their description. 
 
@@ -365,7 +365,7 @@ $$
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type). 
 
 
-The signature (for the linkage) and the linkage rules are quite similar the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each componenet due to harmony \citep{pfenning2009lecture} thus we have local soundness and local completeness ($\beta,\eta$ rules). We omit them and the substitution laws for either field addition and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible\footnote{Interestingly, this omission can be supported by Agda using Implicit Arguments}.
+The signature (for the linkage) and the linkage rules are quite similar the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each componenet due to harmony~\cite{pfenning2009lecture} thus we have local soundness and local completeness ($\beta,\eta$ rules). We omit them and the substitution laws for either field addition and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.\footnote{This omission can be supported by Agda using Implicit Arguments}
 
 
 Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
@@ -407,14 +407,14 @@ In our meta-theory, we only formulate non-dependent eliminator, i.e. the
 \textit{recursor}. Each recursor is constructed by a linkage containing
 functions/handlers/pattern-matching cases dealing with each
 constructor. Thus code reuse for recursor is delegated to linkage
-inheritance---to reuse one particular pattern-matching case,
+inheritance----to reuse one particular pattern-matching case,
 we just inherit the function/handler. This greatly simplifies the
 metatheory development. 
 
 Intuitively \ruleref{Hdler} is indicating the type of recursor handler for one specific constructor, and \ruleref{Hdlers} is the linkage type of the bundle of all recursor handlers of one given inductive type. We omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its (apparent) internal definition. "prjR" is also the handler selection from the handler linkage, and is helpful for the formulation of $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is the used to construct a concrete recursor given a specific linkage of handlers. All these rules satisfy substitution laws and omitted here.
 
 
-Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that -- then what is this sealing judgement for?
+Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that---then what is this sealing judgement for?
 
 \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
 = [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
@@ -460,19 +460,19 @@ idₛ = π₁
 
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just
 a short hand of term judgement $\goodTerm{\Gamma , \cC
-\sigma}{\_}{A[\pi_1]}$. The substitution law should be understood as a
+\sigma}{\_}{A[\pi_1]}$, a special form of \textit{local morphism}~\cite{abbott2003category}. The substitution law should be understood as a
 lemma, and it is easily derivable using $\gamma^\uparrow$. 
 
-The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance -- due to the presence of inductive type in the context, not everything is inheritable. For example, $ X_1 : \bW \sigma_1 \vdash t : T$ in the parent family will generally not be able to be inherited to the children once we override the inductive type. In other words, there is no way ``transplanting'' $t$ into the context $X_2 : \bW \sigma_2$. This makes all the fields after this inductive type non-inheritable -- which shouldn't be the case because a lot of fields might not be directly relying on this concrete $\bW \sigma_1$. 
+The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance---due to the presence of inductive type in the context, not everything is inheritable. For example, $ X_1 : \bW \sigma_1 \vdash t : T$ in the parent family will generally not be able to be inherited to the children once we override the inductive type. In other words, there is no way ``transplanting'' $t$ into the context $X_2 : \bW \sigma_2$. This makes all the fields after this inductive type non-inheritable---which shouldn't be the case because a lot of fields might not be directly relying on this concrete $\bW \sigma_1$. 
 
-Sealing is used to exploit this fact -- with sealing, we can add well-typed terms $X_1 : \cU \vdash t : T$, into the parent family, in the context of $ X_1 : \bW \sigma_1$. Later when we want to inherit $t$, because $t$ only consider $X_1$ as an arbitrary type, inheritance is plausible.
+Sealing is used to exploit this fact---with sealing, we can add well-typed terms $X_1 : \cU \vdash t : T$, into the parent family, in the context of $ X_1 : \bW \sigma_1$. Later when we want to inherit $t$, because $t$ only consider $X_1$ as an arbitrary type, inheritance is plausible.
 
-Of course, any fields using "Wsup" and "Wrec" directly relies on the $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and \ruleref{Rec-Constr}) and thus non-inheritable -- in these cases, "Wsup" can be understood as concrete constructors and "Wrec" are \textit{exhaustiveness checking}. These fields together with inductive types are the one sealing responsible for hiding. After compilation of linkage type into existential type, we can easily hide the \textit{concrete} definition of the inductive type while exposing all the fields using "Wsup" and "Wrec" like an abstract interface. Apparently, future fields relies on this abstract interface will have no problem on inheritance. \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}
+Of course, any fields using "Wsup" and "Wrec" directly relies on the $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and \ruleref{Rec-Constr}) and thus non-inheritable---in these cases, "Wsup" can be understood as concrete constructors and "Wrec" are \textit{exhaustiveness checking}. These fields together with inductive types are the one sealing responsible for hiding. After compilation of linkage type into existential type, we can easily hide the \textit{concrete} definition of the inductive type while exposing all the fields using "Wsup" and "Wrec" like an abstract interface. Apparently, future fields relies on this abstract interface will have no problem on inheritance. \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}
 Of course, since "Wsup" and "Wrec" directly rely on the concrete inductive definition, we will have to override these fields whenever inductive type is overridden. For "Wsup" we only need to override each constructor and for "Wrec" it is just doing exhaustiveness checking inside each children family. The recursor handlers however, can be safely inherited.
 \YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
 ML, sealing has the connotation of hiding things behind an existential
 type. So using the same word may cause the reader to have false
-presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear -- because I haven't changed any text}
+presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear---because I haven't changed any text}
 
 \YZ{Can we have a more concrete example of how the judgment is useful?}\EDJreply{Working on it, don't resolve}
 
@@ -482,7 +482,7 @@ With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
 implementation. In the implementation, we will have "self__" all around
 when defining new fields in our plugin, and this "self__" is exactly the
-$A$ in the context of the two fields -- especially when we don't do any
+$A$ in the context of the two fields---especially when we don't do any
 sealing, this $A = \cC \sigma$, which is exactly how the implementation
 exposes "self__" as a module parameter. 
 
@@ -547,13 +547,13 @@ $$
 
 Finally we introduce the inheritance judgement. Inheritance are judgement so naturally second class citizen data (i.e. not something function can return and cannot be assigned to variables), and it looks very much alike a function that transform a given linkage. 
 
-The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax -- a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance -- because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism. 
+The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax---a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance---because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism. 
 
-"inhid" and "inhext" are simple as expected -- the former corresponds to empty inheritance, and the latter gives the programmer the ability to add new field. 
+"inhid" and "inhext" are simple as expected---the former corresponds to empty inheritance, and the latter gives the programmer the ability to add new field. 
 
 "inhinh" is special because it requires user to provide a proof of ``upcasting'' from the context of the children to that of the parent. In other words, if I want to inherit a specific field from the parent, I have to convince the type checker that my current context can ``accommodate'' the inherited field. 
 
-Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance -- family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping.
+Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance---family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping.
 
 Finally we need to introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need "upcasting" again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement to derive children family and how the beta rule is defined. We omit most of the other substitution laws here.
 
