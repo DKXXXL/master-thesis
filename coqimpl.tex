@@ -4,7 +4,7 @@ Despite of the possible difficulty of the future maintenance, this approach has 
 
 \textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. Unlike module, we need to faithfully reflect the \textit{late binding} nature of family : for each defining field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we choose module and module parameters to achieve this wrapping---each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each field of the family will compile into a functor parametrized by its context. Doing so we can also get rapid feedback from type checking when the users are defining each field interactively with Coq.
 % Insert one pseudo-code example for explanation of the mechanism
-\begin{figure}
+\begin{figure}[!htb]
   \begin{minipage}[t]{0.25\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Family A.
@@ -76,7 +76,7 @@ We don't actually support extensible inductive type from \ref{langdesign-req2} i
 
 % Insert one pseudo-code example for explanation of the mechanism
 % Use the natural number example
-\begin{figure}
+\begin{figure}[!htb]
   \begin{minipage}[t]{0.3\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Family B.

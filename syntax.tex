@@ -18,11 +18,21 @@ Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions
 
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$. 
 
+
+
 \newcommand\mathboxtext[1]{
   \fcolorbox{black}{faint-gray}{\ensuremath{#1}}
 }
 
-\begin{figure}[H]
+\begin{figure}[!htb]
+  \begin{align*}
+    &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}
+  \end{align*}
+\caption{Judgements and their Agda Encoding}
+\end{figure}
+
+\begin{figure}[!htb]
   \begin{minipage}[b]{0.3\linewidth}
       $$
       \Rule[name=Tm]
@@ -58,12 +68,13 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most spe
       Seal : (Γ : Con) → Sig Γ n → Sig Γ n → Set
     \end{minted}
   \end{minipage}
-\begin{align*}
-  &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-  &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}
-\end{align*}
-\caption{Well-formedness of Four New Judgements, and Agda-encoding-Judgements correspondence}
+
+\caption{Well-formedness of Four New Judgements}
 \end{figure}
+
+
+
+
 
 % \begin{minted}[texcomments]{Coq}
 %   Γ : Con  (* $\goodCtx{\Gamma}{}$ *) 
@@ -416,26 +427,28 @@ Intuitively \ruleref{Hdler} is indicating the type of recursor handler for one s
 
 Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that---then what is this sealing judgement for?
 
-\judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
-= [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
-$$
-\Rule[name=Seal Subst]
-{\goodSeal{\Delta}{s}{\sigma}{A}
-  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
-{\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{A[\gamma]}}
-=
-\frac
-{\goodTerm{\Delta, \cC\sigma}{s}{A[\pi_1]}
-  \quad  \goodSub{\Gamma}{\gamma}{\Delta}  }
-{\goodTerm{\Gamma,\cC\sigma[\gamma]}{s[\gamma^\uparrow]}{A[\pi_1][\gamma^\uparrow]\equiv A[\gamma][\pi_1]}}
-$$
-$$
-\Rule[name=Seal-Id]
-{}
-{\goodSeal{\Gamma}{id_s}{\sigma}{\cC \sigma}}
-= \goodTerm{\Gamma, \cC\sigma}{\pi_2}{\cC\sigma[\pi_1]}
-$$
+
 \begin{figure}[H]
+
+  \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
+  = [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
+  $$
+  \Rule[name=Seal Subst]
+  {\goodSeal{\Delta}{s}{\sigma}{A}
+    \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+  {\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{A[\gamma]}}
+  =
+  \frac
+  {\goodTerm{\Delta, \cC\sigma}{s}{A[\pi_1]}
+    \quad  \goodSub{\Gamma}{\gamma}{\Delta}  }
+  {\goodTerm{\Gamma,\cC\sigma[\gamma]}{s[\gamma^\uparrow]}{A[\pi_1][\gamma^\uparrow]\equiv A[\gamma][\pi_1]}}
+  $$
+  $$
+  \Rule[name=Seal-Id]
+  {}
+  {\goodSeal{\Gamma}{id_s}{\sigma}{\cC \sigma}}
+  = \goodTerm{\Gamma, \cC\sigma}{\pi_2}{\cC\sigma[\pi_1]}
+  $$
 
 \centering
 \captionsetup{justification=centering}

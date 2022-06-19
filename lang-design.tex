@@ -3,7 +3,7 @@ When adapting Family Polymorphism into dependent type, we choose to tailor and f
 Let's start with the basic example---STLC and its extension in \cref{fig:STLC-example}---to consider what kind of features are required and how much of them can be supported by family polymorphism.
 % add the example code here
 
-\begin{figure}
+\begin{figure}[!htb]
   \begin{minipage}[t]{0.47\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Family STLC.
@@ -61,7 +61,7 @@ EndFamily.
 \textlabel{Req (2)}{langdesign-req2}:\textbf{ we need extensible inductive type}, to extend "term" and "ty" in \cref{fig:STLC-example}. The extension of inductive type is not supported by \citet{zm2017} thus we need further consideration about it on both implementation and metatheory. Additionally, \textlabel{Req (3)}{langdesign-req3}:\textbf{we also want extensible pattern matching and induction reasoning}, to extend "subst" in \cref{fig:STLC-example}. There are actually two kinds of ``pattern matching'', one for data and the other for induction reasoning, i.e. one use the eliminator to \mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting, extensible pattern matching can be easily expressed with family extension -- we just aggregate all case handlers of pattern matching into one family (as a bunch of functions), and then one family can encode one pattern matching, and family inheritance can express adding case handlers. Then we just need to introduce a primitive that will ``wrap'' that family into a recursive function. Induction reasoning can be handled in an almost identical way. 
 
 % we want to be able to reason pattern matching as well
-However, there is still difference between data recursion and induction reasoning, because the former one is \textit{proof-relevant}. This difference leads to another issue: \textlabel{Req (4)}{langdesign-req4}:\textbf{we need to reason about (the computation about) extensible pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}. When proving "subst_lemma", we have to know "subst" is invariant on "tt", i.e. \mintinline{Coq}{(subst i x tt) = tt}. This kind of information requires \textit{computational rules} from the recursors.
+However, there is still difference between data recursion and induction reasoning, because the former one is \textit{proof-relevant}. This difference leads to another issue: \textlabel{Req (4)}{langdesign-req4}:\textbf{we need to reason about (the computation about) extensible pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}. When proving "subst_lemma", we have to know "subst" is invariant on "tt", i.e. \mintinline{Coq}{(subst i x tt) = tt}. This kind of information requires exposing \textit{computational rules} from the recursors.
 % we want tactic programming and certain level of automation
 Finally, \textlabel{Req (5)}{langdesign-req5}:\textbf{we desire tactic programming} to relieve us from the hassle of direct manipulation of proof terms.
 
