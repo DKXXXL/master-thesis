@@ -1,23 +1,68 @@
 When adapting Family Polymorphism into dependent type, we choose to tailor and focus on only the essence of family (and inheritance) structure in \citet{zm2017}, and thus a lot of unrelated feature, like Interface, will be removed. In this case, it will look like module with late-binding and inheritance as code and proof reuse for module. We also need it to have a good compatibility with Inductive Type, because we don't want to lose too much reasoning power of Coq (and its tactic programming). 
 
-Let's start with the basic example---STLC and its extension---to consider what kind of features are required and how much of them can be supported by family polymorphism.
+Let's start with the basic example---STLC and its extension in \cref{fig:STLC-example}---to consider what kind of features are required and how much of them can be supported by family polymorphism.
 % add the example code here
 
+\begin{figure}
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+Family STLC.
+Inductive ty : Set :=
+  | unit : ty
+  | arrow : ty -> ty -> ty.
+Inducitive term : Set := 
+  | var : id -> term 
+  | lam : id -> term -> term ...
+Fixpoint subst 
+  : id -> term -> term := ...
+Inductive has_type 
+  : context -> term -> type := ...
+Proposition subst_lemma :
+  has_type (Γ; x ↦ A) t T ->
+  has_type Γ u A ->
+  has_type Γ (subst x u t) T.
+Inducitve step : term -> term -> Prop 
+  := ...
+(* ... and more, end with type safety *)
+EndFamily.
+\end{minted}
+  \end{minipage}
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+Family STLC_bool extends STLC.
+Extend Inductive ty : Set :=
+  | bool : ty.
 
+Extend Inducitive term : Set := 
+  | tt : term | ff : term 
+  | tif : term -> term -> term -> term
+Extend Fixpoint subst (* Need to handle new term *)
+  : id -> term -> term := ...
+Extend Inductive has_type (* .. and new ty too *)
+  : context -> term -> type := ...
+Extend Proposition subst_lemma :
+  ... (* Need to prove extra cases *)
+
+
+Extend Inducitve step : term -> term -> Prop 
+  := ... (* Need to expand this binary relation *)
+(* ... and more extension *)
+EndFamily.
+\end{minted}
+  \end{minipage}
+  \caption{Example STLC and its extension}\label{fig:STLC-example}
+\end{figure}
 
 
 % We want to reason about fields in a family.
-\textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to reason about fields in a family}, just like in a module, where a field can reason about its former fields. More generally, we want it possible for a later field to have type dependent on the former fields.
+\textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to reason about fields in a family}, just like in a module, where a field can reason about its former fields. More generally, we want it possible for a later field to have type dependent on the former fields. In the example of \cref{fig:STLC-example}, "subst", "has_type", "subst_lemma" all require this feature.
 
 % we want extensible inductive type
-\textlabel{Req (2)}{langdesign-req2}:\textbf{ we want extensible inductive type}. The extension of inductive type is not supported by \citet{zm2017} thus we need further consideration about it on both implementation and metatheory. Additionally, \textlabel{Req (3)}{langdesign-req3}:\textbf{we also want extensible pattern matching and induction reasoning}. There are actually two kinds of ``pattern matching'', one for data and the other for induction reasoning, i.e. one use the eliminator to \mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting, extensible pattern matching can be easily expressed with family extension -- we just aggregate all case handlers of pattern matching into a family (as a bunch of functions), and then one family can encode one pattern matching, and family inheritance can express adding case handlers. Then we just need to introduce a primitive that will ``wrap'' that family into a recursive function. Induction reasoning can be handled in an almost identical way. 
+\textlabel{Req (2)}{langdesign-req2}:\textbf{ we need extensible inductive type}, to extend "term" and "ty" in \cref{fig:STLC-example}. The extension of inductive type is not supported by \citet{zm2017} thus we need further consideration about it on both implementation and metatheory. Additionally, \textlabel{Req (3)}{langdesign-req3}:\textbf{we also want extensible pattern matching and induction reasoning}, to extend "subst" in \cref{fig:STLC-example}. There are actually two kinds of ``pattern matching'', one for data and the other for induction reasoning, i.e. one use the eliminator to \mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting, extensible pattern matching can be easily expressed with family extension -- we just aggregate all case handlers of pattern matching into one family (as a bunch of functions), and then one family can encode one pattern matching, and family inheritance can express adding case handlers. Then we just need to introduce a primitive that will ``wrap'' that family into a recursive function. Induction reasoning can be handled in an almost identical way. 
 
 % we want to be able to reason pattern matching as well
-However, there is still difference between data recursion and induction reasoning, because the later one is \textit{proof-irrelevant}. This difference leads to another issue: \textlabel{Req (4)}{langdesign-req4}:\textbf{we want to reason aboue extensible pattern matching}. Our substitution lemma is one example, 
-
-
-
+However, there is still difference between data recursion and induction reasoning, because the former one is \textit{proof-relevant}. This difference leads to another issue: \textlabel{Req (4)}{langdesign-req4}:\textbf{we need to reason about (the computation about) extensible pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}. When proving "subst_lemma", we have to know "subst" is invariant on "tt", i.e. \mintinline{Coq}{(subst i x tt) = tt}. This kind of information requires \textit{computational rules} from the recursors.
 % we want tactic programming and certain level of automation
-And finally, \textlabel{Req (5)}{langdesign-req5}:\textbf{we want tactic programming}. 
+Finally, \textlabel{Req (5)}{langdesign-req5}:\textbf{we desire tactic programming} to relieve us from the hassle of direct manipulation of proof terms.
 
 
