@@ -303,3 +303,11 @@
 
 \newcommand\FIXME{\colorbox{pomegranate}{\color{white}\texttt{??}}}
 \newcommand\TODO{\colorbox{pure-apple}{\color{white}\texttt{TODO}}}
+
+\makeatletter
+\newcommand*{\textlabel}[2]{%
+  \edef\@currentlabel{#1}% Set target label
+  \phantomsection% Correct hyper reference link
+  #1\label{#2}% Print and store label
+}
+\makeatother
