@@ -50,6 +50,11 @@ Field a : nat
 Field b 
   : self_A.a = self_A.a
   := eq_refl.
+Final Field a' : nat 
+  := 1. 
+Field b'
+  : self_A.a' = 1
+  := eq_refl.
 EndFamily.
 \end{minted}
   \end{minipage}\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}
@@ -100,7 +105,7 @@ the example illustrated. Note that, in our example, we include two
 functors without arguments---this is due to a perculiarity of Coq's
 "Include": non-instantiated parameters will be automatically
 instantiated by the appropriate fields in the surrounding defining
-module.\YZ{'For example, ...'}\EDJreply{I don't think explaining a Coq feature inside our paper is a good idea? But I have added this in the following line, please check and retain it if you find this ok. }
+module.\YZ{'For example, ...'}\EDJreply{I don't think explaining a Coq feature inside our paper is a good idea? But I have added this in the following line, please check. Keep it and resolve the comment if you find this ok. }
 For example, "b_7" requires a module of type "a_6". Inside module "A", when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat} inside the current surrounding "A". Then when we \mintinline{Coq}{Include b_7} without specifying the module parameters, Coq will try to find fields in the surrounding module, (i.e. module "A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by the \mintinline{Coq}{a : nat} that is included earlier.
 The resulting module is just like mundane Coq's module and thus
 enjoy all the computational mechanism from Coq for free. 
@@ -151,7 +156,7 @@ In our Coq plugin, we can achieve such exposure of definition by
 exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
-this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. }
+this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
 Non-overridable field is still not expressive enough to achieve the full extent of the dependent type programming. There are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat; p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
