@@ -15,7 +15,14 @@ can capture the key ingredients of implementing family polymorphism
 inside Coq and act as a reference for guiding an appropriate
 implementation of Family Polymorphism inside all sorts of proof
 assistants.\YZ{Does the Coq implementation perform type checking to
-prevent illegal uses fam poly?}
+prevent illegal uses fam poly?}\EDJreply{Yes. Because I define feature of fampoly as a direct translation into Coq feature.  The fampoly is like a shorthand into multiple Coq commands. \\
+Do you find translation from my current metatheory into MLTT (without linkage) helpful? \\
+Actually I am also not sure what this question is aiming towards. \\
+Are you complaining there is no formal specification of my fampoly feature in paper and thus there is no proof my Coq surface syntax is related to metatheory? If so, I thought our Coq plugin is only advertising how powerful Fampoly is to solve expression problem in mechanized proving. I can decouple the relationship between our plugin and our metatheory if you find the gap is really there... And I can only claim metatheory is about a partial result on incorporating fampoly with dependent type, Coq plugin is using two example to illustrate how mechanized proving can get benefit and our Coq plugin is only inspired by our metatheory (and not claim any relationship). Doing so would require rearrange the metatheory section before this section. \\
+But I don't think the gap is there at all because if you want all possible gaps to disappear, then the action of using debruijn is wrong because we need to prove the one using debruijn and the surface syntax that is not using debruijn are ``equivalent''. What's more, module is not sigma type because Module is not a term in Coq and thus there is no formalism of Module at all. Let alone I don't see the plausibility of mechanizing dependent type without debruijn. \\ 
+Please comment back so that I know what corresponding modification is needed on the paper. 
+}
+
 
 \textbf{Family compiled into module.} This is the main idea of compiling
 family components into Coq's primitives: we compile family into Coq
@@ -43,7 +50,7 @@ Field b
   := eq_refl.
 EndFamily.
 \end{minted}
-  \end{minipage}\YZ{Can the self's be omitted?}
+  \end{minipage}\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}
   \begin{minipage}[t]{0.4\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
@@ -71,8 +78,8 @@ Include a_4. Include b_7. End A.
 % Concrete details of compilation of a family term data structure
 Taking \cref{fig:plugin-example1} as an example: when the user
 interactively inputs the line "Field a : nat := ..", our plugin will
-translate this statement into the "Module a_9", "Module Type a_10, a_11"
-three components.\YZ{Typo? Are they a_4, a_5, a_6 in Figure 2?}
+translate this statement into the "Module a_4", "Module Type a_5, a_6"
+three components.\YZ{Typo? Are they a_4, a_5, a_6 in Figure 2?}\EDJreply{Thanks, fixed.}
 {The "EmptySig" is just empty module type.} Then,
 these modules and module types will be generated and type-checked by Coq
 immediately. The computed "Module a_10" is then part of the context of
@@ -91,7 +98,8 @@ the example illustrated. Note that, in our example, we include two
 functors without arguments---this is due to a perculiarity of Coq's
 "Include": non-instantiated parameters will be automatically
 instantiated by the appropriate fields in the surrounding defining
-module.\YZ{'For example, ...'}
+module.\YZ{'For example, ...'}\EDJreply{I don't think explaining a Coq feature inside our paper is a good idea? But I have added this in the following line, please check and retain it if you find this ok. }
+For example, "b_7" requires a module of type "a_6". Inside module "A", when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat} inside the current surrounding "A". Then when we \mintinline{Coq}{Include b_7} without specifying the module parameters, Coq will try to find fields in the surrounding module, (i.e. module "A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by the \mintinline{Coq}{a : nat} that is included earlier.
 The resulting module is just like mundane Coq's module and thus
 enjoy all the computational mechanism from Coq for free. 
 
@@ -114,12 +122,13 @@ a functor, and this actually provides us the possibility to
 
 \textbf{Reasoning Requires Non-Overridable.} This compilation strategy
 can allow fields to be type-dependent on former fields thus fulfilling
-\ref{langdesign-req1}. However, there are some caveats, especially when
-the former fields are actually ``proof-relevant''. For example, we may
+\ref{langdesign-req1}. However, there are some cases we need to expose the concrete definition of a given fields (especially when we are proving properties about it).
+
+For example, we may
 define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field
 and intend to prove its commutativity in a following field $"comm"$.
 But to prove so, we need to know more than just a type interface of
-"add" but also its \textbf{concrete definition}. Otherwise, in the
+"add" but also its \textbf{concrete fixpoint definition}. Otherwise, in the
 future, once "add" is overridden into a subtraction function then
 "comm" will have problem to be inherited.
 A more concrete example is in \cref{fig:plugin-example1}, consider the
@@ -127,21 +136,20 @@ case we have "Field b : self_A.a = 1 := .." instead. Then our
 compilation and Coq's type checking will both fail: in the context of
 "b" (module type "a_6") we only know "a" is of type "nat" but nothing
 more (and this is necessary so that "a" can be overridden in the
-future). To fix that, we need more information on "a" than its type---we
+future). 
+
+To fix that, we need more information on "a" than its type---we
 need to expose the concrete definition "a = 1" to the context of "b".
 \YZ{I had a hard time working through these two paras. I guess they are
 saying that there is a need to expose definitional equalities, and
 therefore we need non-overridables. This causal flow should be made
-more explicit.}
+more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph.}
 
-To achieve such exposure of definition, in meta-theory we only need to
-expose the information as propositional equality as part of the
-signature, and in our Coq plugin, we can achieve that even easier by
-exposing the whole definition directly into module type. Doing so we can
-have a better judgemental equality and we prohibit overriding because
+In our Coq plugin, we can achieve such exposure of definition by
+exposing the whole definition directly into module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
-this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}
+this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. }
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
 Non-overridable field is still not expressive enough to achieve the full extent of the dependent type programming. There are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat; p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
