@@ -1,8 +1,36 @@
-After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular command and translate each new command into a bunch of Coq commands (the surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
+After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular commands and translate each new command into a bunch of Coq commands (the surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
 
-Despite of the possible difficulty of the future maintenance, this approach has various advantages: 1. it is the easiest and the most accessible way to prototype as it relieves us the necessity of familarity of Coq base, especially for the implementation of the module and functor; 2. we have a clear definition of trusted-base---the whole Coq; 3. it is easy to debug---we just need to check the translated commands; 4. it can be well-incorporated with the existent tools like VSCoq; 5. it is more accessible for the the interested audience who can then easily adapt our plugin and give a try---otherwise they have to download and re-build the whole customized Coq; 6. it is more stable because the surface syntax of Coq should be stable across different versions; 7. still, this plugin can capture the key ingredients of implementing family polymorphism inside Coq and act as a reference for guiding an appropriate implementation of Family Polymorphism inside all sorts of proof assistants. 
+Despite possible difficulties for future maintenance, this approach has
+various advantages: 1. it is the easiest and the most accessible way to
+prototype as it relieves us the necessity of familarity of Coq base,
+especially for the implementation of the module and functor; 2. we have
+a clear definition of trusted-base---the whole Coq; 3. it is easy to
+debug---we just need to check the translated commands; 4. it can be
+well-incorporated with the existent tools like VSCoq; 5. it is more
+accessible for the interested audience who can then easily adapt our
+plugin and give a try---otherwise they have to download and re-build the
+whole customized Coq; 6. it is more stable because the surface syntax of
+Coq should be stable across different versions; 7. still, this plugin
+can capture the key ingredients of implementing family polymorphism
+inside Coq and act as a reference for guiding an appropriate
+implementation of Family Polymorphism inside all sorts of proof
+assistants.\YZ{Does the Coq implementation perform type checking to
+prevent illegal uses fam poly?}
 
-\textbf{Family compiled into module.} This is the main idea of compiling family components into Coq's primitives: we compile family into coq module, family type into module type and context of a given term into parameters of the module. Unlike module, we need to faithfully reflect the \textit{late binding} nature of family : for each defining field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall \cL \sigma. T$. However, instead of using Coq's universal quantifier, we choose module and module parameters to achieve this wrapping---each family type in the context of the judgement will be one module parameter with the compiled module type, and thus each field of the family will compile into a functor parametrized by its context. Doing so we can also get rapid feedback from type checking when the users are defining each field interactively with Coq.
+\textbf{Family compiled into module.} This is the main idea of compiling
+family components into Coq's primitives: we compile family into Coq
+module, family type into module type, and the context of a given term
+into parameters of the module. Unlike module, we need to faithfully
+reflect the \textit{late binding} nature of family: for each defining
+field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
+``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall
+\cL \sigma. T$. However, instead of using Coq's universal quantifier, we
+choose module and module parameters to achieve this wrapping---each
+family type in the context of the judgement will be one module parameter
+with the compiled module type, and thus each field of the family will
+compile into a functor parametrized by its context. Doing so we can also
+get rapid feedback from type checking when the users are defining each
+field interactively with Coq.
 % Insert one pseudo-code example for explanation of the mechanism
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.25\linewidth}
@@ -15,7 +43,7 @@ Field b
   := eq_refl.
 EndFamily.
 \end{minted}
-  \end{minipage}
+  \end{minipage}\YZ{Can the self's be omitted?}
   \begin{minipage}[t]{0.4\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
@@ -41,28 +69,84 @@ Include a_4. Include b_7. End A.
 
 
 % Concrete details of compilation of a family term data structure
-Taking \cref{fig:plugin-example1} as an example: when the user interactively input the line "Field a : nat := ..", our plugin will translate this statement into the "Module a_9", "Module Type a_10, a_11" three components. {The "EmptySig" is just empty module type.} Then, these modules and module types will be generated and type-checked by Coq immediately. The computed "Module a_10" is then part of the context of "Field b" (as the module type of "self__A") for "b" to refer to. The internal representation of family "A" is simply the list of these ``compiled'' modules and module types. We can simply achieve incremental checking and overriding as in \ref{langdesign-req0}---for example, we want to override "Field a", we simply replace that compiled module with the new module inside the list. This compiled module type serve as an abstraction to let overriding possible.
+Taking \cref{fig:plugin-example1} as an example: when the user
+interactively inputs the line "Field a : nat := ..", our plugin will
+translate this statement into the "Module a_9", "Module Type a_10, a_11"
+three components.\YZ{Typo? Are they a_4, a_5, a_6 in Figure 2?}
+{The "EmptySig" is just empty module type.} Then,
+these modules and module types will be generated and type-checked by Coq
+immediately. The computed "Module a_10" is then part of the context of
+"Field b" (as the module type of "self__A") for "b" to refer to. The
+internal representation of family "A" is simply the list of these
+``compiled'' modules and module types. We can simply achieve incremental
+checking and overriding as in \ref{langdesign-req0}---for example, if we
+want to override "Field a", we simply replace that compiled module with
+the new module inside the list. This compiled module type serves as an
+abstraction that enables overriding.
 
-Now that we know a family data structure is actually a list of compiled modules, we may want to aggregate them into one complete compiled module. We achieve that by repeatedly using Coq's "Include" command as the example illustrated. Note that, in our example, we include two functors without arguments---this is due to one of the feature of "Include": non-instantiated parameters will be automatically instantiated by the appropriate fields in the surrounding defining module. The resulting module is just like mundane Coq's module and thus enjoy all the computational mechanism from Coq for free. 
+Now that we know a family data structure is actually a list of compiled
+modules, we may want to aggregate them into one complete compiled
+module. We achieve that by repeatedly using Coq's "Include" command as
+the example illustrated. Note that, in our example, we include two
+functors without arguments---this is due to a perculiarity of Coq's
+"Include": non-instantiated parameters will be automatically
+instantiated by the appropriate fields in the surrounding defining
+module.\YZ{'For example, ...'}
+The resulting module is just like mundane Coq's module and thus
+enjoy all the computational mechanism from Coq for free. 
 
 
 
 % explaining inheritance
 Besides standalone family, we also need to implement family inheritance. To simplify the implementation, we can consider all families as inheritance and the standalone families are extending empty family. Thus we only need to deal with inheritance during interactive proving. 
 
-An inheritance data will be annotated with the type for the input family and output family, and generally there are three kinds of inheritance---extend, override and inherit. Extending corresponds to adding new fields, overriding corresponds to modify existent fields and inheriting corresponds to directly taking fields from the parent. Thus it is possible to consider inheritance as solely a data rather than a functor, and this actually provides us the possibility to \text{mix-in} inheritance data. 
+An inheritance data will be annotated with the type for the input family
+and output family, and generally there are three kinds of
+inheritance---extend, override and inherit. Extending corresponds to
+adding new fields, overriding corresponds to modifying existent fields,
+and inheriting corresponds to directly taking fields from the parent.
+Thus, it is possible to consider inheritance as solely a data rather than
+a functor, and this actually provides us the possibility to
+\text{mix-in} inheritance data. 
 
 
 
 
-\textbf{Reasoning Requires Non-Overridable.} This compilation strategy can allow fields to have type dependent on former fields thus fulfilling \ref{langdesign-req1}. However, there are some caveats, especially when the former fields are actually ``proof-relevant''. For example, we may define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field and intends to prove its commutativity in a following field $"comm"$. But to prove so, we need to know more than just a type interface of $"add"$ but also its \textbf{concrete definition}. Otherwise, in the future, once $"add"$ is overridden into a subtraction function then $"comm"$ will have problem to be  inherited. A more concrete example is in \cref{fig:plugin-example1}, consider the case we have "Field b : self_A.a = 1 := .." instead, then our compilation and Coq's type check will both fail: in the context of "b" (module type "a_6") we only know "a" is of type nat but nothing more (and this is necessary so that "a" can be overridden in the future). To fix that, we need more information on "a" than its type---we need to expose its concrete definition "a = 1" to appear in the context of "b".
+\textbf{Reasoning Requires Non-Overridable.} This compilation strategy
+can allow fields to be type-dependent on former fields thus fulfilling
+\ref{langdesign-req1}. However, there are some caveats, especially when
+the former fields are actually ``proof-relevant''. For example, we may
+define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field
+and intend to prove its commutativity in a following field $"comm"$.
+But to prove so, we need to know more than just a type interface of
+"add" but also its \textbf{concrete definition}. Otherwise, in the
+future, once "add" is overridden into a subtraction function then
+"comm" will have problem to be inherited.
+A more concrete example is in \cref{fig:plugin-example1}, consider the
+case we have "Field b : self_A.a = 1 := .." instead. Then our
+compilation and Coq's type checking will both fail: in the context of
+"b" (module type "a_6") we only know "a" is of type "nat" but nothing
+more (and this is necessary so that "a" can be overridden in the
+future). To fix that, we need more information on "a" than its type---we
+need to expose the concrete definition "a = 1" to the context of "b".
+\YZ{I had a hard time working through these two paras. I guess they are
+saying that there is a need to expose definitional equalities, and
+therefore we need non-overridables. This causal flow should be made
+more explicit.}
 
-To achieve such exposure of definition, in meta-theory we only need to expose the information as propositional equality as part of the signature, and in our Coq plugin, we can achieve that even easier by exposing the whole definition directly into module type. Doing so we can have a better judgemental equality and we prohibit overriding because subtraction doesn't have the same definition as $add$. We require the users to decorate field as `Final' so that the plugin will proceed with this special treatment.
+To achieve such exposure of definition, in meta-theory we only need to
+expose the information as propositional equality as part of the
+signature, and in our Coq plugin, we can achieve that even easier by
+exposing the whole definition directly into module type. Doing so we can
+have a better judgemental equality and we prohibit overriding because
+subtraction doesn't have the same definition as $add$. We require the
+users to decorate field as `Final' so that the plugin will proceed with
+this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
 Non-overridable field is still not expressive enough to achieve the full extent of the dependent type programming. There are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat; p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide family sealing mechanism---basically we allow the users to specify the family/module type, and thus we can have a \textit{locally transparent}, \textit{non-overridable} field located in a \textit{overridable} family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an \textit{overridable} family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family. 
+To resolve this, we provide family sealing mechanism---basically we allow the users to specify the family/module type, and thus we can have a \textit{locally transparent}, \textit{non-overridable} field located in a \textit{overridable} family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an \textit{overridable} family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family.
 
 This ``sealed'' family actually simulate interface to a certain level---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.
 % Basically, {a : int -> int; property : a is monotonic}, in this case
