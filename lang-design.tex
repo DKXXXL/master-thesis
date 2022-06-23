@@ -115,11 +115,25 @@ has_type Γ (subst i x tt) T. But this final goal requires to know the computati
 
 % we want tactic programming and certain level of automation
 Finally, \textlabel{Req (5)}{langdesign-req5}: \textbf{we desire tactic
-programming} to relieve us from the hassle of direct manipulation of
-
-proof terms.
+programming} to relieve us from the hassle of direct manipulation of proof terms.
 
 \subsection{Language Design}
-
+Inspired by our above requirements and Family Polymorphism, we propose the following extended syntax for Coq Vernacular Commands. 
 % basically write down the specification of surface Coq commandline
 %   and then explain  how the language design makes the programmer’s life easier
+\begin{align*}
+  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
+  \quad |\quad "EndFamily" \\
+  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
+  & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
+  & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
+  & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle
+\end{align*}
+
+We use "Family" and "EndFamily" to scope. Each field in one family is declared and defined by "Field". We can define nested family. Family will also be used to encode recursive handlers. Each case handling of one inductive type will be aggregated into one family, then "FRecursor" will be used to construct a recursor using these handlers. For example, \mintinline{Coq}{FRecursor recur about T motive f} "using" "handlers" will generate a new field "recur" that is doing induction (using elimination principle of "T") using motive "f", and the handlers are located in the family "handlers".
+
+We can inherit a top level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top level family. As expected, "Override" will override/a field from the parent. "Inherit" can inherit nested family, inductive type and fields. The fields inside a family are order-sensitive because we have dependent type here. So "Inherit Until" is used if the user want to inherit a range of fields. If the user wants to extend an inductive type or a nested family from the parent, then "Extend FInductive" or "Extend Family" is used. Thus nested family can only be inherit or extended together with its outer family (and thus top level family), thus our support of family polymorphism is incomplete.
+
+This incomplete support can already be helpful for extending functions. Take \cref{fig:plugin-example2} as example, if we want to extend boolean inductive type and its negation, we only need to specify the new constructor for boolean and how negation deal with the new constructor.
+

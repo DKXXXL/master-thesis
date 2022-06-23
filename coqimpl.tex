@@ -146,7 +146,7 @@ therefore we need non-overridables. This causal flow should be made
 more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph.}
 
 In our Coq plugin, we can achieve such exposure of definition by
-exposing the whole definition directly into module type. Doing so we also prohibit overriding because
+exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
 this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. }
@@ -154,7 +154,7 @@ this special treatment.\YZ{This para is confusing: which kind of equality is use
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
 Non-overridable field is still not expressive enough to achieve the full extent of the dependent type programming. There are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat; p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide family sealing mechanism---basically we allow the users to specify the family/module type, and thus we can have a \textit{locally transparent}, \textit{non-overridable} field located in a \textit{overridable} family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an \textit{overridable} family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family.
+To resolve this, we provide family sealing mechanism---basically we allow the users to specify the family/compiled module type, and thus we can have a \textit{locally transparent}, \textit{non-overridable} field located in a \textit{overridable} family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an \textit{overridable} family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family.
 
 This ``sealed'' family actually simulate interface to a certain level---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.
 % Basically, {a : int -> int; property : a is monotonic}, in this case
@@ -164,7 +164,7 @@ This ``sealed'' family actually simulate interface to a certain level---we can a
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
-We don't actually support extensible inductive type from \ref{langdesign-req2} in Coq (because that require non-trivial research effort on theory side---i.e. {What is the semantic of extensible inductive type?}---and engineering), but we simulate extensible inductive type using overriding---when extending an inductive type $A$ with new constructors $c$, our plugin will generate a new inductive definition $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (module type) for the following field.  
+We don't actually support extensible inductive type from \ref{langdesign-req2} in Coq (because that require non-trivial research effort on theory side---i.e. {What is the semantic of extensible inductive type?}---and engineering), but we simulate extensible inductive type using overriding---when extending an inductive type $A$ with new constructors $c$, our plugin will generate a new inductive definition $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (the compiled module type) for the following field.  
 
 % Insert one pseudo-code example for explanation of the mechanism
 % Use the natural number example
@@ -227,7 +227,7 @@ End v_33_34.
 \caption{Example Code for Inductive Type}\label{fig:plugin-example2}
 \end{figure}
 
-Let's look at \cref{fig:plugin-example2}, the example of boolean and negation. When we define inductive type "b", the following "Field neg_handler.ff" can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface'' module type "b_3". We cannot export the eliminator of "b" inside "b_3" because doing so "neg_handler.ff" (and "ff_24") will not be able to be inherited to the context where "b" is extended with a third constructor, since the existence of recursor alone will assert that there are only two constructors in "b", not ``extensible'' at all!   
+Let's look at \cref{fig:plugin-example2}, the example of boolean and negation. When we define inductive type "b", the following "Field neg_handler.ff" can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface'' the compiled module type "b_3". We cannot export the eliminator of "b" inside "b_3" because doing so "neg_handler.ff" (and "ff_24") will not be able to be inherited to the context where "b" is extended with a third constructor, since the existence of recursor alone will assert that there are only two constructors in "b", not ``extensible'' at all!   
 
 But we do have to provide a way to construct an (extensible) recursor (as in \ref{langdesign-req3}), and execute type checking (and exhaustiveness checking). Thus we need to extract a elimination principle for future usage. Here we show one exemplar extraction of the recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
@@ -248,7 +248,7 @@ To summarize, the key insight here is that, to make each recursor handler inheri
 
 
 \textbf{Propositional Partial Recursor.}
-Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is not expressive enough to really fulfill \ref{langdesign-req2}. For example, we cannot prove the constructors are injective, i.e. \mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to prove injectiveness of constructor of (vanilla) inductive type, we only require a recursor and its computational rules. However, as we pointed out earlier, the recursor of an inductive type cannot be exposed into the context for the sake of extensibility. Thus we need to alter the formulation of the recursor i.e., we need to have a better characterization of ``extensible inductive type'' exported in the module type as interface.
+Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is not expressive enough to really fulfill \ref{langdesign-req2}. For example, we cannot prove the constructors are injective, i.e. \mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to prove injectiveness of constructor of (vanilla) inductive type, we only require a recursor and its computational rules. However, as we pointed out earlier, the recursor of an inductive type cannot be exposed into the context for the sake of extensibility. Thus we need to alter the formulation of the recursor i.e., we need to have a better characterization of ``extensible inductive type'' exported in the compiled module type as a part of the interface for the following fields to use.
 
 
 The simplest idea is to allow partiality---i.e. returning \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}. We call this \textit{propositional partial recursor}. For example, the propositional partial recursor for \mintinline{Coq}{B.b} is 
@@ -270,7 +270,7 @@ Definition tt_neq_ff : self_B.tt = self_B.ff → False.
 
 
 
-In fact, the above "reflect" function implies that propositional partial recursor is good enough to some extent, at least for non-indexed inductive type, because we can ``embed'' vanilla inductive type into types supporting partial recursor. Because "reflect" is actually a left inverse of an injection "bool → self_B.b". A bit more formally, and restrict our focus to non-indexed inductve types,
+In fact, the above "reflect" function implies that propositional partial recursor is good enough to some extent, at least for non-indexed inductive type, because we can ``embed'' vanilla inductive type into types supporting partial recursor. Because "reflect" is actually a left inverse of an injection "bool → self_B.b". A bit more formally, and restrict our focus to non-indexed inductive types,
 
 \begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$
   \begin{itemize}
@@ -311,10 +311,10 @@ We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can actuall
 % 2. Computational rule for the total recursor
 However, to verify and prove the recursor and partial recursor and their computational rules (as in \ref{langdesign-req4}), our plugin has to compile the extensible family into a non-extensible Coq Module and prove the recursors by instantiating the content of Coq module with concrete inductive type.  
 
-This style of ``Global Reasoning'' is that we can only prove the corresponding theorem when we know the ``full pictures'', especially the inductive type. We provide "Closing Fact" as a command to carry out this global reasoning---we can attach "Closing Fact" with either (proof) terms or Coq's proof script, then only when compilation to module happens, the term/proof script will put into type-check to see if a "Closing Fact" statement can be proved. Note that, "Closing Fact" cannot immeidately check the correctness of the term/proof script because this verification only happens when we finished defining a family, and thus a bit harder to handle.
+This style of ``Global Reasoning'' is that we can only prove the corresponding theorem when we know the ``full pictures'', especially the inductive type. We provide "Closing Fact" as a command to carry out this global reasoning---we can attach "Closing Fact" with either (proof) terms or Coq's proof script, then only when compilation to module happens, the term/proof script will put into type-check to see if a "Closing Fact" statement can be proved. Note that, "Closing Fact" cannot immediately check the correctness of the term/proof script because this verification only happens when we finished defining a family, and thus a bit harder to handle.
 
 This "Closing Fact" can ease us from the necessity to let plugin generate proof for recursors and partial recursors and their computational rules (as in \ref{langdesign-req4}), and thus making plugin development easier. For example, the computation rule for a concrete recursor like "B.neg" and partial recursors in \cref{fig:plugin-example2} can be directly asserted by using "Closing Fact" and verified later during compilation. This ``Global Reasoning'' will be again useful in the later examples.
 
-\textbf{Hack: ``Meta-data''.} Due to our implementation of the family, the family data is invisible for Coq internal and thus cause some inconvenience.  For example, currently it is not possible to define a vanilla inductive type dependent on our ``extensible'' inductive type due to the invisiblity, unless we compile the whole family. Similarly, customized tactic expression requested by \ref{langdesign-req5} cannot use lemmas or theorems in the fields of the current defining family as well.
+\textbf{Hack: ``Meta-data''.} Due to our implementation of the family, the family data is invisible for Coq internal and thus cause some inconvenience.  For example, currently it is not possible to define a vanilla inductive type dependent on our ``extensible'' inductive type due to the invisibility, unless we compile the whole family. Similarly, customized tactic expression requested by \ref{langdesign-req5} cannot use lemmas or theorems in the fields of the current defining family as well.
 
-To remedy this, we facilitate a "MetaData" command. This command will allow to bundle any original Coq primitive (in the current family context) into the module type, and thus visible to the following defining field. Doing so, we can define customized tactic as in \ref{langdesign-req5} that uses lemmas proved in the family. 
+To remedy this, we facilitate a "MetaData" command. This command will allow to bundle any original Coq primitive (in the current family context) into the compiled module type, and thus visible to the following defining field. Doing so, we can define customized tactic as in \ref{langdesign-req5} that uses lemmas proved in the family. 
