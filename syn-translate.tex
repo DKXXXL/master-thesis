@@ -1,0 +1,9 @@
+The implementation described in \cref{sec:coqimpl} can be formalized in our metatheory. The described compilation strategy can be considered as a map from our syntactical (QIIT-)model to a subpart of our syntactical (QIIT-)model \textit{without linkages}. Basically, we can compile away the judgement $\goodSig{\Gamma}{v}{n}$, the type $\cL$ and $\cC$, and related terms, by transforming them into the corresponding sigma type.
+
+
+
+Ultimately, we construct a model for our QIIT-syntax using only subparts of our QIIT-syntax -- without these linkages. This subpart is the standard MLTT with $\goodWSig{}{}{}$, a (non-conventional) W-type and a recursor that using sigma type to aggregate the handlers. This also justify the intuition -- a linkage is actually a module \textit{with universal quantification wrapping its fields to achieve late binding}. 
+
+It is also possible to compile away $\goodWSig{\Gamma}{w}{n}$ but the recursor will always require a sigma type as handler and thus the elimination rule for our W-type is still non-conventional.
+
+After syntactical translation, we directly have consistency and canonicity \textit{if we assume the consistency and canonicity of the subpart}. However, due to our non-conventional formulation of the inductive type, it is better we don't impose such assumption and directly give a consistency and canonicity proof.
