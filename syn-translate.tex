@@ -1,9 +1,26 @@
-The implementation described in \cref{sec:coqimpl} can be formalized in our metatheory. The described compilation strategy can be considered as a map from our syntactical (QIIT-)model to a subpart of our syntactical (QIIT-)model \textit{without linkages}. Basically, we can compile away the judgement $\goodSig{\Gamma}{v}{n}$, the type $\cL$ and $\cC$, and related terms, by transforming them into the corresponding sigma type.
+The implementation described in \cref{sec:coqimpl} can be formalized in our metatheory. The described compilation strategy can be considered as a map from our syntactical (QIIT-)model to a subpart of our syntactical (QIIT-)model \textit{without linkages}. This subpart is the standard MLTT with $\goodWSig{}{}{}$, a (non-conventional) W-type and a recursor that using sigma type to aggregate the handlers.  
+
+Basically, we can compile away the judgement $\goodSig{\Gamma}{v}{n}$, the type $\cL$ and $\cC$, and related terms, by transforming them into the corresponding sigma type.
+
+ 
+
+\newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
+\newcommand{\Sigr}[2]{{ "Sig"_r~{#1}~{#2} }}
+
+We use $\denotesT{}$ as the translation. This translation is invariant under the subpart. Since we are in an intrinsic setting, everything here is well-typed (well-formed)including this translation. Thus $\denotesS{T}$ means the same as $\denotesS{\goodType{\Gamma}{T}{}}$ (i.e. every type is tracking its context). In other words, every derivation of any judgement will track its ``context''. This will be clearer in the (pseudo-)Agda formalization.
+
+\begin{align*}
+  \goodType{\Gamma}{\Sigr{\Gamma}{n}}{} & \text{ when } \goodCtx{\Gamma}{} \text{ and } n \in \mathbb{N} \\
+  \denotesT{\goodSig{\Gamma}{\sigma}{n}},&\denotesT{\Sigr{\Gamma}{n}}, \text{ and } \denotesT{\cC} \text{ are mutually recursively defined together, } \\
+  & \text{and they define inductively on the signature length} \\  
+  \denotesT{\goodSig{\Gamma}{\sigma}{n}} &= \goodTerm{\Gamma}{\sigma}{\Sigr{\Gamma}{n}} \\ 
+  \denotesT{\Sigr{\Gamma}{n+1}} &= \Sigma~(\Sigr{\Gamma}{n})~(\Sigma)
+\end{align*}
 
 
 
-Ultimately, we construct a model for our QIIT-syntax using only subparts of our QIIT-syntax -- without these linkages. This subpart is the standard MLTT with $\goodWSig{}{}{}$, a (non-conventional) W-type and a recursor that using sigma type to aggregate the handlers. This also justify the intuition -- a linkage is actually a module \textit{with universal quantification wrapping its fields to achieve late binding}. 
+Ultimately, we construct a model for our QIIT-syntax using only subparts of our QIIT-syntax -- without these linkages. This also justify the intuition -- a linkage is actually a module \textit{with universal quantification wrapping its fields to achieve late binding}. 
 
 It is also possible to compile away $\goodWSig{\Gamma}{w}{n}$ but the recursor will always require a sigma type as handler and thus the elimination rule for our W-type is still non-conventional.
 
-After syntactical translation, we directly have consistency and canonicity \textit{if we assume the consistency and canonicity of the subpart}. However, due to our non-conventional formulation of the inductive type, it is better we don't impose such assumption and directly give a consistency and canonicity proof.
+After syntactical translation, we should directly have consistency and canonicity \textit{if we assume the consistency and canonicity of the subpart}. However, due to our non-conventional formulation of the inductive type, it is better we don't impose such assumption and directly give a consistency and canonicity proof.
