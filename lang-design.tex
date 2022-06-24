@@ -1,14 +1,13 @@
 \subsection{Design Space}
 
-\YZ{looks more like a 'design space' rather than 'language design' section}\EDJreply{Good point. Do I just change the section name?s}
 When adapting Family Polymorphism into dependent types, we choose to
 focus only on the essence of family (and inheritance)
 structure in \citet{zm2017}, and thus a lot of unrelated features, like
 Interface, will be removed. In this case, it will look like module with
 late-binding and inheritance as code and proof reuse for module. We also
 need it to have good compatibility with inductive types, because we
-don't want to lose too much reasoning power of Coq (and its tactic
-programming). 
+don't want to lose too much reasoning power of Coq\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}
+(and its tactic programming). 
 
 Let's start with a basic example---STLC and its extension in
 \cref{fig:STLC-example}---to consider what kind of features are required
@@ -17,8 +16,8 @@ and how much of them can be supported by family polymorphism.
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.47\linewidth}
-\begin{minted}[fontsize=\footnotesize]{Coq}
-Family STLC.
+\begin{minted}[fontsize=\footnotesize,escapeinside=||]{Coq}
+Family STLC.|\YZ{Does minted support adding extra keywords such as 'Family' and 'extends'?}|
 Inductive ty : Set :=
   | unit : ty
   | arrow : ty -> ty -> ty.
@@ -66,7 +65,13 @@ EndFamily.
 \end{figure}
 
 
-First and foremost, \textlabel{Req (0)}{langdesign-req0}\textbf{we desire incremental(modular) type checking}. Notice that, the modularity here in Coq is a bit different from other language, because Coq is \textit{interactive} theorem proving so we actually need \textit{statement-wise} incremental type checking, not only for saving the compilation time, but also for the immediate feedback and type-checking for the Coq developer.
+First and foremost, \textlabel{Req (0)}{langdesign-req0}: \textbf{we
+desire incremental (modular) type checking}. Notice that, the modularity
+here in Coq is a bit different from other languages, because Coq
+supports \textit{interactive} theorem proving, so we actually need
+\textit{statement-wise} incremental type checking, not only for avoiding
+re\-compilation, but also for the immediate feedback and
+type-checking for the Coq developer.
 
 % We want to reason about fields in a family.
 \textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to
@@ -111,14 +116,18 @@ recursors.\YZ{What goes wrong if subst is not invariant or you do not
 know whether subst is invariant?}\EDJreply{Then it is unprovable because substitution lemma need to know this. You can just instantiate the whole lemma -- we want  
 has_type (Γ; x ↦ A) tt T ->
 has_type Γ u A ->
-has_type Γ (subst i x tt) T. But this final goal requires to know the computation of subst.}
+has_type Γ (subst i x tt) T. But this final goal requires to know the
+computation of subst.}\YZreply{Seems like what's missing here is to
+convince the reader why exposing the definition of subst could be a
+problem for family polymorphism.}
 
 % we want tactic programming and certain level of automation
 Finally, \textlabel{Req (5)}{langdesign-req5}: \textbf{we desire tactic
 programming} to relieve us from the hassle of direct manipulation of proof terms.
 
 \subsection{Language Design}
-Inspired by our above requirements and Family Polymorphism, we propose the following extended syntax for Coq Vernacular Commands. 
+Inspired by our above requirements and Family Polymorphism, we propose
+the following extension to Coq's Vernacular Commands.
 % basically write down the specification of surface Coq commandline
 %   and then explain  how the language design makes the programmer’s life easier
 \begin{align*}
@@ -131,9 +140,33 @@ Inspired by our above requirements and Family Polymorphism, we propose the follo
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle
 \end{align*}
 
-We use "Family" and "EndFamily" to scope. Each field in one family is declared and defined by "Field". We can define nested family. Family will also be used to encode recursive handlers. Each case handling of one inductive type will be aggregated into one family, then "FRecursor" will be used to construct a recursor using these handlers. For example, \mintinline{Coq}{FRecursor recur about T motive f} "using" "handlers" will generate a new field "recur" that is doing induction (using elimination principle of "T") using motive "f", and the handlers are located in the family "handlers".
+We use "Family" and "EndFamily" to scope.
+Each field in a family is declared and defined as a "Field".\YZ{This sentence sounds a bit recursive}
+We can define nested families.
+Family will also be used to encode recursive handlers. Each case
+handling of one inductive type will be aggregated into one family, then
+"FRecursor" will be used to construct a recursor using these handlers.
+For example, \mintinline{Coq}{FRecursor recur about T motive f} "using"
+"handlers" will generate a new field "recur" that is doing induction
+(using elimination principle of "T") using motive "f", and the handlers
+are located in the family "handlers".
 
-We can inherit a top level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top level family. As expected, "Override" will override/a field from the parent. "Inherit" can inherit nested family, inductive type and fields. The fields inside a family are order-sensitive because we have dependent type here. So "Inherit Until" is used if the user want to inherit a range of fields. If the user wants to extend an inductive type or a nested family from the parent, then "Extend FInductive" or "Extend Family" is used. Thus nested family can only be inherit or extended together with its outer family (and thus top level family), thus our support of family polymorphism is incomplete.
+We can inherit a top-level family "parent" using \mintinline{Coq}{Family
+... extends parent} as a new top-level family. As expected, "Override"
+will override a field from the parent. "Inherit" can be used to inherit
+nested families, inductive types, and fields. The fields inside a family
+are order-sensitive because we have dependent types here. So "Inherit
+Until" is used if the user wants to inherit a range of fields. If the
+user wants to extend an inductive type or a nested family from the
+parent, then "Extend FInductive" or "Extend Family" is used. Thus nested
+family can only be inherited or extended together with its outer family
+(and thus top level family), thus our support of family polymorphism is
+incomplete.
 
-This incomplete support can already be helpful for extending functions. Take \cref{fig:plugin-example2} as example, if we want to extend boolean inductive type and its negation, we only need to specify the new constructor for boolean and how negation deal with the new constructor. This support provides the user a way to waive the necessity for duplicating code -- otherwise the user will need to copy and paste the whole original negation definition and add a new pattern matching cases.
-
+This incomplete support can already be useful for extending functions.
+Take \cref{fig:plugin-example2} as example, if we want to extend boolean
+inductive type and its negation, we only need to specify the new
+constructor for boolean and how negation deals with the new constructor.
+As a result, the programmer does not have to duplicate code---otherwise
+the user will need to copy and paste the whole original negation
+definition and add a new pattern matching case.
