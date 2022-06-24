@@ -76,11 +76,12 @@ re\-compilation, but also to enable immediate feedback and incremental
 type-checking for the Coq developer. We don't want our family to ruin
 this conventional routine of interactive development.
 \textlabel{Req~(0B)}{langdesign-req0b}~\textbf{we also want to keep the
-computational property of Coq when using families}. Coq, as a constructive
-logic, has been famous for its ability to do calculations and extract
-programs. We don't want our Family facility to ruin this: the developers
-should be able to project field as first-class value just like Coq's
-Module.
+computational ability of Coq when using families}. Coq, based on constructive
+logic, can consider proof as programs. 
+We don't want our Family facility to ruin this when incorporated with 
+the remaining parts of Coq: 
+the developers should be able to project fields of families 
+as first-class value just like how they can project fields of Coq's Module.
 
 % We want to reason about fields in a family.
 \textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to
