@@ -66,7 +66,7 @@ EndFamily.
 \end{figure}
 
 
-First and foremost, \textlabel{Req (0)}{langdesign-req0}\textbf{we desire incremental(modular) type checking}. Notice that, the modularity here in Coq is a bit different from other language, because Coq is \textit{interactive} theorem proving so we actually need \textit{statement-wise} incremental type checking, not only for saving the compilation time, but also for the immediate feedback and type-checking for the Coq developer.
+First and foremost, we don't want to throw away some basic good properties from Coq. \textlabel{Req (0A)}{langdesign-req0}~\textbf{we want to retain the incremental(modular) type checking}. Notice that, the modularity here in Coq is a bit different from other language, because Coq is \textit{interactive} theorem proving so we actually need \textit{statement-wise} incremental type checking, not only for saving the compilation time, but also for the immediate feedback and type-checking for the Coq developer. We don't want our family to ruin this conventional routine of interactive development. \textlabel{Req (0B)}{langdesign-req0b}~\textbf{we also want to keep the computational property of Coq when use family}. Coq, as a constructive logic, has been famous for its ability to do calculations and extract programs. We don't want our Family facility to ruin this: the developers should be able to project field as first-class value just like Coq's Module.
 
 % We want to reason about fields in a family.
 \textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to
