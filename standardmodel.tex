@@ -36,7 +36,7 @@ Here we will only show some interpretation and also omit the universe level to s
       \land  {\goodTypeS{\Gamma, A}{T}{i}} 
   \} \\ 
   \denotesS{\goodSig{\Gamma}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodType{\Gamma}{\cC \sigma}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gamma}{\cC \tau}{}} \denotesS{T[sf \ f]} \\
+  \denotesS{\goodType{\Gamma}{\cC \sigma}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gamma}{\cC \tau}{}} \denotesS{T["sf" \ f]} \\
   & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \denotesS{f} , \denotesS{T}) \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
   \denotesS{\goodType{\Gamma}{\cC \sigma}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\
   \denotesS{\goodType{\Gamma}{\cL \sigma}{i}} & \text{ is a family of sets, dependent on } \denotesS{\sigma}  \\
@@ -50,7 +50,7 @@ Here we will only show some interpretation and also omit the universe level to s
   \denotesS{\goodTerm{\Gamma}{p_1\mu~t}{\cL(p_1\nu~\sigma)}}(\gamma) &=  "fst"~(t\gamma) \\ 
   \denotesS{\goodTerm{\Gamma}{\cCt \{\sigma\} o}{\cC\sigma}} & \text{ is a dependent function, defined inductively on } \denotesS{\sigma} \\
   \denotesS{\goodTerm{\Gamma}{\cCt o}{\cC\sigma}}
-  &= \denotesS{\goodTerm{\Gamma}{\cCt (p_1\mu \ o)}{...}}, \denotesS{(p_2\mu \ o)[sf \ f][(id, \cCt (p_1\mu \ o))]} \\
+  &= \denotesS{\goodTerm{\Gamma}{\cCt (p_1\mu \ o)}{...}}, \denotesS{(p_2\mu \ o)["sf" \ f][(id, \cCt (p_1\mu \ o))]} \\
   & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{n+1}} \\
   \denotesS{\goodTerm{\Gamma}{\cCt o}{\cC\sigma}}
   &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gamma}{\_}{0}} \\

@@ -5,16 +5,40 @@ Basically, we can compile away the judgement $\goodSig{\Gamma}{v}{n}$, the type 
  
 
 \newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
-\newcommand{\Sigr}[2]{{ "Sig"_r~{#1}~{#2} }}
+\newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
-We use $\denotesT{}$ as the translation. This translation is invariant under the subpart. Since we are in an intrinsic setting, everything here is well-typed (well-formed)including this translation. Thus $\denotesS{T}$ means the same as $\denotesS{\goodType{\Gamma}{T}{}}$ (i.e. every type is tracking its context). In other words, every derivation of any judgement will track its ``context''. This will be clearer in the (pseudo-)Agda formalization.
+We use $\denotesT{}$ as the translation. This translation is invariant under the subpart. Since we are in an intrinsic setting, everything here is well-typed (well-formed)including this translation. Thus $\denotesT{T}$ means the same as $\denotesT{\goodType{\Gamma}{T}{}}$ (i.e. every type is tracking its context). In other words, every derivation of any judgement will track its ``context''. This will be clearer in the (pseudo-)Agda formalization.
 
 \begin{align*}
-  \goodType{\Gamma}{\Sigr{\Gamma}{n}}{} & \text{ when } \goodCtx{\Gamma}{} \text{ and } n \in \mathbb{N} \\
-  \denotesT{\goodSig{\Gamma}{\sigma}{n}},&\denotesT{\Sigr{\Gamma}{n}}, \text{ and } \denotesT{\cC} \text{ are mutually recursively defined together, } \\
+  \text{We will define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{} \text{ when } \goodCtx{\Gamma}{} \text{ and } n \in \mathbb{N} \\
+  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\cC} \text{ are mutually recursively defined together, } \\
   & \text{and they define inductively on the signature length} \\  
-  \denotesT{\goodSig{\Gamma}{\sigma}{n}} &= \goodTerm{\Gamma}{\sigma}{\Sigr{\Gamma}{n}} \\ 
-  \denotesT{\Sigr{\Gamma}{n+1}} &= \Sigma~(\Sigr{\Gamma}{n})~(\Sigma)
+  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \text{, s.t. } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \iff \goodTerm{\Gamma}{\sigma}{\Sigr{\Gamma}{n}} \\ 
+  {\Sigr{\Gamma}{(n+1)}} &= 
+    \Sigma~(\Sigr{\Gamma}{n})
+          ~(\Sigma~\cU
+                  ~(\Sigma~(\Pi(\cC (\pi_2[\pi_1]))(El~\pi_2[\pi_1]))~\cU)) \\
+  \Sigr{\Gamma}{0} &= \top \\
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &\text{ defines upon } \denotesT{\sigma} \\
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= 
+    \Sigma~(\denotesT{\cC ("pjl"~\sigma)})~(El \ ("app"~("pjr"^3~\sigma))[(\pi_1, "app"~("pjl"~("pjr"^2~t)))]) \\
+      &\text{when } \goodSig{\Gamma}{\sigma}{n+1} \\
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= \top \quad
+      \text{when } \goodSig{\Gamma}{\sigma}{0} \\ 
+  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} & \text{ is defined upon } \denotesT{\sigma} \\
+  & \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &=
+  \denotesT{\cL("pjl"~\sigma)} \times \Pi(El~("pjl"~("pjr"~\sigma)))(El~("app"~("pjr"^3~\sigma))) \\
+  &\text{when } \goodSig{\Gamma}{\sigma}{n+1} \\
+  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &= \top \quad \text{when } \goodSig{\Gamma}{\sigma}{0} \\
+  \denotesT{\goodSig{\Gamma}{\nu^+~\sigma~f~T}{n+1}} &= (\sigma, "c"~A, "lam"~f, "lam"~("c"~T)) \\ 
+  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\cL(\nu^+~\sigma~T)}} &= (m, "lam"~t) \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} & \text{ is defined upon } \denotesT{m}\\
+  & \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} &= 
+  (\denotesT{\cCt o}, t["sf"~f][("id", \denotesT{\cCt o})]) \\
+  & \text{when } \goodSig{\Gamma}{\sigma}{n+1}, \text{ and } o = "pjl"~m, t = "app"~("pjr"~m), f = p_f\nu~\sigma \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC \sigma}} &= () \quad \text{when } \goodSig{\Gamma}{\sigma}{0}
 \end{align*}
 
 
