@@ -113,8 +113,7 @@ functors without arguments---this is due to a perculiarity of Coq's
 instantiated by the appropriate fields in the surrounding defining
 module.\YZ{'For example, ...'}\EDJreply{I don't think explaining a Coq feature inside our paper is a good idea? But I have added this in the following line, please check. Keep it and resolve the comment if you find this ok. }
 For example, "b_7" requires a module of type "a_6". Inside module "A", when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat} inside the current surrounding "A". Then when we \mintinline{Coq}{Include b_7} without specifying the module parameters, Coq will try to find fields in the surrounding module, (i.e. module "A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by the \mintinline{Coq}{a : nat} that is included earlier.
-The resulting module is just like mundane Coq's module and thus
-enjoy all the computational mechanism from Coq for free. 
+The resulting compiled module is just like mundane Coq's module and thus maintains all the computational mechanism from Coq, fulfilling \ref{langdesign-req0b}. 
 
 
 
