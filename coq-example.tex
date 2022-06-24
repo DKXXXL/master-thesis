@@ -1,6 +1,6 @@
 We provide two examples here for illustration and evaluation of our Coq plugin. 
 
-\subsection{Type Safety for STLC}
+\subsection{Type Safety for STLC}\EDJ{We need a fuller view of the two examples. Especially show "accessing family components outside that family".}
 We start with the very basic type safety proof of STLC, largely adapted from Software Foundation~\cite{pierce2014software}, which is also one of the primal motivating example of this project. 
 
 Our emphasis here is that, we singled out some programming language features from STLC and prove the type safety for each feature separately, following the style of the examples in MTC~\cite{delaware2013,forsta2020}. And we use a \textit{not-yet-formally-defined} \textbf{mix-in} feature to mix the semantic and properties of two programming language feature---product and boolean (in \cref{fig:STLC-example})---with vanilla STLC. This way, we can say precisely, \textit{a programming language feature itself is a piece of data/inheritance judgement/inherited family}. Compared to MTC, our example uses small-step operational semantic by exploiting the extensible inductive type, and most of the proof is directly adapted from the one in Software Foundation, resulting a more accessible proof. 
