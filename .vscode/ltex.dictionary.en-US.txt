@@ -5,3 +5,4 @@ sequents
 recursor
 overridable
 metatheory
+Coq
