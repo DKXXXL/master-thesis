@@ -89,7 +89,7 @@ Now we show selected typing rules: we will have dependent function types
 and dependent pair types. Dependent pair type is used to model Coq
 module, which is useful when we need to model the ``compilation'' from
 linkages to modules. We also have $\beta,\eta$-rule for both dependent
-function type and dependent pair type.
+function type and dependent pair type. The subsitution law for these two require \textit{de bruijn lifting}: for $\goodTerm{\Gamma}{\sigma}{\Delta}$, we define its de bruijn lifting $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow}{\Delta, A}$ given $\goodType{\Delta}{A}{}$.
 
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
