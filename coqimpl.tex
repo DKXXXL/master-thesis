@@ -29,7 +29,7 @@ when one uses a statically typed language as a compilation target, they
 also want to have type checking at the source level, (1) because there
 could be type errors at the source level that could not otherwise be
 caught at the target level and (2) because it allows better error messages.
-So it needs to be addressed why deferring type checking to Coq is OK.}
+So it needs to be addressed why deferring type checking to Coq is OK.}\EDJreply{Good point. I think (1) is largely mediated by the fact the semantic of family is very close to that of the module. And the supporting feature is simple enough that there won't appear some problems like type error at source-level but not target level(2) is happening for sure but some basic error message is almost "transparent" i.e. the error-messages from Coq can be directly interpreted for the user. But my justification is solely empirical and as you know the empirical study for this paper is not really strong enough to support anything.}
 
 
 \textbf{Family compiled into module.} This is the main idea of compiling
@@ -54,16 +54,16 @@ Family A.
 Field a : nat 
   := 1.
 Field b 
-  : self_A.a = self_A.a
+  : a = a
   := eq_refl.
 Final Field a' : nat 
   := 1. 
 Field b'
-  : self_A.a' = 1
+  : a' = 1
   := eq_refl.
 EndFamily.
 \end{minted}
-  \end{minipage}\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}
+  \end{minipage}\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}\EDJreply{Omitting self_ is easy and not much engineering effort is required. But omitting self_ will lead to `A.a' instead of `a' actually. So if we really want `a' as you last time mentioned, then a resolution is required and more engineering effort is required. But I don't see any technical difficulties. I have removed all the self, please check.}
   \begin{minipage}[t]{0.4\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
@@ -95,7 +95,7 @@ translate this statement into the "Module a_4", "Module Type a_5, a_6"
 three components.
 {The "EmptySig" is just empty module type.} Then,
 these modules and module types will be generated and type-checked by Coq
-immediately. The compiled "Module a_10"\YZ{should this be a_4?} is then part of the context of
+immediately. The compiled "Module a_4"\YZ{should this be a_4?}\EDJreply{Yes. Thanks!} is then part of the context of
 "Field b" (as the module type of "self_A") for "b" to refer to. The
 internal representation of family "A" is the list of these
 compiled modules and module types. We can achieve incremental
@@ -155,7 +155,7 @@ need to expose the concrete definition "a = 1" to the context of "b".
 \YZ{I had a hard time working through these two paras. I guess they are
 saying that there is a need to expose definitional equalities, and
 therefore we need non-overridables. This causal flow should be made
-more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph.}
+more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph. Please check and resolve if find satisfied.}
 
 In our Coq plugin, we can achieve such exposure of definition by
 exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
