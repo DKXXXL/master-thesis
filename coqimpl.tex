@@ -128,7 +128,7 @@ To simplify the implementation, we can consider all families as
 inheritance and the standalone families are extending the empty family.
 Thus we need to deal with only inheritance during interactive proving. 
 
-An inheritance data\YZ{what is 'inheritance data'?}\EDJreply{It is just inheritance judgement, but before meta-theory is introduced, I can only say some "first-order data that represent the information of inheritance". I emphasize first order to distinguish from functor in ML community.} 
+An inheritance data\YZ{what is 'inheritance data'?}\EDJreply{It is just inheritance judgement, but before meta-theory is introduced, I can only say some "first-order data that represent the information of inheritance". I emphasize first order to distinguish from functor in ML community.}\YZreply{I think this is the place where you can use an example to demonstrate these three kinds of inheritance.}
 will be annotated with the type for the input family
 and output family. There are three kinds of inheritance---extend,
 override, and inherit. Extending corresponds to adding new fields,
@@ -177,27 +177,31 @@ this special treatment.\YZ{This para is confusing: which kind of equality is use
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
 Non-overridable fields are still not expressive enough to achieve the full
-extent of dependent type programming. There are cases overriding and
+extent of dependent type programming. There are cases where overriding and
 equational reasoning are both needed, especially when we use Coq to do
 computation. For example, we may want a field to be an overridable 
 monotonic function. We cannot split into two fields
-\mintinline{Coq}{(f : nat → nat; p : monotonic f)}\YZ{Is this semicolon syntax valid Coq syntax?}\EDJreply{No, this part is just pseudo-code for two consecutive fields. I have no good idea on what to use other than semicolon, apparently I cannot use comma.} because to provide
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
+because to provide
 "p" we need to have concrete definition of "f" in the family type, which
 makes "f" non-overridable at all. One option is to use sigma type
 \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
 a bundle of stuff with multiple refinements. 
 
 To resolve this, we provide family sealing mechanism---we allow the
-users to specify the compiled module type of a given family\YZ{I don't understand "specify the family/compiled module type"}\EDJreply{Sorry. I rephase it into "compiled module type of a given family".}, and thus we can have a
+users to specify the compiled module type of a given family,\YZ{I don't understand "specify the family/compiled module type"}\EDJreply{Sorry. I rephase it into "compiled module type of a given family".}\YZreply{Still cannot see what is going on and how it is related to the sentence that follows. An example is due.}
+and thus we can have a
 \textit{locally transparent}, \textit{non-overridable} field located in
-an \textit{overridable} family. Using the above example, we simply make
-\mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an
-\textit{overridable} family, but "f" to be non-overridable and
-transparent on its definition, and thus we can prove "p". Once we want
-to swap the implementation of "f", we just override the whole ``sealed''
-family.
+an \textit{overridable} family. Using the above example, we simply seal
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
+together inside an overridable family that does not allow "f"
+to be overridden in any of its derived families.
+Because "f" is non-overridable inside the family, its definition is
+transparent and can be used to prove "p".
+However, because the enclosing family of "f" is overridable, to swap the
+implementation of "f", we just override the whole ``sealed'' family.
 
-``Sealed'' families can actually simulate interfaces in certain sense\YZ{I was actually thinking sealed families simulate sigma types, no?}\EDJreply{You are absolutely right. I should add a "can" here. I can use sealed family to simulate interface is by creating a sigma type, but making the impleemntation of sigma type trivial (using place holder/using axiom as I specified below). Then once I want to instantiate with real implementation, I override the whole family -- as long as it has the same type as the sealed family, everything still works.}---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.\YZ{I don't understand what it means to "assign each field with an axiom".}\EDJreply{It really means ``place holder'' in general programming language (Python's NonImplement()), defer to future. Because Coq's Axiom can be used to instantiate anything.}
+``Sealed'' families can actually simulate interfaces in certain sense\YZ{I was actually thinking sealed families simulate sigma types, no?}\EDJreply{You are absolutely right. I should add a "can" here. I can use sealed family to simulate interface is by creating a sigma type, but making the implemntation of sigma type trivial (using place holder/using axiom as I specified below). Then once I want to instantiate with real implementation, I override the whole family -- as long as it has the same type as the sealed family, everything still works.}\YZreply{Can you explain this with an example? I recall the AbsInt example uses it?}---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.\YZ{I don't understand what it means to "assign each field with an axiom".}\EDJreply{It really means ``place holder'' in general programming language (Python's NonImplement()), defer to future. Because Coq's Axiom can be used to instantiate anything.}
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property

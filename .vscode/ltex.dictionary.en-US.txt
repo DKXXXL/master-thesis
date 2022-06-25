@@ -8,3 +8,5 @@ metatheory
 Coq
 equational
 non-overridable
+Non-overridable
+Overridable
