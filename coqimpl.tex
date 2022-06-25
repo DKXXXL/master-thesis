@@ -290,7 +290,15 @@ and we have assigned it to both "f" and "p", and later instantiate in
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
-We don't actually support extensible inductive type from \ref{langdesign-req2} in Coq (because that require non-trivial research effort on theory side---i.e. {What is the semantic of extensible inductive type?}---and engineering), but we simulate extensible inductive type using overriding---when extending an inductive type $A$ with new constructors $c$, our plugin will generate a new inductive definition $A'$ with this new $c$ on the fly and feed to Coq.  But still, we must be careful on the exposing data in the family type (the compiled module type) for the following field.  
+We don't actually support extensible inductive types from
+\ref{langdesign-req2} in Coq (because that require non-trivial research
+effort on theory side---i.e. {What is the semantics of extensible
+inductive types?}---and engineering), but we simulate extensible
+inductive type using overriding---when extending an inductive type $A$
+with new constructors $c$, our plugin will generate a new inductive
+definition $A'$ with this new $c$ on the fly and feed it to Coq.  But
+still, we must be careful on the exposing data in the family type (the
+compiled module type) for the following field.  
 
 % Insert one pseudo-code example for explanation of the mechanism
 % Use the natural number example
@@ -324,7 +332,7 @@ EndFamily.
 \end{minted}
   \end{minipage}
   \begin{minipage}[t]{0.65\linewidth}
-\begin{minted}[fontsize=\footnotesize]{Coq}
+\begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
   (* Abstraction for Inductive Type *)
 Module Type b_3 (self_B: EmptySig_4).
 Parameter (b : Set). Parameter (tt ff : b). End b_3.      
@@ -337,7 +345,7 @@ Definition __recursor_type_b_rec :=
   -> forall __i : self_B.b, P __i. End b_rec_12. 
   (* Field B.neg_handler.ff *)
 Module ff_24 (self_B: b_6) 
-             (self__neg_handler: tt_23 self_B).
+             (self__neg_handler@\YZ{'self_neg_handler' instead?}@: tt_23 self_B).
 Definition ff : self_B.b := self_B.tt. End ff_24.
   (* Intermediate Module solely for type checking *)
 Module v_33_34 (self_B: neg_handler_26).
@@ -353,14 +361,47 @@ End v_33_34.
 \caption{Example Code for Inductive Type}\label{fig:plugin-example2}
 \end{figure}
 
-Let's look at \cref{fig:plugin-example2}, the example of boolean and negation. When we define inductive type "b", the following "Field neg_handler.ff" can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface'' the compiled module type "b_3". We cannot export the eliminator of "b" inside "b_3" because doing so "neg_handler.ff" (and "ff_24") will not be able to be inherited to the context where "b" is extended with a third constructor, since the existence of recursor alone will assert that there are only two constructors in "b", not ``extensible'' at all!   
+Let's look at \cref{fig:plugin-example2}, the example of boolean and
+negation. When we define inductive type "b", the following "Field
+neg_handler.ff" can only know "b" is a type (of "Set") and there are at
+least two constructors for it, just like what we declare in ``the
+abstracted interface'' the compiled module type "b_3". We cannot export\YZ{export or put?}
+the eliminator of "b" inside "b_3" because doing so "neg_handler.ff"
+(and "ff_24") will not be able to be inherited to the context where "b"
+is extended with a third constructor, since the existence of recursor
+alone will assert that there are only two constructors in "b", not
+``extensible'' at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}
 
-But we do have to provide a way to construct an (extensible) recursor (as in \ref{langdesign-req3}), and execute type checking (and exhaustiveness checking). Thus we need to extract a elimination principle for future usage. Here we show one exemplar extraction of the recursor in \mintinline{Coq}{Set} as module "b_rec_12".
+But we do have to provide a way to construct an (extensible) recursor
+(as in \ref{langdesign-req3}), and perform type checking (and
+exhaustiveness checking). Thus, we need to extract an elimination
+principle for future usage. Here we show one exemplar extraction of the
+recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
-To construct a recursor as in \ref{langdesign-req3}, we make for each constructor a handler and aggregate them inside a family. The whole family "neg_handler" can be considered as a large matching case. Doing so, family inheritance can function as matching-case reuse. Then we use "FRecursor" to specify the motive and inductive type. Here "FRecursor" will feed Coq
-a module "v_33_34" for doing type-checking---what it does is basically assert the existence of the recursor and apply to see if handlers can pass the type checking by Coq. 
+To construct a recursor as in \ref{langdesign-req3}, we create for each
+constructor a handler and aggregate them inside a family. The whole
+family "neg_handler" can be considered as a large matching case. Doing
+so, family inheritance can function as matching-case reuse. Then we use
+"FRecursor" to specify the motive and inductive type. Here "FRecursor"
+will feed Coq
+a module "v_33_34" for doing type-checking---what it does is basically
+assert the existence of the recursor and apply to see if handlers can
+pass the type checking by Coq. 
 
-Since the recursor is constructed knowing a concrete inductive type, thus not inheritable, for all the children, we have to reconstruct and override with a new recursor (acting like an extra exhaustiveness checking). This is affordable since each recursor handler doesn't need to be rechecked---look at "B2.neg_handler", there is only one new handler for "uu" and the handlers from the parent "B.neg_handler.tt,B.neg_handler.ff" are already type-checked and inherited(thanks to the fact that they only rely on ``the abstracted interface'' module "b_3"). Of course, our plugin will ``inherits'' the recursor "neg" but what the plugin does is doing exhaustiveness checking, again.
+Since the recursor is constructed knowing a concrete inductive type,
+thus not inheritable, for all the children, we have to reconstruct and
+override with a new recursor (acting like an extra exhaustiveness
+checking\YZ{Why is it 'extra'? Is there already exhaustiveness checking anywhere?}). This is affordable since each recursor handler doesn't need
+to be rechecked---look at "B2.neg_handler", there is only one new
+handler for "uu" and the handlers from the parent
+"B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
+inherited (thanks to the fact that they only rely on ``the abstracted
+interface'' module "b_3"). Of course, our plugin will ``inherit'' the
+recursor "neg" but what the plugin does is doing exhaustiveness
+checking, again.\YZ{It'd be good to show *concretely* in Figure 4
+(1) code that uses the recursor and how the using code is compiled, (2)
+how B2 is compiled and that compiling B2 does not require recompiling
+fields inherited from B.}
 
 % Explain why the module type need extra care
 
@@ -368,13 +409,34 @@ Since the recursor is constructed knowing a concrete inductive type, thus not in
 % explain we have the incremental-checking for any recursor 
 
 % explain ftheorem wrapping this complicated recursor
-We also provide a command "FTheorem" when the users want to use tactic programming instead. This tool can avoid most boiler-plate code (e.g. specify the handler family) when writing a recursor like above, invoke proof interaction mode, allow tactic usage, and is also open to extension like "FRecursor".
+We also provide a command "FTheorem" when the users want to use tactic
+programming instead. This tool can avoid most boilerplate code (e.g.,
+specify the handler family) when writing a recursor like above, invoke
+proof interaction mode, allow tactic usage, and is also open to
+extension like "FRecursor".\YZ{example?}
 
-To summarize, the key insight here is that, to make each recursor handler inheritable, we need to seal an abstraction around the inductive type (e.g. module "b_3"); but to construct a recursor (and carry out the exhaustiveness checking), we need to break this abstraction and see the concrete definition of the inductive type (e.g. module "b_rec_12"). Our meta-theory need to handler these two seemingly contradicting ideas simultaneously. 
+To summarize, the key insight here is that, to make each recursor
+handler inheritable, we need to seal an abstraction around the inductive
+type (e.g. module "b_3"); but to construct a recursor (and carry out the
+exhaustiveness checking), we need to break this abstraction and see the
+concrete definition of the inductive type (e.g. module "b_rec_12"). Our
+meta-theory need to handle these two seemingly contradicting ideas
+simultaneously. 
 
 
 \textbf{Propositional Partial Recursor.}
-Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is not expressive enough to really fulfill \ref{langdesign-req2}. For example, we cannot prove the constructors are injective, i.e. \mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to prove injectiveness of constructor of (vanilla) inductive type, we only require a recursor and its computational rules. However, as we pointed out earlier, the recursor of an inductive type cannot be exposed into the context for the sake of extensibility. Thus we need to alter the formulation of the recursor i.e., we need to have a better characterization of ``extensible inductive type'' exported in the compiled module type as a part of the interface for the following fields to use.
+Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is
+not expressive enough to really fulfill \ref{langdesign-req2}. For
+example, we cannot prove the constructors are injective, i.e.,
+\mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to
+prove injectivity of constructor of (vanilla) inductive type, we only
+require a recursor and its computational rules. However, as we pointed
+out earlier, the recursor of an inductive type cannot be exposed into
+the context for the sake of extensibility. Thus we need to alter the
+formulation of the recursor i.e., we need to have a better
+characterization of ``extensible inductive type'' exported in the
+compiled module type as a part of the interface for the following fields
+to use.
 
 
 The simplest idea is to allow partiality---i.e. returning \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}. We call this \textit{propositional partial recursor}. For example, the propositional partial recursor for \mintinline{Coq}{B.b} is 
