@@ -53,17 +53,15 @@ field interactively with Coq.
 Family A.
 Field a : nat 
   := 1.
-Field b 
-  : a = a
+Field b : a = a
   := eq_refl.
 Final Field a' : nat 
   := 1. 
-Field b'
-  : a' = 1
+Field b' : a' = 1
   := eq_refl.
 EndFamily.
 \end{minted}
-  \end{minipage}\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}\EDJreply{Omitting self_ is easy and not much engineering effort is required. But omitting self_ will lead to `A.a' instead of `a' actually. So if we really want `a' as you last time mentioned, then a resolution is required and more engineering effort is required. But I don't see any technical difficulties. I have removed all the self, please check.}
+  \end{minipage}%\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}\EDJreply{Omitting self_ is easy and not much engineering effort is required. But omitting self_ will lead to `A.a' instead of `a' actually. So if we really want `a' as you last time mentioned, then a resolution is required and more engineering effort is required. But I don't see any technical difficulties. I have removed all the self, please check.}
   \begin{minipage}[t]{0.4\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
@@ -95,7 +93,7 @@ translate this statement into the "Module a_4", "Module Type a_5, a_6"
 three components.
 {The "EmptySig" is just empty module type.} Then,
 these modules and module types will be generated and type-checked by Coq
-immediately. The compiled "Module a_4"\YZ{should this be a_4?}\EDJreply{Yes. Thanks!} is then part of the context of
+immediately. The compiled "Module a_4" is then part of the context of
 "Field b" (as the module type of "self_A") for "b" to refer to. The
 internal representation of family "A" is the list of these
 compiled modules and module types. We can achieve incremental
@@ -104,29 +102,39 @@ want to override "Field a", we simply replace that compiled module with
 the new module inside the list. This compiled module type serves as an
 abstraction that enables overriding.
 
-Now that we know a family data structure is actually a list of compiled
-modules, we may want to aggregate them into one complete compiled
-module. We achieve that by repeatedly using Coq's "Include" command as
-the example illustrated. Note that, in our example, we include two
-functors without arguments---this is due to a perculiarity of Coq's
+Now that we know a family declaration is compiled to a list of Coq
+modules and module types, we may want to aggregate them into one complete compiled
+module.\YZ{The reader wonders why this aggregation is needed. Seems like the place to talk about how the programmer can use A outside Family A.}
+We achieve that by repeatedly using Coq's "Include" command as
+the example illustrates. Note that, in our example, we include two
+functors without arguments---this is due to a peculiarity of Coq's
 "Include": non-instantiated parameters will be automatically
 instantiated by the appropriate fields in the surrounding defining
-module.\YZ{'For example, ...'}\EDJreply{I don't think explaining a Coq feature inside our paper is a good idea? But I have added this in the following line, please check. Keep it and resolve the comment if you find this ok. }
-For example, "b_7" requires a module of type "a_6". Inside module "A", when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat} inside the current surrounding "A". Then when we \mintinline{Coq}{Include b_7} without specifying the module parameters, Coq will try to find fields in the surrounding module, (i.e. module "A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by the \mintinline{Coq}{a : nat} that is included earlier.
+module.
+For example, "b_7" requires a module of type "a_6". Inside module "A",
+when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat}
+inside the current surrounding "A". Then when we
+\mintinline{Coq}{Include b_7} without specifying the module parameter,
+Coq will try to find fields in the surrounding module (i.e., module
+"A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by
+the \mintinline{Coq}{a : nat} that is included earlier.
 The resulting compiled module is just like mundane Coq's module and thus maintains all the computational mechanism from Coq, fulfilling \ref{langdesign-req0b}. 
 
 
 
 % explaining inheritance
-Besides standalone family, we also need to implement family inheritance. To simplify the implementation, we can consider all families as inheritance and the standalone families are extending empty family. Thus we only need to deal with inheritance during interactive proving. 
+Besides standalone family, we also need to implement family inheritance.
+To simplify the implementation, we can consider all families as
+inheritance and the standalone families are extending the empty family.
+Thus we need to deal with only inheritance during interactive proving. 
 
-An inheritance data will be annotated with the type for the input family
-and output family, and generally there are three kinds of
-inheritance---extend, override and inherit. Extending corresponds to
-adding new fields, overriding corresponds to modifying existent fields,
-and inheriting corresponds to directly taking fields from the parent.
-Thus, it is possible to consider inheritance as solely a data rather than
-a functor, and this actually provides us the possibility to
+An inheritance data\YZ{what is 'inheritance data'?} will be annotated with the type for the input family
+and output family. There are three kinds of inheritance---extend,
+override, and inherit. Extending corresponds to adding new fields,
+overriding corresponds to modifying existent fields, and inheriting
+corresponds to directly taking fields from the parent.
+Thus, it is possible to consider inheritance as solely a data rather
+than a functor, and this actually provides us the possibility to
 \text{mix-in} inheritance data. 
 
 
@@ -134,7 +142,9 @@ a functor, and this actually provides us the possibility to
 
 \textbf{Reasoning Requires Non-Overridable.} This compilation strategy
 can allow fields to be type-dependent on former fields thus fulfilling
-\ref{langdesign-req1}. However, there are some cases we need to expose the concrete definition of a given fields (especially when we are proving properties about it).
+\ref{langdesign-req1}. However, there are cases where we need to expose
+the concrete definition of a given field (especially when we are proving
+properties about it).
 
 For example, we may
 define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field
@@ -142,22 +152,22 @@ and intend to prove its commutativity in a following field $"comm"$.
 But to prove so, we need to know more than just a type interface of
 "add" but also its \textbf{concrete fixpoint definition}. Otherwise, in the
 future, once "add" is overridden into a subtraction function then
-"comm" will have problem to be inherited.
+"comm" will have problem to be inherited.\YZ{The sentence reads as if you want to enable overriding "add", whereas what you really want is to expose the definition equality about "add".}
 A more concrete example is in \cref{fig:plugin-example1}, consider the
-case we have "Field b : self_A.a = 1 := .." instead. Then our
+case we have "Field b : a = 1 := .." instead. Then our
 compilation and Coq's type checking will both fail: in the context of
 "b" (module type "a_6") we only know "a" is of type "nat" but nothing
 more (and this is necessary so that "a" can be overridden in the
-future). 
+future).\YZ{Not clear if you want to be able to override a or want to be able to have 'Field b : a = 1'.}
 
 To fix that, we need more information on "a" than its type---we
 need to expose the concrete definition "a = 1" to the context of "b".
-\YZ{I had a hard time working through these two paras. I guess they are
-saying that there is a need to expose definitional equalities, and
-therefore we need non-overridables. This causal flow should be made
-more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph. Please check and resolve if find satisfied.}
+%\YZ{I had a hard time working through these two paras. I guess they are
+%saying that there is a need to expose definitional equalities, and
+%therefore we need non-overridables. This causal flow should be made
+%more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph. Please check and resolve if find satisfied.}
 
-In our Coq plugin, we can achieve such exposure of definition by
+In our Coq plugin, we can achieve such exposure of definitional equality by
 exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
