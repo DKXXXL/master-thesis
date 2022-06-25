@@ -131,7 +131,7 @@ Family I.
 
 
 Final Field a' : nat := 1.
-Field c : a'@\YZ{should this be a'?}\EDJreply{Yes Thanks.}@ = 1 := eq_refl.
+Field c : a' = 1 := eq_refl.
 Field bop : nat -> nat -> nat := (+).
 Fail Field comm_add : ...
 
@@ -152,11 +152,11 @@ Family I2 extends I.
  Fail Override Field a' : nat := 2. (*Fail 2*)
 
 
-Override Field bop := (-).@\YZ{'add' is not a good choice of name---it doesn't make sense to override add with subtraction.}\EDJreply{Changed to b(inary)op now}@
+Override Field bop := (-).
 
 Inherits Until MonotonicF.
 Override Family MonotonicF.
-  Final Field f : nat -> nat@\YZ{nat -> nat ?}\EDJreply{Yes. Thanks}@ := (+ 1).
+  Final Field f : nat -> nat := (+ 1).
   Field p : monotonic f := ...
  EndFamily. 
 EndFamily.
@@ -248,7 +248,8 @@ In our Coq plugin, we can achieve such exposure of definitional equality by
 exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
-this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
+this special treatment.
+%\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
 Non-overridable fields are still not expressive enough to achieve the full
