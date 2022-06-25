@@ -128,7 +128,8 @@ To simplify the implementation, we can consider all families as
 inheritance and the standalone families are extending the empty family.
 Thus we need to deal with only inheritance during interactive proving. 
 
-An inheritance data\YZ{what is 'inheritance data'?} will be annotated with the type for the input family
+An inheritance data\YZ{what is 'inheritance data'?}\EDJreply{It is just inheritance judgement, but before meta-theory is introduced, I can only say some "first-order data that represent the information of inheritance". I emphasize first order to distinguish from functor in ML community.} 
+will be annotated with the type for the input family
 and output family. There are three kinds of inheritance---extend,
 override, and inherit. Extending corresponds to adding new fields,
 overriding corresponds to modifying existent fields, and inheriting
