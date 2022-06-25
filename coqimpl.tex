@@ -141,7 +141,8 @@ than a functor, and this actually provides us the possibility to
 
 
 
-\textbf{Reasoning Requires Non-Overridable.} This compilation strategy
+\textbf{Reasoning Requires Non-Overridable.}\YZ{At this point in this section, overriding has not been discussed yet, but it is already discussing non-overridables. Should probably discuss the extensibility first.}
+This compilation strategy
 can allow fields to be type-dependent on former fields thus fulfilling
 \ref{langdesign-req1}. However, there are cases where we need to expose
 the concrete definition of a given field (especially when we are proving
@@ -175,11 +176,28 @@ users to decorate field as `Final' so that the plugin will proceed with
 this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable and Sealed Family as Interface.} 
-Non-overridable field is still not expressive enough to achieve the full extent of the dependent type programming. There are cases reasoning and overriding are both required, especially when we need to use Coq to do computation. For example, we may want a field to be an arbitrary monotonic function. Again, we cannot split into two fields \mintinline{Coq}{(f : nat → nat; p : monotonic f)} because to provide "p" we need to have concrete definition of "f" in the family type, which makes "f" non-overridable at all. One option is to use sigma type \mintinline{Coq}{{f | monotonic f}} but that is cumbersome when we have a bundle of stuff with multiple refinements. 
+Non-overridable fields are still not expressive enough to achieve the full
+extent of dependent type programming. There are cases overriding and
+equational reasoning are both needed, especially when we use Coq to do
+computation. For example, we may want a field to be an overridable 
+monotonic function. We cannot split into two fields
+\mintinline{Coq}{(f : nat → nat; p : monotonic f)}\YZ{Is this semicolon syntax valid Coq syntax?} because to provide
+"p" we need to have concrete definition of "f" in the family type, which
+makes "f" non-overridable at all. One option is to use sigma type
+\mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
+a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide family sealing mechanism---basically we allow the users to specify the family/compiled module type, and thus we can have a \textit{locally transparent}, \textit{non-overridable} field located in a \textit{overridable} family. Using the above example, we simply make \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an \textit{overridable} family, but "f" to be non-overridable and transparent on its definition, and thus we can prove "p". Once we want to swap the implementation, we just override the whole ``sealed'' family.
+To resolve this, we provide family sealing mechanism---we allow the
+users to specify the family/compiled module type\YZ{I don't understand "specify the family/compiled module type"}, and thus we can have a
+\textit{locally transparent}, \textit{non-overridable} field located in
+an \textit{overridable} family. Using the above example, we simply make
+\mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an
+\textit{overridable} family, but "f" to be non-overridable and
+transparent on its definition, and thus we can prove "p". Once we want
+to swap the implementation of "f", we just override the whole ``sealed''
+family.
 
-This ``sealed'' family actually simulate interface to a certain level---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.
+``Sealed'' families actually simulate interfaces in certain sense\YZ{I was actually thinking sealed families simulate sigma types, no?}---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.\YZ{I don't understand what it means to "assign each field with an axiom".}
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property

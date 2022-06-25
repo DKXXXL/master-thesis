@@ -6,3 +6,5 @@ recursor
 overridable
 metatheory
 Coq
+equational
+non-overridable
