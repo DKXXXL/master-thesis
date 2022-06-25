@@ -6,7 +6,8 @@ structure in \citet{zm2017}, and thus a lot of unrelated features, like
 Interface, will be removed. In this case, it will look like module with
 late-binding. Inheritance can be considered as code and proof reuse mechanism for module. We also
 need it to have good compatibility with inductive types, because we
-don't want to diverge too much from the routine Coq programming experience\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}\EDJreply{I think the sentence last time was not really making sense because using Church Encoding of inductive doesn't sabotage the expressiveness. I rephrase it now, please check.}
+don't want to retain the idiomatic Coq programming experience
+%\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}\EDJreply{I think the sentence last time was not really making sense because using Church Encoding of inductive doesn't sabotage the expressiveness. I rephrase it now, please check.}
 (and its tactic programming). 
 
 Let's start with a basic example---STLC and its extension in
@@ -150,7 +151,7 @@ the following extension to Coq's Vernacular Commands.
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle
 \end{align*}
 
-We use "Family" and "EndFamily" to scope, and "Field" is used to declare new field members in family.\YZ{This sentence sounds a bit recursive}\EDJreply{What about now?}
+We use "Family" and "EndFamily" to scope, and "Field" is used to declare new members in a family.
 We can define nested families.
 Family will also be used to encode recursive handlers. Each case
 handling of one inductive type will be aggregated into one family, then
