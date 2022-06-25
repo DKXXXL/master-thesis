@@ -102,7 +102,7 @@ abstraction that enables overriding.
 
 Once the user closes a family with "EndFamily", they can access its fields by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined. This is achieved by a complete compilation from a family to a module, via aggregating the list of the modules in the internal representation: the plugin will repeatedly using Coq's "Include" command as the "Module A" in \cref{fig:plugin-example1} illustrates. Now, the user can use "Module A" anywhere as they are using "Family A".
 \YZ{The reader wonders why this aggregation is needed. 
-Seems like the place to talk about how the programmer can use A outside Family A.}
+Seems like the place to talk about how the programmer can use A outside Family A.}\EDJreply{Please check.}
 
 Note that, in our example, we include two
 functors without arguments---this is due to a peculiarity of Coq's
@@ -125,39 +125,40 @@ thus maintains all the computational mechanism from Coq, fulfilling \ref{langdes
   \begin{minipage}[t]{0.45\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
 Family I.
-Field a : nat := 1.
-Field b : a = a := eq_refl.
-Fail Field c : a = 1 := eq_refl. (*Fail 1*)
+ Field a : nat := 1.
+ Field b : a = a := eq_refl.
+ Fail Field c : a = 1 := eq_refl. (*Fail 1*)
+
 
 Final Field a' : nat := 1.
-Field c : a@\YZ{should this be a'?}@ = 1 := eq_refl.
-Field add : nat -> nat -> nat := (+).
+Field c : a'@\YZ{should this be a'?}\EDJreply{Yes Thanks.}@ = 1 := eq_refl.
+Field bop : nat -> nat -> nat := (+).
 Fail Field comm_add : ...
 
-Family MonotonicF.
+ Family MonotonicF.
   Final Field f : nat -> nat := non_impl.
   Field p : monotonic f := non_impl.
-SealFamily. 
-
+ SealFamily. 
 EndFamily.
 \end{minted}
   \end{minipage}
 \begin{minipage}[t]{0.45\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
 Family I2 extends I.
-Override Field a : nat := 1. (* Override *)
-Inherit b.                   (* Inherit  *)
+ Override Field a : nat := 1. (* Override *)
+ Inherit b.                   (* Inherit  *)
 
-Field d : nat := a.          (* Extend   *)
-Fail Override Field a' : nat := 2. (*Fail 2*)
+ Field d : nat := a.          (* Extend   *)
+ Fail Override Field a' : nat := 2. (*Fail 2*)
 
-Override Field add := (-).@\YZ{'add' is not a good choice of name---it doesn't make sense to override add with subtraction.}@
+
+Override Field bop := (-).@\YZ{'add' is not a good choice of name---it doesn't make sense to override add with subtraction.}\EDJreply{Changed to b(inary)op now}@
 
 Inherits Until MonotonicF.
 Override Family MonotonicF.
-  Final Field f : nat@\YZ{nat -> nat ?}@ := (+ 1).
+  Final Field f : nat -> nat@\YZ{nat -> nat ?}\EDJreply{Yes. Thanks}@ := (+ 1).
   Field p : monotonic f := ...
-SealFamily. 
+ EndFamily. 
 EndFamily.
 \end{minted}
   \end{minipage}
@@ -189,7 +190,7 @@ representation) to a module still acts the same.
 
 Since it is possible to consider inheritance as solely a first-order data rather
 than a higher-order functor, it is possible to
-\text{mix-in} two inheritance data---by carefully ``mix'' the internal list.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}
+\text{mix-in} two inheritance data---by carefully ``mix'' the internal list.However, a good definition of mixin is still under investigation.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
 
 
 
@@ -247,7 +248,7 @@ In our Coq plugin, we can achieve such exposure of definitional equality by
 exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
 users to decorate field as `Final' so that the plugin will proceed with
-this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on taking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
+this special treatment.\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
 Non-overridable fields are still not expressive enough to achieve the full
@@ -275,7 +276,7 @@ However, because the enclosing family of "f" is overridable, to swap the
 implementation of "f", we just override the whole ``sealed'' family,
 like we do in "I2.MonotonicF". And the compiled module type of
 "MonotonicF" will be fixed throughout the extension in different
-families---it is always these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}
+families---it is always these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
 In our example, the seal family "I.MonotonicF" is actually simulating
 interfaces as well.  We have
