@@ -125,39 +125,38 @@ thus maintains all the computational mechanism from Coq, fulfilling \ref{langdes
   \begin{minipage}[t]{0.45\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Family I.
-Field a : nat := 1.
-Field b : a = a := eq_refl.
-Fail Field c : a = 1 := eq_refl. (*Fail 1*)
+ Field a : nat := 1.
+ Field b : a = a := eq_refl.
+ Fail Field c : a = 1 := eq_refl. (*Fail 1*)
 
-Final Field a' : nat := 1.
-Field c : a = 1 := eq_refl.
-Field add : nat -> nat -> nat := (+).
-Fail Field comm_add : ...
+ Final Field a' : nat := 1.
+ Field c : a = 1 := eq_refl.
+ Field add : nat -> nat -> nat := (+).
+ Fail Field comm_add : ...
 
-Family MonotonicF.
+ Family MonotonicF.
   Final Field f : nat -> nat := non_impl.
   Field p : monotonic f := non_impl.
-SealFamily. 
-
+ SealFamily. 
 EndFamily.
 \end{minted}
   \end{minipage}
 \begin{minipage}[t]{0.45\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Family I2 extends I.
-Override Field a : nat := 1. (* Override *)
-Inherit b.                   (* Inherit  *)
+ Override Field a : nat := 1. (* Override *)
+ Inherit b.                   (* Inherit  *)
 
-Field d : nat := a.          (* Extend   *)
-Fail Override Field a' : nat := 2. (*Fail 2*)
+ Field d : nat := a.          (* Extend   *)
+ Fail Override Field a' : nat := 2. (*Fail 2*)
 
-Override Field add := (-). 
+ Override Field add := (-). 
 
-Inherits Until MonotonicF.
-Override Family MonotonicF.
+ Inherits Until MonotonicF.
+ Override Family MonotonicF.
   Final Field f : nat := (+ 1).
   Field p : monotonic f := ...
-SealFamily. 
+ SealFamily. 
 EndFamily.
 \end{minted}
   \end{minipage}
