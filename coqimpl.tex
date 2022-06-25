@@ -181,14 +181,14 @@ extent of dependent type programming. There are cases overriding and
 equational reasoning are both needed, especially when we use Coq to do
 computation. For example, we may want a field to be an overridable 
 monotonic function. We cannot split into two fields
-\mintinline{Coq}{(f : nat → nat; p : monotonic f)}\YZ{Is this semicolon syntax valid Coq syntax?} because to provide
+\mintinline{Coq}{(f : nat → nat; p : monotonic f)}\YZ{Is this semicolon syntax valid Coq syntax?}\EDJreply{No, this part is just pseudo-code for two consecutive fields. I have no good idea on what to use other than semicolon, apparently I cannot use comma.} because to provide
 "p" we need to have concrete definition of "f" in the family type, which
 makes "f" non-overridable at all. One option is to use sigma type
 \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
 a bundle of stuff with multiple refinements. 
 
 To resolve this, we provide family sealing mechanism---we allow the
-users to specify the family/compiled module type\YZ{I don't understand "specify the family/compiled module type"}, and thus we can have a
+users to specify the compiled module type of a given family\YZ{I don't understand "specify the family/compiled module type"}\EDJreply{Sorry. I rephase it into "compiled module type of a given family".}, and thus we can have a
 \textit{locally transparent}, \textit{non-overridable} field located in
 an \textit{overridable} family. Using the above example, we simply make
 \mintinline{Coq}{(f : nat → nat, p : monotonic f)} together inside an
@@ -197,7 +197,7 @@ transparent on its definition, and thus we can prove "p". Once we want
 to swap the implementation of "f", we just override the whole ``sealed''
 family.
 
-``Sealed'' families actually simulate interfaces in certain sense\YZ{I was actually thinking sealed families simulate sigma types, no?}---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.\YZ{I don't understand what it means to "assign each field with an axiom".}
+``Sealed'' families can actually simulate interfaces in certain sense\YZ{I was actually thinking sealed families simulate sigma types, no?}\EDJreply{You are absolutely right. I should add a "can" here. I can use sealed family to simulate interface is by creating a sigma type, but making the impleemntation of sigma type trivial (using place holder/using axiom as I specified below). Then once I want to instantiate with real implementation, I override the whole family -- as long as it has the same type as the sealed family, everything still works.}---we can assign each field of the sealed family with \mintinline{Coq}{Axiom non_implement : forall {T : Type}, T.}, and later instantiate them with concrete implementation by overriding this family.\YZ{I don't understand what it means to "assign each field with an axiom".}\EDJreply{It really means ``place holder'' in general programming language (Python's NonImplement()), defer to future. Because Coq's Axiom can be used to instantiate anything.}
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property
