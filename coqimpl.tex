@@ -346,7 +346,7 @@ Definition __recursor_type_b_rec :=
   -> forall __i : self_B.b, P __i. End b_rec_12. 
   (* Field B.neg_handler.ff *)
 Module ff_24 (self_B: b_6) 
-             (self__neg_handler@\YZ{'self_neg_handler' instead?}@: tt_23 self_B).
+             (self_neg_handler@\YZ{'self_neg_handler' instead?}\EDJreply{Yes thx. Though self_neg_handler is not used at all}@: tt_23 self_B).
 Definition ff : self_B.b := self_B.tt. End ff_24.
   (* Intermediate Module solely for type checking *)
 Module v_33_34 (self_B: neg_handler_26).
@@ -366,7 +366,7 @@ Let's look at \cref{fig:plugin-example2}, the example of boolean and
 negation. When we define inductive type "b", the following "Field
 neg_handler.ff" can only know "b" is a type (of "Set") and there are at
 least two constructors for it, just like what we declare in ``the
-abstracted interface'' the compiled module type "b_3". We cannot export\YZ{export or put?}
+abstracted interface'' the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
 the eliminator of "b" inside "b_3" because doing so "neg_handler.ff"
 (and "ff_24") will not be able to be inherited to the context where "b"
 is extended with a third constructor, since the existence of recursor
@@ -391,8 +391,8 @@ pass the type checking by Coq.
 
 Since the recursor is constructed knowing a concrete inductive type,
 thus not inheritable, for all the children, we have to reconstruct and
-override with a new recursor (acting like an extra exhaustiveness
-checking\YZ{Why is it 'extra'? Is there already exhaustiveness checking anywhere?}). This is affordable since each recursor handler doesn't need
+override with a new recursor (acting like another exhaustiveness
+checking in children family\YZ{Why is it 'extra'? Is there already exhaustiveness checking anywhere?}\EDJreply{In the parent family. Maybe extra is a bad wording }). This is affordable since each recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
 handler for "uu" and the handlers from the parent
 "B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
