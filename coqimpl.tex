@@ -456,12 +456,12 @@ to use.
 The simplest idea is to allow partiality---i.e., returning
 \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
 We call this \textit{propositional partial recursor}.
-For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}
+For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
 \begin{minted}[escapeinside=@@]{Coq}
 b_prec : forall P : b -> Set, P tt -> P ff
     -> forall x : b, option (P x).
 \end{minted}
-with appropriate computational axioms. The partiality doesn't break
+with appropriate computational axioms. This partial recursor differs from original recursor only by adding an "option" at the end thus possible to be automatically generated (the case is similar for those computational axiom). The partiality doesn't break
 extensibility (i.e. all future extensions of "b" can support this
 "b_prec"). 
 
@@ -516,13 +516,13 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
   \mintinline{Coq}{linv : D -> option C} defined using the eliminator of
   "C" and "prec" of "D" (both acting like identity) such that
   \begin{minted}[escapeinside=@@]{Coq}
-    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}@
+    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
   \end{minted}
 \end{theorem}
 
 We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
 actually be considered as a constructor, because they can be reflected
-to real constructors of "C" using "linv". Thus, \cref{thm:prec-complete}
+to real constructors of "C" using the left inverse "linv" (directly generalization of "reflect : self_B.b → option bool" of the above). Thus, \cref{thm:prec-complete}
 implies that (1) every future extension of the inductive type can
 support this partial recursion (trivially); (2) every type supporting
 this partial recursor with its computational axioms at least supports
@@ -587,7 +587,8 @@ Here we show the example to prove "value_not_app" in
 \cref{fig:plugin-example-global-reasoning-meta-data}, the script inside
 curly brackets after "by" is the attached proof script that will be
 executed upon "EndFamily", which triggers the compilation of the family
-being defined.\YZ{Please check if my wording is correct.}
+being defined.
+% \YZ{Please check if my wording is correct.}\EDJreply{Yes. Resolved}
 Since we are dealing with a concrete inductive type during compilation,
 we can use Coq's "inversion" tactic to complete this proof.
 This "Closing Fact", as an assertion, will have no problem being
@@ -596,7 +597,7 @@ family is compiled.
 
 The downside is that "Closing Fact" cannot immediately check the correctness of the
 attached proof term/proof script because this verification only happens when we
-finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}
+finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}\EDJreply{The proof script cannot be run immediately to reply the user whether the proof script is even correct. This is bad engineering to some extent. In those bad cases, because error only happens at the the very end ``EndFamily'' , the user will need to go back to the place of Closing Fact to adjust the proof script, or to adjust other parts. I am not sure if early check is possible to be done (engineering-wise) I think it is possible (imagine I just do an early compilation, i.e. only compile part of the family to the point closing fact is used) but it is a big engineering difficulty for me.}
 
 Ultimately, "Closing Fact" is asserting a constraint upon all the
 possible extension of the surrounding family and claiming a proof script
