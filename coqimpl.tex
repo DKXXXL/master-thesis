@@ -501,7 +501,8 @@ Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
       \item a partial recursor
       \begin{minted}[escapeinside=@@]{Coq}
 prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}@
-  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> R) -> R)), .., D -> R
+  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> R) -> R)), .., 
+      D -> option R
       \end{minted}
       \item and $n$ (propositional) computational axioms: for all $i$, 
       \begin{minted}{Coq}
