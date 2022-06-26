@@ -13,7 +13,7 @@ to mix the semantics and properties of two language features---product
 and boolean (in \cref{fig:STLC-example})---with vanilla STLC. This way,
 we can say precisely, \textit{a programming language feature itself is a
 piece of data/inheritance judgement/inherited family}. Compared with MTC,
-our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?} by exploiting
+our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?}\EDJreply{I thought they use big step with fuel. Though Coq a la carte use small-step in one example} by exploiting
 extensible inductive types, and most of the proof is directly adapted
 from the one in Software Foundation, resulting in a more accessible proof.\YZ{Can you say more about how your plugin enables more code reuse and modularity?}
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users---which can be reflected from the distance of their approach and text-book Software Foundation proof. 
@@ -23,7 +23,7 @@ We use "Closing Fact" to state and prove the inversion lemma instead of
 using the extensible proving mechanism "FTheorem". The reasons are that
 (1) it introduces much less boilerplate code because the proof for these
 inversion lemmas should be just simple case analysis and we should rely
-on Coq to auto-generate them;\YZ{I was under the impression that the plugin could not auto-generate Closing Facts or their proofs, no?} (2) it shouldn't bother us in the future
+on Coq to generate most of the boilerplate code;\YZ{I was under the impression that the plugin could not auto-generate Closing Facts or their proofs, no?}\EDJreply{I have make the above Closing Fact section more about this detail. Please check.} (2) it shouldn't bother us in the future
 because any extension on the syntax should still satisfy these inversion
 lemmas; (3) most importantly, we believe this inversion ``lemma'' should
 be part of the definition of the syntax instead of considering the
@@ -59,16 +59,15 @@ abstract interpreters.
 Thanks to the compilation to Coq, we can directly run the resulting
 abstract interpreters.
 
-We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}
+We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}
 
 
-The first family Lang define the big step operator (using fuel) of a while language, with expression. But it postulates the computational information of State used by Lang. It takes about 200+ LOCs.
+The first family "Lang" define the big step operator (using fuel) of a while language, with expression. But it postulates the computational information of "State" used by Lang. It takes about 200+ LOCs. We can swap the implementation of "State" to have different memory/state management by extending family "Lang".
 
-The second family LangwAbs define the abstract interpreter for it, together with a bunch of postulates, to prove the correctness of the abstract interpreter. It takes about 300+ LOCs. 
+The second family "LangwAbs" define the abstract interpreter for it, together with a bunch of postulates, to prove the correctness of the abstract interpreter. It takes about 300+ LOCs. This example shows how to use family inheritance to extend a concrete interpreter with abstract interpreters. This example also shows in this family polymoprhism framework we can reason about "Lang" with computation details being abstracted. 
 
-The third Family LangMore extend LangwAbs with nat constant and addition, and if-then-else control flow, of course retaining all the soundness theorem. It takes about 200+ LOCs.
+The third Family "LangMore" extend LangwAbs with nat constant and addition, and if-then-else control flow, of course retaining all the soundness theorem. It takes about 200+ LOCs. This is one example of using family inheritance to support new language feature, and compatible with the existent reasoning. 
 
-The fourth family LangRun instantiate some of the postulates of the LangMore and recover computational information of Lang. The concrete interpreter is doing as expected; the abstract interpreter is expected to act as a type-analyzer. It takes about 200+ LOCs.
+The fourth family "LangRun" instantiate some of the postulates of the LangMore and recover computational information of Lang. The concrete interpreter is doing as expected; the abstract interpreter is expected to act as a type-analyzer. It takes about 200+ LOCs. This is one example of instantiate the detail computation. In this example, we use a simple Coq function to simulate state-mapping information. 
 
-
-And at the end, we compile LangRun into module and use Coq to run it on some simple queries. 
+And at the end, we compile LangRun into module and use Coq to run it on some simple queries. This "LangRun" also illustrates that we still have computability in the presence of family. 
