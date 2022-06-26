@@ -442,7 +442,8 @@ simultaneously.
 Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is
 not expressive enough to really fulfill \ref{langdesign-req2}. For
 example, we cannot prove the constructors are injective, i.e.,
-\mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to
+\mintinline{Coq}{self_B.tt ≠ self_B.ff}.\YZ{Is it really impossible to prove constructor injectivity without partial recursors and with recursors only? My confusion after reading these paras is that I still don't know why partial recursors are needed.}
+In the original setting, to
 prove injectivity of constructors of a (vanilla) inductive type, we only
 require a recursor and its computational rules. However, as we pointed
 out earlier, the recursor of an inductive type cannot be exposed into
@@ -455,11 +456,13 @@ to use.
 
 The simplest idea is to allow partiality---i.e., returning
 \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
-We call this \textit{propositional partial recursor}.
+
+We call this \textit{propositional partial recursor}.\YZ{What is propositional about partial recursors? I suppose it has to do with the computational axioms?}\EDJreply{Yes. I want to emphasize the equality used by computational axiom is not judgemental equality. So Coq cannot automatically compute/reduce when a partial recursor applied to a term. This reduction can only be semi-automatically done by using [rewrite tactic and the computational axiom].}
 For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
+
 \begin{minted}[escapeinside=@@]{Coq}
 b_prec : forall P : b -> Set, P tt -> P ff
-    -> forall x : b, option (P x).
+    -> forall x : b, option (P x).@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}@
 \end{minted}
 with appropriate computational axioms. This partial recursor differs from original recursor only by adding an "option" at the end thus possible to be automatically generated (the case is similar for those computational axiom). The partiality doesn't break
 extensibility (i.e. all future extensions of "b" can support this
