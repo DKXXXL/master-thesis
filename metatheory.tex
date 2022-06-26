@@ -3,8 +3,9 @@ We start with the formulation of the syntax, which is based on the formalization
 
 Though phrased in Latex, we are following~\citet{altkap2016} to use as
 our meta-logic a type theoretical framework (like Agda), 
-together with \textit{Quotient Inductive Inductive Type} (QIIT). Each
-judgement will actually be represented by a QIIT type, which are
+together with \textit{Quotient Inductive Inductive Type} (QIIT). Our work can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We base our formulation of the syntax in this type theory instead of a more conventional and informal representation, becase (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a proof because proof checking is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real theorem prover so that the reader can have an idea about how mechanized formalization can be carried out.
+
+In our syntax, each judgement will actually be represented by a QIIT type, which are
 mutually recursively defined together. Quotient is used to represent
 judgemental(definitional) equality, thanks to which we can have a
 concise representation. This way, for all four kinds of judgement we are
