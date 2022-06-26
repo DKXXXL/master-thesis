@@ -16,12 +16,9 @@ piece of data/inheritance judgement/inherited family}. Compared with MTC,
 our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?}\EDJreply{I thought they use big step with fuel. Though Coq a la carte use small-step in one example} by exploiting
 extensible inductive types. 
 
-Most of the proof is directly adapted
-from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples are about the computation, and here we mainly focus on substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about proof-irrelevant propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't even to additionally handle a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" 
-
-For example, the proof on progress on product projection is carried out in the children family that extend "tm" with products. 
-
-\YZ{Can you say more about how your plugin enables more code reuse and modularity?}
+Most of the proof and computation is directly adapted
+from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples is about the computation, and here we mainly focus on substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about proof-irrelevant propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't even need to additionally handle a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goal to prove. At the end, it will look like scattered proof scripts in a modular manner.
+For example, the proof on progress on product projection is carried out in the children family that extend "tm" with products. \YZ{Can you say more about how your plugin enables more code reuse and modularity?}\EDJreply{please check}
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users---which can be reflected from the distance of their approach and text-book Software Foundation proof. 
 
 % We have problem on inversion lemma. Check if it is the same problem as MTC
@@ -69,8 +66,7 @@ We construct four families, in one inheritance chain.\YZ{Why is it useful to def
 
 
 The first family "Lang" define the big step operator (using fuel) of a
-while language, with expression. But it postulates the computational
-information of "State" (environment mapping) used by Lang. It takes about 200+ LOCs. 
+while language, with expression. However, it postulates the definition of "State" (environment mapping) used by Lang. It takes about 200+ LOCs. 
 % We
 % can
 \YZ{In general, in a result section like this, you want to show what

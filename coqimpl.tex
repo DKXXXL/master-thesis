@@ -129,11 +129,10 @@ Family I.
  Field b : a = a := eq_refl.
  Fail Field c : a = 1 := eq_refl. (*Fail 1*)
 
-
-Final Field a' : nat := 1.
-Field c : a' = 1 := eq_refl.
-Field bop : nat -> nat -> nat := (+).
-Fail Field comm_add : ...
+ Final Field a' : nat := 1.
+ Field c : a' = 1 := eq_refl.
+ Field bop : nat -> nat -> nat := (+).
+ Fail Field comm_add : ...
 
  Family MonotonicF.
   Final Field f : nat -> nat := non_impl.
@@ -151,11 +150,10 @@ Family I2 extends I.
  Field d : nat := a.          (* Extend   *)
  Fail Override Field a' : nat := 2. (*Fail 2*)
 
+ Override Field bop := (-).
 
-Override Field bop := (-).
-
-Inherits Until MonotonicF.
-Override Family MonotonicF.
+ Inherits Until MonotonicF.
+ Override Family MonotonicF.
   Final Field f : nat -> nat := (+ 1).
   Field p : monotonic f := ...
  EndFamily. 
@@ -188,9 +186,9 @@ retain the module in the list for inheritance, and add new module into
 the list for extension. The compilation from a family (internal
 representation) to a module still acts the same.
 
-Since it is possible to consider inheritance as solely a first-order data rather
-than a higher-order functor, it is possible to
-\text{mix-in} two inheritance data---by carefully ``mix'' the internal list.However, a good definition of mixin is still under investigation.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
+Though inheritance is solely a first-order data rather
+than a higher-order functor, it is still possible to
+\text{mix-in} two inheritance data---by carefully ``mix'' the internal list, we can compose the inheritance. However, a good definition of mixin is still under investigation.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
 
 
 
@@ -305,7 +303,7 @@ compiled module type) for the following field.
 % Insert one pseudo-code example for explanation of the mechanism
 % Use the natural number example
 \begin{figure}[!htb]
-  \begin{minipage}[t]{0.3\linewidth}
+  \begin{minipage}[t]{0.32\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
 Family B.
   FInductive b : Set 
@@ -316,11 +314,13 @@ Family B.
     Field ff : self_B.b 
       := self_B.tt.
   EndFamily.
-FRecursor neg 
-  about self_B.b 
-  motive (fun _ => self_B.b)
-  using self_B.neg_handler
-  by _rec.
+  FRecursor neg 
+    about self_B.b 
+    motive (fun _ => self_B.b)
+    using self_B.neg_handler
+    by _rec.
+  Field example := 
+    self_B.neg self_B.tt. 
 EndFamily.
 
 Family B2 extends B.
@@ -368,11 +368,10 @@ negation. When we define inductive type "b", the following "Field
 neg_handler.ff" can only know "b" is a type (of "Set") and there are at
 least two constructors for it, just like what we declare in ``the
 abstracted interface'' the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
-the eliminator of "b" inside "b_3" because doing so "neg_handler.ff"
-(and "ff_24") will not be able to be inherited to the context where "b"
+the eliminator of "b" inside "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
 is extended with a third constructor, since the existence of recursor
 alone will assert that there are only two constructors in "b", not
-``extensible'' at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}
+\textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.}
 
 But we do have to provide a way to construct an (extensible) recursor
 (as in \ref{langdesign-req3}), and perform type checking (and
@@ -382,28 +381,41 @@ recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
 To construct a recursor as in \ref{langdesign-req3}, we create for each
 constructor a handler and aggregate them inside a family. The whole
-family "neg_handler" can be considered as a large matching case. Doing
-so, family inheritance can function as matching-case reuse. Then we use
+family "neg_handler" can be considered as a large matching case. 
+Then we use
 "FRecursor" to specify the motive and inductive type. Here "FRecursor"
 will feed Coq
 a module "v_33_34" for doing type-checking---what it does is basically
 assert the existence of the recursor and apply to see if handlers can
 pass the type checking by Coq. 
 
+Once recursor is created it will look like any other function fields (and compiled in the same manner), here we show "self_B.neg" to apply to "self_B.tt" for "B.example".  While in the implementation of our plugin, the concrete recursor for this "neg" will only be created during the compilation of the surrounding family into module---it will look exactly "term_for_type_checking" but uses concrete recursor. For example, at the appropriate place, our plugin will insert a definition into the compiled module: 
+\begin{minted}{Coq}
+  Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff.
+\end{minted}
+where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module.
+
+
 Since the recursor is constructed knowing a concrete inductive type,
 thus not inheritable, for all the children, we have to reconstruct and
 override with a new recursor (therefore serving as exhaustiveness
-checking for child families). This is affordable since each recursor handler doesn't need
+checking for children families). 
+This is affordable since each recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
 handler for "uu" and the handlers from the parent
 "B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
-inherited (thanks to the fact that they only rely on ``the abstracted
-interface'' module "b_3"). Of course, our plugin will ``inherit'' the
-recursor "neg" but what the plugin does is doing exhaustiveness
-checking, again.\YZ{It'd be good to show *concretely* in Figure 4
+inherited (since they only rely on ``the abstracted
+interface'' module "b_3"). 
+Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
+the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg".
+
+Of course, our plugin will ``inherit'' the
+recursor "neg" in the surface 
+but what the plugin does is doing a second exhaustiveness
+checking in children family.\YZ{It'd be good to show *concretely* in Figure 4
 (1) code that uses the recursor and how the using code is compiled, (2)
 how B2 is compiled and that compiling B2 does not require recompiling
-fields inherited from B.}
+fields inherited from B.}\EDJreply{I added both. Please check.}
 
 % Explain why the module type need extra care
 
@@ -598,7 +610,7 @@ We expect it to be used in a light-weighted form for maintainability.
 the family data is invisible to Coq internal and thus causes some
 inconvenience. For example, in \cref{fig:plugin-example-global-reasoning-meta-data} the first attempt of defining tactic inv fails. Because the earlier defining "tm", "value" and "value_not_app" are currently just data structure in the plugin and not visible for Coq internal (only visible after the family is compiled into module). 
 
-Thus to refer to them, we have to scope the defining tactic with "MetaData" and our plugin will setup the appropriate environment. After a "MetaData" block is closed, the plugin will aggregate the content into the current defining family so that they can also be used when defining the following fields of the family. This can fulfill \ref{langdesign-req5}.\YZ{Consider adding examples of Closing Fact and MetaData, even if only to be included in an appendix.}
+Thus to refer to them, we have to scope the defining tactic with "MetaData" and our plugin will setup the appropriate environment. After a "MetaData" block is closed, the plugin will aggregate the content into the current defining family so that they can also be used when defining the following fields of the family. This can fulfill \ref{langdesign-req5}.\YZ{Consider adding examples of Closing Fact and MetaData, even if only to be included in an appendix.}\EDJreply{Added. Please check}
 
 % To fulfill \ref{langdesign-req5}, we need somehow to aggregate tactic inside compiled module type, due to the implementation of our family---when defining every field of 
 
