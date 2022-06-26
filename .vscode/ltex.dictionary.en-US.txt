@@ -13,3 +13,4 @@ Overridable
 uninstantiated
 Recursor
 injectivity
+recursors

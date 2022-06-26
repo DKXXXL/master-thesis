@@ -500,7 +500,7 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
   \end{itemize}
   Then there exists an \textbf{embedding} from "C" to "D".
   More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
-  \mintinline{Coq}{linv : D -> option C} defined using eliminator and "prec"
+  \mintinline{Coq}{linv : D -> option C} defined using eliminator\YZ{eliminator of what?} and "prec"
   (both acting like identity) such that
   \begin{minted}{Coq}
     forall c : C, linv (inj c) = some c
@@ -526,12 +526,44 @@ inductive type.\YZ{What about indexed inductive types?}
 % explain the places using ``Closing Fact''
 % 1. No need to export partial recursor
 % 2. Computational rule for the total recursor
-However, to verify and prove the recursor and partial recursor and their computational rules (as in \ref{langdesign-req4}), our plugin has to compile the extensible family into a non-extensible Coq Module and prove the recursors by instantiating the content of Coq module with concrete inductive type.  
+However, to verify and prove the recursor and partial recursor and their
+computational rules (as in \ref{langdesign-req4}), our plugin has to
+compile the extensible family into a non-extensible Coq Module and define
+the recursors by instantiating the content of Coq module with concrete
+inductive types.
 
-This style of ``Global Reasoning'' is that we can only prove the corresponding theorem when we know the ``full pictures'', especially the inductive type. We provide "Closing Fact" as a command to carry out this global reasoning---we can attach "Closing Fact" with either (proof) terms or Coq's proof script, then only when compilation to module happens, the term/proof script will put into type-check to see if a "Closing Fact" statement can be proved. Note that, "Closing Fact" cannot immediately check the correctness of the term/proof script because this verification only happens when we finished defining a family, and thus a bit harder to handle.
+This style of ``Global Reasoning'' says that we can prove the
+corresponding theorem only when we know the ``full picture'', in particular,
+all the constructors of an inductive type. We provide "Closing Fact" as
+a command to carry out this global reasoning\YZ{Are recursors and partial recursors automatically generated and proved by the plugin, or must they be asserted and proved by the programmer?}---we can attach to "Closing
+Fact" either (proof) terms or Coq's proof script, then only when
+compilation to module happens, is the term/proof script
+type-checked to see if a "Closing Fact" statement can be proved. Note
+that, "Closing Fact" cannot immediately check the correctness of the
+term/proof script because this verification only happens when we
+finished defining a family, and thus a bit harder to handle.
 
-This "Closing Fact" can ease us from the necessity to let plugin generate proof for recursors and partial recursors and their computational rules (as in \ref{langdesign-req4}), and thus making plugin development easier. For example, the computation rule for a concrete recursor like "B.neg" and partial recursors in \cref{fig:plugin-example2} can be directly asserted by using "Closing Fact" and verified later during compilation. This ``Global Reasoning'' will be again useful in the later examples.
+This "Closing Fact" can ease us from the necessity to let plugin
+generate proof for recursors and partial recursors and their
+computational rules (as in \ref{langdesign-req4}), and thus making
+plugin development easier.\YZ{This reads like a bad excuse: the programmer does not care about if the plugin development is easy. Question is if it makes the programmer's life easier.}
+For example, the computation rule for a
+concrete recursor like "B.neg" and partial recursors in
+\cref{fig:plugin-example2} can be directly asserted by using "Closing
+Fact" and their proofs verified later during compilation.\YZ{What is the alternative if not using "Closing Fact"?}
+This ``Global Reasoning'' will be again useful in later examples.\YZ{Still not entirely clear to me what is gained and what is lost by using "Closing Fact".}
 
-\textbf{Hack: ``Meta-data''.} Due to our implementation of the family, the family data is invisible for Coq internal and thus cause some inconvenience.  For example, currently it is not possible to define a vanilla inductive type dependent on our ``extensible'' inductive type due to the invisibility, unless we compile the whole family. Similarly, customized tactic expression requested by \ref{langdesign-req5} cannot use lemmas or theorems in the fields of the current defining family as well.
+\textbf{Hack: ``Meta-data''.} Due to our implementation of the family,
+the family data is invisible to Coq internal and thus causes some
+inconvenience.  For example, currently it is not possible to define a
+vanilla inductive type dependent on our ``extensible'' inductive type
+due to the invisibility, unless we compile the whole family. Similarly,
+customized tactic expressions as required by \ref{langdesign-req5} cannot
+use lemmas or theorems in the fields of the current defining family as
+well.
 
-To remedy this, we facilitate a "MetaData" command. This command will allow to bundle any original Coq primitive (in the current family context) into the compiled module type, and thus visible to the following defining field. Doing so, we can define customized tactic as in \ref{langdesign-req5} that uses lemmas proved in the family. 
+To remedy this, we support a "MetaData" command. This command
+bundles any original Coq primitive (in the current family
+context) into the compiled module type, and makes them visible to the
+following defining field. Doing so, we can define customized tactic as
+in \ref{langdesign-req5} that uses lemmas proved in the family.\YZ{Consider adding examples of Closing Fact and MetaData, even if only to be included in an appendix.}
