@@ -59,15 +59,39 @@ abstract interpreters.
 Thanks to the compilation to Coq, we can directly run the resulting
 abstract interpreters.
 
-We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}
+We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}
 
 
-The first family "Lang" define the big step operator (using fuel) of a while language, with expression. But it postulates the computational information of "State" used by Lang. It takes about 200+ LOCs. We can swap the implementation of "State" to have different memory/state management by extending family "Lang".
+The first family "Lang" define the big step operator (using fuel) of a
+while language, with expression. But it postulates the computational
+information of "State" used by Lang. It takes about 200+ LOCs. We
+can\YZ{In general, in a result section like this, you want to show what
+you *have done* rather than what you *can do*.}
+swap the implementation of "State" to have different memory/state
+management by extending family "Lang".\YZ{What is 'different
+memory/state management'?}
 
-The second family "LangwAbs" define the abstract interpreter for it, together with a bunch of postulates, to prove the correctness of the abstract interpreter. It takes about 300+ LOCs. This example shows how to use family inheritance to extend a concrete interpreter with abstract interpreters. This example also shows in this family polymoprhism framework we can reason about "Lang" with computation details being abstracted. 
+The second family "LangwAbs" define the abstract interpreter for it,
+together with a bunch of postulates, to prove the correctness of the
+abstract interpreter. It takes about 300+ LOCs. This example shows how
+to use family inheritance to extend a concrete interpreter with abstract
+interpreters. This example also shows in this family polymoprhism
+framework we can reason about "Lang" with computation details being
+abstracted. 
 
-The third Family "LangMore" extend LangwAbs with nat constant and addition, and if-then-else control flow, of course retaining all the soundness theorem. It takes about 200+ LOCs. This is one example of using family inheritance to support new language feature, and compatible with the existent reasoning. 
+The third Family "LangMore" extend LangwAbs with nat constant and
+addition, and if-then-else control flow, of course retaining all the
+soundness theorem. It takes about 200+ LOCs. This is one example of
+using family inheritance to support new language feature, and compatible
+with the existent reasoning. 
 
-The fourth family "LangRun" instantiate some of the postulates of the LangMore and recover computational information of Lang. The concrete interpreter is doing as expected; the abstract interpreter is expected to act as a type-analyzer. It takes about 200+ LOCs. This is one example of instantiate the detail computation. In this example, we use a simple Coq function to simulate state-mapping information. 
+The fourth family "LangRun" instantiate some of the postulates of the
+LangMore and recover computational information of Lang. The concrete
+interpreter is doing as expected; the abstract interpreter is expected
+to act as a type-analyzer. It takes about 200+ LOCs. This is one example
+of instantiate the detail computation. In this example, we use a simple
+Coq function to simulate state-mapping information. 
 
-And at the end, we compile LangRun into module and use Coq to run it on some simple queries. This "LangRun" also illustrates that we still have computability in the presence of family. 
+And at the end, we compile LangRun into module and use Coq to run it on
+some simple queries. This "LangRun" also illustrates that we still have
+computability in the presence of family.\YZ{Can there be a diagram (a la Figure 1 in Familia paper) illustrating the relationships between (and functionalities of) the different families?}
