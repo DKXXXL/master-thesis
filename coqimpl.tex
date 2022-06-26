@@ -431,24 +431,34 @@ Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is
 not expressive enough to really fulfill \ref{langdesign-req2}. For
 example, we cannot prove the constructors are injective, i.e.,
 \mintinline{Coq}{self_B.tt ≠ self_B.ff}. In the original setting, to
-prove injectivity of constructor of (vanilla) inductive type, we only
+prove injectivity of constructors of a (vanilla) inductive type, we only
 require a recursor and its computational rules. However, as we pointed
 out earlier, the recursor of an inductive type cannot be exposed into
-the context for the sake of extensibility. Thus we need to alter the
-formulation of the recursor i.e., we need to have a better
-characterization of ``extensible inductive type'' exported in the
+the context for the sake of extensibility. Hence, we need to alter the
+formulation of the recursor: we need to have a better
+characterization of ``extensible inductive types'' exported in the
 compiled module type as a part of the interface for the following fields
 to use.
 
 
-The simplest idea is to allow partiality---i.e. returning \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}. We call this \textit{propositional partial recursor}. For example, the propositional partial recursor for \mintinline{Coq}{B.b} is 
-\begin{minted}{Coq}
-b_prec : forall P : b -> Set, P tt -> P ff 
-    -> forall x : b, option (P x). 
+The simplest idea is to allow partiality---i.e., returning
+\mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
+We call this \textit{propositional partial recursor}.
+For example, the propositional partial recursor for \mintinline{Coq}{B.b} is 
+\begin{minted}[escapeinside=@@]{Coq}
+b_prec : forall P : b@\YZ{b or self_B.b?}@ -> Set, P tt -> P ff
+    -> forall x : b, option (P x).
 \end{minted}
-with appropriate computational axioms. The partiality doesn't break extensibility (i.e. all the future extension of "b" can support this "b_prec"). 
+with appropriate computational axioms. The partiality doesn't break
+extensibility (i.e. all future extensions of "b" can support this
+"b_prec"). 
 
-What's more, partial recursor is theoretically enough for the "injection" and "discriminate" tactics. The rough idea to achieve this is to use "b_prec" to reflect our special inductive type into vanilla inductive type, and use the orignal "injection" and "discrimination" respectively. For example, we want to prove \mintinline{Coq}{self_B.tt ≠ self_B.ff}, we simply 
+What's more, partial recursor is theoretically enough for the
+"injection" and "discriminate" tactics. The rough idea to achieve this
+is to use "b_prec" to reflect our special inductive type into vanilla
+inductive type, and use the original "injection" and "discriminate"
+tactics. For example, we want to prove \mintinline{Coq}{self_B.tt ≠
+self_B.ff}, we simply 
 \begin{minted}{Coq}
 Definition reflect : self_B.b → option bool 
                    := b_prec (fun _ => bool) true false.
@@ -460,38 +470,55 @@ Definition tt_neq_ff : self_B.tt = self_B.ff → False.
 
 
 
-In fact, the above "reflect" function implies that propositional partial recursor is good enough to some extent, at least for non-indexed inductive type, because we can ``embed'' vanilla inductive type into types supporting partial recursor. Because "reflect" is actually a left inverse of an injection "bool → self_B.b". A bit more formally, and restrict our focus to non-indexed inductive types,
+In fact, the above "reflect" function implies that propositional partial
+recursor is good enough to some extent, at least for non-indexed
+inductive type, because we can ``embed'' vanilla inductive types into
+types supporting a partial recursor. Because "reflect" is actually a left
+inverse of an injection "bool → self_B.b". A bit more formally, and
+restricting our focus to non-indexed inductive types,
 
 \begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$
   \begin{itemize}
-    \item Define $"C"$ as the inductive type using this list, i.e. 
+    \item Define $"C"$ as the inductive type using this list, i.e.,
     \begin{minted}{Coq}
 Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
     \end{minted}
-    \item Assume an arbitrary type \mintinline{Coq}{D : Set} that has ...
+    \item Assume an arbitrary type \mintinline{Coq}{D : Set} with
     \begin{itemize}
-      \item following $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
-      \item a partial recursor 
-      \begin{minted}{Coq}
-prec : forall (R : Set), ..,  
+      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
+      \item a partial recursor
+      \begin{minted}[escapeinside=@@]{Coq}
+prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}@
   (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> R) -> R)), .., D -> R
       \end{minted}
-      \item all the following $n$ (propositional) computational axioms: for all $i$, 
+      \item and $n$ (propositional) computational axioms: for all $i$, 
       \begin{minted}{Coq}
 prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
     = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
       \end{minted}
     \end{itemize}
   \end{itemize}
-  We will have an \textbf{embedding} from "C" to "D", more concretely, we can have \mintinline{Coq}{inj : C -> D} and 
-
-  \mintinline{Coq}{linv : D -> option C} defined using eliminator and "prec", (both act similar to identity) such that
+  Then there exists an \textbf{embedding} from "C" to "D".
+  More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
+  \mintinline{Coq}{linv : D -> option C} defined using eliminator and "prec"
+  (both acting like identity) such that
   \begin{minted}{Coq}
     forall c : C, linv (inj c) = some c
   \end{minted}
 \end{theorem}
 
-We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can actually be considered as a constructor, because they can be reflected to real constructors of "C" using "linv". Thus, \cref{thm:prec-complete} implies that (1) every future extension of the inductive type can support this partial recursion (trivially); (2) every type support this partial recursor with its computational axiom at least support these constructors because of the embedding. In other words, \textit{a type (at least) supports these constructors if and only if this type supports the corresponding partial recursor (with the computational axiom)}.  Thus we can argue that the partial recursor gives a sound and complete characterization of all the extension of a given (non-indexed) inductive type.
+We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
+actually be considered as a constructor, because they can be reflected
+to real constructors of "C" using "linv". Thus, \cref{thm:prec-complete}
+implies that (1) every future extension of the inductive type can
+support this partial recursion (trivially); (2) every type supporting
+this partial recursor with its computational axioms at least supports
+these constructors because of the embedding. In other words, \textit{a
+type (at least) supports these constructors if and only if this type
+supports the corresponding partial recursor (with the computational
+axioms)}.  Thus, we can argue that the partial recursor gives a sound and
+complete characterization of all the extension of a given (non-indexed)
+inductive type.\YZ{What about indexed inductive types?}
 
 % Mention still needing total recursor, for exhaustiveness checking
 

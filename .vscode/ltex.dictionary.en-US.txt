@@ -12,3 +12,4 @@ Non-overridable
 Overridable
 uninstantiated
 Recursor
+injectivity
