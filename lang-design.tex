@@ -150,10 +150,11 @@ the following extension to Coq's Vernacular Commands.
   & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
   & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
   & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
 \end{align*}
 
-These are some core extension we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to declare new members in a family.
+These are some core extension we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.}
 We can define nested families.
 Family will also be used to encode recursive handlers. Each case
 handling of one inductive type will be aggregated into one family, then
