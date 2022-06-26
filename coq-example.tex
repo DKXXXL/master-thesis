@@ -65,17 +65,20 @@ abstract interpreters.
 Thanks to the compilation to Coq, we can directly run the resulting
 abstract interpreters.
 
-We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}
+We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
 
 
 The first family "Lang" define the big step operator (using fuel) of a
 while language, with expression. But it postulates the computational
-information of "State" used by Lang. It takes about 200+ LOCs. We
-can\YZ{In general, in a result section like this, you want to show what
-you *have done* rather than what you *can do*.}
-swap the implementation of "State" to have different memory/state
-management by extending family "Lang".\YZ{What is 'different
-memory/state management'?}
+information of "State" (environment mapping) used by Lang. It takes about 200+ LOCs. 
+% We
+% can
+\YZ{In general, in a result section like this, you want to show what
+you *have done* rather than what you *can do*.}\EDJreply{Ok. deleted. I initially want to emphasize ``I **can** use arbitrary implementation for this environment mapping interface'' but I don't know how to say that without using ``can''.}
+% swap the implementation of "State" to have different memory/state
+% management by extending family "Lang".
+\YZ{What is 'different
+memory/state management'?}\EDJreply{Actually I should say environment mapping/dictionary. I instantiate it with function(closure) as environment mapping in "LangRun". It is possible to use other mapping like Coq's primitive dictionary.}
 
 The second family "LangwAbs" define the abstract interpreter for it,
 together with a bunch of postulates, to prove the correctness of the
@@ -95,8 +98,8 @@ The fourth family "LangRun" instantiate some of the postulates of the
 LangMore and recover computational information of Lang. The concrete
 interpreter is doing as expected; the abstract interpreter is expected
 to act as a type-analyzer. It takes about 200+ LOCs. This is one example
-of instantiate the detail computation. In this example, we use a simple
-Coq function to simulate state-mapping information. 
+of instantiate the detail computation. Thanks to the posulation we have done in "Lang", now we instantiate that postulation with function type "Ident -> option exp" as the "State" (environment mapping) for simplicity. 
+
 
 And at the end, we compile LangRun into module and use Coq to run it on
 some simple queries. This "LangRun" also illustrates that we still have
