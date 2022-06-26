@@ -347,7 +347,7 @@ Definition __recursor_type_b_rec :=
   -> forall __i : self_B.b, P __i. End b_rec_12. 
   (* Field B.neg_handler.ff *)
 Module ff_24 (self_B: b_6) 
-             (self_neg_handler@\YZ{'self_neg_handler' instead?}\EDJreply{Yes thx. Though self_neg_handler is not used at all}@: tt_23 self_B).
+             (self_neg_handler: tt_23 self_B).
 Definition ff : self_B.b := self_B.tt. End ff_24.
   (* Intermediate Module solely for type checking *)
 Module v_33_34 (self_B: neg_handler_26).
@@ -392,8 +392,8 @@ pass the type checking by Coq.
 
 Since the recursor is constructed knowing a concrete inductive type,
 thus not inheritable, for all the children, we have to reconstruct and
-override with a new recursor (acting like another exhaustiveness
-checking in children family\YZ{Why is it 'extra'? Is there already exhaustiveness checking anywhere?}\EDJreply{In the parent family. Maybe extra is a bad wording }). This is affordable since each recursor handler doesn't need
+override with a new recursor (therefore serving as exhaustiveness
+checking for child families). This is affordable since each recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
 handler for "uu" and the handlers from the parent
 "B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
