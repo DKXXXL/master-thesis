@@ -1,26 +1,65 @@
 We provide two examples here for illustration and evaluation of our Coq plugin. 
 
 \subsection{Type Safety for STLC}\EDJ{We need a fuller view of the two examples. Especially show "accessing family components outside that family".}
-We start with the very basic type safety proof of STLC, largely adapted from Software Foundation~\cite{pierce2014software}, which is also one of the primal motivating example of this project. 
+We start with the very basic type safety proof of STLC, largely adapted
+from Software Foundation~\cite{pierce2014software}, which is also one of
+the primal motivating example of this project. 
 
-Our emphasis here is that, we singled out some programming language features from STLC and prove the type safety for each feature separately, following the style of the examples in MTC~\cite{delaware2013,forsta2020}. And we use a \textit{not-yet-formally-defined} \textbf{mix-in} feature to mix the semantic and properties of two programming language feature---product and boolean (in \cref{fig:STLC-example})---with vanilla STLC. This way, we can say precisely, \textit{a programming language feature itself is a piece of data/inheritance judgement/inherited family}. Compared to MTC, our example uses small-step operational semantic by exploiting the extensible inductive type, and most of the proof is directly adapted from the one in Software Foundation, resulting a more accessible proof. 
+Our emphasis here is that, we singled out some language features from
+STLC and prove the type safety for each feature separately, following
+the style of the examples in MTC~\cite{delaware2013,forsta2020}.
+And we use a \textit{not-yet-formally-defined} \textbf{mix-in} feature
+to mix the semantics and properties of two language features---product
+and boolean (in \cref{fig:STLC-example})---with vanilla STLC. This way,
+we can say precisely, \textit{a programming language feature itself is a
+piece of data/inheritance judgement/inherited family}. Compared with MTC,
+our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?} by exploiting
+extensible inductive types, and most of the proof is directly adapted
+from the one in Software Foundation, resulting in a more accessible proof.\YZ{Can you say more about how your plugin enables more code reuse and modularity?}
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users---which can be reflected from the distance of their approach and text-book Software Foundation proof. 
 
 % We have problem on inversion lemma. Check if it is the same problem as MTC
-We use "Closing Fact" to state and prove the inversion lemma instead of using the extensible proving mechanism "FTheorem". The reasons are that (1) it introduce much less boilerplate code because the proof for these inversion lemma should be just simple case analysis and we should rely on Coq to auto-generate them; (2) it shouldn't bother us in the future because any extension on the syntax should still satisfy these inversion lemmas; (3) most importantly, we believe this inversion ``lemma'' should be part of the definition of the syntax instead of considering the syntax as a mere concrete inductive type. We should postulate this inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify that our inductive definition did satisfy the constraint, which is exactly what we expect from "Closing Fact".
+We use "Closing Fact" to state and prove the inversion lemma instead of
+using the extensible proving mechanism "FTheorem". The reasons are that
+(1) it introduces much less boilerplate code because the proof for these
+inversion lemmas should be just simple case analysis and we should rely
+on Coq to auto-generate them;\YZ{I was under the impression that the plugin could not auto-generate Closing Facts or their proofs, no?} (2) it shouldn't bother us in the future
+because any extension on the syntax should still satisfy these inversion
+lemmas; (3) most importantly, we believe this inversion ``lemma'' should
+be part of the definition of the syntax instead of considering the
+syntax as a mere concrete inductive type. We should postulate this
+inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify
+that our inductive definition does satisfy the constraint, which is
+exactly what we expect from "Closing Fact".
 
 Our formulation for bare STLC is around 400+ LOCs; the two families implementing product and boolean features both take around 300+ LOCs. 
 % need comparison with the original implementation
 
-The biggest difference in the proof script comes from the fact that we are handling ``extensible'' inductive type instead of real inductive type, and thus inversion tactic is not working and we have to manually lift these tactic into inversion lemma. This cost a mild code bloat. 
+The biggest difference in the proof script comes from the fact that we
+are handling ``extensible'' inductive types instead of real inductive
+types, and thus the inversion tactic is not working and we have to manually
+create inversion lemmas. This leads to a mild code bloat. 
 
-Another difference comes from the fact that we need to use "Closing Fact" to manually verify the computational rules for each recursor and use tactic to ``run'' the recursor by repeatedly "rewrite" using those verified computational rules. This part is possible to be automatically handled by the plugin, but still it will result propositional computational rules.  
+Another difference comes from the fact that we need to use "Closing
+Fact" to manually verify the computational rules for each recursor and
+use tactics to ``run'' the recursor by repeatedly "rewrite" using those
+verified computational rules. This part is possible to be automatically
+handled by the plugin, but still it will require propositional
+computational rules.
 
 \subsection{Abstract Interpreters for \texttt{Imp}}
-The second example is adapted and modified from \citet{zm2017}
---- contrary to our first example, we use big-step interpreter and fuel to indicate the operational semantic on an imperative language with side-effect, and we specify the abstract interpretation and prove its soundness, with some of postulation on both computation and property. Then we extend the language feature and we instantiate the postulation on computation for both concrete interpreters and abstract interpreters. Thanks to the compilation, we can directly run the resulting abstract interpreters.
+The second example is adapted and modified from \citet{zm2017}.
+Contrary to our first example, we use a big-step interpreter with fuel
+as the operational semantics of an imperative language with
+side effects, and we specify the abstract interpretation and prove its
+soundness, with some postulation on both computation and property.
+Then we extend the base language with new features, and we instantiate
+the postulation on computation for both concrete interpreters and
+abstract interpreters.
+Thanks to the compilation to Coq, we can directly run the resulting
+abstract interpreters.
 
-We construct four families, in one inheritance chain. 
+We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}
 
 
 The first family Lang define the big step operator (using fuel) of a while language, with expression. But it postulates the computational information of State used by Lang. It takes about 200+ LOCs.
