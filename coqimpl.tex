@@ -444,9 +444,9 @@ to use.
 The simplest idea is to allow partiality---i.e., returning
 \mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
 We call this \textit{propositional partial recursor}.
-For example, the propositional partial recursor for \mintinline{Coq}{B.b} is 
+For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}
 \begin{minted}[escapeinside=@@]{Coq}
-b_prec : forall P : b@\YZ{b or self_B.b?}\EDJreply{it is mainly used as self_B.b, but to make option(P x) at the end doesn't require to be self_B.b so it is kind of orthognal}@ -> Set, P tt -> P ff
+b_prec : forall P : b -> Set, P tt -> P ff
     -> forall x : b, option (P x).
 \end{minted}
 with appropriate computational axioms. The partiality doesn't break
@@ -500,10 +500,10 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
   \end{itemize}
   Then there exists an \textbf{embedding} from "C" to "D".
   More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
-  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of "C"\YZ{eliminator of what?}\EDJreply{"D" is not inductive type so it doesn't have eliminator} and "prec" of "D"
-  (both acting like identity) such that
-  \begin{minted}{Coq}
-    forall c : C, linv (inj c) = some c
+  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of
+  "C" and "prec" of "D" (both acting like identity) such that
+  \begin{minted}[escapeinside=@@]{Coq}
+    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}@
   \end{minted}
 \end{theorem}
 
@@ -526,7 +526,21 @@ inductive type.\YZ{What about indexed inductive types?}
 % explain the places using ``Closing Fact''
 % 1. No need to export partial recursor
 % 2. Computational rule for the total recursor
-Unfortunately, there are cases the users just want global reasoning instead of an extensible proof. For example, in STLC, we should expect`` \mintinline{Coq}{~ value (tm_app x y)}'' holds in all possible extension of STLC (i.e. application is never a terminal value). We know the correct way of proving this proposition \mintinline{Coq}{value_not_app : value (tm_app x y) -> False.} is to use "FRecursor" to inductively reason "value (tm_app x y)". However, this means that everytime we extend "value" with new terminal value, we will need to extend corresponding inductive cases for "app_not_value". We can imagine the newly extended proof to be boring case analysis that the newly extended terminal value is not "tm_app". What's worse, similar scenario can happen on other statement like \mintinline{Coq}{~ value (tm_if cond x y)}. Everything here is extended correctly but we end up having boilerplate code, \textbf{semantically}.
+Unfortunately, there are cases the users just want global reasoning
+instead of an extensible proof. For example, in STLC, we expect
+``\mintinline{Coq}{~ value (tm_app x y)}'' to hold in all future
+extensions of STLC---applications will never be considered as values
+by an extension.
+We know the correct way to prove the proposition
+\mintinline{Coq}{value_not_app : value (tm_app x y) -> False.} is to use
+"FRecursor" to inductively reason "value (tm_app x y)". However, this
+means that every time we extend "value" with new value forms, we will
+need to extend corresponding inductive cases for "app_not_value". We can
+imagine the newly extended proof to be boring case analysis that the
+newly added value forms are not "tm_app". What's worse, similar
+scenario can happen on other statement like \mintinline{Coq}{~ value
+(tm_if cond x y)}. Everything here is extended correctly but we end up
+having boilerplate code, \textbf{semantically}.
 \begin{figure}[!htb]
 \begin{minted}{Coq}
 Family STLC.
@@ -548,17 +562,33 @@ EndFamily.
 \end{figure}
 
 
-Our proposal is to allow global reasoning, which will look like a constraint inside the family. We provide "Closing Fact" as a command to carry out this global reasoning, attached with a proof script and proof term. This "Closing Fact" will look like an assertion during the construction of the surrounding family. This assertion will only be verified when the whole family is closed and compiled into a module, with the help of the attached proof script and proof terms.
+Our proposal is to allow global reasoning, which will look like a
+constraint inside the family. We provide "Closing Fact" as a command to
+carry out this global reasoning, attached with a proof script and proof
+term. This "Closing Fact" will look like an assertion during the
+construction of the enclosing family. This assertion will only be
+verified when the whole family is closed and compiled into a module,
+with the help of the attached proof script and proof terms.
 
-Here we show the example to prove "value_not_app" in \cref{fig:plugin-example-global-reasoning-meta-data}, the script inside curly bracket after "by" is the attached proof script that will be executed when the whole family is being compiled. Since we are dealing with a concrete inductive type during compilation, we can use inversion tactic on the vanilla inductive type.  This "Closing Fact", as an assertion, will have no problem being inherited but the proof script will be executed everytime during each compilation of the children families. 
+Here we show the example to prove "value_not_app" in
+\cref{fig:plugin-example-global-reasoning-meta-data}, the script inside
+curly brackets after "by" is the attached proof script that will be
+executed upon "EndFamily", which triggers the compilation of the family
+being defined.\YZ{Please check if my wording is correct.}
+Since we are dealing with a concrete inductive type during compilation,
+we can use Coq's "inversion" tactic to complete this proof.
+This "Closing Fact", as an assertion, will have no problem being
+inherited, but the proof script will be executed every time a derived
+family is compiled.
 
 The downside is that "Closing Fact" cannot immediately check the correctness of the
 attached proof term/proof script because this verification only happens when we
-finished defining a family, and thus a bit harder to handle. 
+finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}
 
-Ultimately, "Closing Fact" is asserting a constraint upon all the possible extension 
-of the surrounding family and claiming a proof script can solve the constraints. 
-We expect it to be used in a light-weighted form for maintainability. 
+Ultimately, "Closing Fact" is asserting a constraint upon all the
+possible extension of the surrounding family and claiming a proof script
+can solve the constraints.\YZ{This is a good one-liner that summarizes the intended usage scenarios of "Closing Fact". Should probably bring it out earlier.}
+We expect it to be used only sporadically for maintainability.
 
 
 
@@ -573,7 +603,9 @@ We expect it to be used in a light-weighted form for maintainability.
 % all the constructors of an inductive type. 
 % We provide "Closing Fact" as
 % a command to carry out this global reasoning
-\YZ{Are recursors and partial recursors automatically generated and proved by the plugin, or must they be asserted and proved by the programmer?}\EDJreply{(1) Closing Fact is not only used to generate recursor and partial recursor. I think the intro of this section is just giving people wrong impression. So I rewrite the whole section now. (2)  Recursors and Partial recursors are possible to be automatically generated but my plugin didn't implement it. Current stage is that user only need to assert them. Nobody has to prove it (plugin will prove it). Here when I say the user has to provide proof script, it means for arbitrary proposition if the user want to carry out global reasoning.}
+
+%\YZ{Are recursors and partial recursors automatically generated and proved by the plugin, or must they be asserted and proved by the programmer?}\EDJreply{(1) Closing Fact is not only used to generate recursor and partial recursor. I think the intro of this section is just giving people wrong impression. So I rewrite the whole section now. (2)  Recursors and Partial recursors are possible to be automatically generated but my plugin didn't implement it. Current stage is that user only need to assert them. Nobody has to prove it (plugin will prove it). Here when I say the user has to provide proof script, it means for arbitrary proposition if the user want to carry out global reasoning.}
+
 % ---we can attach to "Closing
 % Fact" either (proof) terms or Coq's proof script, then only when
 % compilation to module happens, is the term/proof script
@@ -586,19 +618,29 @@ We expect it to be used in a light-weighted form for maintainability.
 % generate proof for recursors and partial recursors and their
 % computational rules (as in \ref{langdesign-req4}), and thus making
 % plugin development easier.
-\YZ{This reads like a bad excuse: the programmer does not care about if the plugin development is easy. Question is if it makes the programmer's life easier.}\EDJreply{You are right. It does sound like a bad excuse. I rewrite the whole section now. Closing Fact is initially used when the user wants global reasoning instead of extensible proof by induction, for example, the inversion lemma. \\ It just happens that they can be used by me so that I can postpone generation of these rule plugin (which is hard for me to do). This paragraph is just me being honest that my plugin is not mature enough to generate everything.}
+%\YZ{This reads like a bad excuse: the programmer does not care about if the plugin development is easy. Question is if it makes the programmer's life easier.}\EDJreply{You are right. It does sound like a bad excuse. I rewrite the whole section now. Closing Fact is initially used when the user wants global reasoning instead of extensible proof by induction, for example, the inversion lemma. \\ It just happens that they can be used by me so that I can postpone generation of these rule plugin (which is hard for me to do). This paragraph is just me being honest that my plugin is not mature enough to generate everything.}
 % For example, the computation rule for a
 % concrete recursor like "B.neg" and partial recursors in
 % \cref{fig:plugin-example2} can be directly asserted by using "Closing
 % Fact" and their proofs verified later during compilation.
-\YZ{What is the alternative if not using "Closing Fact"?}\EDJreply{(1) For partial recursor and recursor, that should be generated by plugin (2) For general global reasoning, I don't know. There must be some other ways in the literature. }\YZ{Still not entirely clear to me what is gained and what is lost by using "Closing Fact".}\EDJreply{Please check.}
+%\YZ{What is the alternative if not using "Closing Fact"?}\EDJreply{(1) For partial recursor and recursor, that should be generated by plugin (2) For general global reasoning, I don't know. There must be some other ways in the literature. }\YZ{Still not entirely clear to me what is gained and what is lost by using "Closing Fact".}\EDJreply{Please check.}
 % This ``Global Reasoning'' will be again useful in later examples.
 
 \textbf{Hack: ``Meta-data''.} Due to our implementation of the family,
 the family data is invisible to Coq internal and thus causes some
-inconvenience. For example, in \cref{fig:plugin-example-global-reasoning-meta-data} the first attempt of defining tactic inv fails. Because the earlier defining "tm", "value" and "value_not_app" are currently just data structure in the plugin and not visible for Coq internal (only visible after the family is compiled into module). 
+inconvenience. For example, in
+\cref{fig:plugin-example-global-reasoning-meta-data} the first attempt
+of defining tactic "inv" fails. Because the earlier defining "tm",
+"value", and "value_not_app" are currently just data structure in the
+plugin and not visible for Coq internal (only visible after the family
+is compiled into module). 
 
-Thus to refer to them, we have to scope the defining tactic with "MetaData" and our plugin will setup the appropriate environment. After a "MetaData" block is closed, the plugin will aggregate the content into the current defining family so that they can also be used when defining the following fields of the family. This can fulfill \ref{langdesign-req5}.\YZ{Consider adding examples of Closing Fact and MetaData, even if only to be included in an appendix.}
+Thus to refer to them, we have to scope the defining tactic with
+"MetaData" and our plugin will set up the appropriate environment. After
+a "MetaData" block is closed, the plugin will aggregate the content into
+the family being defined so that they can also be used when defining
+the following fields of the family.\YZ{It reads like this MetaData wrapping could be automatically inserted, no?}
+This can fulfill \ref{langdesign-req5}.
 
 % To fulfill \ref{langdesign-req5}, we need somehow to aggregate tactic inside compiled module type, due to the implementation of our family---when defining every field of 
 
