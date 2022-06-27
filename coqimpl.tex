@@ -226,7 +226,7 @@ reasoning}}.  We enable the exposure of the concrete definition by
 providing "Final" keyword upon "a'".
 
 This example might sound trivial and contrived. Let's look at the
-example field "add". Now that we only expose the type of "add", we
+example field "add".\YZ{This 'add' field is no longer there.} Now that we only expose the type of "add", we
 cannot prove its commutativity in "comm_add" (because we don't have
 access to its concrete definition) but we can override "add" with
 subtraction function in "Family I2". This makes sense because we
@@ -293,7 +293,8 @@ and we have assigned it to both "f" and "p", and later instantiate in
 We don't actually support extensible inductive types from
 \ref{langdesign-req2} in Coq (because that require non-trivial research
 effort on theory side---i.e. {What is the semantics of extensible
-inductive types?}---and engineering), but we simulate extensible
+inductive types?}---and engineering),\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}
+but we simulate extensible
 inductive type using overriding---when extending an inductive type $A$
 with new constructors $c$, our plugin will generate a new inductive
 definition $A'$ with this new $c$ on the fly and feed it to Coq.  But
@@ -379,8 +380,8 @@ exhaustiveness checking). Thus, we need to extract an elimination
 principle for future usage. Here we show one exemplar extraction of the
 recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
-To construct a recursor as in \ref{langdesign-req3}, we create for each
-constructor a handler and aggregate them inside a family. The whole
+To construct a recursor as in \ref{langdesign-req3}, we\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?} create for each
+constructor a handler and aggregate them into a family. The whole
 family "neg_handler" can be considered as a large matching case. 
 Then we use
 "FRecursor" to specify the motive and inductive type. Here "FRecursor"
@@ -389,7 +390,14 @@ a module "v_33_34" for doing type-checking---what it does is basically
 assert the existence of the recursor and apply to see if handlers can
 pass the type checking by Coq. 
 
-Once recursor is created it will look like any other function fields (and compiled in the same manner), here we show "self_B.neg" to apply to "self_B.tt" for "B.example".  While in the implementation of our plugin, the concrete recursor for this "neg" will only be created during the compilation of the surrounding family into module---it will look exactly "term_for_type_checking" but uses concrete recursor. For example, at the appropriate place, our plugin will insert a definition into the compiled module: 
+Once recursor is created it will look like any other function fields
+(and compiled in the same manner). Here we show "self_B.neg" to apply to
+"self_B.tt" for "B.example".
+While in the implementation of our plugin, the concrete recursor for
+this "neg" will only be created during the compilation of the enclosing
+family into module---it will look exactly like "term_for_type_checking"
+but uses concrete recursor. For example, at the appropriate place, our
+plugin will insert a definition into the compiled module: 
 \begin{minted}{Coq}
   Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff.
 \end{minted}
@@ -399,7 +407,7 @@ where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive
 Since the recursor is constructed knowing a concrete inductive type,
 thus not inheritable, for all the children, we have to reconstruct and
 override with a new recursor (therefore serving as exhaustiveness
-checking for children families). 
+checking for children families).\YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}
 This is affordable since each recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
 handler for "uu" and the handlers from the parent
@@ -412,10 +420,7 @@ the module "ff_24"---doesn't require another type-check and is re-used during th
 Of course, our plugin will ``inherit'' the
 recursor "neg" in the surface 
 but what the plugin does is doing a second exhaustiveness
-checking in children family.\YZ{It'd be good to show *concretely* in Figure 4
-(1) code that uses the recursor and how the using code is compiled, (2)
-how B2 is compiled and that compiling B2 does not require recompiling
-fields inherited from B.}\EDJreply{I added both. Please check.}
+checking in children family.
 
 % Explain why the module type need extra care
 

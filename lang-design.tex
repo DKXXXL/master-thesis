@@ -92,7 +92,7 @@ reason about fields in a family}, just like in a module, where a field
 can reason about its former fields. More generally, we want to allow a
 later field to be type-dependent on the former fields. In the example of
 \cref{fig:STLC-example}, "subst", "has_type", "subst_lemma" all require
-this feature.\YZ{rephrase Req to Challenges}\EDJreply{But it is not really challenge because I didn't show their difficulty. It is more like requirements.}
+this feature.
 
 % we want extensible inductive type
 \textlabel{Req (2)}{langdesign-req2}:\textbf{ we need extensible
@@ -125,14 +125,9 @@ pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}.
 When proving "subst_lemma", we have to know "subst" is invariant on
 "tt", i.e., \mintinline{Coq}{(subst i x tt) = tt}. This kind of
 information requires exposing \textit{computational rules} from the
-recursors.\YZ{What goes wrong if subst is not invariant or you do not
-know whether subst is invariant?}\EDJreply{Then it is unprovable because substitution lemma need to know this. You can just instantiate the whole lemma -- we want  
-has_type (Γ; x ↦ A) tt T ->
-has_type Γ u A ->
-has_type Γ (subst i x tt) T. But this final goal requires to know the
-computation of subst.}\YZreply{Seems like what's missing here is to
+recursors.\YZ{Seems like what's missing here is to
 convince the reader why exposing the definition of subst could be a
-problem for family polymorphism.}\EDJreply{Actually I don't see why I need to emphasize this "as a problem". This is just a requirement like any other requirements earlier. I don't know how to show its difficulty at this early stage.}
+problem for family polymorphism.}\EDJreply{Actually I don't see why I need to emphasize this "as a problem". This is just a requirement like any other requirements earlier. I don't know how to show its difficulty at this early stage.}\YZreply{There is apparently a tension between the need to expose definitional equality and the ability to override. Looking at the bigger picture, I think this section reads better if phrased as discussing challenges posed by adding family polymorphism to a proof assistant. I have some initial ideas that I need to discuss with you.}
 
 % we want tactic programming and certain level of automation
 Finally, \textlabel{Req (5)}{langdesign-req5}: \textbf{we desire tactic
