@@ -132,7 +132,7 @@ Family I.
  Final Field a' : nat := 1.
  Field c : a' = 1 := eq_refl.
  Field bop : nat -> nat -> nat := (+).
- Fail Field comm_add : ...
+ Fail Field comm_bop : ...
 
  Family MonotonicF.
   Final Field f : nat -> nat := non_impl.
@@ -194,7 +194,7 @@ than a higher-order functor, it is still possible to
 
 
 
-\textbf{Reasoning Requires Non-Overridable.}
+\textbf{Reasoning Needs Non-Overridable.}
 This compilation strategy
 has already allowed fields to be type-dependent on former fields thus fulfilling
 \ref{langdesign-req1}. However, the current implementation is not satisfactory enough. There are cases where we need to expose
@@ -226,11 +226,11 @@ reasoning}}.  We enable the exposure of the concrete definition by
 providing "Final" keyword upon "a'".
 
 This example might sound trivial and contrived. Let's look at the
-example field "add".\YZ{This 'add' field is no longer there.} Now that we only expose the type of "add", we
-cannot prove its commutativity in "comm_add" (because we don't have
-access to its concrete definition) but we can override "add" with
+example field binary operation "bop" initially set to be addition.\YZ{This 'add' field is no longer there.}\EDJreply{Thanks. Fixed} Now that we only expose the type of "bop", we
+cannot prove its commutativity in "comm_bop" (because we don't have
+access to its concrete definition) but we can override "bop" with
 subtraction function in "Family I2". This makes sense because we
-shouldn't have (inherited) commutativity property for subtraction
+shouldn't (have the ability to) inherit commutativity property for subtraction
 anyway. This is contrary to how "a'" is declared "Final", the second "c"
 can prove that it's equal to 1 but "a'" is not overridable in the
 "Family I2".
@@ -290,11 +290,9 @@ and we have assigned it to both "f" and "p", and later instantiate in
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
-We don't actually support extensible inductive types from
-\ref{langdesign-req2} in Coq (because that require non-trivial research
-effort on theory side---i.e. {What is the semantics of extensible
-inductive types?}---and engineering),\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}
-but we simulate extensible
+We support ``extensible'' inductive types from
+\ref{langdesign-req2} in Coq to some extent\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort},\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
+by simulating extensible
 inductive type using overriding---when extending an inductive type $A$
 with new constructors $c$, our plugin will generate a new inductive
 definition $A'$ with this new $c$ on the fly and feed it to Coq.  But
@@ -380,7 +378,7 @@ exhaustiveness checking). Thus, we need to extract an elimination
 principle for future usage. Here we show one exemplar extraction of the
 recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
-To construct a recursor as in \ref{langdesign-req3}, we\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?} create for each
+To construct a recursor as in \ref{langdesign-req3}, we\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''} create for each
 constructor a handler and aggregate them into a family. The whole
 family "neg_handler" can be considered as a large matching case. 
 Then we use
@@ -447,7 +445,7 @@ simultaneously.
 Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is
 not expressive enough to really fulfill \ref{langdesign-req2}. For
 example, we cannot prove the constructors are injective, i.e.,
-\mintinline{Coq}{self_B.tt ≠ self_B.ff}.\YZ{Is it really impossible to prove constructor injectivity without partial recursors and with recursors only? My confusion after reading these paras is that I still don't know why partial recursors are needed.}
+\mintinline{Coq}{self_B.tt ≠ self_B.ff} because from the perspective of Coq they are just two terms declared in the module type.\YZ{Is it really impossible to prove constructor injectivity without partial recursors and with recursors only? My confusion after reading these paras is that I still don't know why partial recursors are needed.}\EDJreply{The issue is exactly, at that point of programming, for extensibility, there is no access to the concrete recursor. Concrete recursors also cannot be postulated as part of the interface because it breaks extensibility.}
 In the original setting, to
 prove injectivity of constructors of a (vanilla) inductive type, we only
 require a recursor and its computational rules. However, as we pointed
