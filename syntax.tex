@@ -5,18 +5,24 @@ well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. Our presentation
 follows the style of~\citet{kaposi2019gluing}, but for readability we
 omit universe levels attached to judgements.
 After these,
-we will have four new kinds of judgement to model our linkage.
+we will have four new kinds of judgements to model our linkages.
 
 Because we formalize our language as a deep embedding in a type theory with QIIT types, every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms (otherwise how can they be encoded in Agda?)
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
-Latex-wise, we spell out these \textit{well-formedness rule} of type
-judgements and their Agda counterpart to make things more accessible. Of
+Latex-wise, we spell out these \textit{well-formedness rules} of type
+judgements and their Agda counterparts to make things more accessible. Of
 course, a well-formed judgement is not necessarily derivable, just like
 a well-typed QIIT type is not necessarily inhabited.
 
-Due to our intrinsic setting, \textbf{we can and will omit a lot of presumptions of the typing rules}, for example we don't spell out that the rule "Type Universe" requires a well-typed context, even though it did implicitly---because it is not possible to have "not-well-formed" context in our setting.
+Due to our intrinsic setting, \textbf{we can and will omit a lot of
+presumptions of the typing rules}. For example, we don't spell out that
+the rule "Type Universe" requires a well-typed context, even though it
+does implicitly, because it is not possible to have ill-formed
+contexts in our intrinsic setting.
 
-Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most special one because it is actually just a short hand of term judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$. 
+Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the
+most special one because it is actually just a shorthand of term
+judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introduced the notation A[pi_1] yet at this point. And what is A[pi_1]?}
 
 
 
@@ -27,9 +33,9 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most spe
 \begin{figure}[!htb]
   \begin{align*}
     &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over subsitutions and s to range over W-types, which add to the confusion.}
   \end{align*}
-\caption{Judgements and their Agda Encoding}
+\caption{Judgement forms, as Agda types and as presented in this section.}
 \end{figure}
 
 \begin{figure}[!htb]
@@ -54,7 +60,7 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most spe
       {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma}{n} 
       \quad \goodType{\Gamma}{A}{} }
       {\goodSeal{\Gamma}{\_}{\sigma}{A} \text{ is well-formed}}
-      $$
+      $$\YZ{Doesn't the left column show well-formedness rules for ONLY TWO of the four new judgments? Besides, are these rules used anywhere in the following? Seems a bit unusual to have well-formedness rules for judgments per se.}
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
@@ -69,7 +75,7 @@ Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the most spe
     \end{minted}
   \end{minipage}
 
-\caption{Well-formedness of Four New Judgements}
+\caption{Well-formedness rules of four new judgements}
 \end{figure}
 
 
@@ -89,7 +95,12 @@ Now we show selected typing rules: we will have dependent function types
 and dependent pair types. Dependent pair type is used to model Coq
 module, which is useful when we need to model the ``compilation'' from
 linkages to modules. We also have $\beta,\eta$-rule for both dependent
-function type and dependent pair type. The subsitution law for these two require \textit{de bruijn lifting}: for $\goodTerm{\Gamma}{\sigma}{\Delta}$, we define its de bruijn lifting $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow}{\Delta, A}$ given $\goodType{\Delta}{A}{}$.
+function type and dependent pair type.
+The substitution law for these two
+require \textit{de bruijn lifting}: for
+$\goodTerm{\Gamma}{\sigma}{\Delta}$, we define its de Bruijn lifting
+$\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow}{\Delta, A}$ given
+$\goodType{\Delta}{A}{}$.\YZ{What is A[sigma] and what is de Bruijn lifting? Seems like if the reader is not familiar with the substitution calculus, then they will get lost starting here. Broadly speaking, a gentle intro to the intrinsic setting would help the reader a great deal.}
 
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
@@ -154,11 +165,11 @@ $$
 $$
 \Rule[name=Univ-1]
 {\goodType{\Gamma}{T}{j}}
-{\goodTerm{\Gamma}{"c" \ T}{\cU_j}
+{\goodTerm{\Gamma}{"c" \ T}{\cU_j}\YZ{what is c? Why is this rule called Univ-1?Didn't you write that you omit universe levels?}
 }\quad
 \Rule[name=Univ-2]
 {\goodTerm{\Gamma}{T}{\cU_j}}
-{\goodType{\Gamma}{El \ T}{j}}
+{\goodType{\Gamma}{El \ T}{j}\YZ{'El T' isn't explained only until it makes a second appearance in Ind-Term.}}
 \quad
 \Rule
 {}
@@ -233,7 +244,7 @@ We have shown case some exemplar rules for all four standard type
 judgments, and now we focus on the newly introduced facility. 
 
 
-We have two kinds of signatures, one for inductive type, the other for linkages.
+We have two kinds of signatures, one for inductive types, the other for linkages.
 
 
 
@@ -281,11 +292,32 @@ $$
 $$
 
 
-Recall in W-type~\cite{martin1982constructive}, a pair of type $x : A \vdash B(x)$ decides a W-type. To simulate extensible inductive type, we have to equip our inductive type with multiple constructors, and for simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}. Thus we use a list of pairs of such $A_i, B_i$ as the signature for one inductive type, and given an inductive type signature, we use \ruleref{WSig-Proj} to extract and corresponding $A_i, B_i$.
+Recall in W-type~\cite{martin1982constructive}, a pair of type $x : A
+\vdash B(x)$ decides a W-type. To simulate extensible inductive types, we
+have to equip our inductive types with multiple constructors, and for
+simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ :
+(x : Aᵢ) → (Bᵢ x → W) → W}.
+Thus, we use a list of pairs ($A_i, B_i$) as the signature of one
+inductive type, and given an inductive type signature, we use
+\ruleref{WSig-Proj} to extract the corresponding $A_i, B_i$.
 
-Of course we need to put an eye on the substitution law for each piece of the syntax. Here $\bW \sigma$ is a large singleton type~\cite{stone2000}, and it only has one ``element'', the inductive type itself, inside. We formulate in this cumbersome way because we want to have inductive type to be a field element and exposing the constructors at the type level for later \textit{pattern-matching coverage checking} (i.e. if an inductive type as field element has type $\cU$, then no information about the inductive type is exposed).\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}. We follow the style of \textit{type universe à la Tarski} and distinguish types from their \textit{codes or names}, and thus we use $El\ T$ as the type given type name $T : \cU$---in these cases, $T$ is not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is.  
+Of course we need to put an eye on the substitution law for each piece
+of the syntax. Here $\bW \sigma$ is a large singleton
+type~\cite{stone2000}, and it only has one ``element'', the inductive
+type itself, inside. We formulate in this cumbersome way because we want
+to have inductive type to be a field element and exposing the
+constructors at the type level for later \textit{pattern-matching
+exhaustiveness checking} (i.e. if an inductive type as field element has type
+$\cU$, then no information about the inductive type is exposed).
+\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}\YZreply{Seems harmless to list these equations and move the reference to 'type universe a la Tarski' earlier.}
+We follow the style of \textit{type universe à la Tarski} and
+distinguish types from their \textit{codes or names}, and thus we use
+$El\ T$ as the type given type name $T : \cU$---in these cases, $T$ is
+not allowed to locate at type position (i.e. at the right-most position
+of a term judgement) but $El \ T$ is.  
 
-The formulation of our recursor is closely related to the linkage, so we will postpone their description. 
+The formulation of our recursor is closely related to that of linkages,
+so we will postpone their description.
 
 
 
@@ -311,7 +343,7 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodSeal{\Gamma}{f}{\sigma}{A}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
@@ -373,10 +405,22 @@ $$
 % }{}
 % $$
 
-$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature for linkages in the context $\Gamma$ with $n$ fields. We omit the naming/label information for fields in the meta-theory. We can use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type). 
+$\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature
+for linkages in the context $\Gamma$ with $n$ fields. We omit the
+naming/label information for fields in the meta\-theory. We can use $\cL$
+to retrieve the corresponding types of linkage of a given signature, and
+$\cC$ to get the compiled linkage type (an existential type).\YZ{Why is Csigma needed? How is it different from Lsigma?}
 
 
-The signature (for the linkage) and the linkage rules are quite similar the signature for inductive type.  They are both constructed from the empty stuff, and respect substitution lemma for sure. We have \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each componenet due to harmony~\cite{pfenning2009lecture} thus we have local soundness and local completeness ($\beta,\eta$ rules). We omit them and the substitution laws for either field addition and projection. For $\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.\footnote{This omission can be supported by Agda using Implicit Arguments}
+The signature (for the linkage) and the linkage rules are quite similar to
+the signature for inductive types.  They are both constructed from the
+empty stuff, and respect substitution lemma for sure. We have
+\ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each component
+due to harmony~\cite{pfenning2009lecture}, so we have local soundness
+and local completeness ($\beta,\eta$ rules). We omit them and the
+substitution laws for either field addition and projection. For
+$\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.\footnote{This
+omission can be supported by Agda using Implicit Arguments}
 
 
 Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
@@ -387,7 +431,7 @@ $$
 \quad \goodType{\Gamma, A}{B}{}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}}
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gamma}{\sigma}{n}
@@ -414,15 +458,25 @@ $$
 {\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
 $$
 
-In our meta-theory, we only formulate non-dependent eliminator, i.e. the
-\textit{recursor}. Each recursor is constructed by a linkage containing
+In our meta-theory, we only formulate non-dependent eliminator, i.e., the
+\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}
+Each recursor is constructed by a linkage containing
 functions/handlers/pattern-matching cases dealing with each
 constructor. Thus code reuse for recursor is delegated to linkage
-inheritance----to reuse one particular pattern-matching case,
+inheritance---to reuse one particular pattern-matching case,
 we just inherit the function/handler. This greatly simplifies the
-metatheory development. 
+metatheory development.
 
-Intuitively \ruleref{Hdler} is indicating the type of recursor handler for one specific constructor, and \ruleref{Hdlers} is the linkage type of the bundle of all recursor handlers of one given inductive type. We omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its (apparent) internal definition. "prjR" is also the handler selection from the handler linkage, and is helpful for the formulation of $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is the used to construct a concrete recursor given a specific linkage of handlers. All these rules satisfy substitution laws and omitted here.
+Intuitively \ruleref{Hdler} is indicating the type of recursor handler
+for one specific constructor, and \ruleref{Hdlers} is the linkage type
+of the bundle of all recursor handlers of one given inductive type. We
+omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its
+(apparent) internal definition. "prjR" is also the handler selection
+from the handler linkage, and is helpful for the formulation of
+$\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
+the used to construct a concrete recursor given a specific linkage of
+handlers. All these rules satisfy substitution laws and omitted here.
+\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}
 
 
 Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that---then what is this sealing judgement for?
@@ -453,11 +507,11 @@ Now, one missing piece for linkage is the sealing judgement, and both of the $\m
 \centering
 \captionsetup{justification=centering}
 
-\caption{Seal Judgement, and its Agda Representation \\ (or What do we mean when we say one judgement is a short hand of the other)}
+\caption{Seal Judgement, and its Agda Representation \\ (or What do we mean when we say one judgement is a shorthand of the other)}
 
-\begin{minted}[]{agda}
+\begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ A τ = Tm (Γ, 𝓛σ) A[p₁]
+Seal Γ A τ = Tm (Γ, 𝓛σ) A[p₁]@\YZ{tau?}@
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
@@ -472,24 +526,50 @@ idₛ = π₁
 
 
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just
-a short hand of term judgement $\goodTerm{\Gamma , \cC
-\sigma}{\_}{A[\pi_1]}$, a special form of \textit{local morphism}~\cite{abbott2003category}. The substitution law should be understood as a
-lemma, and it is easily derivable using $\gamma^\uparrow$. 
+a shorthand of term judgement $\goodTerm{\Gamma , \cC
+\sigma}{\_}{A[\pi_1]}$,\YZ{Not quite. Previously you used cL I think.}
+a special form of \textit{local morphism}~\cite{abbott2003category}.
+The substitution law should be understood as a lemma, and it is easily
+derivable using $\gamma^\uparrow$. 
 
-The motivation for sealing judgement is acting like a syntactic sugar helpful for inheritance---due to the presence of inductive type in the context, not everything is inheritable. For example, $ X_1 : \bW \sigma_1 \vdash t : T$ in the parent family will generally not be able to be inherited to the children once we override the inductive type. In other words, there is no way ``transplanting'' $t$ into the context $X_2 : \bW \sigma_2$. This makes all the fields after this inductive type non-inheritable---which shouldn't be the case because a lot of fields might not be directly relying on this concrete $\bW \sigma_1$. 
+The motivation for sealing judgement is acting like syntactic sugar
+helpful for inheritance---due to the presence of inductive type in the
+context, not everything is inheritable. For example, $ X_1 : \bW
+\sigma_1 \vdash t : T$ in the parent family will generally not be able
+to be inherited to the children once we override the inductive type. In
+other words, there is no way to ``transplant'' $t$ into the context $X_2
+: \bW \sigma_2$.\YZ{Is sigma_2 the overriding of sigma_1? The reader has to guess.}
+This makes all the fields after this inductive type
+non-inheritable---which shouldn't be the case because a lot of fields
+might not be directly relying on this concrete $\bW \sigma_1$. 
 
-Sealing is used to exploit this fact---with sealing, we can add well-typed terms $X_1 : \cU \vdash t : T$, into the parent family, in the context of $ X_1 : \bW \sigma_1$. Later when we want to inherit $t$, because $t$ only consider $X_1$ as an arbitrary type, inheritance is plausible.
+Sealing\YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".} is used to exploit this fact---with sealing, given $X_1 : \bW
+\sigma_1$, we can add well-typed terms $X_1 : \cU \vdash t : T$, into
+the parent family. Later when we want to inherit $t$,
+because $t$ only consider $X_1$ as an arbitrary type, inheritance is
+possible.
 
-Of course, any fields using "Wsup" and "Wrec" directly relies on the $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and \ruleref{Rec-Constr}) and thus non-inheritable---in these cases, "Wsup" can be understood as concrete constructors and "Wrec" are \textit{exhaustiveness checking}. These fields together with inductive types are the one sealing responsible for hiding. After compilation of linkage type into existential type, we can easily hide the \textit{concrete} definition of the inductive type while exposing all the fields using "Wsup" and "Wrec" like an abstract interface. Apparently, future fields relies on this abstract interface will have no problem on inheritance. \YZ{Does coverage checking mean exhaustiveness checking?}\EDJreply{Yes. The one make sure every case is handled in pattern-matching. Do you want me to replace the terminology using exhaustiveness checking? }\YZreply{Yes, I think exhaustiveness is standard parlance.}\EDJreply{Rephrased. }
+Of course, any fields using "Wsup" and "Wrec" directly relies on the
+$\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and
+\ruleref{Rec-Constr}) and thus non-inheritable---in these cases, "Wsup"
+can be understood as concrete constructors and "Wrec" are
+\textit{exhaustiveness checking}. These fields together with inductive
+types are the ones sealing is responsible for hiding. After compilation
+of linkage types into existential types, we can easily hide the
+\textit{concrete} definition of the inductive type while exposing all
+the fields using "Wsup" and "Wrec" like an abstract interface.
+Apparently, future fields relying on this abstract interface will have no
+problem on inheritance.
 Of course, since "Wsup" and "Wrec" directly rely on the concrete inductive definition, we will have to override these fields whenever inductive type is overridden. For "Wsup" we only need to override each constructor and for "Wrec" it is just doing exhaustiveness checking inside each children family. The recursor handlers however, can be safely inherited.
 \YZ{I suppose the terminology 'sealing' is a reference to ML modules? In
 ML, sealing has the connotation of hiding things behind an existential
 type. So using the same word may cause the reader to have false
 presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear---because I haven't changed any text}
 
-\YZ{Can we have a more concrete example of how the judgment is useful?}\EDJreply{it is done in the metatheory example section, please check.}
-
-And these are also the cases we don't need to seal anything (i.e. doing exhaustiveness checking when using recursor), and thus the "Seal-Id" is used. For notation clearance, we will sometime use $"sf'"$ to emphasize that we consider that seal $s$ as a term $("sf'" \ s)$. 
+There are also cases we don't need to seal anything (i.e., doing
+exhaustiveness checking when using recursor), and thus the "Seal-Id" is
+used. For notation clarity, we will sometimes use $"sf'"$ to emphasize
+that we consider that seal $s$ as a term $("sf'" \ s)$. 
 
 With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
