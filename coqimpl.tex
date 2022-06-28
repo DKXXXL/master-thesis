@@ -452,12 +452,11 @@ We call this \textit{propositional partial recursor}.\YZ{What is propositional a
 For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
 
 \begin{minted}[escapeinside=@@]{Coq}
-b_prec : forall P : b -> Set, P tt -> P ff
-    -> forall x : b, option (P x).@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}@
+b_prec : forall R, option R -> option R -> b -> option R.@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}\EDJreply{What do you mean? recursor doesn't break abstraction but break extensibility. Below mentioned partial recursor doesn't break extensibility}@
 \end{minted}
-with appropriate computational axioms. This partial recursor differs from original recursor only by adding an "option" at the end thus possible to be automatically generated (the case is similar for those computational axiom). The partiality doesn't break
+with appropriate computational axioms. This partial recursor differs from original recursor only by decorating an "option" with the return type thus possible to be automatically generated (and the case is similar for those computational axiom). The partiality doesn't break
 extensibility (i.e. all future extensions of "b" can support this
-"b_prec"). 
+"b_prec") because "b_prec" can just return "None" when bump into extended constructor in the future. 
 
 What's more, partial recursor is theoretically enough for the
 "injection" and "discriminate" tactics. The rough idea to achieve this
@@ -467,21 +466,21 @@ tactics. For example, we want to prove \mintinline{Coq}{self_B.tt ≠
 self_B.ff}, we simply 
 \begin{minted}{Coq}
 Definition reflect : self_B.b → option bool 
-                   := b_prec (fun _ => bool) true false.
+                   := b_prec (fun _ => bool) (Some true) (Some false).
 Definition tt_neq_ff : self_B.tt = self_B.ff → False.
 (* Because self_B.tt = self_B.ff → reflect self_B.tt = reflect self_B.ff 
-                → true = false    (by computational axiom)
-                → False           (by discriminate of bool) *)
+      → Some true = Some false    (by computational axiom)
+      → False           (by discriminate of bool and injection of Some) *)
 \end{minted}
 
 
 
 In fact, the above "reflect" function implies that propositional partial
 recursor is good enough to some extent, at least for non-indexed
-inductive type, because we can ``embed'' vanilla inductive types into
+inductive type: because we can ``embed'' vanilla inductive types into
 types supporting a partial recursor. Because "reflect" is actually a left
 inverse of an injection "bool → self_B.b". A bit more formally, and
-restricting our focus to non-indexed inductive types,
+restricting our focus to non-indexed inductive types:
 
 \begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$
   \begin{itemize}
@@ -494,8 +493,8 @@ Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
       \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
       \item a partial recursor
       \begin{minted}[escapeinside=@@]{Coq}
-prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}@
-  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> R) -> R)), .., 
+prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}\EDJreply{Yes. Discussed below. Basically constructing left inverse for simple inductive type, this weaker form is enough}@
+  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), .., 
       D -> option R
       \end{minted}
       \item and $n$ (propositional) computational axioms: for all $i$, 
@@ -503,6 +502,7 @@ prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}@
 prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
     = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
       \end{minted}
+    % where \mintinline{Coq}{(lift rᵢ) : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)} is defined as expected
     \end{itemize}
   \end{itemize}
   Then there exists an \textbf{embedding} from "C" to "D".
@@ -526,6 +526,14 @@ supports the corresponding partial recursor (with the computational
 axioms)}.  Thus, we can argue that the partial recursor gives a sound and
 complete characterization of all the extension of a given (non-indexed)
 inductive type.\YZ{What about indexed inductive types?}
+
+We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
+\begin{minted}{Coq}
+  pdelim : ∀ (P : D -> Set), .., 
+  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), P (w b)) -> (P (dᵢ x w)))),  
+  .., ∀ (d : D) -> option (P d)
+\end{minted}
+To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
 
 % Mention still needing total recursor, for exhaustiveness checking
 
