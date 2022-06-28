@@ -387,10 +387,18 @@ handler for "uu" and the handlers (mundane fields) from the parent
 inherited (since they only rely on ``the abstracted
 interface'' module "b_3"). 
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
-the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg".  Of course, in the implementation, our plugin will ``inherit'' the
-recursor "neg" in the surface \YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}
+the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg". For example, for the new "neg", when compiling family "B2" into a module, at the appropriate place our plugin will insert
+\begin{minted}{Coq}
+  Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff neg_handler.uu.
+\end{minted}
+where "b_rec" and "b" are the corresponding recursor and the (vanilla but extended and modified) inductive type in that compiled module. Note that, even though "b_rec" and "b" has the same name as before, they are in the newly-compiled module so they refer to totally different things. 
+
+
+
+Of course, in the implementation, our plugin will ``inherit'' the
+recursor "neg" in the surface \YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}\EDJreply{Added above. Please Check.}
 but what the plugin actually does is doing a second exhaustiveness
-checking in children family like mentioned above, with the ``same'' motive and ``same'' handler family.\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''}
+checking in children family like mentioned above, with the ``same'' motive and ``same'' handler family.\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''}\EDJreply{Please check.}
 
 
 
