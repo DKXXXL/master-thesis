@@ -603,7 +603,7 @@ $$
 $$
 \Rule[name=Inh-Ext]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T}}
+  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T}\YZ{What is sigma2'?}}
 {\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
 \quad
 \Rule[name=Inh-Inh]
@@ -638,13 +638,29 @@ $$
 {\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \ t) \equiv \mu^+ \ ("inh" \ h \ m) \ t[(\pi_1, \uparrow^s)]}{}} 
 $$
 
-Finally we introduce the inheritance judgement. Inheritance are judgement so naturally second class citizen data (i.e. not something function can return and cannot be assigned to variables), and it looks very much alike a function that transform a given linkage. 
+Finally we introduce the inheritance judgement. Inheritance are
+judgement so naturally second class citizen data (i.e. not something
+function can return and cannot be assigned to variables), and it looks
+very much like a function that transform a given linkage. 
 
-The syntax of the inheritance judgement is very close to how Family is defined in the surface syntax---a Family with no parent is an inheritance with empty input; an extended Family is exactly an inheritance---because the parent of an extended Family can be overridden thus inheritance should only define upon the ``interface'' instead of a concrete family. However, since our current formulation doesn't support further-binding (i.e. we cannot do inheritance inside a family), our formulation still have some distance to the real family polymorphism. 
+The syntax of the inheritance judgement is very close to how Family is
+defined in the surface syntax---a Family with no parent is an
+inheritance with empty input; an extended Family is exactly an
+inheritance---because the parent of an extended Family can be overridden
+thus inheritance should only define upon the ``interface'' instead of a
+concrete family. However, since our current formulation doesn't support
+further-binding (i.e. we cannot do inheritance inside a family), our
+formulation still has some distance to the real family polymorphism. 
 
-"inhid" and "inhext" are simple as expected---the former corresponds to empty inheritance, and the latter gives the programmer the ability to add new field. 
+"inhid" and "inhext" are simple as expected---the former corresponds to
+empty inheritance, and the latter gives the programmer the ability to
+add new fields.
 
-"inhinh" is special because it requires user to provide a proof of ``upcasting'' from the context of the children to that of the parent. In other words, if I want to inherit a specific field from the parent, I have to convince the type checker that my current context can ``accommodate'' the inherited field. 
+"inhinh" is special because it requires user to provide a proof of
+``upcasting'' from the context of the child to that of the parent.
+In other words, if I want to inherit a specific field from the parent, I
+have to convince the type checker that my current context can
+``accommodate'' the inherited field. 
 
 Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance---family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping.
 
