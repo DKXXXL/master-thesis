@@ -291,16 +291,8 @@ and we have assigned it to both "f" and "p", and later instantiate in
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
 We support ``extensible'' inductive types from
-\ref{langdesign-req2} in Coq to some extent\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort},\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
-by simulating extensible
-inductive type using overriding---when extending an inductive type $A$
-with new constructors $c$, our plugin will generate a new inductive
-definition $A'$ with this new $c$ on the fly and feed it to Coq.  But
-still, we must be careful on the exposing data in the family type (the
-compiled module type) for the following field.  
+\ref{langdesign-req2} in Coq to some extent.\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort}\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
 
-% Insert one pseudo-code example for explanation of the mechanism
-% Use the natural number example
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.32\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
@@ -362,63 +354,53 @@ End v_33_34.
 \caption{Example Code for Inductive Type}\label{fig:plugin-example2}
 \end{figure}
 
-Let's look at \cref{fig:plugin-example2}, the example of boolean and
-negation. When we define inductive type "b", the following "Field
-neg_handler.ff" can only know "b" is a type (of "Set") and there are at
-least two constructors for it, just like what we declare in ``the
-abstracted interface'' the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
-the eliminator of "b" inside "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
-is extended with a third constructor, since the existence of recursor
-alone will assert that there are only two constructors in "b", not
-\textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.}
 
-But we do have to provide a way to construct an (extensible) recursor
-(as in \ref{langdesign-req3}), and perform type checking (and
-exhaustiveness checking). Thus, we need to extract an elimination
-principle for future usage. Here we show one exemplar extraction of the
-recursor in \mintinline{Coq}{Set} as module "b_rec_12".
 
-To construct a recursor as in \ref{langdesign-req3}, we\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''} create for each
-constructor a handler and aggregate them into a family. The whole
-family "neg_handler" can be considered as a large matching case. 
-Then we use
-"FRecursor" to specify the motive and inductive type. Here "FRecursor"
-will feed Coq
-a module "v_33_34" for doing type-checking---what it does is basically
+We start with the programming interface. We use "FInductive" to define a extensible inductive type and in the children family we use "Extend Finductive ..." to extend the inductive type with new constructors. In \cref{fig:plugin-example2}, we make the example of boolean and three-valued boolean. 
+
+
+
+To construct a recursor as in \ref{langdesign-req3}, we need to create for each
+constructor a handler (function) and aggregate them into a family, and thus that family (e.g. "neg_handler" in \cref{fig:plugin-example2}) can be considered as a large matching-case statement. We use "FRecursor" to declare a recursor (e.g. "neg") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "neg"). Here in \cref{fig:plugin-example2} we apply "neg" to "tt" as an exemplar field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "uu"), then the inherited family (e.g. "neg_handler") will need to extend correspondingly (e.g. "neg_handler.uu"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "neg".
+
+The plugin actually realizes the "Extend FInductive" via overridding---when extending an inductive type $A$
+with new constructors $c$, our plugin will generate a new (syntactic) inductive definition $A'$ with this new $c$ on the fly and feed it to Coq. But we must be careful on the exposing data in the family type (the compiled module type) for the following field. In other words, we must be careful on what interface (context) the following fields are defined based on. 
+
+Let's look at the exemplar \cref{fig:plugin-example2}, the example of boolean and negation. When we define the extensible inductive type "b", all the following fields (e.g. "neg_handler.ff") can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface''---the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
+the eliminator of the inductive type "b" inside "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
+is extended with a third constructor, \textbf{since the existence of recursor
+alone will assert that there are only two constructors} in "b", not
+\textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.} 
+
+However, we later still need the concrete eliminator "b" for doing type-checking (as in \ref{langdesign-req3}), thus the information doesn't totally disappear but store elsewhere.  Here we show one exemplar extraction of the recursor to \mintinline{Coq}{Set} as module "b_rec_12". This concrete recursor will be used by our "FRecursor". For example, in \cref{fig:plugin-example2}, "FRecursor" command will feed Coq a module "v_33_34" for doing type-checking with specified handlers (e.g. "neg_handler") during compilation---what it does is basically
 assert the existence of the recursor and apply to see if handlers can
-pass the type checking by Coq. 
-
-Once recursor is created it will look like any other function fields
-(and compiled in the same manner). Here we show "self_B.neg" to apply to
-"self_B.tt" for "B.example".
-While in the implementation of our plugin, the concrete recursor for
-this "neg" will only be created during the compilation of the enclosing
-family into module---it will look exactly like "term_for_type_checking"
-but uses concrete recursor. For example, at the appropriate place, our
-plugin will insert a definition into the compiled module: 
+pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
 \begin{minted}{Coq}
   Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff.
 \end{minted}
-where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module.
+where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields.
 
-
-Since the recursor is constructed knowing a concrete inductive type,
-thus not inheritable, for all the children, we have to reconstruct and
-override with a new recursor (therefore serving as exhaustiveness
-checking for children families).\YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}
-This is affordable since each recursor handler doesn't need
+Importantly, the recursor field (e.g. "neg") is not actually inheritable, because it is not compiled like any other fields---recall how other fields are compiled into reusable pieces of (parametrized) module, a recursor field is not compiled like that. For all the children family, we have to reconstruct and override with a ``new'' recursor using the (maybe inherited) handler family. This is affordable since each recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
-handler for "uu" and the handlers from the parent
+handler for "uu" and the handlers (mundane fields) from the parent
 "B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
 inherited (since they only rely on ``the abstracted
 interface'' module "b_3"). 
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
-the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg".
+the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg".  Of course, in the implementation, our plugin will ``inherit'' the
+recursor "neg" in the surface \YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}
+but what the plugin actually does is doing a second exhaustiveness
+checking in children family like mentioned above, with the ``same'' motive and ``same'' handler family.\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''}
 
-Of course, our plugin will ``inherit'' the
-recursor "neg" in the surface 
-but what the plugin does is doing a second exhaustiveness
-checking in children family.
+
+
+ 
+
+% Insert one pseudo-code example for explanation of the mechanism
+% Use the natural number example
+
+
+
 
 % Explain why the module type need extra care
 
@@ -426,11 +408,9 @@ checking in children family.
 % explain we have the incremental-checking for any recursor 
 
 % explain ftheorem wrapping this complicated recursor
-We also provide a command "FTheorem" when the users want to use tactic
-programming instead. This tool can avoid most boilerplate code (e.g.,
-specify the handler family) when writing a recursor like above, invoke
-proof interaction mode, allow tactic usage, and is also open to
-extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.}
+Finally, we also provide a command "FTheorem" in programming interface when the users want to use tactic
+programming instead. This command (1) can avoid most boilerplate code (e.g., specify the handler family) when writing a recursor like above, (2) invoke
+proof interaction mode and thus allow tactic programming, (3) and is also open to extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.}
 
 To summarize, the key insight here is that, to make each recursor
 handler inheritable, we need to seal an abstraction around the inductive
