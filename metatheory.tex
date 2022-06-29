@@ -1,4 +1,4 @@
-
+% Motivation of using QIIT
 We start with the formulation of the syntax, which is based on the
 formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT)
 given by~\citet{coquand2018canonicity}. Thus we will omit a great deal
@@ -8,22 +8,22 @@ Though phrased in Latex, we are following~\citet{altkap2016} to use as
 our meta-logic a type theoretical framework (like Agda), 
 together with \textit{Quotient Inductive Inductive Type} (QIIT). Our work can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We base our formulation of the syntax in this type theory instead of a more conventional and informal representation, becase (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a proof because proof checking is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real theorem prover so that the reader can have an idea about how mechanized formalization can be carried out.
 
-In our syntax, each judgement will actually be represented by a QIIT type, which are
-mutually recursively defined together. Quotient is used to represent
-judgemental(definitional) equality, thanks to which we can have a
-concise representation. This way, for all four kinds of judgement we are
-using, there are always equality among these data. Doing so, we can omit
-some obvious equality judgement. Most of the reasoning can be formulated
-using the \textit{algebra} of QIIT (mapping out function from this
-quotient data-type). 
+% In our syntax, each judgement will actually be represented by a QIIT type, which are
+% mutually recursively defined together. Quotient is used to represent
+% judgemental(definitional) equality, thanks to which we can have a
+% concise representation. This way, for all four kinds of judgement we are
+% using, there are always equality among these data. Doing so, we can omit
+% some obvious equality judgement. Most of the reasoning can be formulated
+% using the \textit{algebra} of QIIT (mapping out function from this
+% quotient data-type). 
 
-We also highlight some special feature in this style of formulation of dependent type theory: 1. this modern formulation of type theory does't have operational semantic but only equality 
-%We will recover canonicity afterwards, which implies the computational ability of our theory. 
-;
-2. instead of using meta-level substitution, we use explicit substitution and de Bruijn indices in our intrinsic formulation. This is also called substitution calculus in the literature and is favoured due to its clear categorical semantic; 
-3. we are dealing with quotient data, so we are actually manipulating equivalence classes of terms. 
+% We also highlight some special feature in this style of formulation of dependent type theory: 1. this modern formulation of type theory does't have operational semantic but only equality 
+% %We will recover canonicity afterwards, which implies the computational ability of our theory. 
+% ;
+% 2. instead of using meta-level substitution, we use explicit substitution and de Bruijn indices in our intrinsic formulation. This is also called substitution calculus in the literature and is favoured due to its clear categorical semantic; 
+% 3. we are dealing with quotient data, so we are actually manipulating equivalence classes of terms. 
 
-We will write out the syntax of the whole type theory for completeness.
+% We will write out the syntax of the whole type theory for completeness.
 
 
 

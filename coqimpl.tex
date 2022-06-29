@@ -493,7 +493,7 @@ Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
       \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
       \item a partial recursor
       \begin{minted}[escapeinside=@@]{Coq}
-prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}\EDJreply{Yes. Discussed below. Basically constructing left inverse for simple inductive type, this weaker form is enough}@
+prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}@
   (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), .., 
       D -> option R
       \end{minted}
@@ -530,7 +530,7 @@ inductive type.\YZ{What about indexed inductive types?}
 We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
 \begin{minted}{Coq}
   pdelim : ∀ (P : D -> Set), .., 
-  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), P (w b)) -> (P (dᵢ x w)))),  
+  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) -> option (P (dᵢ x w)))),  
   .., ∀ (d : D) -> option (P d)
 \end{minted}
 To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 

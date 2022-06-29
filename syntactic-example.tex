@@ -6,7 +6,7 @@ We provide one example in its surface syntax as pseudocode, and their
 meta-theory encoding. This example is computing the predecessor of a
 mundane natural number, but we split the inductive definition into two
 parts and making "O" and "S" standing alone.
-"pred" is defined as $n \mapsto ("pred" n, n)$\YZ{looks like an ill-founded definition}, and thus a predecessor.
+"pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$\YZ{looks like an ill-founded definition}\EDJreply{Fixed}, and thus a predecessor.
 
 
 
@@ -24,9 +24,11 @@ Family A.
 
 
  EndFamily. (* pN₁, handler₁, sig₃ *)
- pred@\YZ{Why is there no FRecursor?}@
-  : self[A].N → self[A].N × self[A].N
-  := ... 
+ FRecursor pred about self[A].N 
+  motive (fun _ => self[A].N × self[A].N)
+  using handler.@\YZ{Why is there no FRecursor?}\EDJreply{I wanted to save space and emphasize the type. Now fixed}@
+ (* pred
+  : self[A].N → self[A].N × self[A].N *)
   (* predT, pred₁, sig₄, sig₄', sl₄ *) 
  k := self[A].pred self[A].O 
 (* pN₂, sig₅ *)
@@ -45,9 +47,10 @@ Family A₂ extends A.
        → self[A].N × self[A].N 
      := fun (x,y) => (y, self[A₂].S y).
  EndFamily. (* inhᵢₙ, sig₃₁, inh₄*)
- pred 
-  : self[A₂].N → self[A₂].N×self[A₂].N 
-  := ... 
+ Inherit pred.
+ 
+
+
   (* sig₄₁, inh₅, sl₄₁ *)
  Inherits k. 
  (* inh₆ *)
