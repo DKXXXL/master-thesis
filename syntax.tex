@@ -1,6 +1,6 @@
 
 
-We formalize our language as a deep embedding in a type theory with QIIT types, every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms in MLTT,
+We formalize our language as a deep embedding in a type theory with QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms in MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
 well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. These four judgements (QIIT types) are
@@ -34,7 +34,14 @@ Now we highlight some other special feature contrary to more conventional settin
 2. instead of using meta-level substitution, we use explicit substitution and de Bruijn indices in our intrinsic formulation. This is also called substitution calculus in the literature and is favoured due to its closedness categorical semantic; 
 3. we are dealing with quotient data, so we are actually manipulating equivalence classes of terms. 
 
-We quickly review the substitution calculus, 
+We quickly review the substitution calculus. Substitution is very (if not the most) important because function is first-class citizen, and can be applied (almost) everywhere and return (almost) everything, thus we require the resulting substitution to commutate with most (if not all) type/term constructs. 
+
+A term $\goodTerm{\Gamma}{t}{A}$ can be understood as one term $t$ of type $A$, with a bunch of holes (of type $\Gamma$) inside the term $t$. A substitution $\goodSub{\Gamma}{\gamma}{\Delta}$ can be similarly understood in the way that $\gamma$ will output a \textbf{series} of (dependently-typed related) terms of types $\Delta$, parametrized by $\Gamma$ (i.e. we can consider there are holes in $\gamma$ of type $\Gamma$). Thus (1) \ruleref{Sub Extend} looks like concatenating one series of terms with a new term (the weird looking type of $\goodTerm{\Gamma}{t}{A[\sigma]}$ is because we need $A$ to appear in the context of $\Delta$ so that we can use \ruleref{Context Extension} to create new context); (2) we have \ruleref{Proj Subst-1} to extract a subpart of a given substitution; (3) \ruleref{Proj-Ext} explains why substitution really looks like a (deeply-nested) pair. 
+
+Since the $\Gamma$ before the $\vdash$ is always indicating the types of ``holes'', this explains the \ruleref{Term Subst} and \ruleref{Type Subst}: given a term $\goodTerm{\Delta}{t}{A}$ and a substitution $\goodSub{\Gamma}{\gamma}{\Delta}$, we will have a new term $\goodTerm{\Gamma}{t[\gamma]}{A[\gamma]}$ after the substitution---this substitution can be understood as ``filling all the holes''. Once all the holes are filled with a given substitution, the new holes all come from the subsitution itself. Thus consecutive subsitution can be composed as \ruleref{Sub Comp}, because all the holes are always from the last substitutions.
+
+Note that, for simplicity, we will (a lot of time) writing $\pi_1$ as a \textbf{shorthand} of $\goodSub{\Gamma,A}{\pi_1~"id"}{\Gamma}$, and similarly another shorthand for $\goodTerm{\Gamma, A}{\pi_2 := \pi_2~"id"}{A[\pi_1]}$. 
+
 
 
 Based upon the basic MLTT,
@@ -109,16 +116,16 @@ judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introdu
 
 
 
-Now we show selected typing rules: we will have dependent function types
+We will have dependent function types
 and dependent pair types. Dependent pair type is used to model Coq
 module, which is useful when we need to model the ``compilation'' from
 linkages to modules. We also have $\beta,\eta$-rule for both dependent
 function type and dependent pair type.
 The substitution law for these two
-require \textit{de bruijn lifting}: for
-$\goodTerm{\Gamma}{\sigma}{\Delta}$, we define its de Bruijn lifting
-$\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow}{\Delta, A}$ given
-$\goodType{\Delta}{A}{}$.\YZ{What is A[sigma] and what is de Bruijn lifting? Seems like if the reader is not familiar with the substitution calculus, then they will get lost starting here. Broadly speaking, a gentle intro to the intrinsic setting would help the reader a great deal.}
+require \textit{de bruijn lifting}: for a given substitution
+$\goodTerm{\Gamma}{\sigma}{\Delta}$ and a type
+$\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
+$\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.\YZ{What is A[sigma] and what is de Bruijn lifting? Seems like if the reader is not familiar with the substitution calculus, then they will get lost starting here. Broadly speaking, a gentle intro to the intrinsic setting would help the reader a great deal.}\EDJreply{A quick intuitive explanation of substitution-calculus is given above. Please check. }
 
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
@@ -233,13 +240,17 @@ $$
 $$
 \judgebox{\goodSub{\Gamma}{\sigma}{\Delta}}
 $$
-\Rule[name=Empty Subst]
+\Rule[name=Ept Subst]
 {}{\goodSub{\Gamma}{\epsilon}{\cdot}}
 \quad
-\Rule[name=Id Subst]
+\Rule[]
 {}{\goodSub{\Gamma}{"id"}{\Gamma}}
 \quad
-\Rule[name=Subst Extension]
+\Rule[name=Sub Comp]{
+  \goodSub{\Delta}{\delta}{\Theta}
+  \quad \goodSub{\Gamma}{\gamma}{\Delta} 
+}{\goodSub{\Gamma}{\delta \circ \gamma}{\Theta}}
+\Rule[name=Sub Extend]
 {\goodSub{\Gamma}{\sigma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
 {\goodSub{\Gamma}{(\sigma, t)}{(\Delta, A)}}
 $$
