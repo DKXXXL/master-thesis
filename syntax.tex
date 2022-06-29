@@ -47,7 +47,7 @@ Note that, for simplicity, we will (a lot of time) writing $\pi_1$ as a \textbf{
 Based upon the basic MLTT,
 we will have four new kinds of judgements to model our linkages. Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the
 most special one because it is actually just a shorthand of term
-judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introduced the notation A[pi_1] yet at this point. And what is A[pi_1]?}\EDJreply{added for the intro. It is a shorthand for pi_1(id)}
+judgement $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introduced the notation A[pi_1] yet at this point. And what is A[pi_1]?}\EDJreply{added for the intro. It is a shorthand for pi_1(id)}
 
 
 
@@ -579,7 +579,7 @@ Sealing\YZ{It occurs to me that you use the word "sealing" to mean different (th
 \sigma_1$, we can add well-typed terms $X_1 : \cU \vdash t : T$, into
 the parent family. Later when we want to inherit $t$,
 because $t$ only consider $X_1$ as an arbitrary type, inheritance is
-possible.
+possible. This sealing is the general version of the sealed family implemented in the plugin. Our plugin will deduce a sealed ``interface'' for a sealed family using a fixed set of rules but here sealing in metatheory can be arbitrary local morphism. 
 
 Of course, any fields using "Wsup" and "Wrec" directly relies on the
 $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and
