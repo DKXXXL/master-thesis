@@ -10,31 +10,50 @@ omit universe levels attached to judgements.
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
 Latex-wise, we spell out these \textit{well-formedness rules} of type
 judgements and their Agda counterparts to make things more accessible. Of
-course, a well-formed judgement is not necessarily derivable, just like
-a well-typed QIIT type is not necessarily inhabited. 
+course, a well-formed judgement is not necessarily derivable, just as
+a well-formed QIIT type is not necessarily inhabited. 
 
 
 Due to our intrinsic setting, \textbf{we can and will omit a lot of
-presumptions of the typing rules}. This can work because we are using QIIT and everything is intrinsically well-typed. For example, we don't spell out that
-the rule \ruleref{Type Universe} requires a well-typed context, even though it
-does implicitly, \textbf{because it is not possible to have ill-formed (not-well-typed)
-contexts in our intrinsic setting}. This is a bit unusual for conventional extrinsic setting where they will put well-formedness of context everywhere in a lot of term judgements. We consider this as one advantage of using intrinsic setting---this well-formed (well-typed) context is usually attached to some other presumptions thus inferrable and can be considered as ``boilerplate code''. Removed from these boilerplate code, our intrinsic setting provides a more concise representation.
+presumptions of the typing rules}. This can work because we are using
+QIIT and everything is intrinsically well-formed. For example, we don't
+spell out that the rule \ruleref{Type Universe} requires a well-formed
+context, even though it does implicitly, \textbf{because it is not
+possible to have ill-formed contexts in our intrinsic setting}. This is
+a bit unusual for conventional extrinsic setting where they will put
+well-formedness of context everywhere in a lot of term judgements. We
+consider this as one advantage of using intrinsic setting---this
+well-formed context is usually attached to some other presumptions thus
+inferrable and can be considered as ``boilerplate code''. Free of
+such boilerplate code, our intrinsic setting provides a more concise
+representation.
 
-Quotient is used to represent
-judgemental(definitional) equality (for each QIIT type), thanks to which we can have a
-concise representation. This way, for all four kinds of judgement we are
-using, there are always equality among these data. Doing so, we can omit
-some obvious equality judgement. Most of the reasoning can be formulated
+Quotient is used to represent definitional equality (aka judgemental
+equality) between QIIT types concisely.
+This way, for all four kinds of judgements we are
+using, there is always equality among these data. Doing so, we can omit
+some obvious equality judgements. Most of the reasoning can be formulated
 using the \textit{algebra} of QIIT (mapping out function from this
 quotient data-type). 
 
-Now we highlight some other special feature contrary to more conventional setting: 1. this modern formulation of type theory does't have operational semantic but only equality\footnote{Later we will prove canonicity which can imply a certain level of computational ability of our theory}
+Now we highlight some other special features that differ from a more
+conventional setting: (1) This modern formulation of type theory does not
+have an operational semantics but only equality.\footnote{Later we will prove
+canonicity which can imply a certain level of computational ability of
+our theory}
 %We will recover canonicity afterwards, which implies the computational ability of our theory. 
-;
-2. instead of using meta-level substitution, we use explicit substitution and de Bruijn indices in our intrinsic formulation. This is also called substitution calculus in the literature and is favoured due to its closedness categorical semantic; 
-3. we are dealing with quotient data, so we are actually manipulating equivalence classes of terms. 
+(2) Instead of using meta-level substitution, we use explicit
+substitution and de Bruijn indices in our intrinsic formulation. This is
+also called substitution calculus in the literature and is favoured due
+to its closedness categorical semantic.
+(3) We are dealing with quotient data, so we are actually manipulating
+equivalence classes of terms.
 
-We quickly review the substitution calculus. Substitution is very (if not the most) important because function is first-class citizen, and can be applied (almost) everywhere and return (almost) everything, thus we require the resulting substitution to commutate with most (if not all) type/term constructs. 
+We quickly review the substitution calculus.
+Substitution is very (if not the most) important because function is
+first-class citizens, and can be applied (almost) everywhere and can return
+(almost) everything, thus we require the resulting substitution to
+commute with most (if not all) type/term constructs. 
 
 A term $\goodTerm{\Gamma}{t}{A}$ can be understood as one term $t$ of type $A$, with a bunch of holes (of type $\Gamma$) inside the term $t$. A substitution $\goodSub{\Gamma}{\gamma}{\Delta}$ can be similarly understood in the way that $\gamma$ will output a \textbf{series} of (dependently-typed related) terms of types $\Delta$, parametrized by $\Gamma$ (i.e. we can consider there are holes in $\gamma$ of type $\Gamma$). Thus (1) \ruleref{Sub Extend} looks like concatenating one series of terms with a new term (the weird looking type of $\goodTerm{\Gamma}{t}{A[\sigma]}$ is because we need $A$ to appear in the context of $\Delta$ so that we can use \ruleref{Context Extension} to create new context); (2) we have \ruleref{Proj Subst-1} to extract a subpart of a given substitution; (3) \ruleref{Proj-Ext} explains why substitution really looks like a (deeply-nested) pair. 
 
@@ -58,7 +77,7 @@ judgement $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introdu
 \begin{figure}[!htb]
   \begin{align*}
     &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over subsitutions and s to range over W-types, which add to the confusion.}
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}
   \end{align*}
 \caption{Judgement forms, as Agda types and as presented in this section.}
 \end{figure}
