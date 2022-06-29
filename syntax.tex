@@ -127,6 +127,12 @@ $\goodTerm{\Gamma}{\sigma}{\Delta}$ and a type
 $\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
 $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.\YZ{What is A[sigma] and what is de Bruijn lifting? Seems like if the reader is not familiar with the substitution calculus, then they will get lost starting here. Broadly speaking, a gentle intro to the intrinsic setting would help the reader a great deal.}\EDJreply{A quick intuitive explanation of substitution-calculus is given above. Please check. }
 
+Because in dependent type, function now can return type, of which the type is ``type of type'', \textit{the universe} $\cU$. We follow the style of \textit{type universe à la Tarski}~\cite{hofmann1997syntax} and
+distinguish types from their \textit{codes or names}, and thus we use
+$El\ T$ as the type given \textit{type name} $T : \cU$. In this case, (1) $\cU$ is the type including the \textit{codes or names} of types , and (2) $T$ is
+not allowed to locate at type position (i.e. at the right-most position of a term judgement) but $El \ T$ is. "c" is the ``inverse'' of $El$ that getting \underline{"c"}ode of a type, with the following two equations $"c" (El~T) \equiv T$ and $El ("c"~T) \equiv T$. Recall that we are actually using predicative universe and thus we actually have different level of universes $\cU_j$. Here level omitted for conciseness.
+
+
   \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
 $$ 
@@ -188,13 +194,13 @@ $$
 $$
 \judgebox{ \goodTerm{\Gamma}{t}{T} }
 $$
-\Rule[name=Univ-1]
+\Rule[]
 {\goodType{\Gamma}{T}{j}}
-{\goodTerm{\Gamma}{"c" \ T}{\cU}\YZ{what is c? Why is this rule called Univ-1?Didn't you write that you omit universe levels?}\EDJreply{I just kind of afraid they will think there is one universe. Let me remove all the indices}
+{\goodTerm{\Gamma}{"c" \ T}{\cU}\YZ{what is c? Why is this rule called Univ-1?Didn't you write that you omit universe levels?}\EDJreply{I think c stands for code. I am just following convention. Now I remove their name because that is a bad name. About the level, I just kind of afraid they will think there is one universe. Now I've removed all the indices}
 }\quad
-\Rule[name=Univ-2]
+\Rule[]
 {\goodTerm{\Gamma}{T}{\cU}}
-{\goodType{\Gamma}{El \ T}{j}\YZ{'El T' isn't explained only until it makes a second appearance in Ind-Term.}}
+{\goodType{\Gamma}{El \ T}{j}\YZ{'El T' isn't explained only until it makes a second appearance in Ind-Term.}\EDJreply{I have made El and universe explanation earlier, please check.}}
 \quad
 \Rule
 {}
@@ -338,12 +344,8 @@ to have inductive type to be a field element and exposing the
 constructors at the type level for later \textit{pattern-matching
 exhaustiveness checking} (i.e. if an inductive type as field element has type
 $\cU$, then no information about the inductive type is exposed).
-\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}\YZreply{Seems harmless to list these equations and move the reference to 'type universe a la Tarski' earlier.}
-We follow the style of \textit{type universe à la Tarski} and
-distinguish types from their \textit{codes or names}, and thus we use
-$El\ T$ as the type given type name $T : \cU$---in these cases, $T$ is
-not allowed to locate at type position (i.e. at the right-most position
-of a term judgement) but $El \ T$ is.  
+\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}\YZreply{Seems harmless to list these equations and move the reference to 'type universe a la Tarski' earlier.}\EDJreply{Done. Please check.}
+ 
 
 The formulation of our recursor is closely related to that of linkages,
 so we will postpone their description.
@@ -372,7 +374,7 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}\EDJreply{`f' is the seal, 'A' is the result of sealing. I think I wrote down the motivation of sealing... Is it still too hard? Do you think I need to think of a more friendly way?}
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
@@ -438,7 +440,7 @@ $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature
 for linkages in the context $\Gamma$ with $n$ fields. We omit the
 naming/label information for fields in the meta\-theory. We can use $\cL$
 to retrieve the corresponding types of linkage of a given signature, and
-$\cC$ to get the compiled linkage type (an existential type).\YZ{Why is Csigma needed? How is it different from Lsigma?}
+$\cC$ to get the compiled linkage type (an existential type).\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)} $\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is really a deeply nested dependent pair. This is reflecting the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
 
 
 The signature (for the linkage) and the linkage rules are quite similar to
@@ -460,7 +462,7 @@ $$
 \quad \goodType{\Gamma, A}{B}{}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I included circ into the typesetting} }
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gamma}{\sigma}{n}
@@ -487,8 +489,8 @@ $$
 {\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
 $$
 
-In our meta-theory, we only formulate non-dependent eliminator, i.e., the
-\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}
+In our meta-theory, we only formulate non-dependent eliminator for simplicity, i.e., the
+\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. }
 Each recursor is constructed by a linkage containing
 functions/handlers/pattern-matching cases dealing with each
 constructor. Thus code reuse for recursor is delegated to linkage
@@ -505,7 +507,7 @@ from the handler linkage, and is helpful for the formulation of
 $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
 the used to construct a concrete recursor given a specific linkage of
 handlers. All these rules satisfy substitution laws and omitted here.
-\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}
+\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}\EDJreply{Do you mean you want to see substitution laws and beta and eta laws? They are just commutating as expected I can write down them if you really want. And what else do you think is helpful}
 
 
 Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that---then what is this sealing judgement for?
@@ -540,7 +542,7 @@ Now, one missing piece for linkage is the sealing judgement, and both of the $\m
 
 \begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ A τ = Tm (Γ, 𝓛σ) A[p₁]@\YZ{tau?}@
+Seal Γ A τ = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}@
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
@@ -556,7 +558,7 @@ idₛ = π₁
 
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just
 a shorthand of term judgement $\goodTerm{\Gamma , \cC
-\sigma}{\_}{A[\pi_1]}$,\YZ{Not quite. Previously you used cL I think.}
+\sigma}{\_}{A[\pi_1]}$,\YZ{Not quite. Previously you used cL I think.}\EDJreply{Sorry. It is fixed. It should be $\cC$ in the context.}
 a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
@@ -565,14 +567,15 @@ The motivation for sealing judgement is acting like syntactic sugar
 helpful for inheritance---due to the presence of inductive type in the
 context, not everything is inheritable. For example, $ X_1 : \bW
 \sigma_1 \vdash t : T$ in the parent family will generally not be able
-to be inherited to the children once we override the inductive type. In
+to be inherited to the children once we override the inductive type $\bW
+\sigma_1$ with $\bW \sigma_2$. In
 other words, there is no way to ``transplant'' $t$ into the context $X_2
-: \bW \sigma_2$.\YZ{Is sigma_2 the overriding of sigma_1? The reader has to guess.}
+: \bW \sigma_2$.\YZ{Is sigma_2 the overriding of sigma_1? The reader has to guess.}\EDJreply{Thanks. Fixed}
 This makes all the fields after this inductive type
 non-inheritable---which shouldn't be the case because a lot of fields
 might not be directly relying on this concrete $\bW \sigma_1$. 
 
-Sealing\YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".} is used to exploit this fact---with sealing, given $X_1 : \bW
+Sealing\YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".}\EDJreply{They are actually the same thing. This sealing in metatheory is much stronger than that of the implemented plugin. Downside of the strong sealing is that if the user really use this version of sealing, the user will have to annotate what the sealed family type is. Now in the plugin, the sealed family type is almost fixed (directly inferred using a fixed rules). So basically this complete version of sealing (in metatheory) can deduce that of seal (in plugin implementation) } is used to exploit this fact---with sealing, given $X_1 : \bW
 \sigma_1$, we can add well-typed terms $X_1 : \cU \vdash t : T$, into
 the parent family. Later when we want to inherit $t$,
 because $t$ only consider $X_1$ as an arbitrary type, inheritance is
@@ -625,14 +628,14 @@ $$
 \goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}  
 \quad \goodType{\Gamma, A_1}{T_1}{}
 \quad \goodType{\Gamma, A_2}{T_2}{}
-  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T_2}}
+  \quad \goodTerm{\Gamma, A_2}{t}{T_2}}
 {\goodInh{\Gamma}{"inhov" \ h \ t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}}
 $$
 
 $$
 \Rule[name=Inh-Ext]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-  \quad \goodTerm{\Gamma, \cL \sigma_2'}{t}{T}\YZ{What is sigma2'?}}
+  \quad \goodTerm{\Gamma, A_2}{t}{T}\YZ{What is sigma2'?}\EDJreply{Sorry this should be A2, i.e. the result of sealing. Earlier version sigma2' is the result of sealing. It was type-set before the last meta-theory change}}
 {\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
 \quad
 \Rule[name=Inh-Inh]
