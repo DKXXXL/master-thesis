@@ -15,10 +15,10 @@ a well-typed QIIT type is not necessarily inhabited.
 
 
 Due to our intrinsic setting, \textbf{we can and will omit a lot of
-presumptions of the typing rules}. For example, we don't spell out that
+presumptions of the typing rules}. This can work because we are using QIIT and everything is intrinsically well-typed. For example, we don't spell out that
 the rule \ruleref{Type Universe} requires a well-typed context, even though it
-does implicitly, because it is not possible to have ill-formed
-contexts in our intrinsic setting.
+does implicitly, \textbf{because it is not possible to have ill-formed (not-well-typed)
+contexts in our intrinsic setting}. This is a bit unusual for conventional extrinsic setting where they will put well-formedness of context everywhere in a lot of term judgements. We consider this as one advantage of using intrinsic setting---this well-formed (well-typed) context is usually attached to some other presumptions thus inferrable and can be considered as ``boilerplate code''. Removed from these boilerplate code, our intrinsic setting provides a more concise representation.
 
 Quotient is used to represent
 judgemental(definitional) equality (for each QIIT type), thanks to which we can have a
@@ -47,7 +47,7 @@ Note that, for simplicity, we will (a lot of time) writing $\pi_1$ as a \textbf{
 Based upon the basic MLTT,
 we will have four new kinds of judgements to model our linkages. Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is the
 most special one because it is actually just a shorthand of term
-judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introduced the notation A[pi_1] yet at this point. And what is A[pi_1]?}
+judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introduced the notation A[pi_1] yet at this point. And what is A[pi_1]?}\EDJreply{added for the intro. It is a shorthand for pi_1(id)}
 
 
 
@@ -85,7 +85,7 @@ judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introdu
       {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma}{n} 
       \quad \goodType{\Gamma}{A}{} }
       {\goodSeal{\Gamma}{\_}{\sigma}{A} \text{ is well-formed}}
-      $$\YZ{Doesn't the left column show well-formedness rules for ONLY TWO of the four new judgments? Besides, are these rules used anywhere in the following? Seems a bit unusual to have well-formedness rules for judgments per se.}
+      $$\YZ{Doesn't the left column show well-formedness rules for ONLY TWO of the four new judgments? Besides, are these rules used anywhere in the following? Seems a bit unusual to have well-formedness rules for judgments per se.}\EDJreply{Yes. Right column show all the well-formedness rule for all the judgement. That is unusual because it is a direct translation from QIIT. }
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
@@ -100,7 +100,7 @@ judgement $\goodTerm{\Gamma , \cL \sigma}{\_}{A[\pi_1]}$.\YZ{You haven't introdu
     \end{minted}
   \end{minipage}
 
-\caption{Well-formedness rules of four new judgements}
+\caption{Well-formedness rules of the judgements}
 \end{figure}
 
 
@@ -142,7 +142,7 @@ $$
 $$
 \Rule[name=Type Universe]
 {}
-{\goodType{\Gamma}{\cU_j}{j + 1}}
+{\goodType{\Gamma}{\cU}{j + 1}}
 \quad 
 \Rule[name=Boolean]
 {}
@@ -181,7 +181,7 @@ $$
 \quad
 \Rule[name=Base Type Subst]
 {\goodSub{\Gamma}{\gamma}{\Delta}}
-{\goodType{\Gamma}{\cU_j[\gamma] \equiv \cU_j }{j + 1} \quad
+{\goodType{\Gamma}{\cU[\gamma] \equiv \cU }{j + 1} \quad
   \goodType{\Gamma}{\cB[\gamma] \equiv \cB}{0} \quad 
   \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
 }
@@ -190,10 +190,10 @@ $$
 $$
 \Rule[name=Univ-1]
 {\goodType{\Gamma}{T}{j}}
-{\goodTerm{\Gamma}{"c" \ T}{\cU_j}\YZ{what is c? Why is this rule called Univ-1?Didn't you write that you omit universe levels?}
+{\goodTerm{\Gamma}{"c" \ T}{\cU}\YZ{what is c? Why is this rule called Univ-1?Didn't you write that you omit universe levels?}\EDJreply{I just kind of afraid they will think there is one universe. Let me remove all the indices}
 }\quad
 \Rule[name=Univ-2]
-{\goodTerm{\Gamma}{T}{\cU_j}}
+{\goodTerm{\Gamma}{T}{\cU}}
 {\goodType{\Gamma}{El \ T}{j}\YZ{'El T' isn't explained only until it makes a second appearance in Ind-Term.}}
 \quad
 \Rule
