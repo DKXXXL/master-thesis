@@ -471,7 +471,7 @@ $$
 \Rule[name=Compile]
 {}
 {\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
-\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{What is C_t? I don't think you talk about it anywhere.}\EDJreply{I added the explanation together with more details on C. Ct is really just intro rule for C}
+\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
@@ -505,18 +505,39 @@ A side note: before we dive in more details of our metatheory for linkage (espec
 We use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type).
 $\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, according to \ruleref{Compile}, is a deeply nested dependent pair. Then $\cCt \sigma$ provide the concrete module of type $\cC\sigma$ given a linkage of type $\cL\sigma$. 
 
-The reason we need this additional type construct of $\cC\sigma$ here is to support \textit{code reuse}, as the rule of linkages hinders its ability to do abstraction. Concretely speaking, (using surface syntax) we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one, consider the case $T$ is bottom type and $\sigma$ is empty record and thus $a$ is initially bottom type. Now we further override $h.a$ using unit type we can derive inconsistency}. This term is important for us to abstract the concrete inductive type so that the later field can depend on the abstract interface and achieve \textit{code reuse} reuse. On the other hand, we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T) }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential (also existential type just don't allow overriding). Thus to allow abstraction happens, we need  $\cC\sigma$ to compile a linkage to module as a part of the context and we also need \ruleref{Lnkg Compile} to specify the compilation from linkage to module.
+The reason we need this additional type construct of $\cC\sigma$ here is
+to support \textit{code reuse}, as the rule of linkages hinders its
+ability to do abstraction. Concretely speaking, (using surface syntax)
+we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to
+T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one,
+consider the case $T$ is bottom type and $\sigma$ is empty record and
+thus $a$ is initially bottom type. Now we further override $h.a$ using
+unit type we can derive inconsistency\YZ{You are talking about
+overriding here, but you haven't told the reader what overriding means
+in your metatheory.}}. This term is important for us to abstract the
+concrete inductive type so that the later field can depend on the
+abstract interface and achieve \textit{code reuse}. On the other hand,
+we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T)
+}{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential
+(also existential type just don't allow overriding\YZ{Why is it desired that this type in the context does not allow overriding (since it already says 'a : U')?}).
+Thus to allow abstraction happens, we need $\cC\sigma$ to compile a
+linkage to module as a part of the context and we also need
+\ruleref{Lnkg Compile} to specify the compilation from linkage to
+module.
 
 This is also reflected in the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
-\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
-PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
-PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}\EDJreply{  Compile is very different from seal.  Compile is making a linkage into a module, depriving the ability to override---if we understand a linkage as a module with a lot of universal quantifier inside. Compile cannot hide things, but only translate a linkage into a module. Seal is really something that does hiding---because existential type can hide stuff. Seal is an term between existential types. \\
-The ultimate reason we have this two notion is that, the introduction rule for linkage fails to provide abstraction mechanism so we have to translate them into module. \\
-Generally speaking Compile : Linkage -> Module, Seal : Module -> Module, we need module here because linkage cannot do abstraction of inductive type. A concrete detail is at the above. \\ 
-I now describe the motivation of compile in the earlier paragraph, right before the "reflecting" section. Note that, this compile is inspired by plugin implementation. This is the reason I say the metatheory is really close and inspired by the implementation. Similarly as I say ``there is no extensible inductive type but only overriding of new inductive type'' because in metatheory it is using overriding to ``extend'' (same as plugin implementation), seal means the same thing, and ``compile'' in metatheory happens in plugin implementation
-}
+%\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
+%PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
+%PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}\EDJreply{  Compile is very different from seal.  Compile is making a linkage into a module, depriving the ability to override---if we understand a linkage as a module with a lot of universal quantifier inside. Compile cannot hide things, but only translate a linkage into a module. Seal is really something that does hiding---because existential type can hide stuff. Seal is an term between existential types. \\
+%The ultimate reason we have this two notion is that, the introduction rule for linkage fails to provide abstraction mechanism so we have to translate them into module. \\
+%Generally speaking Compile : Linkage -> Module, Seal : Module -> Module, we need module here because linkage cannot do abstraction of inductive type. A concrete detail is at the above. \\ 
+%I now describe the motivation of compile in the earlier paragraph, right before the "reflecting" section. Note that, this compile is inspired by plugin implementation. This is the reason I say the metatheory is really close and inspired by the implementation. Similarly as I say ``there is no extensible inductive type but only overriding of new inductive type'' because in metatheory it is using overriding to ``extend'' (same as plugin implementation), seal means the same thing, and ``compile'' in metatheory happens in plugin implementation
+%}
 
-However, $\cC$ can only make sure we have $\cL(\{a~:~\bW \sigma; b~:~a \to T\}) \to (\Sigma a:\bW \sigma, a \to T)$, we still need $(\Sigma a:\bW \sigma, a \to T) \to (\Sigma a:\cU \sigma, a \to T)$ to complete this shifting of the context. This is sealing's job.
+However, $\cC$ can only make sure we have $\cL(\{a~:~\bW \sigma; b~:~a
+\to T\}) \to (\Sigma a:\bW \sigma, a \to T)$, we still need $(\Sigma
+a:\bW \sigma, a \to T) \to (\Sigma a:\cU \sigma, a \to T)$ to complete
+this shifting of the context. This is sealing's job.
 
 
 
@@ -549,7 +570,7 @@ However, $\cC$ can only make sure we have $\cL(\{a~:~\bW \sigma; b~:~a \to T\}) 
 
 \begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ σ A = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}\YZreply{Why is tau not used in the definition?}\EDJreply{Thanks. I wanted to remove tau but I accidentally removed sigma instead}@
+Seal Γ σ A = Tm (Γ, 𝓒σ) A[π₁]
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
@@ -568,7 +589,30 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
-Sealing judgement is still about the important term $h$ we mentioned earlier. Thanks to $\cC$, a newly added term $t_{new}$ is now in the context of $\cC\{a : \bW \sigma; ..\}$. But if we want $t_{new}$ to be inherited(reused) when $\sigma$ is extended, we would like $t_{new}$ to be in the context  of $\cC\{a : \cU; ..\}$ instead. The sealing is responsible for this because we have a sealing $\goodTerm{\Gamma, \cC\{a : \bW \sigma; ..\}}{s}{\cC\{a : \cU; ..\}}$ = $\goodTerm{\Gamma, (\Sigma a : \bW \sigma,..)}{s}{(\Sigma a : \cU,..)}$. Then we can construct $t_{new}$ in the context of  $(\Sigma a : \cU,..)$, ready for inheritance. Apparently $t_{new}$ in this case cannot be doing \textit{exhaustiveness checking}, but it can freely use any \textit{exhaustiveness-checked} recursor. \YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".}\EDJreply{They are actually the same thing. This sealing in metatheory is much stronger than that of the implemented plugin. Downside of the strong sealing is that if the user really use this version of sealing, the user will have to annotate what the sealed family type is. Now in the plugin, the sealed family type is almost fixed (directly inferred using a fixed rules). So basically this complete version of sealing (in metatheory) can deduce that of seal (in plugin implementation) } 
+Sealing judgement is still about the important term $h$ we mentioned
+earlier. Thanks to $\cC$, a newly added term $t_{new}$\YZ{By 'a newly
+added term', do you mean a term that follows field 'a'?} is now in the
+context containing $\cC\{a : \bW \sigma; ..\}$.
+But if we want $t_{new}$ to be inherited(reused) when $\sigma$ is
+extended, we would like $t_{new}$ to be in the context containing
+$\cC\{a : \cU; ..\}$ instead. The sealing is responsible for this
+because we have a sealing $\goodTerm{\Gamma, \cC\{a : \bW \sigma;
+..\}}{s}{\cC\{a : \cU; ..\}}$ = $\goodTerm{\Gamma, (\Sigma a : \bW
+\sigma,..)}{s}{(\Sigma a : \cU,..)}$. Then we can construct
+$t_{new}$ in the context containing $(\Sigma a : \cU,..)$, ready for
+inheritance.
+Apparently $t_{new}$ in this case cannot be doing \textit{exhaustiveness
+checking}, but it can freely use any \textit{exhaustiveness-checked}
+recursor.\YZ{It occurs to me that you use the word "sealing" to mean
+different (though tangentially related) things. Previously you used it
+as in "sealed families".}\EDJreply{They are actually the same thing.
+This sealing in metatheory is much stronger than that of the implemented
+plugin. Downside of the strong sealing is that if the user really use
+this version of sealing, the user will have to annotate what the sealed
+family type is. Now in the plugin, the sealed family type is almost
+fixed (directly inferred using a fixed rules). So basically this
+complete version of sealing (in metatheory) can deduce that of seal (in
+plugin implementation) } 
 
 
 % For example, $ X_1 : \bW
