@@ -183,7 +183,7 @@ Family I.
  Fail Field comm_bop : ...
 
  Family MonotonicF.
-  Final Field f : nat -> nat := non_impl.
+  Field f : nat -> nat := non_impl.
   Field p : monotonic f := non_impl.
  SealFamily. 
 EndFamily.
@@ -202,7 +202,7 @@ Family I2 extends I.
 
  Inherits Until MonotonicF.
  Override Family MonotonicF.
-  Final Field f : nat -> nat := (+ 1).
+  Field f : nat -> nat := (+ 1).
   Field p : monotonic f := ...
  EndFamily. 
 EndFamily.
@@ -266,14 +266,13 @@ has already allowed fields to be type-dependent on former fields thus we can see
 % future).
 Take the field "c" in "Family I" in \cref{fig:plugin-example3} as the
 example. We can see that the first attempt of proving "a = 1" fails.
-This should fail, actually---because we want to retain the possibility
+\textit{This should fail}---because we want to retain the possibility
 to override "a" in the future, but the mere existence of the field "c"
-will stop that, since "c" witnesses "a" fix to "1". From the other
-perspective, the proof of "c" will require a concrete definition of "a"
-instead of just the exposure of its type. \textbf{We can see a conflict
-between \textit{overridable} and \textit{(definition-relevant)
-reasoning}}.  We enable the exposure of the concrete definition by
-providing "Final" keyword upon "a'".
+will stop that, since "c" witnesses "a" fix to "1". In our implementation, \textit{this will fail}---the proof of "c" will require a concrete definition of "a",
+but our compilation will type check \mintinline{Coq}{c : a = 1 := eq_refl} in the context where we only know \mintinline{Coq}{a : nat} thus failed.  
+
+To enable the exposure of the concrete definition,
+our plugin provide "Final" keyword. Once we decorate it upon "a'", the second attempt \mintinline{Coq}{c : a' = 1 := eq_refl} will succeed. Contrary to "a", our "a'" is not overridable in "Family I2".
 
 This example might sound trivial and contrived. Let's look at the
 example field binary operation "bop" initially set to be addition.\YZ{This 'add' field is no longer there.}\EDJreply{Thanks. Fixed} Now that we only expose the type of "bop", we
@@ -292,11 +291,10 @@ can prove that it's equal to 1 but "a'" is not overridable in the
 %therefore we need non-overridables. This causal flow should be made
 %more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph. Please check and resolve if find satisfied.}
 
-In our Coq plugin, we can achieve such exposure of definitional equality by
-exposing the whole definition directly into the compiled module type. Doing so we also prohibit overriding because
+We implement "Final" by
+exposing the whole definition directly into the compiled module type. Doing so we will prohibit overriding because
 subtraction doesn't have the same definition as $add$. We require the
-users to decorate field as `Final' so that the plugin will proceed with
-this special treatment.
+users to manual decorate field as `Final' so that the plugin will proceed with this special treatment.
 %\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
@@ -304,28 +302,28 @@ Non-overridable fields are still not expressive enough to achieve the full
 extent of dependent type programming. There are cases where overriding and
 (definition-relevant) reasoning are both needed. For example, we may want a field to be an overridable monotonic function. We cannot split into two fields
 \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
-because to provide
-"p" we need to have concrete definition of "f" in the family type, which
+because to prove
+the latter we need to have concrete definition of "f" in the family type, which
 makes "f" non-overridable at all. One option is to use sigma type
 \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
 a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide family sealing mechanism to simulate sigma type---we allow the
-users to specify the compiled module type of a given family, and thus we
-can have a \textit{non-overridable} (thus locally transparent) field
-located in an \textit{overridable} family.
-See, for example, the "MonotonicF" in \cref{fig:plugin-example3}.
-We simply seal
+To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the family but a family as a whole will be sealed into a relaxed type. Thus we can override one sealed family as a whole and thus change the internal implementation. 
+
+For example, the "MonotonicF" in \cref{fig:plugin-example3}:
+we simply seal
 \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
-together inside an overridable family that does not allow "f"
-to be overridden in any of its derived families.
-Because "f" is non-overridable inside the family, its definition is
+together inside an sealed family.
+Because the definition of "f" is exposed inside the family, 
+its definition is
 transparent and can be used to prove "p".
 However, because the enclosing family of "f" is overridable, to swap the
 implementation of "f", we just override the whole ``sealed'' family,
-like we do in "I2.MonotonicF". And the compiled module type of
+like we do in "I2.MonotonicF". 
+
+And the compiled module type of
 "MonotonicF" will be fixed throughout the extension in different
-families---it is always these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
+families. Overriding field will always have these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
 In our example, the seal family "I.MonotonicF" is actually simulating
 interfaces as well.  We have
@@ -336,6 +334,7 @@ and we have assigned it to both "f" and "p", and later instantiate in
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property
+The implementation of sealed family is not so different from that of the normal family, but we need to be careful about the compiled module type. 
 
 
 
