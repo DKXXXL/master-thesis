@@ -471,7 +471,7 @@ $$
 \Rule[name=Compile]
 {}
 {\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
-\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{What is C_t? I don't think you talk about it anywhere.}
+\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{What is C_t? I don't think you talk about it anywhere.}\EDJreply{I added the explanation together with more details on C. Ct is really just intro rule for C}
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
@@ -486,15 +486,25 @@ $$
 % }{}
 % $$
 
+Before we dive in the details of our metatheory, we have to mention that, the challenge of incorporating family polymorphism with inductive type is quite different in metatheory than in surface syntax because of de Bruijn indices. (Using surface synax), given a linkage $\{a~:~\bW \sigma; b_1 : a \to T;..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between exhaustiveness checking and inheritance---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to let $b_i$ term construct in the context of $\bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that. Our metatheory formulation of linkage is mainly trying to solve this tension.
+
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature
 for linkages in the context $\Gamma$ with $n$ fields. We omit the
 naming/label information for fields in the meta\-theory. We can use $\cL$
 to retrieve the corresponding types of linkage of a given signature, and
 $\cC$ to get the compiled linkage type (an existential type).
-$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is really a deeply nested dependent pair. This is reflecting the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
+$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is a deeply nested dependent pair. Then $\cCt \sigma$ provide the concrete module of type $\cC\sigma$ given a linkage of type $\cL\sigma$. 
+
+The reason we need this additional $\cC\sigma$ here is because, the rule of linkages hinders its ability to do abstraction. Concretely speaking, (using surface syntax) we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one, consider the case $T$ is bottom type and $\sigma$ is empty record and thus $a$ is initially bottom type. Now we further override $h.a$ using unit type we can derive inconsistency}. This term is important for us to abstract the concrete inductive type so that the later field can depend on the abstract interface. On the other hand, we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T) }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential (also existential type just don't allow overriding). Thus to allow abstraction happens, we need  $\cC\sigma$ to compile a linkage to module and we also need \ruleref{Lnkg Compile} to specify the compilation from linkage to module.
+
+This is also reflected in the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
 \YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
 PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
-PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}
+PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}\EDJreply{  Compile is very different from seal.  Compile is making a linkage into a module, depriving the ability to override---if we understand a linkage as a module with a lot of universal quantifier inside. Compile cannot hide things, but only translate a linkage into a module. Seal is really something that does hiding---because existential type can hide stuff. Seal is an term between existential types. \\
+The ultimate reason we have this two notion is that, the introduction rule for linkage fails to provide abstraction mechanism so we have to translate them into module. \\
+Generally speaking Compile : Linkage -> Module, Seal : Module -> Module, we need module here because linkage cannot do abstraction of inductive type. A concrete detail is at the above. \\ 
+I now describe the motivation of compile in the earlier paragraph, right before the "reflecting" section. Note that, this compile is inspired by plugin implementation. This is the reason I say the metatheory is really close and inspired by the implementation. Similarly as I say ``there is no extensible inductive type but only overriding of new inductive type'' because in metatheory it is using overriding to ``extend'' (same as plugin implementation), seal means the same thing, and ``compile'' in metatheory happens in plugin implementation
+}
 
 The signature (for the linkage) and the linkage rules are quite similar to
 the signature for inductive types.  They are both constructed from the
@@ -515,7 +525,7 @@ $$
 \quad \goodType{\Gamma, A}{B}{}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I included circ into the typesetting} }
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I have included circ into the typesetting} }
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gamma}{\sigma}{n}
@@ -595,7 +605,7 @@ Now, one missing piece for linkage is the sealing judgement, and both of the $\m
 
 \begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ A τ = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}\YZreply{Why is tau not used in the definition?}@
+Seal Γ σ A = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}\YZreply{Why is tau not used in the definition?}\EDJreply{Thanks. I wanted to remove tau but I accidentally removed sigma instead}@
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
@@ -616,7 +626,7 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
-The motivation for sealing judgement is acting like syntactic sugar
+The motivation for sealing judgement is still about the important term we mentioned earlier: it is acting like syntactic sugar
 helpful for inheritance---due to the presence of inductive type in the
 context, not everything is inheritable. For example, $ X_1 : \bW
 \sigma_1 \vdash t : T$ in the parent family will generally not be able
