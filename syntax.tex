@@ -100,8 +100,8 @@ $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$.
 
 \begin{figure}[!htb]
   \begin{align*}
-    &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\sigma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\sigma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\sigma~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\sigma}{n}} \\ &h~:~"Inh"~\Gamma~\sigma~\tau&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~A&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}
+    &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{T}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I will fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
   \end{align*}
 \caption{Judgement forms, as Agda types and as presented in this section.}
 \end{figure}
