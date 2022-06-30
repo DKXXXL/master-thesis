@@ -1,23 +1,6 @@
 \subsection{Challenges}
 
-\subsection{Design Space}\YZ{I was thinking if the paper should start by talking about the functional encoding of inheritance (namely exposing a self parameter to allow late binding, and later taking the fixpoint of the extensible module when it needs to be accessed outside the family).  I think most readers will benefit from a recap of this encoding.\\
-Coq is total but that doesn’t prevent Coq from having a Fixpoint keyword (plus you proved your language is consistent).
-}
-
-When adapting Family Polymorphism into dependent types, we choose to
-focus only on the essence of family (and inheritance)
-structure in \citet{zm2017}, and thus a lot of unrelated features, like
-Interface, will be removed. In this case, it will look like module with
-late-binding. Inheritance can be considered as code and proof reuse mechanism for module. We also
-need it to have good compatibility with inductive types, because we
-don't want to retain the idiomatic Coq programming experience
-%\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}\EDJreply{I think the sentence last time was not really making sense because using Church Encoding of inductive doesn't sabotage the expressiveness. I rephrase it now, please check.}
-(and its tactic programming). 
-
-Let's start with a basic example---STLC and its extension in
-\cref{fig:STLC-example}---to consider what kind of features are required
-and how much of them can be supported by family polymorphism.
-% add the example code here
+We want our metatheory mechanization to allow adding new function/proving new lemmas, and adding new constructors for inductive type at the same time  (Expression Problem~\cite{wadler-ep}). Coq support the former but not the later---because when an existent inductive type is extended with new constructor, we have to modify the pattern matching in the existent functions. This motivates us to add inheritance/Family Polymorphism into Coq. 
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.47\linewidth}
@@ -29,6 +12,7 @@ Inductive ty : Set :=
 Inductive term : Set := 
   | var : id -> term 
   | lam : id -> term -> term ...
+  | tunit : term 
 Fixpoint subst 
   : id -> term -> term := ...
 Inductive has_type 
@@ -52,6 +36,7 @@ Extend Inductive ty : Set :=
 Extend Inductive term : Set := 
   | tt : term | ff : term 
   | tif : term -> term -> term -> term
+
 Extend Fixpoint subst (* Need to handle new term *)
   : id -> term -> term := ...
 Extend Inductive has_type (* .. and new ty too *)
@@ -69,114 +54,111 @@ EndFamily.
   \caption{Example STLC and its extension}\label{fig:STLC-example}
 \end{figure}
 
+However, to add inheritance into a dependent type system like Coq is not simple and there are various challenges and tension we need to resolve. 
 
 
-First and foremost, we don't want to throw away some basic good
-properties of Coq. \textlabel{Req~(0A)}{langdesign-req0}~\textbf{we
-want to retain incremental (modular) type checking}. Notice that, the
-modularity here in Coq is a bit different from other languages, because
-Coq supports \textit{interactive} theorem proving, so we actually need
-\textit{statement-wise} incremental type checking, not only for avoiding
-re\-compilation, but also to enable immediate feedback and incremental
-type-checking for the Coq developer. We don't want our family to ruin
-this conventional routine of interactive development.
-\textlabel{Req~(0B)}{langdesign-req0b}~\textbf{we also want to keep the
-computational ability of Coq when using families}. Coq, based on constructive
-logic, can consider proof as programs. 
-We don't want our Family facility to ruin this when incorporated with 
-the remaining parts of Coq: 
-the developers should be able to project fields of families 
-as first-class value just like how they can project fields of Coq's Module.
+\textlabel{Challenge (1)}{chg:extensible-inductive-type}~\textbf{Extensible Inductive Type vs. Exhaustiveness of Inductive Reasoning}. Unlike most general purposed programming languages, Coq, as a dependent type theory, is a total language and thus each pattern matching cases must fully ``cover'' an inductive type. This process is \textit{dynamic} for inheritance---when inhertiance extend the inductive type in the children family but the user forget to extend the corresponding inductive reasoning, our compiler need to signal an error correspondingly, or better---guide the user to fill the incomplete inductive reasoning. For example, in \cref{fig:STLC-example} when "term" is extended with "tt" in the children family "STLC_bool", our compiler need to make sure "subst" and "subst_lemma" are also extended correctly otherwise signaling an error.
+Additionally, our compiler must support direct inheritance (and overriding) of the old case handlers, to waive the boilerplate code. 
+
+
+\textlabel{Challenge (2)}{chg:definition-relevant-reasoning}~\textbf{Definition-awared Reasoning vs. Overridability}. In family polymorphism for general purposed programming language, overriding is allowed to happen anywhere. But the problem becomes much more subtle in the case of dependent type---the later fields can have a type dependent on the former fields! Consider a small example where we have consecutive fields \mintinline{Coq}{{.. a : nat := 1; a-def : Eq a 1 := eq_refl; ..}}, should we support override "a"? If we do support it, how can our compiler detect that "a-def" is not inheritable and signal an error when such thing happens? 
+
+A similar example is about "subst" and "subst_lemma" in \cref{fig:STLC-example}. For "subst_lemma" to hold throughout two families, we shouldnot allow overriding on the definition of "subst". For example, we should still stick with the fact that "subst tunit x y = tunit", as this fact is used when proving "subst_lemma" and we want this lemma to be inherited to the children family.
+
+These two examples both show the incompatibility between exposing the concrete definition of a field for reasoning (this second example even involves the definition of pattern matching) and overridability. We need to be careful about this tension when designing the language.
+
+\textlabel{Challenge (3)}{chg:consistency}~\textbf{Consistency vs. Self Parametrization}. The metatheoretical formulation in~\citet{zm2017} for family polymorphism is very natural as they consider extension of the family as the concatenation of a new linkage. However, this formulation is not directly adaptable for dependent type theory because it can easily encode non-termination (mutual calling of two function member) sabotaging consistency by the presence of "self". This conflict between self parametrization and consistency will be another challenge---we need change the original formulation of family and inheritance for dependent type theory.
+
+
+\textlabel{Challenge (4)}{chg:software-engineering}~\textbf{Engineering and Ecosystem}.  Not only for the metatheory, we also want our implementation of family to have good compatibility with the rest of Coq. For example, we cannot compromise \textbf{tactic programming} as it is already a widely accepted part of Coq programming. Additionally, the interactive development style requires \textbf{incremental type checking}---our compiler has to be able to type check each Coq Vernacular command. What's more, we want our family ``term'' to incorporate Coq \textbf{without breaking its other functionality}. For example, the user may want to project the family member anywhere inside an arbitrary Gallina term, that is later being computed and normalized. However, families themselves can be second class citizens just like \citet{zm2017}.
+
+\YZ{I was thinking if the paper should start by talking about the functional encoding of inheritance (namely exposing a self parameter to allow late binding, and later taking the fixpoint of the extensible module when it needs to be accessed outside the family).  I think most readers will benefit from a recap of this encoding.\\
+Coq is total but that doesn’t prevent Coq from having a Fixpoint keyword (plus you proved your language is consistent).
+}
+
+% \subsection{Design Space}
+
+% When adapting Family Polymorphism into dependent types, we choose to
+% focus only on the essence of family (and inheritance)
+% structure in \citet{zm2017}, and thus a lot of unrelated features, like
+% Interface, will be removed. In this case, it will look like module with
+% late-binding. Inheritance can be considered as code and proof reuse mechanism for module. We also
+% need it to have good compatibility with inductive types, because we
+% don't want to retain the idiomatic Coq programming experience
+% %\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}\EDJreply{I think the sentence last time was not really making sense because using Church Encoding of inductive doesn't sabotage the expressiveness. I rephrase it now, please check.}
+% (and its tactic programming). 
+
+% Let's start with a basic example---STLC and its extension in
+% \cref{fig:STLC-example}---to consider what kind of features are required
+% and how much of them can be supported by family polymorphism.
+% add the example code here
+
+
+
+
+
+% First and foremost, we don't want to throw away some basic good
+% properties of Coq. \textlabel{Req~(0A)}{chg:software-engineering}~\textbf{we
+% want to retain incremental (modular) type checking}. Notice that, the
+% modularity here in Coq is a bit different from other languages, because
+% Coq supports \textit{interactive} theorem proving, so we actually need
+% \textit{statement-wise} incremental type checking, not only for avoiding
+% re\-compilation, but also to enable immediate feedback and incremental
+% type-checking for the Coq developer. We don't want our family to ruin
+% this conventional routine of interactive development.
+% \textlabel{Req~(0B)}{chg:software-engineeringb}~\textbf{we also want to keep the
+% computational ability of Coq when using families}. Coq, based on constructive
+% logic, can consider proof as programs. 
+% We don't want our Family facility to ruin this when incorporated with 
+% the remaining parts of Coq: 
+% the developers should be able to project fields of families 
+% as first-class value just like how they can project fields of Coq's Module.
 
 % We want to reason about fields in a family.
-\textlabel{Req (1)}{langdesign-req1}:\textbf{ we want to be able to
-reason about fields in a family}, just like in a module, where a field
-can reason about its former fields. More generally, we want to allow a
-later field to be type-dependent on the former fields. In the example of
-\cref{fig:STLC-example}, "subst", "has_type", "subst_lemma" all require
-this feature.
+% \textlabel{Req (1)}{chg:definition-relevant-reasoning}:\textbf{ we want to be able to
+% reason about fields in a family}, just like in a module, where a field
+% can reason about its former fields. More generally, we want to allow a
+% later field to be type-dependent on the former fields. In the example of
+% \cref{fig:STLC-example}, "subst", "has_type", "subst_lemma" all require
+% this feature.
 
 % we want extensible inductive type
-\textlabel{Req (2)}{langdesign-req2}:\textbf{ we need extensible
-inductive types}, to extend "term" and "ty" in \cref{fig:STLC-example}.
-Extensible inductive types are not supported by \citet{zm2017}, so
-we need further consideration about it on both implementation and
-metatheory.
+% \textlabel{Req (2)}{chg:extensible-inductive-type}:\textbf{ we need extensible
+% inductive types}, 
+% to extend "term" and "ty" in \cref{fig:STLC-example}.
+% Extensible inductive types are not supported by \citet{zm2017}, so
+% we need further consideration about it on both implementation and
+% metatheory.
 
-\textlabel{Req (3)}{langdesign-req3}: \textbf{we also want extensible
-pattern matching and induction reasoning}, to extend "subst" in
-\cref{fig:STLC-example}.
-There are actually two kinds of ``pattern matching'', one for data and
-the other for induction reasoning, i.e., one uses the eliminator to
-\mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the
-eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting,
-extensible pattern matching can be easily expressed with family
-extension---we just aggregate all case handlers of pattern matching
-into one family (as a bunch of functions), and then one family can
-encode one pattern matching, and family inheritance can express adding
-case handlers. Then we just need to introduce a primitive that will
-``wrap'' that family into a recursive function. Induction reasoning can
-be handled in an almost identical way. 
+% \textlabel{Req (3)}{chg:extensible-inductive-type}: \textbf{we also want extensible
+% pattern matching and induction reasoning}, to extend "subst" in
+% \cref{fig:STLC-example}.
+% There are actually two kinds of ``pattern matching'', one for data and
+% the other for induction reasoning, i.e., one uses the eliminator to
+% \mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the
+% eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting,
+% extensible pattern matching can be easily expressed with family
+% extension---we just aggregate all case handlers of pattern matching
+% into one family (as a bunch of functions), and then one family can
+% encode one pattern matching, and family inheritance can express adding
+% case handlers. Then we just need to introduce a primitive that will
+% ``wrap'' that family into a recursive function. Induction reasoning can
+% be handled in an almost identical way. 
 
 % we want to be able to reason pattern matching as well
-However, there is still difference between data recursion and induction
-reasoning, because the former one is \textit{proof-relevant}. This
-difference leads to another issue: \textlabel{Req (4)}{langdesign-req4}:
-\textbf{we need to reason about (the computation about) extensible
-pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}.
-When proving "subst_lemma", we have to know "subst" is invariant on
-"tt", i.e., \mintinline{Coq}{(subst i x tt) = tt}. This kind of
-information requires exposing \textit{computational rules} from the
-recursors.\YZ{Seems like what's missing here is to
+% However, there is still difference between data recursion and induction
+% reasoning, because the former one is \textit{proof-relevant}. This
+% difference leads to another issue: \textlabel{Req (4)}{chg:definition-relevant-reasoning}:
+% \textbf{we need to reason about (the computation about) extensible
+% pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}.
+% When proving "subst_lemma", we have to know "subst" is invariant on
+% "tt", i.e., \mintinline{Coq}{(subst i x tt) = tt}. This kind of
+% information requires exposing \textit{computational rules} from the
+% recursors.
+\YZ{Seems like what's missing here is to
 convince the reader why exposing the definition of subst could be a
 problem for family polymorphism.}\EDJreply{Actually I don't see why I need to emphasize this "as a problem". This is just a requirement like any other requirements earlier. I don't know how to show its difficulty at this early stage.}\YZreply{There is apparently a tension between the need to expose definitional equality and the ability to override. Looking at the bigger picture, I think this section reads better if phrased as discussing challenges posed by adding family polymorphism to a proof assistant. I have some initial ideas that I need to discuss with you.}
 
 % we want tactic programming and certain level of automation
-Finally, \textlabel{Req (5)}{langdesign-req5}: \textbf{we desire tactic
-programming} to relieve us from the hassle of direct manipulation of proof terms.
-
-\subsection{Language Design}
-Inspired by our above requirements and Family Polymorphism, we propose
-the following extension to Coq's Vernacular Commands.
-% basically write down the specification of surface Coq commandline
-%   and then explain  how the language design makes the programmer’s life easier
-\begin{align*}
-  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
-  \quad |\quad "EndFamily" \\
-  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
-  & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
-  & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
-  & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
-  & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
-  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
-\end{align*}
-
-These are some core extension we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.}
-We can define nested families.
-Family will also be used to encode recursive handlers. Each case
-handling of one inductive type will be aggregated into one family, then
-"FRecursor" will be used to construct a recursor using these handlers.
-For example, \mintinline{Coq}{FRecursor recur about T motive f} "using"
-"handlers" will generate a new field "recur" that is doing induction
-(using elimination principle of "T") using motive "f", and the handlers
-are located in the family "handlers".
-
-We can inherit a top-level family "parent" using \mintinline{Coq}{Family
-... extends parent} as a new top-level family. As expected, "Override"
-will override a field from the parent. "Inherit" can be used to inherit
-nested families, inductive types, and fields. The fields inside a family
-are order-sensitive because we have dependent types here. So "Inherit
-Until" is used if the user wants to inherit a range of fields. If the
-user wants to extend an inductive type or a nested family from the
-parent, then "Extend FInductive" or "Extend Family" is used. Thus nested
-family can only be inherited or extended together with its outer family
-(and thus top level family), thus our support of family polymorphism is
-incomplete.
-
-This incomplete support can already be useful for extending functions.
-Take \cref{fig:plugin-example2} as example, if we want to extend boolean
-inductive type and its negation, we only need to specify the new
-constructor for boolean and how negation deals with the new constructor.
-As a result, the programmer does not have to duplicate code---otherwise
-the user will need to copy and paste the whole original negation
-definition and add a new pattern matching case.
+% Finally, \textlabel{Req (5)}{chg:software-engineering}: \textbf{we desire tactic
+% programming} to relieve us from the hassle of direct manipulation of proof terms.
