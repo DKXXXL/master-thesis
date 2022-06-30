@@ -486,16 +486,26 @@ $$
 % }{}
 % $$
 
-Before we dive in the details of our metatheory, we have to mention that, the challenge of incorporating family polymorphism with inductive type is quite different in metatheory than in surface syntax because of de Bruijn indices. (Using surface synax), given a linkage $\{a~:~\bW \sigma; b_1 : a \to T;..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between exhaustiveness checking and inheritance---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to let $b_i$ term construct in the context of $\bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that. Our metatheory formulation of linkage is mainly trying to solve this tension.
-
 $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature
 for linkages in the context $\Gamma$ with $n$ fields. We omit the
-naming/label information for fields in the meta\-theory. We can use $\cL$
-to retrieve the corresponding types of linkage of a given signature, and
-$\cC$ to get the compiled linkage type (an existential type).
-$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is a deeply nested dependent pair. Then $\cCt \sigma$ provide the concrete module of type $\cC\sigma$ given a linkage of type $\cL\sigma$. 
+naming/label information for fields in the meta\-theory. The signature (for the linkage) and the linkage rules are quite similar to
+the signature for inductive types.  They are both constructed from the
+empty stuff, and respect substitution lemmas. We have
+\ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each component
+due to harmony~\cite{pfenning2009lecture}, so we have local soundness
+and local completeness ($\beta,\eta$ rules). We omit them and the
+substitution laws for either field addition and projection. For
+$\mu^+,\nu^+$ rules, we will omit the sealing $\{f\}$ if possible.\footnote{This
+omission can be supported by Agda using Implicit Arguments}
 
-The reason we need this additional $\cC\sigma$ here is because, the rule of linkages hinders its ability to do abstraction. Concretely speaking, (using surface syntax) we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one, consider the case $T$ is bottom type and $\sigma$ is empty record and thus $a$ is initially bottom type. Now we further override $h.a$ using unit type we can derive inconsistency}. This term is important for us to abstract the concrete inductive type so that the later field can depend on the abstract interface. On the other hand, we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T) }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential (also existential type just don't allow overriding). Thus to allow abstraction happens, we need  $\cC\sigma$ to compile a linkage to module and we also need \ruleref{Lnkg Compile} to specify the compilation from linkage to module.
+A side note: before we dive in more details of our metatheory for linkage (especially the meaning of sealing and $\cC$), we have to mention that, the challenge of incorporating family polymorphism with inductive type mentioned in \ref{chg:extensible-inductive-type} mutates in metatheory because of de Bruijn indices. (Using surface synax), consider the example of a linkage $\{a~:~\bW \sigma; b_1 : a \to T;..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between \textit{exhaustiveness checking} and \textit{inheritance (code reuse)}---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to construct $b_i$ term in the context of $\bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that. Our metatheory formulation of linkage is mainly trying to solve this tension.
+
+
+
+We use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type).
+$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, according to \ruleref{Compile}, is a deeply nested dependent pair. Then $\cCt \sigma$ provide the concrete module of type $\cC\sigma$ given a linkage of type $\cL\sigma$. 
+
+The reason we need this additional type construct of $\cC\sigma$ here is to support \textit{code reuse}, as the rule of linkages hinders its ability to do abstraction. Concretely speaking, (using surface syntax) we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one, consider the case $T$ is bottom type and $\sigma$ is empty record and thus $a$ is initially bottom type. Now we further override $h.a$ using unit type we can derive inconsistency}. This term is important for us to abstract the concrete inductive type so that the later field can depend on the abstract interface and achieve \textit{code reuse} reuse. On the other hand, we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T) }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential (also existential type just don't allow overriding). Thus to allow abstraction happens, we need  $\cC\sigma$ to compile a linkage to module as a part of the context and we also need \ruleref{Lnkg Compile} to specify the compilation from linkage to module.
 
 This is also reflected in the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
 \YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
@@ -506,74 +516,8 @@ Generally speaking Compile : Linkage -> Module, Seal : Module -> Module, we need
 I now describe the motivation of compile in the earlier paragraph, right before the "reflecting" section. Note that, this compile is inspired by plugin implementation. This is the reason I say the metatheory is really close and inspired by the implementation. Similarly as I say ``there is no extensible inductive type but only overriding of new inductive type'' because in metatheory it is using overriding to ``extend'' (same as plugin implementation), seal means the same thing, and ``compile'' in metatheory happens in plugin implementation
 }
 
-The signature (for the linkage) and the linkage rules are quite similar to
-the signature for inductive types.  They are both constructed from the
-empty stuff, and respect substitution lemmas. We have
-\ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each component
-due to harmony~\cite{pfenning2009lecture}, so we have local soundness
-and local completeness ($\beta,\eta$ rules). We omit them and the
-substitution laws for either field addition and projection. For
-$\mu^+,\nu^+$ rules, we will omit $\{f\}$ if possible.\footnote{This
-omission can be supported by Agda using Implicit Arguments}
+However, $\cC$ can only make sure we have $\cL(\{a~:~\bW \sigma; b~:~a \to T\}) \to (\Sigma a:\bW \sigma, a \to T)$, we still need $(\Sigma a:\bW \sigma, a \to T) \to (\Sigma a:\cU \sigma, a \to T)$ to complete this shifting of the context. This is sealing's job.
 
-
-Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
-
-$$
-\Rule[name=Hdler]
-{\goodType{\Gamma}{A}{}
-\quad \goodType{\Gamma, A}{B}{}
-\quad \goodType{\Gamma}{R}{}
-}
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I have included circ into the typesetting} }
-\quad 
-\Rule[name=Hdlers]
-{\goodWSig{\Gamma}{\sigma}{n}
-\quad \goodType{\Gamma}{R}{}
-}
-{\goodSig{\Gamma}{"RecSig"~\sigma~R}{}}
-$$
-$$
-\Rule[name=Hdler-Proj]
-{ \goodWSig{\Gamma}{\sigma}{N}
-\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\sigma~R)}
-\quad n < N
-}
-{\goodTerm{\Gamma}{"prjR"~n~o}{("RecSig1"~(\pi_1^n \sigma)~(\pi_2^n \sigma)~R)[\pi_1]}}
-$$
-$$
-\Rule[name=Rec-Constr]
-{ \goodWSig{\Gamma}{\sigma}{N}
-\quad \goodType{\Gamma}{T}{\bW \sigma}
-\quad \goodType{\Gamma}{R}{}
-\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
-\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
-}
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
-$$
-
-In our meta-theory, we only formulate non-dependent eliminator for simplicity, i.e., the
-\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. }
-Each recursor is constructed by a linkage containing
-functions/handlers/pattern-matching cases dealing with each
-constructor. Thus code reuse for recursor is delegated to linkage
-inheritance---to reuse one particular pattern-matching case,
-we just inherit the function/handler. This greatly simplifies the
-metatheory development.
-
-Intuitively \ruleref{Hdler} is indicating the type of recursor handler
-for one specific constructor, and \ruleref{Hdlers} is the linkage type
-of the bundle of all recursor handlers of one given inductive type. We
-omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its
-(apparent) internal definition. "prjR" is also the handler selection
-from the handler linkage, and is helpful for the formulation of
-$\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
-the used to construct a concrete recursor given a specific linkage of
-handlers. All these rules satisfy substitution laws and omitted here.
-\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}\EDJreply{Do you mean you want to see substitution laws and beta and eta laws? They are just commutating as expected I can write down them if you really want. And what else do you think is helpful}
-
-
-Now, one missing piece for linkage is the sealing judgement, and both of the $\mu^+, \nu^+$ rules relies on that---then what is this sealing judgement for?
 
 
 \begin{figure}[H]
@@ -617,8 +561,6 @@ idₛ = π₁
 \end{figure}
 
 
-
-
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just
 a shorthand for term judgement $\goodTerm{\Gamma , \cC
 \sigma}{\_}{A[\pi_1]}$,
@@ -626,25 +568,93 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
-The motivation for sealing judgement is still about the important term we mentioned earlier: it is acting like syntactic sugar
-helpful for inheritance---due to the presence of inductive type in the
-context, not everything is inheritable. For example, $ X_1 : \bW
-\sigma_1 \vdash t : T$ in the parent family will generally not be able
-to be inherited to the children once we override the inductive type $\bW
-\sigma_1$ with $\bW \sigma_2$. In
-other words, there is no way to ``transplant'' $t$ into the context $X_2
-: \bW \sigma_2$.
-This makes all the fields after this inductive type
-non-inheritable---which shouldn't be the case because a lot of fields
-might not be directly relying on this concrete $\bW \sigma_1$. 
+Sealing judgement is still about the important term $h$ we mentioned earlier. Thanks to $\cC$, a newly added term $t_{new}$ is now in the context of $\cC\{a : \bW \sigma; ..\}$. But if we want $t_{new}$ to be inherited(reused) when $\sigma$ is extended, we would like $t_{new}$ to be in the context  of $\cC\{a : \cU; ..\}$ instead. The sealing is responsible for this because we have a sealing $\goodTerm{\Gamma, \cC\{a : \bW \sigma; ..\}}{s}{\cC\{a : \cU; ..\}}$ = $\goodTerm{\Gamma, (\Sigma a : \bW \sigma,..)}{s}{(\Sigma a : \cU,..)}$. Then we can construct $t_{new}$ in the context of  $(\Sigma a : \cU,..)$, ready for inheritance. Apparently $t_{new}$ in this case cannot be doing \textit{exhaustiveness checking}, but it can freely use any \textit{exhaustiveness-checked} recursor. \YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".}\EDJreply{They are actually the same thing. This sealing in metatheory is much stronger than that of the implemented plugin. Downside of the strong sealing is that if the user really use this version of sealing, the user will have to annotate what the sealed family type is. Now in the plugin, the sealed family type is almost fixed (directly inferred using a fixed rules). So basically this complete version of sealing (in metatheory) can deduce that of seal (in plugin implementation) } 
 
-Sealing\YZ{It occurs to me that you use the word "sealing" to mean different (though tangentially related) things. Previously you used it as in "sealed families".}\EDJreply{They are actually the same thing. This sealing in metatheory is much stronger than that of the implemented plugin. Downside of the strong sealing is that if the user really use this version of sealing, the user will have to annotate what the sealed family type is. Now in the plugin, the sealed family type is almost fixed (directly inferred using a fixed rules). So basically this complete version of sealing (in metatheory) can deduce that of seal (in plugin implementation) } is used to exploit this fact---with sealing, given $X_1 : \bW
-\sigma_1$, we can add well-typed terms $X_1 : \cU \vdash t : T$, into
-the parent family. Later when we want to inherit $t$,
-because $t$ only consider $X_1$ as an arbitrary type, inheritance is
-possible. This sealing is the general version of the sealed family implemented in the plugin. Our plugin will deduce a sealed ``interface'' for a sealed family using a fixed set of rules but here sealing in metatheory can be arbitrary local morphism. 
 
-Of course, any fields using "Wsup" and "Wrec" directly relies on the
+% For example, $ X_1 : \bW
+% \sigma_1 \vdash t : T$ in the parent family will generally not be able
+% to be inherited to the children once we override the inductive type $\bW
+% \sigma_1$ with $\bW \sigma_2$. 
+% In
+% other words, there is no way to ``transplant'' $t$ into the context $X_2
+% : \bW \sigma_2$.
+% This makes all the fields after this inductive type
+% non-inheritable---which shouldn't be the case because a lot of fields
+% might not be directly relying on this concrete $\bW \sigma_1$. 
+
+% Sealing is used to exploit this fact---with sealing, given $X_1 : \bW
+% \sigma_1$, we can add well-typed terms $X_1 : \cU \vdash t : T$, into
+% the parent family. Later when we want to inherit $t$,
+% because $t$ only consider $X_1$ as an arbitrary type, inheritance is
+% possible. 
+
+This sealing is the general version of the sealed family implemented in the plugin. Our plugin will deduce a sealed ``interface'' for a sealed family using a fixed set of rules but here sealing in metatheory can be arbitrary local morphism. With the definition of sealing judgement in mind, we can see
+\ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
+implementation. In the implementation, we will have "self__" all around
+when defining new fields in our plugin, and this "self__" is exactly the
+$A$ in the context of the two fields---especially when we don't do any
+sealing, this $A = \cC \sigma$, which is exactly how the implementation
+exposes "self__" as a module parameter. 
+
+In summary, with the help of both sealing and $\cC$, we can shift the context from $\cL(\{a~:~\bW \sigma; ..\})$ to $\Sigma a : \cU,..$ and thus achieve code reuse. However, this is just allow possible \textit{code reuse}, we still need to solve the mutated tension in \ref{chg:extensible-inductive-type}. To make things concrete, we need to introduce the rules for recursors.
+
+% Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
+
+$$
+\Rule[name=Hdler]
+{\goodType{\Gamma}{A}{}
+\quad \goodType{\Gamma, A}{B}{}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I have included circ into the typesetting} }
+\quad 
+\Rule[name=Hdlers]
+{\goodWSig{\Gamma}{\sigma}{n}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodSig{\Gamma}{"RecSig"~\sigma~R}{}}
+$$
+$$
+\Rule[name=Hdler-Proj]
+{ \goodWSig{\Gamma}{\sigma}{N}
+\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\sigma~R)}
+\quad n < N
+}
+{\goodTerm{\Gamma}{"prjR"~n~o}{("RecSig1"~(\pi_1^n \sigma)~(\pi_2^n \sigma)~R)[\pi_1]}}
+$$
+$$
+\Rule[name=Rec-Constr]
+{ \goodWSig{\Gamma}{\sigma}{N}
+\quad \goodType{\Gamma}{T}{\bW \sigma}
+\quad \goodType{\Gamma}{R}{}
+\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
+\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
+}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+$$
+
+In our meta-theory, we only formulate non-dependent eliminator for simplicity, i.e., the
+\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. } 
+Each recursor is constructed by a linkage containing
+functions/handlers/pattern-matching cases dealing with each
+constructor. Thus code reuse for recursor is delegated to linkage
+inheritance---to reuse one particular pattern-matching case,
+we just inherit the function/handler. This greatly simplifies the
+metatheory development.
+
+Intuitively \ruleref{Hdler} is indicating the type of recursor handler
+for one specific constructor, and \ruleref{Hdlers} is the linkage type
+of the bundle of all recursor handlers of one given inductive type. We
+omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its
+(apparent) internal definition. "prjR" is also the handler selection
+from the handler linkage, and is helpful for the formulation of
+$\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
+the used to construct a concrete recursor given a specific linkage of
+handlers. All these rules satisfy substitution laws and omitted here.
+\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}\EDJreply{Do you mean you want to see substitution laws and beta and eta laws? They are just commutating as expected I can write down them if you really want. And what else do you think is helpful}
+
+Again, we still use \textit{decoupling} of the syntax of the case handlers and exhaustiveness checking to resolve \ref{chg:extensible-inductive-type}. The linkage is the part of defining case handlers and thus inheritable like other family.
+While any fields using "Wsup" and "Wrec" directly relies on the
 $\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and
 \ruleref{Rec-Constr}) and thus non-inheritable---in these cases, "Wsup"
 can be understood as concrete constructors and "Wrec" are
@@ -661,18 +671,12 @@ ML, sealing has the connotation of hiding things behind an existential
 type. So using the same word may cause the reader to have false
 presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear---because I haven't changed any text}
 
-There are also cases we don't need to seal anything (i.e., doing
+There are also cases we don't need to seal anything (i.e., for doing
 exhaustiveness checking when using recursor), and thus the "Seal-Id" is
 used. For notation clarity, we will sometimes use $"sf'"$ to emphasize
 that we consider that seal $s$ as a term $("sf'" \ s)$. 
 
-With the definition of sealing judgement in mind, we can see
-\ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
-implementation. In the implementation, we will have "self__" all around
-when defining new fields in our plugin, and this "self__" is exactly the
-$A$ in the context of the two fields---especially when we don't do any
-sealing, this $A = \cC \sigma$, which is exactly how the implementation
-exposes "self__" as a module parameter. 
+
 
 
 
@@ -733,7 +737,7 @@ $$
 {\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \ t) \equiv \mu^+ \ ("inh" \ h \ m) \ t[(\pi_1, \uparrow^s)]}{}} 
 $$
 
-Finally we introduce the inheritance judgement. Inheritance are
+Inheritance are
 judgement so naturally second class citizen data (i.e. not something
 function can return and cannot be assigned to variables), and it looks
 very much like a function that transform a given linkage. 
@@ -757,7 +761,7 @@ In other words, if I want to inherit a specific field from the parent, I
 have to convince the type checker that my current context can
 ``accommodate'' the inherited field. 
 
-Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance---family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping.
+Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the assumption of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance---family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping. Note that, "inhov" is also responsible for ``extending'' inductive type---the extended inductive type directly override the old ones when using metatheory to program, just like how plugin implementation works.
 
 Finally we need to introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need "upcasting" again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement to derive children family and how the beta rule is defined. We omit most of the other substitution laws here.
 
