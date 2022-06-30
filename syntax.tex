@@ -602,16 +602,17 @@ $t_{new}$ in the context containing $(\Sigma a : \cU,..)$, ready for
 inheritance.
 Apparently $t_{new}$ in this case cannot be doing \textit{exhaustiveness
 checking}, but it can freely use any \textit{exhaustiveness-checked}
-recursor.\YZ{It occurs to me that you use the word "sealing" to mean
-different (though tangentially related) things. Previously you used it
-as in "sealed families".}\EDJreply{They are actually the same thing.
-This sealing in metatheory is much stronger than that of the implemented
-plugin. Downside of the strong sealing is that if the user really use
-this version of sealing, the user will have to annotate what the sealed
-family type is. Now in the plugin, the sealed family type is almost
-fixed (directly inferred using a fixed rules). So basically this
-complete version of sealing (in metatheory) can deduce that of seal (in
-plugin implementation) } 
+recursor.
+%\YZ{It occurs to me that you use the word "sealing" to mean
+%different (though tangentially related) things. Previously you used it
+%as in "sealed families".}\EDJreply{They are actually the same thing.
+%This sealing in metatheory is much stronger than that of the implemented
+%plugin. Downside of the strong sealing is that if the user really use
+%this version of sealing, the user will have to annotate what the sealed
+%family type is. Now in the plugin, the sealed family type is almost
+%fixed (directly inferred using a fixed rules). So basically this
+%complete version of sealing (in metatheory) can deduce that of seal (in
+%plugin implementation)}
 
 
 % For example, $ X_1 : \bW
@@ -649,13 +650,13 @@ $$
 \quad \goodType{\Gamma, A}{B}{}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}\YZ{What is R[pi1 circ pi1]?}\EDJreply{It is the composition of the substitution. Thanks for pointing out now I have included circ into the typesetting} }
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gamma}{\sigma}{n}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodSig{\Gamma}{"RecSig"~\sigma~R}{}}
+{\goodSig{\Gamma}{"RecSig"~\sigma~R}{}\YZ{Why does this Sig not have a superscript?}}
 $$
 $$
 \Rule[name=Hdler-Proj]
@@ -692,13 +693,16 @@ omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its
 (apparent) internal definition. "prjR" is also the handler selection
 from the handler linkage, and is helpful for the formulation of
 $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
-the used to construct a concrete recursor given a specific linkage of
+used to construct a concrete recursor given a specific linkage of
 handlers. All these rules satisfy substitution laws and omitted here.
-\YZ{Seems like you omit many things here, which causes hardship for the reader (at least for me!). I think it's better to list all the rules and decide later what to throw to the appendix.}\EDJreply{Do you mean you want to see substitution laws and beta and eta laws? They are just commutating as expected I can write down them if you really want. And what else do you think is helpful}
 
-Again, we still use \textit{decoupling} of the syntax of the case handlers and exhaustiveness checking to resolve \ref{chg:extensible-inductive-type}. The linkage is the part of defining case handlers and thus inheritable like other family.
-While any fields using "Wsup" and "Wrec" directly relies on the
-$\bW(\sigma)$ (can be spotted from \ruleref{Ind-Term} and
+
+Again, we still use \textit{decoupling} of the syntax of the case
+handlers and exhaustiveness checking to resolve
+\ref{chg:extensible-inductive-type}. We use linkages to define
+case handlers and thus they are inheritable like other families.
+While any field using "Wsup" and "Wrec" directly relies on the
+$\bW\sigma$ (can be spotted from \ruleref{Ind-Term} and
 \ruleref{Rec-Constr}) and thus non-inheritable---in these cases, "Wsup"
 can be understood as concrete constructors and "Wrec" are
 \textit{exhaustiveness checking}. These fields together with inductive
@@ -715,9 +719,9 @@ type. So using the same word may cause the reader to have false
 presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing" is not hiding a particular field into an existential type, but our seal is make several fields together into an "existential type". Basically it hides the concrete definition of inductive type so that future fields doesn't have to be defined upon that.}\EDJreply{I will resolve this comment once I add the throughout example and you find it clear---because I haven't changed any text}
 
 There are also cases we don't need to seal anything (i.e., for doing
-exhaustiveness checking when using recursor), and thus the "Seal-Id" is
+exhaustiveness checking when using recursor), and thus \ruleref{Seal-Id} is
 used. For notation clarity, we will sometimes use $"sf'"$ to emphasize
-that we consider that seal $s$ as a term $("sf'" \ s)$. 
+that we consider that seal $s$ as a term $("sf'" \ s)$.\YZ{What is sf and sf'? sf first appears in Compile rules, so explain sf there.}
 
 
 
