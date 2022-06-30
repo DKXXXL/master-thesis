@@ -1,3 +1,52 @@
+
+\subsection{Language Design}
+Inspired by our above challenges and Family Polymorphism, we propose
+the following extension to Coq's Vernacular Commands.
+% basically write down the specification of surface Coq commandline
+%   and then explain  how the language design makes the programmer’s life easier
+\begin{align*}
+  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
+  \quad |\quad "EndFamily" \\
+  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
+  & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
+  & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
+  & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
+  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
+\end{align*}
+
+These are some core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.}
+We can define nested families.
+
+To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
+"FRecursor" will be used to construct a recursor using the handler family.
+For example, \mintinline{Coq}{FRecursor recur about T motive f} "using"
+"handlers" will generate a new field "recur" that is doing induction
+(using elimination principle of "T") using motive "f", and the handlers
+are located in the family "handlers". This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family.
+
+We can inherit a top-level family "parent" using \mintinline{Coq}{Family
+... extends parent} as a new top-level family. As expected, "Override"
+will override a field from the parent. "Inherit" can be used to inherit
+nested families, inductive types, and fields. The fields inside a family
+are order-sensitive because we have dependent types here. So "Inherit
+Until" is used if the user wants to inherit a range of fields. If the
+user wants to extend an inductive type or a nested family from the
+parent, then "Extend FInductive" or "Extend Family" is used. Thus nested
+family can only be inherited or extended together with its outer family
+(and thus top level family), thus our support of family polymorphism is
+incomplete.
+
+% This incomplete support can already be useful for extending functions.
+% Take \cref{fig:plugin-example2} as example, if we want to extend boolean
+% inductive type and its negation, we only need to specify the new
+% constructor for boolean and how negation deals with the new constructor.
+% As a result, the programmer does not have to duplicate code---otherwise
+% the user will need to copy and paste the whole original negation
+% definition and add a new pattern matching case.
+
+\subsection{Plugin Implementation}
+
 In this section, we describe how we can implement the proposed Vernacular commands.
 
 After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular commands and translate each new command into a bunch of Coq commands (the surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
@@ -32,10 +81,9 @@ caught at the target level and (2) because it allows better error messages.
 So it needs to be addressed why deferring type checking to Coq is OK.}\EDJreply{Good point. I think (1) is largely mediated by the fact the semantic of family is very close to that of the module. And the supporting feature is simple enough that there won't appear some problems like type error at source-level but not target level(2) is happening for sure but some basic error message is almost "transparent" i.e. the error-messages from Coq can be directly interpreted for the user. But my justification is solely empirical and as you know the empirical study for this paper is not really strong enough to support anything.}
 
 
-\textbf{Family compiled into module.} This is the main idea of compiling
-family components into Coq's primitives: we compile families into Coq
-modules, family types into module types, and the context of a given term
-into parameters of the module. Unlike module, we need to faithfully
+\textbf{Family compiled into module.} We support family by compiling
+family components into Coq modules, family ``types'' into module types, and the context of a given term
+into parameters of the module. We need to faithfully
 reflect the \textit{late binding} nature of families: for each defining
 field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
 ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall
@@ -95,7 +143,7 @@ immediately. The compiled "Module a_4" is then part of the context of
 "Field b" (as the module type of "self_A") for "b" to refer to. The
 internal representation of family "A" is the list of these
 compiled modules and module types. We can achieve incremental
-checking and overriding as in \ref{chg:software-engineering}---for example, if we
+checking as in \ref{chg:software-engineering}; overriding is also directly supported---for example, if we
 want to override "Field a", we simply replace that compiled module with
 the new module inside the list. This compiled module type serves as an
 abstraction that enables overriding. 
@@ -117,7 +165,7 @@ Coq will try to find fields in the surrounding module (i.e., module
 "A") to instantiate \mintinline{Coq}{self_A: a_6}. This is satisfied by
 the \mintinline{Coq}{a : nat} that is included earlier.
 The resulting compiled module is just like mundane Coq's module and 
-thus maintains all the computational mechanism from Coq, resolving \ref{chg:software-engineering}. 
+thus maintains all the computational mechanism from Coq, fulfilling requirements in \ref{chg:software-engineering}. 
 
 
 
@@ -196,10 +244,12 @@ than a higher-order functor, it is still possible to
 
 \textbf{Reasoning Needs Non-Overridable.}
 This compilation strategy
-has already allowed fields to be type-dependent on former fields thus fulfilling
-\ref{chg:definition-relevant-reasoning}. However, the current implementation is not satisfactory enough. There are cases where we need to expose
-the concrete definition of a given field (especially when we are proving
-properties about it).
+has already allowed fields to be type-dependent on former fields thus we can see concretely how
+\ref{chg:definition-relevant-reasoning} appears in our current formulation and what we needs to solve this challenge. 
+
+% However, the current implementation is not satisfactory enough. There are cases where we need to expose
+% the concrete definition of a given field (especially when we are proving
+% properties about it).
 
 % For example, we may
 % define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field
