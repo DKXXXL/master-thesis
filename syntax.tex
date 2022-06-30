@@ -511,10 +511,9 @@ ability to do abstraction. Concretely speaking, (using surface syntax)
 we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to
 T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one,
 consider the case $T$ is bottom type and $\sigma$ is empty record and
-thus $a$ is initially bottom type. Now we further override $h.a$ using
-unit type we can derive inconsistency\YZ{You are talking about
+thus $a$ is initially bottom type. Now the direct projection using \ruleref{Sig Proj} $\goodTerm{\Gamma, a : \cU}{h.b}{a \to \bot}$ will lead to problem because every field in linkage has this implicit universal quantification, and for this case we can substitute $a$ with arbitrary type, say $\top$: $\goodTerm{\Gamma}{h.b[a \mapsto \top]}{\top \to \bot}$ is a contradiction\YZ{You are talking about
 overriding here, but you haven't told the reader what overriding means
-in your metatheory.}}. This term is important for us to abstract the
+in your metatheory.}\EDJreply{Ok. I use the projection now instead.}}. This term is important for us to abstract the
 concrete inductive type so that the later field can depend on the
 abstract interface and achieve \textit{code reuse}. On the other hand,
 we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T)
@@ -589,8 +588,8 @@ The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
 Sealing judgement is still about the important term $h$ we mentioned
-earlier. Thanks to $\cC$, a newly added term $t_{new}$\YZ{By 'a newly
-added term', do you mean a term that follows field 'a'?} is now in the
+earlier. Thanks to $\cC$, a newly added field $t_{new}$ after $a$ \YZ{By 'a newly
+added term', do you mean a term that follows field 'a'?}\EDJreply{Thanks. Fixed} is now in the
 context containing $\cC\{a : \bW \sigma; ..\}$.
 But if we want $t_{new}$ to be inherited(reused) when $\sigma$ is
 extended, we would like $t_{new}$ to be in the context containing
