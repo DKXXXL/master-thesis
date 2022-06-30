@@ -498,7 +498,7 @@ substitution laws for either field addition and projection. For
 $\mu^+,\nu^+$ rules, we will omit the sealing $\{f\}$ if possible.\footnote{This
 omission can be supported by Agda using Implicit Arguments}
 
-A side note: before we dive in more details of our metatheory for linkage (especially the meaning of sealing and $\cC$), we have to mention that, the challenge of incorporating family polymorphism with inductive type mentioned in \ref{chg:extensible-inductive-type} mutates in metatheory because of de Bruijn indices. (Using surface synax), consider the example of a linkage $\{a~:~\bW \sigma; b_1 : a \to T;..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between \textit{exhaustiveness checking} and \textit{inheritance (code reuse)}---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to construct $b_i$ term in the context of $\bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that. Our metatheory formulation of linkage is mainly trying to solve this tension.
+A side note: before we dive in more details of our metatheory for linkage (especially the meaning of sealing and $\cC$), we have to mention that, the challenge of incorporating family polymorphism with inductive type mentioned in \ref{chg:extensible-inductive-type} mutates in metatheory because of de Bruijn indices. (Using surface synax), consider the example of a linkage $\{a~:~\bW \sigma; b_1 : a \to T;..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between \textit{exhaustiveness checking} and \textit{inheritance (code reuse)}---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to construct $b_i$ term in the context of $a : \bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that and thus we hope $b_i$ constructed in the context of $a : \cU$ (and thus later this $a$ can be compatible with inductive type of any signature). Our metatheory formulation of linkage is mainly trying to solve this tension.
 
 
 
@@ -515,7 +515,7 @@ thus $a$ is initially bottom type. Now the direct projection using \ruleref{Sig 
 overriding here, but you haven't told the reader what overriding means
 in your metatheory.}\EDJreply{Ok. I use the projection now instead.}}. This term is important for us to abstract the
 concrete inductive type so that the later field can depend on the
-abstract interface and achieve \textit{code reuse}. On the other hand,
+``abstract interface'' (i.e. $\cL(\{a:\cU~;~b:a \to T\})$) and achieve \textit{code reuse}. \\ On the other hand,
 we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T)
 }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential
 (also existential type just don't allow overriding\YZ{Why is it desired that this type in the context does not allow overriding (since it already says 'a : U')?}).
@@ -635,9 +635,7 @@ This sealing is the general version of the sealed family implemented in the plug
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
 implementation. In the implementation, we will have "self__" all around
 when defining new fields in our plugin, and this "self__" is exactly the
-$A$ in the context of the two fields---especially when we don't do any
-sealing, this $A = \cC \sigma$, which is exactly how the implementation
-exposes "self__" as a module parameter. 
+$A$ in the context of the two fields---in our implementation, there is only sealing of inductive type happening (where each inductive type we only know \mintinline{Coq}{T : Set}).
 
 In summary, with the help of both sealing and $\cC$, we can shift the context from $\cL(\{a~:~\bW \sigma; ..\})$ to $\Sigma a : \cU,..$ and thus achieve code reuse. However, this is just allow possible \textit{code reuse}, we still need to solve the mutated tension in \ref{chg:extensible-inductive-type}. To make things concrete, we need to introduce the rules for recursors.
 
