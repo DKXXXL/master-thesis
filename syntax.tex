@@ -563,21 +563,20 @@ this shifting of the context. This is sealing's job.
   = \goodTerm{\Gamma, \cC\sigma}{\pi_2}{\cC\sigma[\pi_1]}
   $$
 
-\centering
-\captionsetup{justification=centering}
-
-\caption{Seal Judgement, and its Agda Representation \\ (or What do we mean when we say one judgement is a shorthand for the other)}
+\medskip
 
 \begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ σ A = Tm (Γ, 𝓒σ) A[π₁]
+Seal Γ σ A = Tm (Γ, @$\mathcal{C}$@σ) A[π₁]
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
 
-idₛ : Seal Γ σ 𝓒σ
+idₛ : Seal Γ σ @$\mathcal{C}$@σ
 idₛ = π₁
 \end{minted}
+
+\caption{Seal Judgement, and its Agda Representation (or What do we mean when we say one judgement is a shorthand for the other)}
 
 \end{figure}
 
