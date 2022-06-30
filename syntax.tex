@@ -424,7 +424,7 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}\EDJreply{`f' is the seal, 'A' is the result of sealing. I think I wrote down the motivation of sealing... Is it still too hard? Do you think I need to think of a more friendly way?}\YZreply{Yes, still too rough on the reader. I sense that this part is central to the metatheory, so it is worth explaining the details well.}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
@@ -511,14 +511,20 @@ ability to do abstraction. Concretely speaking, (using surface syntax)
 we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to
 T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one,
 consider the case $T$ is bottom type and $\sigma$ is empty record and
-thus $a$ is initially bottom type. Now the direct projection using \ruleref{Sig Proj} $\goodTerm{\Gamma, a : \cU}{h.b}{a \to \bot}$ will lead to problem because every field in linkage has this implicit universal quantification, and for this case we can substitute $a$ with arbitrary type, say $\top$: $\goodTerm{\Gamma}{h.b[a \mapsto \top]}{\top \to \bot}$ is a contradiction\YZ{You are talking about
-overriding here, but you haven't told the reader what overriding means
-in your metatheory.}\EDJreply{Ok. I use the projection now instead.}}. This term is important for us to abstract the
+thus $a$ is initially bottom type. Now the direct projection using
+\ruleref{Sig Proj} $\goodTerm{\Gamma, a : \cU}{h.b}{a \to \bot}$ will
+lead to problem because every field in linkage has this implicit
+universal quantification, and for this case we can substitute $a$ with
+arbitrary type, say $\top$: $\goodTerm{\Gamma}{h.b[a \mapsto \top]}{\top
+\to \bot}$ is a contradiction}.
+This term is important for us to abstract the
 concrete inductive type so that the later field can depend on the
-abstract interface and achieve \textit{code reuse}. On the other hand,
+abstract interface and achieve \textit{code reuse}.
+\YZ{It reads as if you want to have 'h : L\{a : U, b : a -> T\}'. But it is problematic because it leads to inconsistency, as you describe in a footnote.}
+On the other hand,
 we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T)
 }{h}{(\Sigma a : \cU, a \to T)}$ because of the rule for existential
-(also existential type just don't allow overriding\YZ{Why is it desired that this type in the context does not allow overriding (since it already says 'a : U')?}).
+(also existential type just don't allow overriding\YZ{This sentence still speaks of overriding. Explain in terms of projection instead?}).
 Thus to allow abstraction happens, we need $\cC\sigma$ to compile a
 linkage to module as a part of the context and we also need
 \ruleref{Lnkg Compile} to specify the compilation from linkage to
@@ -588,9 +594,8 @@ The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
 Sealing judgement is still about the important term $h$ we mentioned
-earlier. Thanks to $\cC$, a newly added field $t_{new}$ after $a$ \YZ{By 'a newly
-added term', do you mean a term that follows field 'a'?}\EDJreply{Thanks. Fixed} is now in the
-context containing $\cC\{a : \bW \sigma; ..\}$.
+earlier. Thanks to $\cC$, a field $t_{new}$ that depends on $a$ is now
+in the context containing $\cC\{a : \bW \sigma; ..\}$.
 But if we want $t_{new}$ to be inherited(reused) when $\sigma$ is
 extended, we would like $t_{new}$ to be in the context containing
 $\cC\{a : \cU; ..\}$ instead. The sealing is responsible for this
