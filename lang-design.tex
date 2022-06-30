@@ -4,31 +4,31 @@ We want our metatheory mechanization to allow adding new function/proving new le
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.47\linewidth}
-\begin{minted}[fontsize=\footnotesize,escapeinside=||]{Coq}
-Family STLC.|\YZ{Does minted support adding extra keywords such as 'Family' and 'extends'?}|
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC.
 Inductive ty : Set :=
   | unit : ty
   | arrow : ty -> ty -> ty.
 Inductive term : Set := 
   | var : id -> term 
-  | lam : id -> term -> term ...
-  | tunit : term 
+  | lam : id -> term -> term 
+  | tunit : term ...
 Fixpoint subst 
   : id -> term -> term := ...
 Inductive has_type 
   : context -> term -> type := ...
 Proposition subst_lemma :
-  has_type (Γ; x ↦ A) t T ->
-  has_type Γ u A ->
-  has_type Γ (subst x u t) T.
+  has_type (G; x ↦ A) t T ->
+  has_type G u A ->
+  has_type G (subst x u t) T.
 Inductive step : term -> term -> Prop 
   := ...
 (* ... and more, end with type safety *)
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}
   \begin{minipage}[t]{0.47\linewidth}
-\begin{minted}[fontsize=\footnotesize]{Coq}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC_bool extends STLC.
 Extend Inductive ty : Set :=
   | bool : ty.
@@ -49,7 +49,7 @@ Extend Inductive step : term -> term -> Prop
   := ... (* Need to expand this binary relation *)
 (* ... and more extension *)
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}
   \caption{Example STLC and its extension}\label{fig:STLC-example}
 \end{figure}

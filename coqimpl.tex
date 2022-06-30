@@ -96,19 +96,16 @@ get rapid feedback from type checking when the users are defining each
 field interactively with Coq.
 % Insert one pseudo-code example for explanation of the mechanism
 \begin{figure}[!htb]
-  \begin{minipage}[t]{0.25\linewidth}
-\begin{minted}[fontsize=\footnotesize]{Coq}
+  \begin{minipage}[t]{0.30\linewidth}
+\begin{lstlisting}[language=Coq, escapeinside={@}{@}]
 Family A.
-Field a : nat 
-  := 1.
-Field b : a = a
-  := eq_refl.
-Final Field a' : nat 
-  := 1. 
+Field a : nat := 1.
+Field b : a = a := eq_refl.
+Final Field a' : nat := 1. 
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}%\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}\EDJreply{Omitting self_ is easy and not much engineering effort is required. But omitting self_ will lead to `A.a' instead of `a' actually. So if we really want `a' as you last time mentioned, then a resolution is required and more engineering effort is required. But I don't see any technical difficulties. I have removed all the self, please check.}
-  \begin{minipage}[t]{0.4\linewidth}
+  \begin{minipage}[t]{0.35\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
 Definition a : nat := 1. End a_4.
@@ -171,7 +168,7 @@ thus maintains all the computational mechanism from Coq, fulfilling requirements
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.45\linewidth}
-\begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
+\begin{lstlisting}[language=Coq, escapeinside={@}{@}]
 Family I.
  Field a : nat := 1.
  Field b : a = a := eq_refl.
@@ -187,10 +184,10 @@ Family I.
   Field p : monotonic f := non_impl.
  SealFamily. 
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}
 \begin{minipage}[t]{0.45\linewidth}
-\begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family I2 extends I.
  Override Field a : nat := 1. (* Override *)
  Inherit b.                   (* Inherit  *)
@@ -206,7 +203,7 @@ Family I2 extends I.
   Field p : monotonic f := ...
  EndFamily. 
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}
   \caption{Example Code for Inheritance and Reasoning}\label{fig:plugin-example3}
 \end{figure}
@@ -344,7 +341,7 @@ We support extensible inductive types in Coq mentioned in
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.32\linewidth}
-\begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family B.
   FInductive b : Set 
     := tt : b | ff : b.
@@ -362,7 +359,6 @@ Family B.
   Field example := 
     self_B.neg self_B.tt. 
 EndFamily.
-
 Family B2 extends B.
   Extend FInductive b : Set 
     := uu : b.
@@ -371,7 +367,7 @@ Family B2 extends B.
       := self_B2.uu.
   EndFamily. 
 EndFamily.
-\end{minted}
+\end{lstlisting}
   \end{minipage}
   \begin{minipage}[t]{0.65\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
@@ -501,7 +497,7 @@ scenario can happen on other statement like \mintinline{Coq}{~ value
 (tm_if cond x y)}. Everything here is extended correctly but we end up
 having boilerplate code, \textbf{semantically}.
 \begin{figure}[!htb]
-\begin{minted}{Coq}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
   FInductive tm : Set := ... 
   FInductive value : tm -> Prop := ... 
@@ -516,7 +512,7 @@ Family STLC.
     Ltac inv := (* ... the same definition as above ... *)
   EndMetaData.
 EndFamily.
-\end{minted}  
+\end{lstlisting}  
 \caption{Example for Global Reasoning and MetaData}\label{fig:plugin-example-global-reasoning-meta-data}
 \end{figure}
 
@@ -704,7 +700,7 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
 \end{theorem}
 The reason we have this weird looking \ref{prop:detectable-partiality} is because the construction of "linv"---at one point, using "prec" to construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option C) → option C}, generally not provable, only if we have \mintinline{Coq}{option (Bᵢ a → C)} as an argument instead. This \ref{prop:detectable-partiality} is exactly transforming former to the later: recall that, according to the semantic of inductive type, \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using "linv" on the substructure of "D". This function points out each of the translation result from "D" to "C" and some of them are "None" because of failing. For us, we only care about if \textbf{any} of the substructure of "D" is failed to translate---if any one substructure fails, then the whole transltion fails and thus we should have "None" as return. 
 
-\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that means all of the examples shown in this paper. \ref{prop:detectable-partiality} is not supported when using function (infinitary branching) in the constructors, for example, the case of using HOAS to represent functions in "tm". In those cases, we still have the fact that partial recursor is a conservative extension, but we cannot show that partial recursor is the extensional characterization any more。
+\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that includes all of the examples shown in this paper. \ref{prop:detectable-partiality} is not supported when using function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". In those cases, we still have the fact that partial recursor is a conservative extension, but we cannot show that partial recursor is the extensional characterization any more。
 
 
 We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
