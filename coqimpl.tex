@@ -339,8 +339,8 @@ The implementation of sealed family is not so different from that of the normal 
 
 
 \textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
-We support ``extensible'' inductive types from
-\ref{chg:extensible-inductive-type} in Coq to some extent.\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort}\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
+We support extensible inductive types in Coq mentioned in
+\ref{chg:extensible-inductive-type} but we will not be aiming at the research of its formal semantic.\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort}\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.32\linewidth}
@@ -409,7 +409,7 @@ We start with the programming interface. We use "FInductive" to define a extensi
 
 
 
-To construct a recursor as in \ref{chg:extensible-inductive-type}, we need to create for each
+Recall, to construct a recursor, we need to create for each
 constructor a handler (function) and aggregate them into a family, and thus that family (e.g. "neg_handler" in \cref{fig:plugin-example2}) can be considered as a large matching-case statement. We use "FRecursor" to declare a recursor (e.g. "neg") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "neg"). Here in \cref{fig:plugin-example2} we apply "neg" to "tt" as an exemplar field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "uu"), then the inherited family (e.g. "neg_handler") will need to extend correspondingly (e.g. "neg_handler.uu"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "neg".
 
 The plugin actually realizes the "Extend FInductive" via overridding---when extending an inductive type $A$
@@ -444,6 +444,8 @@ where "b_rec" and "b" are the corresponding recursor and the (vanilla but extend
 
 
 
+
+
 Of course, in the implementation, our plugin will ``inherit'' the
 recursor "neg" in the surface \YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}\EDJreply{Added above. Please Check.}
 but what the plugin actually does is doing a second exhaustiveness
@@ -469,120 +471,14 @@ Finally, we also provide a command "FTheorem" in programming interface when the 
 programming instead. This command (1) can avoid most boilerplate code (e.g., specify the handler family) when writing a recursor like above, (2) invoke
 proof interaction mode and thus allow tactic programming, (3) and is also open to extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.}
 
-To summarize, the key insight here is that, to make each recursor
+To summarize, (1) to make each recursor
 handler inheritable, we need to seal an abstraction around the inductive
 type (e.g., module "b_3"); but to construct a recursor (and carry out the
 exhaustiveness checking), we need to break this abstraction and see the
 concrete definition of the inductive type (e.g., module "b_rec_12"). Our
 meta-theory need to handle these two seemingly contradicting ideas
-simultaneously. 
+simultaneously. (2) \ref{chg:extensible-inductive-type} is resolved by this \textit{decoupling} of the syntax of implementation of recursor handlers and exhaustiveness checking. The former is handled by family inheritance and thus avoid the boilerplate code; and the non-inheritance of the compiled recursor ensures the exhaustiveness checking happens for every recursor.  
 
-
-\textbf{Propositional Partial Recursor.}
-Apparently, the exposed module "b_3" in \cref{fig:plugin-example2} is
-not expressive enough to really fulfill \ref{chg:extensible-inductive-type}. For
-example, we cannot prove the constructors are injective, i.e.,
-\mintinline{Coq}{self_B.tt ≠ self_B.ff} because from the perspective of Coq they are just two terms declared in the module type.\YZ{Is it really impossible to prove constructor injectivity without partial recursors and with recursors only? My confusion after reading these paras is that I still don't know why partial recursors are needed.}\EDJreply{The issue is exactly, at that point of programming, for extensibility, there is no access to the concrete recursor. Concrete recursors also cannot be postulated as part of the interface because it breaks extensibility.}
-In the original setting, to
-prove injectivity of constructors of a (vanilla) inductive type, we only
-require a recursor and its computational rules. However, as we pointed
-out earlier, the recursor of an inductive type cannot be exposed into
-the context for the sake of extensibility. Hence, we need to alter the
-formulation of the recursor: we need to have a better
-characterization of ``extensible inductive types'' exported in the
-compiled module type as a part of the interface for the following fields
-to use.
-
-
-The simplest idea is to allow partiality---i.e., returning
-\mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
-
-We call this \textit{propositional partial recursor}.\YZ{What is propositional about partial recursors? I suppose it has to do with the computational axioms?}\EDJreply{Yes. I want to emphasize the equality used by computational axiom is not judgemental equality. So Coq cannot automatically compute/reduce when a partial recursor applied to a term. This reduction can only be semi-automatically done by using [rewrite tactic and the computational axiom].}
-For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
-
-\begin{minted}[escapeinside=@@]{Coq}
-b_prec : forall R, option R -> option R -> b -> option R.@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}\EDJreply{What do you mean? recursor doesn't break abstraction but break extensibility. Below mentioned partial recursor doesn't break extensibility}@
-\end{minted}
-with appropriate computational axioms. This partial recursor differs from original recursor only by decorating an "option" with the return type thus possible to be automatically generated (and the case is similar for those computational axiom). The partiality doesn't break
-extensibility (i.e. all future extensions of "b" can support this
-"b_prec") because "b_prec" can just return "None" when bump into extended constructor in the future. 
-
-What's more, partial recursor is theoretically enough for the
-"injection" and "discriminate" tactics. The rough idea to achieve this
-is to use "b_prec" to reflect our special inductive type into vanilla
-inductive type, and use the original "injection" and "discriminate"
-tactics. For example, we want to prove \mintinline{Coq}{self_B.tt ≠
-self_B.ff}, we simply 
-\begin{minted}{Coq}
-Definition reflect : self_B.b → option bool 
-                   := b_prec (fun _ => bool) (Some true) (Some false).
-Definition tt_neq_ff : self_B.tt = self_B.ff → False.
-(* Because self_B.tt = self_B.ff → reflect self_B.tt = reflect self_B.ff 
-      → Some true = Some false    (by computational axiom)
-      → False           (by discriminate of bool and injection of Some) *)
-\end{minted}
-
-
-
-In fact, the above "reflect" function implies that propositional partial
-recursor is good enough to some extent, at least for non-indexed
-inductive type: because we can ``embed'' vanilla inductive types into
-types supporting a partial recursor. Because "reflect" is actually a left
-inverse of an injection "bool → self_B.b". A bit more formally, and
-restricting our focus to non-indexed inductive types:
-
-\begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$
-  \begin{itemize}
-    \item Define $"C"$ as the inductive type using this list, i.e.,
-    \begin{minted}{Coq}
-Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
-    \end{minted}
-    \item Assume an arbitrary type \mintinline{Coq}{D : Set} with
-    \begin{itemize}
-      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
-      \item a partial recursor
-      \begin{minted}[escapeinside=@@]{Coq}
-prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}@
-  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), .., 
-      D -> option R
-      \end{minted}
-      \item and $n$ (propositional) computational axioms: for all $i$, 
-      \begin{minted}{Coq}
-prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
-    = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
-      \end{minted}
-    % where \mintinline{Coq}{(lift rᵢ) : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)} is defined as expected
-    \end{itemize}
-  \end{itemize}
-  Then there exists an \textbf{embedding} from "C" to "D".
-  More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
-  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of
-  "C" and "prec" of "D" (both acting like identity) such that
-  \begin{minted}[escapeinside=@@]{Coq}
-    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
-  \end{minted}
-\end{theorem}
-
-We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
-actually be considered as a constructor, because they can be reflected
-to real constructors of "C" using the left inverse "linv" (directly generalization of "reflect : self_B.b → option bool" of the above). Thus, \cref{thm:prec-complete}
-implies that (1) every future extension of the inductive type can
-support this partial recursion (trivially); (2) every type supporting
-this partial recursor with its computational axioms at least supports
-these constructors because of the embedding. In other words, \textit{a
-type (at least) supports these constructors if and only if this type
-supports the corresponding partial recursor (with the computational
-axioms)}.  Thus, we can argue that the partial recursor gives a sound and
-complete characterization of all the extension of a given (non-indexed)
-inductive type.\YZ{What about indexed inductive types?}
-
-We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
-\begin{minted}{Coq}
-  pdelim : ∀ (P : D -> Set), .., 
-  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) -> option (P (dᵢ x w)))),  
-  .., ∀ (d : D) -> option (P d)
-\end{minted}
-To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
 
 % Mention still needing total recursor, for exhaustiveness checking
 
@@ -590,11 +486,10 @@ To generalize to indexed inductive type, we base on indexed W type~\cite{martin1
 % explain the places using ``Closing Fact''
 % 1. No need to export partial recursor
 % 2. Computational rule for the total recursor
-Unfortunately, there are cases the users just want global reasoning
-instead of an extensible proof. For example, in STLC, we expect
+Unfortunately, there are cases an extensible proof brings more boilerplate code. For example, in STLC, we expect
 ``\mintinline{Coq}{~ value (tm_app x y)}'' to hold in all future
 extensions of STLC---applications will never be considered as values
-by an extension.
+by any extension.
 We know the correct way to prove the proposition
 \mintinline{Coq}{value_not_app : value (tm_app x y) -> False.} is to use
 "FRecursor" to inductively reason "value (tm_app x y)". However, this
@@ -626,13 +521,17 @@ EndFamily.
 \end{figure}
 
 
-Our proposal is to allow global reasoning, which will look like a
-constraint inside the family. We provide "Closing Fact" as a command to
-carry out this global reasoning, attached with a proof script and proof
-term. This "Closing Fact" will look like an assertion during the
-construction of the enclosing family. This assertion will only be
-verified when the whole family is closed and compiled into a module,
-with the help of the attached proof script and proof terms.
+Our proposal is to allow global reasoning by providing "Closing Fact" command. Ultimately, "Closing Fact" is asserting a constraint upon all the
+possible extension of the surrounding family and claiming that a proof script
+can solve the constraints.\YZ{This is a good one-liner that summarizes the intended usage scenarios of "Closing Fact". Should probably bring it out earlier.}\EDJreply{I put it here as you suggested but I think this one-liner at here will cause more confusion because it is too abstract.}
+The assertion will only be verified when the whole family is closed and compiled into a module.
+
+% We provide "Closing Fact" as a command to
+% carry out this global reasoning, attached with a proof script and proof
+% term. This "Closing Fact" will look like an assertion during the
+% construction of the enclosing family. This assertion will only be
+% verified when the whole family is closed and compiled into a module,
+% with the help of the attached proof script and proof terms.
 
 Here we show the example to prove "value_not_app" in
 \cref{fig:plugin-example-global-reasoning-meta-data}, the script inside
@@ -640,7 +539,7 @@ curly brackets after "by" is the attached proof script that will be
 executed upon "EndFamily", which triggers the compilation of the family
 being defined.
 % \YZ{Please check if my wording is correct.}\EDJreply{Yes. Resolved}
-Since we are dealing with a concrete inductive type during compilation,
+Since we are dealing with a concrete (vanilla) inductive type during compilation,
 we can use Coq's "inversion" tactic to complete this proof.
 This "Closing Fact", as an assertion, will have no problem being
 inherited, but the proof script will be executed every time a derived
@@ -649,11 +548,7 @@ family is compiled.
 The downside is that "Closing Fact" cannot immediately check the correctness of the
 attached proof term/proof script because this verification only happens when we
 finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}\EDJreply{The proof script cannot be run immediately to reply the user whether the proof script is even correct. This is bad engineering to some extent. In those bad cases, because error only happens at the the very end ``EndFamily'' , the user will need to go back to the place of Closing Fact to adjust the proof script, or to adjust other parts. I am not sure if early check is possible to be done (engineering-wise) I think it is possible (imagine I just do an early compilation, i.e. only compile part of the family to the point closing fact is used) but it is a big engineering difficulty for me.}
-
-Ultimately, "Closing Fact" is asserting a constraint upon all the
-possible extension of the surrounding family and claiming a proof script
-can solve the constraints.\YZ{This is a good one-liner that summarizes the intended usage scenarios of "Closing Fact". Should probably bring it out earlier.}
-We expect it to be used only sporadically for maintainability.
+We expect it to be used only sporadically for maintainability, and as an alternative to using "FRecursor". This is called global reasoning because this is a post-hoc reasoning when the family as a \textit{whole} is compiled into a module.
 
 
 
@@ -693,7 +588,6 @@ We expect it to be used only sporadically for maintainability.
 
 \textbf{Hack: ``Meta-data''.} Due to our implementation of the family,
 the family data is invisible to Coq internal and thus causes some
-
 inconvenience. For example, in
 \cref{fig:plugin-example-global-reasoning-meta-data} the first attempt
 of defining tactic "inv" fails. Because the earlier defining "tm",
@@ -725,3 +619,111 @@ This can fulfill \ref{chg:software-engineering}.
 % context) into the compiled module type, and makes them visible to the
 % following defining field. Doing so, we can define customized tactic as
 % in \ref{chg:software-engineering} that uses lemmas proved in the family.
+
+
+% Following needs a rewrite
+
+\textbf{Propositional Partial Recursor.} Notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''--they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. 
+
+This raise an interesting question: what propositions are conservative extension? For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a ``best'' proposition (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
+
+Since injectiveness of the constructors are derived by recursor in vanilla inductive type, an educated guess would be related to recursor. But we know the original recursor won't work because the mere existence of the original recursor will break extensibility. Thus we need to modify it.
+The simplest idea is to allow partiality---i.e., returning
+\mintinline{Coq}{option T} instead of the original \mintinline{Coq}{T}.
+
+We call this \textit{propositional partial recursor}.\YZ{What is propositional about partial recursors? I suppose it has to do with the computational axioms?}\EDJreply{Yes. I want to emphasize the equality used by computational axiom is not judgemental equality. So Coq cannot automatically compute/reduce when a partial recursor applied to a term. This reduction can only be semi-automatically done by using [rewrite tactic and the computational axiom].}
+For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
+
+\begin{minted}[escapeinside=@@]{Coq}
+b_prec : forall R, option R -> option R -> b -> option R.@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}\EDJreply{What do you mean? recursor doesn't break abstraction but break extensibility. Below mentioned partial recursor doesn't break extensibility}@
+\end{minted}
+with appropriate computational axioms. This partial recursor differs from original recursor only by decorating an "option" with the return type thus possible to be automatically generated (and the case is similar for those computational axiom). The partiality doesn't break
+extensibility (i.e. all future extensions of "b" can support this
+"b_prec") because "b_prec" can just return "None" when bump into extended constructor in the future. 
+
+The first thing to check is that, if partial recursor is theoretically enough for injectiveness of the constructor. The rough idea to achieve this
+is to use "b_prec" to reflect our special inductive type into vanilla
+inductive type, and use the original "injection" and "discriminate"
+tactics. For example, we want to prove \mintinline{Coq}{self_B.tt ≠
+self_B.ff}, we simply 
+\begin{minted}{Coq}
+Definition reflect : self_B.b → option bool 
+                   := b_prec (fun _ => bool) (Some true) (Some false).
+Definition tt_neq_ff : self_B.tt = self_B.ff → False.
+(* Because self_B.tt = self_B.ff → reflect self_B.tt = reflect self_B.ff 
+      → Some true = Some false    (by computational axiom)
+      → False           (by discriminate of bool and injection of Some) *)
+\end{minted}
+
+
+Even though we cannot prove propositional partial recursor is the best,
+the above "reflect" function implies that propositional partial
+recursor is a good \textit{extensional characterization} of (non-indexed) extensible inductive type (with certain constraints): because we can ``embed'' vanilla inductive types into
+types supporting a partial recursor: "reflect" is actually a left
+inverse of an injection "bool → self_B.b". A bit more formally, and
+restricting our focus to non-indexed inductive types:
+
+\begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$ s.t.
+
+
+  \begin{itemize}
+    \item \textlabel{(Detectable Partiality)}{prop:detectable-partiality} for each pair $x : A_i \vdash B_i(x)$,
+    \begin{minted}{Coq}
+      Axiom detectable:
+      forall {T} {a} (f: Bᵢ a -> option T),
+        {forall x, f x <> None} + {exists x, f x = None}.
+    \end{minted} 
+    \item Define $"C"$ as the inductive type using this list, i.e.,
+    \begin{minted}{Coq}
+Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
+    \end{minted}
+    \item Assume an arbitrary type \mintinline{Coq}{D : Set} with
+    \begin{itemize}
+      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
+      \item a partial recursor
+      \begin{minted}[escapeinside=@@]{Coq}
+prec : forall (R : Set), ..,  @\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}@
+  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), .., 
+      D -> option R
+      \end{minted}
+      \item and $n$ (propositional) computational axioms: for all $i$, 
+      \begin{minted}{Coq}
+prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
+    = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
+      \end{minted}
+    % where \mintinline{Coq}{(lift rᵢ) : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)} is defined as expected
+    \end{itemize}
+  \end{itemize}
+  Then there exists an \textbf{embedding} from "C" to "D".
+  More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
+  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of
+  "C" and "prec" of "D" (both acting like identity) such that
+  \begin{minted}[escapeinside=@@]{Coq}
+    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
+  \end{minted}
+\end{theorem}
+The reason we have this weird looking \ref{prop:detectable-partiality} is because the construction of "linv"---at one point, using "prec" to construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option C) → option C}, generally not provable, only if we have \mintinline{Coq}{option (Bᵢ a → C)} as an argument instead. This \ref{prop:detectable-partiality} is exactly transforming former to the later: recall that, according to the semantic of inductive type, \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using "linv" on the substructure of "D". This function points out each of the translation result from "D" to "C" and some of them are "None" because of failing. For us, we only care about if \textbf{any} of the substructure of "D" is failed to translate---if any one substructure fails, then the whole transltion fails and thus we should have "None" as return. 
+
+\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that means all of the examples shown in this paper. \ref{prop:detectable-partiality} is not supported when using function (infinitary branching) in the constructors, for example, the case of using HOAS to represent functions in "tm". In those cases, we still have the fact that partial recursor is a conservative extension, but we cannot show that partial recursor is the extensional characterization any more。
+
+
+We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
+actually be considered as a constructor, because they can be reflected
+to real constructors of "C" using the left inverse "linv" (directly generalization of "reflect : self_B.b → option bool" of the above). Thus, \cref{thm:prec-complete}
+implies that (1) every future extension of the inductive type can
+support this partial recursion (trivially); (2) every type supporting
+this partial recursor with its computational axioms at least supports
+these constructors because of the embedding. In other words, \textit{a
+type (at least) supports these constructors if and only if this type
+supports the corresponding partial recursor (with the computational
+axioms)}.  Thus, we can argue that the partial recursor gives a sound and
+complete extensional characterization of all the extension of a given (non-indexed)
+inductive type.\YZ{What about indexed inductive types?}
+
+We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
+\begin{minted}{Coq}
+  pdelim : ∀ (P : D -> Set), .., 
+  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) -> option (P (dᵢ x w)))),  
+  .., ∀ (d : D) -> option (P d)
+\end{minted}
+To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
