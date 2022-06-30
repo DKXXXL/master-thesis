@@ -395,7 +395,6 @@ to have inductive type to be a field element and exposing the
 constructors at the type level for later \textit{pattern-matching
 exhaustiveness checking} (i.e. if an inductive type as field element has type
 $\cU$, then no information about the inductive type is exposed).
-\YZ{What is the distinction of 'W T' vs 'El (W T)'?}\EDJreply{(W T) is a term inside the type universe, El (W T) is really a type. They are basically the same thing but (W T) cannot be at the type position in a judgement, i.e. k |- q : (W T) is not allowed, we only have k |- q : El (W T). This is kind of standard notation (at least in both Sterling and Kaposi) so I will avoid explaining in the main text if you think ok?}\YZreply{I think explanation is warranted; readers unfamiliar with that line of work may find it confusing. BTW, is the elimination rule for "El (W T)" omitted?}\EDJreply{Please check the following paragraph for the explanation for El, and also Univ-1 is the elimination rule for "El T" in general. I just didn't write out the two equations c (El T) = T, El (c T) = T}\YZreply{Seems harmless to list these equations and move the reference to 'type universe a la Tarski' earlier.}\EDJreply{Done. Please check.}
  
 
 The formulation of our recursor is closely related to that of linkages,
@@ -425,7 +424,7 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}\EDJreply{`f' is the seal, 'A' is the result of sealing. I think I wrote down the motivation of sealing... Is it still too hard? Do you think I need to think of a more friendly way?}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}\YZ{How should I understand 'f' and 'A'?}\EDJreply{`f' is the seal, 'A' is the result of sealing. I think I wrote down the motivation of sealing... Is it still too hard? Do you think I need to think of a more friendly way?}\YZreply{Yes, still too rough on the reader. I sense that this part is central to the metatheory, so it is worth explaining the details well.}
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
 $$
@@ -472,7 +471,7 @@ $$
 \Rule[name=Compile]
 {}
 {\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
-\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}
+\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{What is C_t? I don't think you talk about it anywhere.}
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
@@ -491,12 +490,15 @@ $\goodSig{\Gamma}{\sigma}{n}$ means $\sigma$ is a well-typed signature
 for linkages in the context $\Gamma$ with $n$ fields. We omit the
 naming/label information for fields in the meta\-theory. We can use $\cL$
 to retrieve the corresponding types of linkage of a given signature, and
-$\cC$ to get the compiled linkage type (an existential type).\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)} $\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is really a deeply nested dependent pair. This is reflecting the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
-
+$\cC$ to get the compiled linkage type (an existential type).
+$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, accoding to \ruleref{Compile}, is really a deeply nested dependent pair. This is reflecting the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
+\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
+PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
+PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}
 
 The signature (for the linkage) and the linkage rules are quite similar to
 the signature for inductive types.  They are both constructed from the
-empty stuff, and respect substitution lemma for sure. We have
+empty stuff, and respect substitution lemmas. We have
 \ruleref{Sig Proj}, \ruleref{Lnkg Proj} projection for each component
 due to harmony~\cite{pfenning2009lecture}, so we have local soundness
 and local completeness ($\beta,\eta$ rules). We omit them and the
@@ -593,7 +595,7 @@ Now, one missing piece for linkage is the sealing judgement, and both of the $\m
 
 \begin{minted}[escapeinside=@@]{agda}
 Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set 
-Seal Γ A τ = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}@
+Seal Γ A τ = Tm (Γ, 𝓒σ) A[π₁]@\YZ{tau?}\EDJreply{it should be pi. I fixed it now}\YZreply{Why is tau not used in the definition?}@
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
 f[τ]S = t[τ ↑ A]
@@ -609,7 +611,7 @@ idₛ = π₁
 
 As we said earlier, $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is actually just
 a shorthand for term judgement $\goodTerm{\Gamma , \cC
-\sigma}{\_}{A[\pi_1]}$,\YZ{Not quite. Previously you used cL I think.}\EDJreply{Sorry. It is fixed. It should be $\cC$ in the context.}
+\sigma}{\_}{A[\pi_1]}$,
 a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
@@ -621,7 +623,7 @@ context, not everything is inheritable. For example, $ X_1 : \bW
 to be inherited to the children once we override the inductive type $\bW
 \sigma_1$ with $\bW \sigma_2$. In
 other words, there is no way to ``transplant'' $t$ into the context $X_2
-: \bW \sigma_2$.\YZ{Is sigma_2 the overriding of sigma_1? The reader has to guess.}\EDJreply{Thanks. Fixed}
+: \bW \sigma_2$.
 This makes all the fields after this inductive type
 non-inheritable---which shouldn't be the case because a lot of fields
 might not be directly relying on this concrete $\bW \sigma_1$. 
@@ -686,7 +688,7 @@ $$
 $$
 \Rule[name=Inh-Ext]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-  \quad \goodTerm{\Gamma, A_2}{t}{T}\YZ{What is sigma2'?}\EDJreply{Sorry this should be A2, i.e. the result of sealing. Earlier version sigma2' is the result of sealing. It was type-set before the last meta-theory change}}
+  \quad \goodTerm{\Gamma, A_2}{t}{T}}
 {\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
 \quad
 \Rule[name=Inh-Inh]

@@ -6,7 +6,7 @@ We provide one example in its surface syntax as pseudocode, and their
 meta-theory encoding. This example is computing the predecessor of a
 mundane natural number, but we split the inductive definition into two
 parts and making "O" and "S" standing alone.
-"pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$\YZ{looks like an ill-founded definition}\EDJreply{Fixed}, and thus a predecessor.
+"pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$, and thus a predecessor.
 
 
 
@@ -26,7 +26,7 @@ Family A.
  EndFamily. (* pN₁, handler₁, sig₃ *)
  FRecursor pred about self[A].N 
   motive (fun _ => self[A].N × self[A].N)
-  using handler.@\YZ{Why is there no FRecursor?}\EDJreply{I wanted to save space and emphasize the type. Now fixed}@
+  using handler.
  (* pred
   : self[A].N → self[A].N × self[A].N *)
   (* predT, pred₁, sig₄, sig₄', sl₄ *) 
