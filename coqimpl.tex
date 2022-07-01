@@ -15,7 +15,7 @@ the following extension to Coq's Vernacular Commands.
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
 \end{align*}
 
-These are some core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.}
+These are some core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
 We can define nested families.
 
 To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
@@ -209,14 +209,16 @@ EndFamily.
 \end{figure}
 
 % explaining inheritance
-Besides standalone family, we also need to implement family inheritance.
+\textbf{Implementing Inheritance.}
+To resolve \ref{chg:consistency}, we make sure when inheritance happens, not only the content will be inherited, but the context of the corresponding field is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty and has no "g" in "self". 
+
 To simplify the implementation, we can consider all families as
 inheritance and the standalone families are extending the empty family.
 Thus, we need to deal with only inheritance during interactive theorem proving.
 
 
 There are three kinds of inheritance---extend, override, and inherit. We
-use first-order data to encode inheritance data inside the
+use a list to encode inheritance data inside the
 implementation of the plugin. The inheritance data will include the
 information of (1) the ``type'' of the parent family, (2) a list of
 operation indicating how each field of the parent will be dealt with
@@ -233,7 +235,7 @@ representation) to a module still acts the same.
 
 Though inheritance is solely a first-order data rather
 than a higher-order functor, it is still possible to
-\text{mix-in} two inheritance data---by carefully ``mix'' the internal list, we can compose the inheritance. However, a good definition of mixin is still under investigation.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
+\text{mix-in} two inheritance data---by carefully ``mix'' the internal list, we can compose the inheritance. However, a good definition of mixin is still under investigation. We will show one practical example of \textit{mixin} later.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
 
 
 
@@ -463,9 +465,10 @@ checking in children family like mentioned above, with the ``same'' motive and `
 % explain we have the incremental-checking for any recursor 
 
 % explain ftheorem wrapping this complicated recursor
-Finally, we also provide a command "FTheorem" in programming interface when the users want to use tactic
-programming instead. This command (1) can avoid most boilerplate code (e.g., specify the handler family) when writing a recursor like above, (2) invoke
-proof interaction mode and thus allow tactic programming, (3) and is also open to extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.}
+This design of decoupling of the case handlers and exhaustiveness checking handles the semantic well, however, it brings a lot of boilerplate code---we need to create an extra (handler) family, manually specifying the type of each case handlers, and then using "FRecursor" to ``tie the knot'' and construct a recursor field from the family.  
+We thus provide a command "FTheorem" to remove these boilerplate in programming interface when using tactic programming instead. 
+This command (1) can avoid specifying the handlers family and the type of each case handlers when writing induction like above, (2) invoke
+proof interaction mode and thus allow tactic programming, (3) and is also open to extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.} We expect this "FTheorem" to be used in theorem proving but not general programming. 
 
 To summarize, (1) to make each recursor
 handler inheritable, we need to seal an abstraction around the inductive

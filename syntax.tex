@@ -530,6 +530,7 @@ linkage to module as a part of the context and we also need
 \ruleref{Lnkg Compile} to specify the compilation from linkage to
 module.
 
+
 This is also reflected in the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. Thus we need $\cC\sigma$ in our context.
 %\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
 %PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
@@ -638,6 +639,8 @@ recursor.
 % the parent family. Later when we want to inherit $t$,
 % because $t$ only consider $X_1$ as an arbitrary type, inheritance is
 % possible. 
+
+Now, together with sealing, we can read \ruleref{Sig Add} and \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$ of signature $\sigma$, the next added field $t : T$ will have to be in the context of the abtraction $A$ of the compilation $\cC\sigma$ (witnessed by the seal $f$). The ``concatenation'' of the $o$ and $t$ leads to a new linkage, of which the signature is the ``concatenation'' of the $\sigma$ and $T$ (we also record the sealing $f$ for simplicity). The construction of linkage in \ruleref{Lnkg Add} requires $t$ to \textbf{only} refer to the (abstraction $A$ of) former part of the defining family $o : \cL\sigma$, this is to avoid inconsistency mentioned in \ref{chg:consistency} in metatheory.
 
 This sealing is the general version of the sealed family implemented in the plugin. Our plugin will deduce a sealed ``interface'' for a sealed family using a fixed set of rules but here sealing in metatheory can be arbitrary local morphism. With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
@@ -791,7 +794,7 @@ $$
 Inheritance are
 judgement so naturally second class citizen data (i.e. not something
 function can return and cannot be assigned to variables), and it looks
-very much like a function that transform a given linkage. 
+very much like a function that transform a given linkage. Like plugin implementation and \ruleref{Lnkg Add}, we resolve \ref{chg:consistency} by making sure corresponding fields are in corresponding context during inheritance, and an overriding term can only refer to fields before it. 
 
 The syntax of the inheritance judgement is very close to how Family is
 defined in the surface syntax---a Family with no parent is an
@@ -799,7 +802,7 @@ inheritance with empty input; an extended Family is exactly an
 inheritance---because the parent of an extended Family can be overridden
 thus inheritance should only define upon the ``interface'' instead of a
 concrete family. However, since our current formulation doesn't support
-further-binding (i.e. we cannot do inheritance inside a family), our
+nested inheritance (i.e. we cannot do inheritance inside a family but only top level), our
 formulation still has some distance to the real family polymorphism. 
 
 "inhid" and "inhext" are simple as expected---the former corresponds to
