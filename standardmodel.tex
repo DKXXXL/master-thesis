@@ -57,12 +57,12 @@ Here we will only show some interpretation and also omit the universe level to s
   \denotesS{\goodType{\Gamma}{\bot}{i}} \ (\gamma) &= \emptyset \\
   \denotesS{\goodType{\Gamma}{\cB}{i}} \ (\gamma) &= \{0, 1\} \quad \text{a specific two element set} \\
   \denotesS{\goodWSig{\Gamma}{\_}{n}} &\text{ is a Set of list of pairs of type interpretation of length } n \\
-  & \text{ and we define } \goodWSigS{\Gamma}{w}{n} :\iff \denotesS{\goodWSig{\Gamma}{w}{n}} \in \denotesS{\goodWSig{\Gamma}{\_}{n}}\\
+  & \text{ and we define } \goodWSigS{\Gamma}{\tau}{n} :\iff \denotesS{\goodWSig{\Gamma}{\tau}{n}} \in \denotesS{\goodWSig{\Gamma}{\_}{n}}\\
   \denotesS{\goodWSig{\Gamma}{w\cdot}{0}} &= [] \quad \text{ an empty list} \\ 
-  \denotesS{\goodWSig{\Gamma}{(w^+ \ A \ B \ w)}{n+1}}
-  &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gamma}{w}{n}} \\ 
-  \denotesS{\goodType{\Gamma}{\pi^j_1~\sigma}{}} &= "fst"~({\denotesS{\sigma}}_{j})\\
-  \denotesS{\goodType{\Gamma, \pi^j_1~\sigma}{\pi^j_2~\sigma}{}} &= "snd"~({\denotesS{\sigma}}_j)\\
+  \denotesS{\goodWSig{\Gamma}{(w^+ \ A \ B \ \tau)}{n+1}}
+  &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gamma}{\tau}{n}} \\ 
+  \denotesS{\goodType{\Gamma}{\pi^j_1~\tau}{}} &= "fst"~({\denotesS{\tau}}_{j})\\
+  \denotesS{\goodType{\Gamma, \pi^j_1~\tau}{\pi^j_2~\tau}{}} &= "snd"~({\denotesS{\tau}}_j)\\
 \end{align*}
 
 
@@ -76,9 +76,9 @@ Notice that $\denotesS{\goodSig{\Gamma}{s}{n}}$ and $\denotesS{\goodType{\Gamma}
   \centering
 \begin{minipage}{0.8\linewidth}
   \begin{minted}[mathescape, escapeinside=||]{Agda}
-    data MW {i}{j} (σ : |$\denotesS{\texttt{WSig i }\cdot\texttt{ S}}$|) : Set (lsuc i) where
-      MWsup : |$n$| < S → (a : |$\pi^n_1$| σ) → ((|$\pi^n_2$| σ) a → MW σ) 
-              → MW σ
+    data MW {i}{j} (τ : |$\denotesS{\texttt{WSig i }\cdot\texttt{ S}}$|) : Set (lsuc i) where
+      MWsup : |$n$| < S → (a : |$\pi^n_1$|τ) → ((|$\pi^n_2$|τ) a → MW τ) 
+              → MW τ
       \end{minted}
 \end{minipage}
 \caption{Modeling Inductive Type}\label{fig:model-ind-type}

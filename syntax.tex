@@ -6,7 +6,7 @@ $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
 well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. These four judgements (QIIT types) are
 mutually recursively defined together. Our presentation
 follows the style of~\citet{kaposi2019gluing}, but for readability we
-omit universe levels attached to judgements.
+omit the universe levels. We still working on predicative MLTT.
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the fake Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
 Latex-wise, we spell out these \textit{well-formedness rules} of type
 judgements and their Agda counterparts to make things more accessible. Of
@@ -90,7 +90,7 @@ for $\pi_2~"id"$, typed as $\goodTerm{\Gamma, A}{\pi_2~"id"}{A[\pi_1]}$.
 The core language builds on MLTT and adds four new judgement forms.
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is just a
 shorthand for term judgement
-$\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$.
+$\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
 
 
 
@@ -101,7 +101,7 @@ $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$.
 \begin{figure}[!htb]
   \begin{align*}
     &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{T}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I will fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I will fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
   \end{align*}
 \caption{Judgement forms, as Agda types and as presented in this section.}
 \end{figure}
@@ -334,47 +334,47 @@ We have two kinds of signatures, one for inductive types, the other for linkages
 
 
 
-\judgebox{\goodWSig{\Gamma}{\sigma}{n}}
+\judgebox{\goodWSig{\Gamma}{\tau}{n}}
 $$
 \Rule[name=Emp-WSig]
 {}
 {\goodWSig{\Gamma}{w\cdot}{0}}
 \quad
 \Rule[name=WSig-Add]
-{\goodWSig{\Gamma}{s}{n}
+{\goodWSig{\Gamma}{\tau}{n}
   \quad \goodType{\Gamma}{A}{i}
   \quad \goodType{\Gamma, A}{B}{i}}
-{\goodWSig{\Gamma}{w^+ \  s \  A \  B}{n+1}}
+{\goodWSig{\Gamma}{w^+ \  \tau \  A \  B}{n+1}}
 \quad
 \Rule[name=Ind-Univ]
-{\goodWSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{\bW \sigma}{i}}
+{\goodWSig{\Gamma}{\tau}{n}}
+{\goodType{\Gamma}{\bW \tau}{i}}
 $$
 %\YZ{Is there an introduction rule for terms of type 'bW sigma'?}
 %\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation below.}
 
 $$
 \Rule[name=WSig-Proj]
-{\goodWSig{\Gamma}{s}{n} \quad j < n}
-{\goodType{\Gamma}{\pi^j_1 s}{i} \quad \goodType{\Gamma, \pi^j_1 s}{\pi^j_2  s}{i}}
+{\goodWSig{\Gamma}{\tau}{n} \quad j < n}
+{\goodType{\Gamma}{\pi^j_1 \tau}{i} \quad \goodType{\Gamma, \pi^j_1 \tau}{\pi^j_2  \tau}{i}}
 \quad
 \Rule[name=Ind-Sig]
-{\goodWSig{\Delta}{\sigma}{n}
+{\goodWSig{\Delta}{\tau}{n}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
-{\goodWSig{\Gamma}{\sigma[\gamma]}{n}
-  \quad \goodType{\Gamma}{W (\sigma[\gamma]) \equiv (W \sigma)[\gamma]}{i}}
+{\goodWSig{\Gamma}{\tau[\gamma]}{n}
+  \quad \goodType{\Gamma}{W (\tau[\gamma]) \equiv (W \tau)[\gamma]}{i}}
 $$
 
 $$
 \Rule[name=Ind-Type]
-{\goodTerm{\Gamma}{T}{\bW \sigma}}
+{\goodTerm{\Gamma}{T}{\bW \tau}}
 {\goodTerm{\Gamma}{"W" \ T}{\cU}}
 \quad
 \Rule[name=Ind-Term]
-{\goodTerm{\Gamma}{T}{\bW \sigma}
-  \quad \goodTerm{\Gamma}{a}{\pi^j_1\sigma}
-  \quad \goodTerm{\Gamma, \pi^j_2\sigma[(id, a)]}{b}{El~("W"~T)}}
-{\goodTerm{\Gamma}{"Wsup" \ T \ a \ b}{El~("W"~T)} }
+{\goodTerm{\Gamma}{T}{\bW \tau}
+  \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
+  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)}}
+{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
 $$
 
 
@@ -575,7 +575,7 @@ Seal : (Γ : Con) → (σ : Sig Γ n) → (A : Ty Γ) → Set
 Seal Γ σ A = Tm (Γ, @$\mathcal{C}$@σ) A[π₁]
 
 -[-]S : (f : Seal Γ σ A) → (τ : Tms Θ Γ) → Seal Θ σ[τ] A[τ]
-f[τ]S = t[τ ↑ A]
+f[τ]S = t[@$\tau^\uparrow$@]
 
 idₛ : Seal Γ σ @$\mathcal{C}$@σ
 idₛ = π₁
