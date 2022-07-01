@@ -101,7 +101,7 @@ $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
 \begin{figure}[!htb]
   \begin{align*}
     &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I will fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
+    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I have fixed fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
   \end{align*}
 \caption{Judgement forms, as Agda types and as presented in this section.}
 \end{figure}
@@ -593,6 +593,9 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
+For notation clarity, we will sometimes use $"sf'"$ to emphasize
+that we consider that seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]} $ and "sf" notation (used in \ruleref{Compile}) is defined as $\goodSub{\Gamma, \cC \sigma}{sf~s := (\pi_1, sf'~s)}{\Gamma, A}$.\YZ{What is sf and sf'? sf first appears in Compile rules, so explain sf there.}\EDJreply{Fixed. They both are explained at here now}
+
 Sealing judgement is still about the important term $h$ we mentioned
 earlier. Thanks to $\cC$, a field $t_{new}$ that depends on $a$ is now
 in the context containing $\cC\{a : \bW \sigma; ..\}$.
@@ -658,7 +661,7 @@ $$
 {\goodWSig{\Gamma}{\sigma}{n}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodSig{\Gamma}{"RecSig"~\sigma~R}{n}\YZ{Why does this Sig not have a superscript?}}
+{\goodSig{\Gamma}{"RecSig"~\sigma~R}{n}\YZ{Why does this Sig not have a superscript?}\EDJreply{Fixed now.}}
 $$
 $$
 \Rule[name=Hdler-Proj]
@@ -722,8 +725,7 @@ presumptions about what is going on here.}\EDJreply{You are right. Our "Sealing"
 
 There are also cases we don't need to seal anything (i.e., for doing
 exhaustiveness checking when using recursor), and thus \ruleref{Seal-Id} is
-used. For notation clarity, we will sometimes use $"sf'"$ to emphasize
-that we consider that seal $s$ as a term $("sf'" \ s)$.\YZ{What is sf and sf'? sf first appears in Compile rules, so explain sf there.}
+used. 
 
 
 
