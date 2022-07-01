@@ -52,7 +52,7 @@ computational rules.
 
 \subsection{Abstract Interpreters for \texttt{Imp}}
 The second example is adapted and modified from \citet{zm2017}.
-Contrary to our first example, we use a big-step interpreter with fuel
+Contrary to our first example, here, we use a big-step interpreter with fuel
 as the operational semantics of an imperative language with
 side effects, and we specify the abstract interpretation and prove its
 soundness, with some postulation on both computation and property.
@@ -62,11 +62,11 @@ abstract interpreters.
 Thanks to the compilation to Coq, we can directly run the resulting
 abstract interpreters.
 
-We construct four families, in one inheritance chain.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
+We construct four families, in one inheritance chain, illustrated in \cref{fig:abstract-interpretation-example}.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
 
 
 The first family "Lang" define the big step operator (using fuel) of a
-while language, with expression. However, it postulates the definition of "State" (environment mapping) used by Lang. It takes about 200+ LOCs. 
+while language, with expression and stmt defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200+ LOCs. 
 % We
 % can
 \YZ{In general, in a result section like this, you want to show what
@@ -76,27 +76,30 @@ you *have done* rather than what you *can do*.}\EDJreply{Ok. deleted. I initiall
 \YZ{What is 'different
 memory/state management'?}\EDJreply{Actually I should say environment mapping/dictionary. I instantiate it with function(closure) as environment mapping in "LangRun". It is possible to use other mapping like Coq's primitive dictionary.}
 
-The second family "LangwAbs" define the abstract interpreter for it,
-together with a bunch of postulates, to prove the correctness of the
-abstract interpreter. It takes about 300+ LOCs. This example shows how
+The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter",
+together with a bunch of postulates as a big sealed family "absStateData". Then we prove the correctness of the
+abstract interpretation function "analyze". It takes about 300+ LOCs. This example shows how
 to use family inheritance to extend a concrete interpreter with abstract
-interpreters. This example also shows in this family polymoprhism
-framework we can reason about "Lang" with computation details being
-abstracted. 
+interpreters. 
+% This example also shows in this family polymoprhism framework we can reason about "Lang" with computation details being abstracted. 
 
-The third Family "LangMore" extend LangwAbs with nat constant and
+The third Family "LangMore" extend "LangwAbs" with nat constant and
 addition, and if-then-else control flow, of course retaining all the
 soundness theorem. It takes about 200+ LOCs. This is one example of
 using family inheritance to support new language feature, and compatible
-with the existent reasoning. 
+with the existent reasoning in "LangwAbs.AbsInterpreter". 
 
 The fourth family "LangRun" instantiate some of the postulates of the
-LangMore and recover computational information of Lang. The concrete
-interpreter is doing as expected; the abstract interpreter is expected
+"LangMore" and recover computational information of "analyze". The "absStateData" is overridden by a concrete definition. The resulting abstract interpreter is expected
 to act as a type-analyzer. It takes about 200+ LOCs. This is one example
-of instantiate the detail computation. Thanks to the posulation we have done in "Lang", now we instantiate that postulation with function type "Ident -> option exp" as the "State" (environment mapping) for simplicity. 
+of instantiate the detail computation of abstract interpretation. 
 
 
 And at the end, we compile LangRun into module and use Coq to run it on
 some simple queries. This "LangRun" also illustrates that we still have
-computability in the presence of family.\YZ{Can there be a diagram (a la Figure 1 in Familia paper) illustrating the relationships between (and functionalities of) the different families?}
+computability in the presence of family.\YZ{Can there be a diagram (a la Figure 1 in Familia paper) illustrating the relationships between (and functionalities of) the different families?}\EDJreply{Done. Please check}
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{coqexmaple/Family-Lang-Imp2.pdf}
+  \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows are overriding. Grey box are sealed families.}\label{fig:abstract-interpretation-example}
+\end{figure}
