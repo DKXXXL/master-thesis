@@ -8,12 +8,80 @@ the following extension to Coq's Vernacular Commands.
   V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
   \quad |\quad "EndFamily" \\
   & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
+  & | \quad "FTheorem"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle \\
   & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
   & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
   & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
   & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
 \end{align*}
+
+
+\begin{figure}[!htb]
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC.
+ FInductive ty : Set :=
+  | unit : ty
+  | arrow : ty -> ty -> ty.
+ FInductive term : Set := 
+  | var : id -> term 
+  | lam : id -> term -> term ...
+ Family subst_internal.
+  Final Field var := ..
+  Final Field lam := ..
+   ...
+ EndFamily.
+ FRecursor subst
+  about tm motive ..
+  using subst_internal.
+ ...
+ FInductive has_type 
+  : context -> term -> type := ...
+ FTheorem subst_lemma 
+  about has_type 
+  motive ...
+  ..
+ Qed.
+ FInductive step : term -> term -> Prop 
+  := ...
+(* ... and more, end with type safety *)
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC_bool extends STLC.
+ Extend FInductive ty : Set :=
+  | bool : ty.
+
+ Extend FInductive term : Set := 
+  | tt : term | ff : term 
+  | tif : term -> term -> term -> term
+ Extend Family subst_internal.
+  Final Field tt := ..
+  Final Field ff := ..
+  Final Field tif := ..
+ EndFamily.
+ Inherit subst.
+(* Plugin will redo exhaustiveness check, 
+  in case subst_internal is not 
+  extended correctly *)
+ Extend FInductive has_type (* .. and new ty too *)
+  : context -> term -> type := ...
+ Extend FTheorem subst_lemma.
+  ... (* Need to prove extra cases *)
+ Qed.
+
+
+ Extend FInductive step : term -> term -> Prop 
+  := ... (* Need to expand this binary relation *)
+(* ... and more extension *)
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
+\end{figure}
 
 These are some core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
 We can define nested families.
@@ -23,59 +91,8 @@ To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{dec
 For example, \mintinline{Coq}{FRecursor recur about T motive f} "using"
 "handlers" will generate a new field "recur" that is doing induction
 (using elimination principle of "T") using motive "f", and the handlers
-are located in the family "handlers". This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family.
+are located in the family "handlers". This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. "FTheorem" is used for theorem proving
 
-\begin{figure}[!htb]
-  \begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family STLC.
-FInductive ty : Set :=
-  | unit : ty
-  | arrow : ty -> ty -> ty.
-FInductive term : Set := 
-  | var : id -> term 
-  | lam : id -> term -> term ...
- Family subst_internal.
- EndFamily.
- 
-  : id -> term -> term := ...
-Inductive has_type 
-  : context -> term -> type := ...
-Proposition subst_lemma :
-  has_type (G; x ↦ A) t T ->
-  has_type G u A ->
-  has_type G (subst x u t) T.
-Inductive step : term -> term -> Prop 
-  := ...
-(* ... and more, end with type safety *)
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-  \begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family STLC_bool extends STLC.
-Extend FInductive ty : Set :=
-  | bool : ty.
-
-Extend FInductive term : Set := 
-  | tt : term | ff : term 
-  | tif : term -> term -> term -> term
-Extend Fixpoint subst (* Need to handle new term *)
-  : id -> term -> term := ...
-Extend Inductive has_type (* .. and new ty too *)
-  : context -> term -> type := ...
-Extend Proposition subst_lemma :
-  ... (* Need to prove extra cases *)
-
-
-Extend Inductive step : term -> term -> Prop 
-  := ... (* Need to expand this binary relation *)
-(* ... and more extension *)
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
-\end{figure}
 
 We can inherit a top-level family "parent" using \mintinline{Coq}{Family
 ... extends parent} as a new top-level family. As expected, "Override"
