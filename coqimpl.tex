@@ -1,7 +1,7 @@
 
-\subsection{Language Design}\YZ{I think in §3.1, you should use a figure to show how the actual code the programmer will write to solve the programming challenge outlined in Figure 1.}
-Inspired by our above challenges and Family Polymorphism, we propose
-the following extension to Coq's Vernacular Commands.
+\subsection{Language Design}\YZ{I think in §3.1, you should use a figure to show how the actual code the programmer will write to solve the programming challenge outlined in Figure 1.}\EDJreply{Done.}
+Inspired by the above challenges and Family Polymorphism, we propose
+the following extension to Coq's Vernacular Commands, and the corresponding STLC example.
 % basically write down the specification of surface Coq commandline
 %   and then explain  how the language design makes the programmer’s life easier
 \begin{align*}
@@ -62,11 +62,11 @@ Family STLC_bool extends STLC.
   Final Field tt := ..
   Final Field ff := ..
   Final Field tif := ..
- EndFamily.
+ EndFamily. (* Automatic inheriting others 
+              from STLC.subst_internal *)
  Inherit subst.
-(* Plugin will redo exhaustiveness check, 
-  in case subst_internal is not 
-  extended correctly *)
+(* Plugin will redo exhaustiveness check, in case 
+ subst_internal is not extended correctly *)
  Extend FInductive has_type (* .. and new ty too *)
   : context -> term -> type := ...
  Extend FTheorem subst_lemma.
@@ -83,15 +83,15 @@ EndFamily.
   \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
 
-These are some core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
-We can define nested families.
+These are the core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
+Nested families are also allowed.
 
 To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
-"FRecursor" will be used to construct a recursor using the handler family.
-For example, \mintinline{Coq}{FRecursor recur about T motive f} "using"
-"handlers" will generate a new field "recur" that is doing induction
-(using elimination principle of "T") using motive "f", and the handlers
-are located in the family "handlers". This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. "FTheorem" is used for theorem proving
+"FRecursor" will be used to construct a recursor by refering to the handler family.
+\mintinline{Coq}{FRecursor recur about T motive f } "using"
+"handlers" will generate a new field "recur" that is really doing computation
+(using elimination principle of the inductive type "T") with motive "f". The handlers
+are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. For example, in \cref{fig:STLC-example2},  "FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving. 
 
 
 We can inherit a top-level family "parent" using \mintinline{Coq}{Family
@@ -99,11 +99,9 @@ We can inherit a top-level family "parent" using \mintinline{Coq}{Family
 will override a field from the parent. "Inherit" can be used to inherit
 nested families, inductive types, and fields. The fields inside a family
 are order-sensitive because we have dependent types here. So "Inherit
-Until" is used if the user wants to inherit a range of fields. If the
-user wants to extend an inductive type or a nested family from the
-parent, then "Extend FInductive" or "Extend Family" is used. Thus nested
-family can only be inherited or extended together with its outer family
-(and thus top level family), thus our support of family polymorphism is
+Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
+family can only be inherited or extended together with its belonging family
+(i.e. ultimately top level family), thus our support of family polymorphism is
 incomplete.
 
 % This incomplete support can already be useful for extending functions.
@@ -118,7 +116,7 @@ incomplete.
 
 In this section, we describe how we can implement the proposed Vernacular commands.
 
-After considering the pros and cons, we decide to implement a Coq Plugin in which we can add new Vernacular commands and translate each new command into a bunch of Coq commands (the surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
+After considering the pros and cons, we decide to implement a Coq Plugin where we can add new Vernacular commands and translate each new command into a bunch of Coq commands (the orignal surface Vernacular command) on the fly, instead of modifying the code-base of Coq. 
 
 Despite possible difficulties for future maintenance, this approach has
 various advantages: 1. it is the easiest and the most accessible way to
@@ -150,7 +148,7 @@ caught at the target level and (2) because it allows better error messages.
 So it needs to be addressed why deferring type checking to Coq is OK.}\EDJreply{Good point. I think (1) is largely mediated by the fact the semantic of family is very close to that of the module. And the supporting feature is simple enough that there won't appear some problems like type error at source-level but not target level(2) is happening for sure but some basic error message is almost "transparent" i.e. the error-messages from Coq can be directly interpreted for the user. But my justification is solely empirical and as you know the empirical study for this paper is not really strong enough to support anything.}
 
 
-\textbf{Family compiled into module.} We support family by compiling
+\textbf{Family compiled into module.} The main idea of our plugin is to support family by compiling
 family components into Coq modules, family ``types'' into module types, and the context of a given term
 into parameters of the module. We need to faithfully
 reflect the \textit{late binding} nature of families: for each defining
@@ -158,7 +156,7 @@ field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
 ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall
 \cL \sigma. T$. However, instead of using Coq's universal quantifier, we
 choose module and module parameters to achieve this wrapping---each
-family type in the context of the judgement will be one module parameter
+family type in the context will be one module parameter
 with the compiled module type, and thus each field of the family will
 compile into a functor parametrized by its context. Doing so we can also
 get rapid feedback from type checking when the users are defining each
@@ -199,8 +197,7 @@ Include a_4. Include b_7. End A.
 
 
 % Concrete details of compilation of a family term data structure
-Taking \cref{fig:plugin-example1} as an example: when the user
-interactively inputs the line "Field a : nat := ..", our plugin will
+Taking \cref{fig:plugin-example1} as an example: immediately after the user inputs the line "Field a : nat := ..", our plugin will
 translate this statement into the "Module a_4", "Module Type a_5, a_6"
 three components.
 {The "EmptySig" is just an empty module type.} Then,
@@ -279,16 +276,16 @@ EndFamily.
 
 % explaining inheritance
 \textbf{Implementing Inheritance.}
-To resolve \ref{chg:consistency}, we make sure when inheritance happens, not only the content will be inherited, but the context of the corresponding field is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty and has no "g" in "self". 
+To resolve \ref{chg:consistency}, we make sure when inheritance happens, not only the content will be inherited, but the context of the corresponding field is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty thus "self.g" doesn't type-check. 
 
 To simplify the implementation, we can consider all families as
 inheritance and the standalone families are extending the empty family.
 Thus, we need to deal with only inheritance during interactive theorem proving.
 
 
-There are three kinds of inheritance---extend, override, and inherit. We
-use a list to encode inheritance data inside the
-implementation of the plugin. The inheritance data will include the
+There are three kinds of inheritance---extend, override, and inherit. Simiarly, we
+use a list to encode inheritance data in the
+implementation. The inheritance data will include the
 information of (1) the ``type'' of the parent family, (2) a list of
 operation indicating how each field of the parent will be dealt with
 (either inherited or overriden), (3) the operations indicating newly
@@ -303,7 +300,7 @@ the list for extension. The compilation from a family (internal
 representation) to a module still acts the same.
 
 Though inheritance is solely a first-order data rather
-than a higher-order functor, it is still possible to
+than a ``mapping'', it is still possible to
 \text{mix-in} two inheritance data---by carefully ``mix'' the internal list, we can compose the inheritance. However, a good definition of mixin is still under investigation. We will show one practical example of \textit{mixin} later.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
 
 
@@ -332,12 +329,12 @@ has already allowed fields to be type-dependent on former fields thus we can see
 % "b" (module type "a_6") we only know "a" is of type "nat" but nothing
 % more (and this is necessary so that "a" can be overridden in the
 % future).
-Take the field "c" in "Family I" in \cref{fig:plugin-example3} as the
+Take the field "c" of "Family I" in \cref{fig:plugin-example3} as the
 example. We can see that the first attempt of proving "a = 1" fails.
 \textit{This should fail}---because we want to retain the possibility
 to override "a" in the future, but the mere existence of the field "c"
-will stop that, since "c" witnesses "a" fix to "1". In our implementation, \textit{this will fail}---the proof of "c" will require a concrete definition of "a",
-but our compilation will type check \mintinline{Coq}{c : a = 1 := eq_refl} in the context where we only know \mintinline{Coq}{a : nat} thus failed.  
+will stop that, since "c" witnesses "a" fix to "1". \textit{This will fail} in our implementation---the proof of "c" will require a concrete definition of "a",
+but our compilation will type check \mintinline{Coq}{c : a = 1 := eq_refl} in (a module with) the context where we only know \mintinline{Coq}{a : nat} thus failed.  
 
 To enable the exposure of the concrete definition,
 our plugin provide "Final" keyword. Once we decorate it upon "a'", the second attempt \mintinline{Coq}{c : a' = 1 := eq_refl} will succeed. Contrary to "a", our "a'" is not overridable in "Family I2".
@@ -366,9 +363,8 @@ users to manual decorate field as `Final' so that the plugin will proceed with t
 %\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
 \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
-Non-overridable fields are still not expressive enough to achieve the full
-extent of dependent type programming. There are cases where overriding and
-(definition-relevant) reasoning are both needed. For example, we may want a field to be an overridable monotonic function. We cannot split into two fields
+Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
+(definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
 \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
 because to prove
 the latter we need to have concrete definition of "f" in the family type, which
@@ -376,7 +372,7 @@ makes "f" non-overridable at all. One option is to use sigma type
 \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
 a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the family but a family as a whole will be sealed into a relaxed type. Thus we can override one sealed family as a whole and thus change the internal implementation. 
+To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the family but a family as a whole will be sealed into a ``relaxed'' type. Thus we can override one sealed family as a whole and change the internal implementation. 
 
 For example, the "MonotonicF" in \cref{fig:plugin-example3}:
 we simply seal
@@ -391,12 +387,12 @@ like we do in "I2.MonotonicF".
 
 And the compiled module type of
 "MonotonicF" will be fixed throughout the extension in different
-families. Overriding field will always have these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
+families. Any overriding family will always have these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
 In our example, the seal family "I.MonotonicF" is actually simulating
 interfaces as well.  We have
 \mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
-and we have assigned it to both "f" and "p", and later instantiate in
+and we assigned it to both "f" and "p", and later instantiate in
 "I2" with concrete implementation by overriding this family
 "I.MonotonicF".
 % Basically, {a : int -> int; property : a is monotonic}, in this case
@@ -472,23 +468,22 @@ End v_33_34.
 
 
 
-We start with the programming interface. We use "FInductive" to define a extensible inductive type and in the children family we use "Extend Finductive ..." to extend the inductive type with new constructors. In \cref{fig:plugin-example2}, we make the example of boolean and three-valued boolean. 
+We start with the programming interface. We use "FInductive" to define an extensible inductive type and in the children family we use "Extend Finductive ..." to extend the type with new constructors. In \cref{fig:plugin-example2}, we make the example of boolean and three-valued boolean. 
 
 
 
 Recall, to construct a recursor, we need to create for each
-constructor a handler (function) and aggregate them into a family, and thus that family (e.g. "neg_handler" in \cref{fig:plugin-example2}) can be considered as a large matching-case statement. We use "FRecursor" to declare a recursor (e.g. "neg") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "neg"). Here in \cref{fig:plugin-example2} we apply "neg" to "tt" as an exemplar field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "uu"), then the inherited family (e.g. "neg_handler") will need to extend correspondingly (e.g. "neg_handler.uu"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "neg".
+constructor a handler (function) and aggregate them into a family (e.g. "neg_handler" in \cref{fig:plugin-example2}). We use "FRecursor" to declare a recursor (e.g. "neg") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "neg"). Here in \cref{fig:plugin-example2} we apply "neg" to "tt" as an exemplar field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "uu"), then the inherited family (e.g. "neg_handler") will need to extend correspondingly (e.g. "neg_handler.uu"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "neg".\EDJ{This paragraph is duplicating but I am not sure how to make it concise.}
 
 The plugin actually realizes the "Extend FInductive" via overridding---when extending an inductive type $A$
 with new constructors $c$, our plugin will generate a new (syntactic) inductive definition $A'$ with this new $c$ on the fly and feed it to Coq. But we must be careful on the exposing data in the family type (the compiled module type) for the following field. In other words, we must be careful on what interface (context) the following fields are defined based on. 
 
 Let's look at the exemplar \cref{fig:plugin-example2}, the example of boolean and negation. When we define the extensible inductive type "b", all the following fields (e.g. "neg_handler.ff") can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface''---the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
-the eliminator of the inductive type "b" inside "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
-is extended with a third constructor, \textbf{since the existence of recursor
-alone will assert that there are only two constructors} in "b", not
+the eliminator of the inductive type "b" to "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
+is extended with a third constructor, \textbf{since the mere existence of the recursor will assert that there are only two constructors} in "b", not
 \textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.} 
 
-However, we later still need the concrete eliminator "b" for doing type-checking (as in \ref{chg:extensible-inductive-type}), thus the information doesn't totally disappear but store elsewhere.  Here we show one exemplar extraction of the recursor to \mintinline{Coq}{Set} as module "b_rec_12". This concrete recursor will be used by our "FRecursor". For example, in \cref{fig:plugin-example2}, "FRecursor" command will feed Coq a module "v_33_34" for doing type-checking with specified handlers (e.g. "neg_handler") during compilation---what it does is basically
+However, we later still need the concrete eliminator "b" for doing exhaustiveness checking (as in \ref{chg:extensible-inductive-type}), thus we will store the corresponding info somewhere.  Here we show one exemplar extraction of the eliminator to \mintinline{Coq}{Set} as module "b_rec_12". This concrete eliminator will be used by our "FRecursor". For example, in \cref{fig:plugin-example2}, "FRecursor" command will feed Coq a module "v_33_34" for doing type-checking with specified handlers (e.g. "neg_handler") during compilation---what it does is basically
 assert the existence of the recursor and apply to see if handlers can
 pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
 \begin{minted}{Coq}
@@ -496,7 +491,7 @@ pass the type checking by Coq. Note that, at this point of the example, "FRecurs
 \end{minted}
 where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields.
 
-Importantly, the recursor field (e.g. "neg") is not actually inheritable, because it is not compiled like any other fields---recall how other fields are compiled into reusable pieces of (parametrized) module, a recursor field is not compiled like that. For all the children family, we have to reconstruct and override with a ``new'' recursor using the (maybe inherited) handler family. This is affordable since each recursor handler doesn't need
+Importantly, the recursor field (e.g. "neg") is not actually inheritable, because it is not compiled like any other fields---recall how other fields are compiled into reusable pieces of (parametrized) modules, a recursor field is not compiled like that. For all the children family, we have to reconstruct and override the "FRecursor" field with a ``new'' recursor using (maybe the same) handler family. This is affordable since each aggregated recursor handler doesn't need
 to be rechecked---look at "B2.neg_handler", there is only one new
 handler for "uu" and the handlers (mundane fields) from the parent
 "B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
@@ -516,7 +511,7 @@ where "b_rec" and "b" are the corresponding recursor and the (vanilla but extend
 Of course, in the implementation, our plugin will ``inherit'' the
 recursor "neg" in the surface \YZ{Show this recursor, as you do above for the recursor "Definition neg := ...".}\EDJreply{Added above. Please Check.}
 but what the plugin actually does is doing a second exhaustiveness
-checking in children family like mentioned above, with the ``same'' motive and ``same'' handler family.\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''}\EDJreply{Please check.}
+checking in children family like mentioned above, with the ``same'' motive and the ``same'' handler family.\YZ{A source of confusion in this section is that the reader often has to guess who performs the actions: is it the programmer or the Coq plugin?}\EDJreply{Good idea. Let me reorgnaize this section to ``first programming interface'', then ``plugin implementation''}\EDJreply{Please check.}
 
 
 
@@ -534,8 +529,8 @@ checking in children family like mentioned above, with the ``same'' motive and `
 % explain we have the incremental-checking for any recursor 
 
 % explain ftheorem wrapping this complicated recursor
-This design of decoupling of the case handlers and exhaustiveness checking handles the semantic well, however, it brings a lot of boilerplate code---we need to create an extra (handler) family, manually specifying the type of each case handlers, and then using "FRecursor" to ``tie the knot'' and construct a recursor field from the family.  
-We thus provide a command "FTheorem" to remove these boilerplate in programming interface when using tactic programming instead. 
+This design of decoupling of the case handlers and exhaustiveness checking handles the semantic well, however, it brings a lot of boilerplate code---we need to create an extra (handler) family, manually specifying the type of each case handlers, and then using "FRecursor" to ``tie the knot'' and construct a recursor field from the handlers.  
+We thus provide a command "FTheorem" to avoid these boilerplate in programming interface when using tactic programming. 
 This command (1) can avoid specifying the handlers family and the type of each case handlers when writing induction like above, (2) invoke
 proof interaction mode and thus allow tactic programming, (3) and is also open to extension like "FRecursor".\YZ{example?}\EDJreply{FTheorem is really just a short hand for "FRecursor" + handler family. Nothing more conceptual here. If the reader is interested in the concrete syntax, I think I need to make the two examples avaliable in the appendix.} We expect this "FTheorem" to be used in theorem proving but not general programming. 
 
@@ -545,7 +540,7 @@ type (e.g., module "b_3"); but to construct a recursor (and carry out the
 exhaustiveness checking), we need to break this abstraction and see the
 concrete definition of the inductive type (e.g., module "b_rec_12"). Our
 meta-theory need to handle these two seemingly contradicting ideas
-simultaneously. (2) \ref{chg:extensible-inductive-type} is resolved by this \textit{decoupling} of the syntax of implementation of recursor handlers and exhaustiveness checking. The former is handled by family inheritance and thus avoid the boilerplate code; and the non-inheritance of the compiled recursor ensures the exhaustiveness checking happens for every recursor.  
+simultaneously when solving \ref{chg:extensible-inductive-type} . (2) \ref{chg:extensible-inductive-type} is also resolved by this \textit{decoupling} of the syntax of implementation of recursor handlers and exhaustiveness checking. The former is handled by family inheritance and thus avoiding the boilerplate code; and the non-inheritance of the compiled recursor ensures the exhaustiveness checking happens for every recursor.  
 
 
 % Mention still needing total recursor, for exhaustiveness checking
@@ -565,7 +560,7 @@ means that every time we extend "value" with new value forms, we will
 need to extend corresponding inductive cases for "app_not_value". We can
 imagine the newly extended proof to be boring case analysis that the
 newly added value forms are not "tm_app". What's worse, similar
-scenario can happen on other statement like \mintinline{Coq}{~ value
+scenario can happen on other statements like \mintinline{Coq}{~ value
 (tm_if cond x y)}. Everything here is extended correctly but we end up
 having boilerplate code, \textbf{semantically}.
 \begin{figure}[!htb]
@@ -667,7 +662,7 @@ Thus to refer to them, we have to scope the defining tactic with
 a "MetaData" block is closed, the plugin will aggregate the content into
 the family being defined so that they can also be used when defining
 the following fields of the family.\YZ{It reads like this MetaData wrapping could be automatically inserted, no?}\EDJreply{Not sure. This auto-insertion will practically look like hijack the original Coq command. I am not sure this kind of hijacking can happen.}
-This can fulfill \ref{chg:software-engineering}.
+This can fulfill \ref{chg:software-engineering} and define new customized tactic.
 
 
 % To fulfill \ref{chg:software-engineering}, we need somehow to aggregate tactic inside compiled module type, due to the implementation of our family---when defining every field of 
@@ -690,7 +685,7 @@ This can fulfill \ref{chg:software-engineering}.
 
 % Following needs a rewrite
 
-\textbf{Propositional Partial Recursor.} Notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''--they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. 
+\textbf{Propositional Partial Recursor.} Notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''---they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. 
 
 This raise an interesting question: what propositions are conservative extension? For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a ``best'' proposition (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
 
@@ -793,4 +788,4 @@ We can support partial dependent eliminator as well, but partial dependent elimi
   (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) 
     -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
 \end{minted}
-To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
+% To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
