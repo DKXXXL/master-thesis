@@ -687,7 +687,7 @@ This can fulfill \ref{chg:software-engineering} and define new customized tactic
 
 \textbf{Propositional Partial Recursor.} Notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''---they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. 
 
-This raise an interesting question: what propositions are conservative extension? For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a ``best'' proposition (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
+This raise an interesting question: what propositions are conservative extension? For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a \textbf{``best'' proposition} (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
 
 Since injectiveness of the constructors are derived by recursor in vanilla inductive type, an educated guess would be related to recursor. But we know the original recursor won't work because the mere existence of the original recursor will break extensibility. Thus we need to modify it.
 The simplest idea is to allow partiality---i.e., returning
@@ -718,9 +718,9 @@ Definition tt_neq_ff : self_B.tt = self_B.ff → False.
 \end{minted}
 
 
-Even though we cannot prove propositional partial recursor is the best,
+Even though we cannot prove propositional partial recursor is \textit{the best},
 the above "reflect" function implies that propositional partial
-recursor is a good \textit{extensional characterization} of (non-indexed) extensible inductive type (with certain constraints): because we can ``embed'' vanilla inductive types into
+recursor is a good \textit{extensional characterization} of (non-indexed) extensible inductive type (with certain constraints)---because we can ``embed'' vanilla inductive types into
 types supporting a partial recursor: "reflect" is actually a left
 inverse of an injection "bool → self_B.b". A bit more formally, and
 restricting our focus to non-indexed inductive types:
