@@ -12,7 +12,7 @@ Now we sketch out the big picture of the proof. The canonicity model $"Tm"^C~\Ga
 
 Another helpful analogy of the canonicity model is that $"Tm"_p~\Gamma^C~"T"^C~"t"$ can be understood as $"t" \in \{$ Reducible Terms of type $T$ (and $T_p$) in context $\Gamma$ (and $\Gamma_p$) $\}$. The latter is more conventional and the former can be understood as type theoretic encoding of the latter\footnote{We usually use predicate to encode ``belong to''/``is element of'' relation in type theory}. From this perspective, this part of the canonicity model is quite similar to how conventional (proof-irrelevant) logical relation is carried out~\cite{skorstengaard2019introduction}---using the terminology of the conventional formulation, $\Gamma_p$ will witness the set of substitution into closed reducible terms of types $\Gamma$. Then we will prove $t[\gamma] \in T_p$---a set of closed reducible term of type $T$---when $\gamma \in \Gamma_p$.
 
-The proof can be found in appendix.
+The proof can be found in appendix. The intuition of the model is similar to that of the consistency model---use the model of sigma type for linkage type and using Agda's inductive facility to justify our W-type. 
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
 \begin{theorem}[Canonical Forms].

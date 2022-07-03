@@ -10,14 +10,18 @@ STLC and prove the type safety for each feature separately, following
 the style of the examples in MTC~\cite{delaware2013,forsta2020}.
 And we use a \textit{not-yet-formally-defined} \textbf{mix-in} feature
 to mix the semantics and properties of two language features---product
-and boolean (in \cref{fig:STLC-example})---with vanilla STLC. This way,
-we can say precisely, \textit{a programming language feature itself is a
+and boolean (in \cref{fig:STLC-example})---with vanilla STLC.
+
+This \textit{mixin} is implemented roughly by making inheritance judgement/data supporting \textit{weakening} and composition. Then, using notation from metatheory, given $\goodInh{\cdot}{i_1}{\sigma_1}{\sigma_2}$ and $\goodInh{\cdot}{i_2}{\sigma_1}{\sigma_3}$, we can weaken $i_2$ to $\goodInh{\cdot}{i_2'}{\sigma_2}{\sigma_3'}$ and the composition of $i_1$ and $i_2'$ is the resulting mixin---this implementation breaks commutativity and will need to solve (design) some compatibility solution: for example, when $i_1$ and $i_2$ are both extending with field of the same name, do we signal error or use $i_2$'s extension as considering it as an `override'? However, our current example of STLC only uses a subset of the mixin that is with a clear semantic (i.e. every sensible design of mixin should agree on).
+
+Using this example,
+we hope one day we can say precisely, \textit{a programming language feature itself is a
 piece of data/inheritance judgement/inherited family}. Compared with MTC,
 our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?}\EDJreply{I thought they use big step with fuel. Though Coq a la carte use small-step in one example} by exploiting
 extensible inductive types. 
 
-Most of the proof and computation is directly adapted
-from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples is about the computation, and here we mainly focus on substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about proof-irrelevant propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't even need to additionally handle a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goal to prove. At the end, it will look like scattered proof scripts in a modular manner.
+Most of the proof and computation are directly adapted
+from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples is about the computation, for example, substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about proof-irrelevant propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't need to additionally define a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goal to prove. At the end, it will look like scattered proof scripts in a modular manner.
 For example, the proof on progress on product projection is carried out in the children family that extend "tm" with products. \YZ{Can you say more about how your plugin enables more code reuse and modularity?}\EDJreply{please check}
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users---which can be reflected from the distance of their approach and text-book Software Foundation proof. 
 
@@ -33,7 +37,7 @@ be part of the definition of the syntax instead of considering the
 syntax as a mere concrete inductive type. We should postulate this
 inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify
 that our inductive definition does satisfy the constraint, which is
-exactly what we expect from "Closing Fact".
+exactly what we expect from "Closing Fact"---if directly working on inductive definition doesn't bring us benefit, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
 Our formulation for bare STLC is around 400+ LOCs; the two families implementing product and boolean features both take around 300+ LOCs. 
 % need comparison with the original implementation
@@ -47,7 +51,7 @@ Another difference comes from the fact that we need to use "Closing
 Fact" to manually verify the computational rules for each recursor and
 use tactics to ``run'' the recursor by repeatedly "rewrite" using those
 verified computational rules. This part is possible to be automatically
-handled by the plugin, but still it will require propositional
+generated by the plugin, but still it will require propositional
 computational rules.
 
 \subsection{Abstract Interpreters for \texttt{Imp}}
@@ -57,10 +61,15 @@ as the operational semantics of an imperative language with
 side effects, and we specify the abstract interpretation and prove its
 soundness, with some postulation on both computation and property.
 Then we extend the base language with new features, and we instantiate
-the postulation on computation for both concrete interpreters and
+the postulation on computation for
 abstract interpreters.
-Thanks to the compilation to Coq, we can directly run the resulting
+Thanks to the compilation to Coq module, we can directly run the resulting
 abstract interpreters.
+
+\begin{figure}[!htb]
+  \includegraphics[width=\columnwidth]{coqexmaple/Family-Lang-Imp2.pdf}
+  \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows are overriding. Grey box are sealed families.}\label{fig:abstract-interpretation-example}
+\end{figure}
 
 We construct four families, in one inheritance chain, illustrated in \cref{fig:abstract-interpretation-example}.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
 
@@ -99,7 +108,3 @@ And at the end, we compile LangRun into module and use Coq to run it on
 some simple queries. This "LangRun" also illustrates that we still have
 computability in the presence of family.\YZ{Can there be a diagram (a la Figure 1 in Familia paper) illustrating the relationships between (and functionalities of) the different families?}\EDJreply{Done. Please check}
 
-\begin{figure}
-  \includegraphics[width=\columnwidth]{coqexmaple/Family-Lang-Imp2.pdf}
-  \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows are overriding. Grey box are sealed families.}\label{fig:abstract-interpretation-example}
-\end{figure}
