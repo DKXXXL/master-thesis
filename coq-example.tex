@@ -1,9 +1,6 @@
 We provide two examples here for illustration and evaluation of our Coq plugin. 
 
 \subsection{Type Safety for STLC}\EDJ{We need a fuller view of the two examples. Especially show "accessing family components outside that family".}
-We start with the very basic type safety proof of STLC, largely adapted
-from Software Foundation~\cite{pierce2014software}, which is also one of
-the primal motivating example of this project. 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 \begin{lstlisting}[language=Coq,frame = single, escapeinside={@}{@}]
@@ -34,8 +31,14 @@ Family STLC_bool_prod
     extends STLC 
     using STLC_bool using STLC_prod.
 \end{lstlisting}
+\includegraphics[width=0.5\textwidth]{coqexmaple/STLC-inheritances.pdf}
 \caption{Example STLC extended with product, and Mixin with \cref{fig:STLC-example2}}
 \end{wrapfigure}
+
+We start with the very basic type safety proof of STLC, largely adapted
+from Software Foundation~\cite{pierce2014software}, which is also one of
+the primal motivating example of this project. 
+
 
 Our emphasis here is that, we singled out some language features from
 STLC and prove the type safety for each feature separately, following
