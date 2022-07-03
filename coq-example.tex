@@ -5,14 +5,48 @@ We start with the very basic type safety proof of STLC, largely adapted
 from Software Foundation~\cite{pierce2014software}, which is also one of
 the primal motivating example of this project. 
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{lstlisting}[language=Coq,frame = single, escapeinside={@}{@}]
+Family STLC_prod.
+ Extend FInductive ty : Set :=
+  | ty_prod : ty -> ty -> ty.
+ Extend FInductive tm : Set :=
+  | tm_prod : tm -> tm -> tm  
+  | tm_pi1 : tm -> tm  
+  | tm_pi2 : tm -> tm.
+ Extend Family subst_internal.
+  Final Field tm_prod := ..
+  Final Field tm_pi1 := ..
+  Final Field tm_pi2 := ..
+ EndFamily.
+
+ Inherits subst.
+ ...
+ Extend FInductive has_type 
+  : context -> term -> type := ...
+ Extend FTheorem subst_lemma.
+  ... 
+ Qed.
+(* ... and more, end with type safety *)
+(* Next, Invoking Mixin Command *)
+EndFamily.
+Family STLC_bool_prod 
+    extends STLC 
+    using STLC_bool using STLC_prod.
+\end{lstlisting}
+\caption{Example STLC extended with product, and Mixin with \cref{fig:STLC-example2}}
+\end{wrapfigure}
+
 Our emphasis here is that, we singled out some language features from
 STLC and prove the type safety for each feature separately, following
 the style of the examples in MTC~\cite{delaware2013,forsta2020}.
-And we use a \textit{not-yet-formally-defined} \textbf{mix-in} feature
+And we use a \textit{not-yet-formally-defined} \textbf{mixin} feature
 to mix the semantics and properties of two language features---product
 and boolean (in \cref{fig:STLC-example})---with vanilla STLC.
 
-This \textit{mixin} is implemented roughly by making inheritance judgement/data supporting \textit{weakening} and composition. Then, using notation from metatheory, given $\goodInh{\cdot}{i_1}{\sigma_1}{\sigma_2}$ and $\goodInh{\cdot}{i_2}{\sigma_1}{\sigma_3}$, we can weaken $i_2$ to $\goodInh{\cdot}{i_2'}{\sigma_2}{\sigma_3'}$ and the composition of $i_1$ and $i_2'$ is the resulting mixin---this implementation breaks commutativity and will need to solve (design) some compatibility solution: for example, when $i_1$ and $i_2$ are both extending with field of the same name, do we signal error or use $i_2$'s extension as considering it as an `override'? However, our current example of STLC only uses a subset of the mixin that is with a clear semantic (i.e. every sensible design of mixin should agree on).
+\textbf{Mixin} is implemented by making inheritance judgement/data supporting \textit{weakening} and composition. Then, using notation from metatheory, given $\goodInh{\cdot}{i_1}{\sigma_1}{\sigma_2}$ and $\goodInh{\cdot}{i_2}{\sigma_1}{\sigma_3}$, we can weaken $i_2$ to $\goodInh{\cdot}{i_2'}{\sigma_2}{\sigma_3'}$ and the composition of $i_1$ and $i_2'$ is the resulting mixin---this implementation breaks commutativity and will need to solve design problems on compatibility (mostly related to the \textit{diamond problem}): for example, when $i_1$ and $i_2$ are both extending with a field of the same name, do we signal error or use $i_2$'s extension and consider it as an `override'? However, our current example of STLC only uses a subset of the mixin with a clear semantic (i.e. every sensible design of mixin should agree on)---because our STLC examples only use extension of fields with different names and no overriding is used. 
+
+Note that, every top level family can be considered as an inheritance because (1) our implementation is simplified by considering every family as an inheritance, and (2) we want to align with the complete family polymorphism advocated by \citet{zm2017} where the user can override the parent of the inheriting family (inside a family due to late-binding), and in these case the nested inheriting family is more a inheritance data than a ``standalone'' linkage. Thus we will store for every top level family in our plugin the corresponding inheritance data together with a ``reference'' to the parent family. Then our mixin command can single out the inheritance data from "STLC_bool" and "STLC_prod" and ``mixin'' the inheritance to reach "STLC_bool_prod". 
 
 Using this example,
 we hope one day we can say precisely, \textit{a programming language feature itself is a
@@ -21,7 +55,7 @@ our example uses small-step operational semantics\YZ{Does MTC not define a small
 extensible inductive types. 
 
 Most of the proof and computation are directly adapted
-from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples is about the computation, for example, substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about proof-irrelevant propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't need to additionally define a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goal to prove. At the end, it will look like scattered proof scripts in a modular manner.
+from the one in Software Foundation, resulting in a similarly accessible proof, while the proof for each extended feature are scattered in the extended families resulting better modularity. One kind of examples is about the computation, for example, substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't need to additionally define a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goals to prove. At the end, it will look like scattered proof scripts in a modular manner.
 For example, the proof on progress on product projection is carried out in the children family that extend "tm" with products. \YZ{Can you say more about how your plugin enables more code reuse and modularity?}\EDJreply{please check}
 % In related work, Coq/Metatheory a la carte/Tion embedding can be emphasized as a more "semantic approach" because they encode the meaning using a special design pattern (for example, open recursive inductive type for extension), compared to our more syntactic approach. Their advantage is the transferability of this technique accross different proof assistants, and their disadvantage is that their approach are less accessible and unfriendly to amateur Coq users---which can be reflected from the distance of their approach and text-book Software Foundation proof. 
 
@@ -37,7 +71,7 @@ be part of the definition of the syntax instead of considering the
 syntax as a mere concrete inductive type. We should postulate this
 inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify
 that our inductive definition does satisfy the constraint, which is
-exactly what we expect from "Closing Fact"---if directly working on inductive definition doesn't bring us benefit, then decompose the property (the constraint) with the concrete definition might be a good idea.
+exactly what we expect from "Closing Fact". If directly working on inductive definition doesn't bring us benefit during proof engineering, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
 Our formulation for bare STLC is around 400+ LOCs; the two families implementing product and boolean features both take around 300+ LOCs. 
 % need comparison with the original implementation
