@@ -7,14 +7,17 @@ the following extension to Coq's Vernacular Commands, and the corresponding STLC
 %   and then explain  how the language design makes the programmer’s life easier
 \begin{align*}
   V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
-  \quad |\quad "EndFamily" \\
+  \quad |\quad "EndFamily" \quad | \quad "SealFamily" \\
   & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
   & | \quad "FTheorem"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle \\
-  & |\quad "Extend"~"Family"~\langle ident\rangle \\ 
+  & |\quad ["Extend" | "Override"]~"Family"~\langle ident\rangle \\ 
   & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
   & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
   & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
-  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad | \quad ...
+  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad \\
+  & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\ 
+  & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~"by"~"\{"\langle \text{one tactic expression}\rangle"\}" \\ 
+  & | \quad "MetaData"~\langle ident\rangle \quad | \quad "EndMetaData" \\ 
 \end{align*}
 
 
@@ -42,7 +45,7 @@ Family STLC.
  FTheorem subst_lemma 
   about has_type 
   motive ...
-  ..
+ Proof.  ...
  Qed.
  FInductive step : term -> term -> Prop 
   := ...
@@ -70,7 +73,7 @@ Family STLC_bool extends STLC.
  subst_internal is not extended correctly *)
  Extend FInductive has_type (* .. and new ty too *)
   : context -> term -> type := ...
- Extend FTheorem subst_lemma.
+ Extend FTheorem subst_lemma. Proof.
   ... (* Need to prove extra cases *)
  Qed.
 
@@ -84,7 +87,7 @@ EndFamily.
   \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
 
-These are the core extensions we proposed to support \cref{fig:STLC-example}. We use "Family" and "EndFamily" to scope, and "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
+These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
 Nested families are also allowed.
 
 To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
@@ -92,19 +95,20 @@ To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{dec
 \mintinline{Coq}{FRecursor recur about T motive f } "using"
 "handlers" will generate a new field "recur" that is really doing computation
 (using elimination principle of the inductive type "T") with motive "f". The handlers
-are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. For example, in \cref{fig:STLC-example2},  "FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving. 
+are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. For example, in \cref{fig:STLC-example2},  "FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving.
 
+We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definitional-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
-We can inherit a top-level family "parent" using \mintinline{Coq}{Family
-... extends parent} as a new top-level family. As expected, "Override"
+We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
 will override a field from the parent. "Inherit" can be used to inherit
-nested families, inductive types, and fields. The fields inside a family
+nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve\ref{chg:definitional-relevant-reasoning}. The fields inside a family
 are order-sensitive because we have dependent types here. So "Inherit
 Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
 family can only be inherited or extended together with its belonging family
 (i.e. ultimately top level family), thus our support of family polymorphism is
 incomplete.
 
+We will explain the usage of "Closing Fact" and "MetaData" later---they are here to resolve \ref{chg:software-engineering} to some extent.
 % This incomplete support can already be useful for extending functions.
 % Take \cref{fig:plugin-example2} as example, if we want to extend boolean
 % inductive type and its negation, we only need to specify the new
@@ -311,7 +315,7 @@ than a ``mapping'', it is still possible to
 \textbf{Reasoning Needs Non-Overridable.}
 This compilation strategy
 has already allowed fields to be type-dependent on former fields thus we can see concretely how
-\ref{chg:definition-relevant-reasoning} appears in our current formulation and what we needs to solve this challenge. 
+\ref{chg:definition-relevant-reasoning} appears in our current formulation and how "Final" can help to solve this challenge. 
 
 % However, the current implementation is not satisfactory enough. There are cases where we need to expose
 % the concrete definition of a given field (especially when we are proving
@@ -373,7 +377,7 @@ makes "f" non-overridable at all. One option is to use sigma type
 \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
 a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the family but a family as a whole will be sealed into a ``relaxed'' type. Thus we can override one sealed family as a whole and change the internal implementation. 
+To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be sealed into a ``relaxed family type''. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
 
 For example, the "MonotonicF" in \cref{fig:plugin-example3}:
 we simply seal
@@ -488,7 +492,7 @@ However, we later still need the concrete eliminator "b" for doing exhaustivenes
 assert the existence of the recursor and apply to see if handlers can
 pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
 \begin{minted}{Coq}
-  Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff.
+Definition neg := b_rec (λ _ ⇒ b) neg_handler.tt neg_handler.ff.
 \end{minted}
 where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields.
 
@@ -501,7 +505,7 @@ interface'' module "b_3").
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
 the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg". For example, for the new "neg", when compiling family "B2" into a module, at the appropriate place our plugin will insert
 \begin{minted}{Coq}
-  Definition neg := b_rec (fun _ => b) neg_handler.tt neg_handler.ff neg_handler.uu.
+Definition neg := b_rec (λ _ ⇒ b) neg_handler.tt neg_handler.ff neg_handler.uu.
 \end{minted}
 where "b_rec" and "b" are the corresponding recursor and the (vanilla but extended and modified) inductive type in that compiled module. Note that, even though "b_rec" and "b" has the same name as before, they are in the newly-compiled module so they refer to totally different things. 
 
