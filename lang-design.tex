@@ -100,7 +100,9 @@ For example, we should still stick with the fact that "subst tunit x y =
 tunit", as this fact is used when proving "subst_lemma" and we want this
 lemma to be inherited to the children family.
 
-These two examples both show the incompatibility between exposing the
+Note we cannot simply just abandon overriding because we do want it sometimes---say we want a monotonic function \mintinline{Coq}{{.. f := .. ; p : monotonic f; ..}}. The proof of "p" likely requires the concrete definition of "f" but in the future we might want to override "f" and "p" together to swap the definition.
+
+These three examples both show the incompatibility between exposing the
 concrete definition of a field for reasoning (this second example even
 involves the definition of fixpoint and pattern matching) and
 overridability. We need to be careful about this tension when designing
