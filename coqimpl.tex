@@ -97,11 +97,11 @@ To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{dec
 (using elimination principle of the inductive type "T") with motive "f". The handlers
 are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. For example, in \cref{fig:STLC-example2},  "FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving.
 
-We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definitional-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
 We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
 will override a field from the parent. "Inherit" can be used to inherit
-nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve\ref{chg:definitional-relevant-reasoning}. The fields inside a family
+nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:definition-relevant-reasoning}. The fields inside a family
 are order-sensitive because we have dependent types here. So "Inherit
 Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
 family can only be inherited or extended together with its belonging family
