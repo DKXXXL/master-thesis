@@ -785,7 +785,7 @@ type (at least) supports these constructors if and only if this type
 supports the corresponding partial recursor (with the computational
 axioms)}.  Thus, we can argue that the partial recursor gives a sound and
 complete extensional characterization of all the extension of a given (non-indexed)
-inductive type.\YZ{What about indexed inductive types?}
+inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also have a formalization of this proof now, for indexed type and dependent eliminator. Though the formalization is about single constructor.}
 
 We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
 \begin{minted}{Coq}
@@ -793,4 +793,4 @@ We can support partial dependent eliminator as well, but partial dependent elimi
   (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) 
     -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
 \end{minted}
-% To generalize to indexed inductive type, we base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. Please refer to 
+To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. Please refer to the supplementary material and appendix for a formalization of the left inverse in the context of indexed inductive type.   
