@@ -1,33 +1,50 @@
-\subsection{Challenges}
+Inspired by the above challenges and Family Polymorphism, we propose
+the following extension to Coq's Vernacular Commands, and the corresponding STLC example.
+% basically write down the specification of surface Coq commandline
+%   and then explain  how the language design makes the programmer’s life easier
+\begin{align*}
+  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
+  \quad |\quad "EndFamily" \quad | \quad "SealFamily" \\
+  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
+  & | \quad "FTheorem"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle \\
+  & |\quad ["Extend" | "Override"]~"Family"~\langle ident\rangle \\ 
+  & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
+  & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
+  & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad \\
+  & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\ 
+  & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~"by"~"\{"\langle \text{one tactic expression}\rangle"\}" \\ 
+  & | \quad "MetaData"~\langle ident\rangle \quad | \quad "EndMetaData" \\ 
+\end{align*}
 
-We want the metatheory mechanization to allow adding new
-function/proving new lemmas, and adding new constructors for inductive
-type at the same time  (Expression Problem~\cite{wadler-ep}). Coq
-support the former but not the later---when an existent inductive type
-is extended with new constructor, we have to modify the pattern matching
-in the existent functions. This motivates us to add inheritance/Family
-Polymorphism into Coq as a solution to the Expression Problem. 
 
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
-Inductive ty : Set :=
+ FInductive ty : Set :=
   | unit : ty
   | arrow : ty -> ty -> ty.
-Inductive term : Set := 
+ FInductive term : Set := 
   | var : id -> term 
-  | lam : id -> term -> term 
-  | tunit : term ...
-Fixpoint subst 
-  : id -> term -> term := ...
-Inductive has_type 
+  | lam : id -> term -> term ...
+ Family subst_internal.
+  Final Field var := ..
+  Final Field lam := ..
+   ...
+ EndFamily.
+ FRecursor subst
+  about tm motive ..
+  using subst_internal.
+ ...
+ FInductive has_type 
   : context -> term -> type := ...
-Proposition subst_lemma :
-  has_type (G; x ↦ A) t T ->
-  has_type G u A ->
-  has_type G (subst x u t) T.
-Inductive step : term -> term -> Prop 
+ FTheorem subst_lemma 
+  about has_type 
+  motive ...
+ Proof.  ...
+ Qed.
+ FInductive step : term -> term -> Prop 
   := ...
 (* ... and more, end with type safety *)
 EndFamily.
@@ -36,196 +53,176 @@ EndFamily.
   \begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC_bool extends STLC.
-Extend Inductive ty : Set :=
+ Extend FInductive ty : Set :=
   | bool : ty.
 
-Extend Inductive term : Set := 
+ Extend FInductive term : Set := 
   | tt : term | ff : term 
   | tif : term -> term -> term -> term
-
-Extend Fixpoint subst (* Need to handle new term *)
-  : id -> term -> term := ...
-Extend Inductive has_type (* .. and new ty too *)
+ Extend Family subst_internal.
+  Final Field tt := ..
+  Final Field ff := ..
+  Final Field tif := ..
+ EndFamily. (* Automatic inheriting others 
+              from STLC.subst_internal *)
+ Inherit subst.
+(* Plugin will redo exhaustiveness check, in case 
+ subst_internal is not extended correctly *)
+ Extend FInductive has_type (* .. and new ty too *)
   : context -> term -> type := ...
-Extend Proposition subst_lemma :
+ Extend FTheorem subst_lemma. Proof.
   ... (* Need to prove extra cases *)
+ Qed.
 
 
-Extend Inductive step : term -> term -> Prop 
+ Extend FInductive step : term -> term -> Prop 
   := ... (* Need to expand this binary relation *)
 (* ... and more extension *)
 EndFamily.
 \end{lstlisting}
   \end{minipage}
-  \caption{Example STLC and its extension}\label{fig:STLC-example}
+  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
 
-Refering to the syntax of \citet{zm2017}, we will come up the above
-example. However, to add inheritance into a dependent type system like
-Coq is not simple and there are various challenges and tension we need
-to resolve. 
+\textbf{Family and Defining Fields.} These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
+Nested families are also allowed. 
 
 
-\textlabel{Challenge (1)}{chg:extensible-inductive-type}~\textbf{Extensible Inductive Type vs. Exhaustiveness of Inductive Reasoning}.
-Unlike most general purposed programming languages, Coq, as a dependent
-type theory, is a total language and thus each pattern matching cases
-must fully ``cover'' an inductive type. This process is
-``\textit{interactive}'' for inheritance---when inhertiance extend the
-inductive type in the children family but the user forgets to extend the
-corresponding inductive reasoning, our compiler need to signal an error
-correspondingly, or better---guide the user to fill the incomplete
-inductive reasoning. For example, in \cref{fig:STLC-example} when "term"
-is extended with "tt" in the children family "STLC_bool", our compiler
-need to make sure "subst" and "subst_lemma" are also extended correctly
-otherwise signaling an error.
-Additionally, our compiler must support direct inheritance (and
-overriding) of the old case handlers for "var", "lam" and etc, to avoid
-the boilerplate code. 
+The user can use "self__A.<path>" to access the former defined fields inside a surrounding defining "Family A".\footnote{Note that, in most of our examples in the paper, these "self__" prefix is too long and verbose so we omitted them.} Note that, "self__A" is only visible in the Vernacular commands from our plugin.\footnote{(In other words, using "Definition" from Coq will not invoke the plugin to prepare "self__A" to be accessible---most original Vernacular command from vanilla Coq will not do such preparation.)}  Once the user closes a \textbf{top} family with "EndFamily", they can access the fields of the closed family by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined. This "A" is truly accessible anywhere by vanilla Coq without any plugin preparation, just like a mundane module.
+
+Most programming experiences are preserved from Coq---each term inside the field definition is a well-typed Gallina term in vanilla Coq. Note that, a Family is not a first class value and thus we need to project out the Gallina terms from them.
+
+% Inheritance here
+\textbf{Inheritance on Fields.} "Family A extends B" has to appear at the top level (not inside any Family) and will start to construct the children "Family A" given the parent "Family B". Every field inside the inheriting family will be one of the three kinds of ``inheritance''---extending, overriding, and inheriting. The syntax of extending a new field is to directly use "Field", while overriding requires a prefix of "Override" before "Field f : .." and "Inherit f" will inherits field "f" from the parent. 
+
+To resolve \ref{chg:consistency}, we make sure when inheriting or overriding on "f" happens, the context of the field "f" is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty thus "self.g" doesn't type-check. Thus, before we inherit "g", the dependee "f" needs to be inherited.  
 
 
-\textlabel{Challenge (2)}{chg:definition-relevant-reasoning}~\textbf{Definition-awared Reasoning vs. Overridability}.
-In family polymorphism for general purposed programming language,
-overriding is allowed to happen anywhere. But the problem becomes more
-subtle in the case of dependent type since the later fields can have a
-type dependent on the former fields.  Consider a small example where we
-have consecutive fields \mintinline{Coq}{{.. a : nat := 1; a-def : Eq a
-1 := eq_refl; ..}}, should we support override "a"? If we do support it,
-how can our compiler detect that "a-def" is not inheritable and signal
-an error when such thing happens? 
+\begin{figure}[!htb]
+  \begin{minipage}[t]{0.45\linewidth}
+\begin{lstlisting}[language=Coq, escapeinside={@}{@}]
+Family I.
+ Field a : nat := 1.
+ Field b : a = a := eq_refl.
+ Fail Field c : a = 1 := eq_refl. (*Fail 1*)
 
-A similar example is about "subst" and "subst_lemma" in
-\cref{fig:STLC-example}. For "subst_lemma" to hold throughout two
-families, we shouldnot allow overriding on the definition of "subst".
-For example, we should still stick with the fact that "subst tunit x y =
-tunit", as this fact is used when proving "subst_lemma" and we want this
-lemma to be inherited to the children family.
+ Final Field a' : nat := 1.
+ Field c : a' = 1 := eq_refl.
+ Field bop : nat -> nat -> nat := (+).
+ Fail Field comm_bop : ...
 
-Note we cannot simply just abandon overriding because we do want it sometimes---say we want a monotonic function \mintinline{Coq}{{.. f := .. ; p : monotonic f; ..}}. The proof of "p" likely requires the concrete definition of "f" but in the future we might want to override "f" and "p" together to swap the definition.
+ Family MonotonicF.
+  Field f : nat -> nat := non_impl.
+  Field p : monotonic f := non_impl.
+ SealFamily. 
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family I2 extends I.
+ Override Field a : nat := 1. (* Override *)
+ Inherit b.                   (* Inherit  *)
 
-These three examples both show the incompatibility between exposing the
-concrete definition of a field for reasoning (this second example even
-involves the definition of fixpoint and pattern matching) and
-overridability. We need to be careful about this tension when designing
-the language.\YZ{
-  The two examples seem to suggest there should not be any overriding allowed at all.
-  Is there an example where you actually want the ability to override?
-}\EDJreply{Added a new example. Please check.}
+ Field d : nat := a.          (* Extend   *)
+ Fail Override Field a' : nat := 2. (*Fail 2*)
 
-\textlabel{Challenge (3)}{chg:consistency}~\textbf{Consistency vs. Self Parametrization}.
-The meta\-theoretical formulation in~\citet{zm2017} for family
-polymorphism is very natural as they consider an extension of the family
-as the concatenation of a new linkage. However, this formulation is not
-directly adaptable for dependent type theory because it can easily
-encode non-termination sabotaging consistency by the presence of "self".
-Informally, in the orignal formulation, we can override the "f" in
-family $\{"f" := id; "g" := "call self.f"\}$ with "call self.g",
-resulting the mutual calling of "f" and "g" thus a deadloop. This
-conflict between self parametrization and consistency requests changing
-the original formulation of family and inheritance for dependent type
-theory.
+ Override Field bop := (-).
 
-
-\textlabel{Challenge (4)}{chg:software-engineering}~\textbf{Engineering and Ecosystem}.
-Not only for the metatheory, we also want our implementation of family
-to have good compatibility with the rest of Coq. For example, we
-shouldn't compromise \textbf{tactic programming} as it is part of the
-idiomatic Coq programming experience. Additionally, the interactive development
-style requires \textbf{incremental type checking}---our design has to be
-able to type check each Coq Vernacular command once inputted. What's
-more, we want our family ``term'' to be incorporated into Coq \textbf{without
-breaking its other functionality}. For example, the user may want to
-project the family member anywhere inside an arbitrary Gallina term,
-that may later be computed and normalized. However, families themselves
-can be second class citizens just like \citet{zm2017}.\YZ{I was thinking
-if the paper should start by talking about the functional encoding of
-inheritance (namely exposing a self parameter to allow late binding, and
-later taking the fixpoint of the extensible module when it needs to be
-accessed outside the family).  I think most readers will benefit from a
-recap of this encoding.\\
-Coq is total but that doesn’t prevent Coq from having a Fixpoint keyword (plus you proved your language is consistent).
-}\EDJreply{Feel free to add these. I don't have many knowledge about this part.}
-
-% \subsection{Design Space}
-
-% When adapting Family Polymorphism into dependent types, we choose to
-% focus only on the essence of family (and inheritance)
-% structure in \citet{zm2017}, and thus a lot of unrelated features, like
-% Interface, will be removed. In this case, it will look like module with
-% late-binding. Inheritance can be considered as code and proof reuse mechanism for module. We also
-% need it to have good compatibility with inductive types, because we
-% don't want to retain the idiomatic Coq programming experience
-% %\YZ{By 'reasoning power of Coq', I suppose you mean the expressive power of Gallina?}\EDJreply{I think the sentence last time was not really making sense because using Church Encoding of inductive doesn't sabotage the expressiveness. I rephrase it now, please check.}
-% (and its tactic programming). 
-
-% Let's start with a basic example---STLC and its extension in
-% \cref{fig:STLC-example}---to consider what kind of features are required
-% and how much of them can be supported by family polymorphism.
-% add the example code here
+ Inherits Until MonotonicF.
+ Override Family MonotonicF.
+  Field f : nat -> nat := (+ 1).
+  Field p : monotonic f := ...
+ EndFamily. 
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \caption{Example Code for Inheritance and Reasoning}\label{fig:plugin-example3}
+\end{figure}
 
 
+% Talk about Final
+\textbf{Final as non-overridable.} Every field is by default overridable, reminding us \ref{chg:definition-relevant-reasoning}.  To resolve it, we provide the keyword "Final" to allow the user to specify \textit{non-overridability} and give the user the opportunity to choose from overriding and exposing the definition.
+
+Take the field "c" of "Family I" in \cref{fig:plugin-example3} as the
+example. We can see that the first attempt of proving "a = 1" fails.
+This should fail---because we want to retain the possibility
+to override "a" and inheriting "c" in the future, but they are conflicting, since "c" witnesses "a" fix to "1". On the other hand, once we decorate it upon "a'", the second attempt \mintinline{Coq}{c : a' = 1 := eq_refl} will succeed. Contrary to "a", our "a'" is not overridable in "Family I2", mediating the \ref{chg:definition-relevant-reasoning}.
+
+This example might sound trivial and contrived. Let's look at the
+example field binary operation "bop" initially set to be addition.\YZ{This 'add' field is no longer there.}\EDJreply{Thanks. Fixed} Now that we only expose the type of "bop", we
+cannot prove its commutativity in "comm_bop" (because we don't have
+access to its concrete definition) but we can override "bop" with
+subtraction function in "Family I2". This makes sense because we
+shouldn't (have the ability to) inherit commutativity property for subtraction
+anyway. This is contrary to how "a'" is declared "Final", the second "c"
+can prove that it's equal to 1 but "a'" is not overridable in the
+"Family I2". 
+
+In our example, the seal family "I.MonotonicF" is actually simulating
+interfaces as well.  We have
+\mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
+and we assigned it to both "f" and "p", and later instantiate in
+"I2" with concrete implementation by overriding this family
+"I.MonotonicF".
+
+\textbf{Overridable/Sealed Family as better Sigma Type.} Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
+(definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
+because to prove
+the latter we need to have concrete definition of "f" in the family type, which
+makes "f" non-overridable at all. One option is to use sigma type
+\mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
+a bundle of stuff with multiple refinements. 
+
+To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be ``sealed'' with a ``relaxed family type''---it is an aggregation of the types instead of the concrete definitions of all the field. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
+
+For example, the "MonotonicF" in \cref{fig:plugin-example3}:
+we simply seal
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
+together inside an sealed family.
+Because the definition of "f" is exposed inside the family, 
+its definition is
+transparent and can be used to prove "p".
+However, because the enclosing family of "f" is overridable, to swap the
+implementation of "f", we just override the whole ``sealed'' family,
+like we do in "I2.MonotonicF". 
 
 
+% if the user wants a given field to be non-overridable. We will later elaborate its detail application.
 
-% First and foremost, we don't want to throw away some basic good
-% properties of Coq. \textlabel{Req~(0A)}{chg:software-engineering}~\textbf{we
-% want to retain incremental (modular) type checking}. Notice that, the
-% modularity here in Coq is a bit different from other languages, because
-% Coq supports \textit{interactive} theorem proving, so we actually need
-% \textit{statement-wise} incremental type checking, not only for avoiding
-% re\-compilation, but also to enable immediate feedback and incremental
-% type-checking for the Coq developer. We don't want our family to ruin
-% this conventional routine of interactive development.
-% \textlabel{Req~(0B)}{chg:software-engineeringb}~\textbf{we also want to keep the
-% computational ability of Coq when using families}. Coq, based on constructive
-% logic, can consider proof as programs. 
-% We don't want our Family facility to ruin this when incorporated with 
-% the remaining parts of Coq: 
-% the developers should be able to project fields of families 
-% as first-class value just like how they can project fields of Coq's Module.
+\textbf{Inheritance on Nested Families.} We also provide extending, inheriting and overriding for nested family (member). Extension is done by simply declaring a nested family; the same syntax for inheriting a field is used in inheriting a family. However, overriding is special---overriding can only apply to \textit{sealed} nested family in the parent family. A family is sealed when using "SealFamily" as the scoping instead of "EndFamily". We will later elaborate the motivation and details of sealed family. 
 
-% We want to reason about fields in a family.
-% \textlabel{Req (1)}{chg:definition-relevant-reasoning}:\textbf{ we want to be able to
-% reason about fields in a family}, just like in a module, where a field
-% can reason about its former fields. More generally, we want to allow a
-% later field to be type-dependent on the former fields. In the example of
-% \cref{fig:STLC-example}, "subst", "has_type", "subst_lemma" all require
-% this feature.
+% Currently, every sealed family can only be direct inherited or overridden as a whole. It cannot be extended.
 
-% we want extensible inductive type
-% \textlabel{Req (2)}{chg:extensible-inductive-type}:\textbf{ we need extensible
-% inductive types}, 
-% to extend "term" and "ty" in \cref{fig:STLC-example}.
-% Extensible inductive types are not supported by \citet{zm2017}, so
-% we need further consideration about it on both implementation and
-% metatheory.
-
-% \textlabel{Req (3)}{chg:extensible-inductive-type}: \textbf{we also want extensible
-% pattern matching and induction reasoning}, to extend "subst" in
-% \cref{fig:STLC-example}.
-% There are actually two kinds of ``pattern matching'', one for data and
-% the other for induction reasoning, i.e., one uses the eliminator to
-% \mintinline{Coq}{Set} or \mintinline{Coq}{Type}, and the other uses the
-% eliminator to \mintinline{Coq}{Prop}. Luckily, in this setting,
-% extensible pattern matching can be easily expressed with family
-% extension---we just aggregate all case handlers of pattern matching
-% into one family (as a bunch of functions), and then one family can
-% encode one pattern matching, and family inheritance can express adding
-% case handlers. Then we just need to introduce a primitive that will
-% ``wrap'' that family into a recursive function. Induction reasoning can
-% be handled in an almost identical way. 
-
-% we want to be able to reason pattern matching as well
-% However, there is still difference between data recursion and induction
-% reasoning, because the former one is \textit{proof-relevant}. This
-% difference leads to another issue: \textlabel{Req (4)}{chg:definition-relevant-reasoning}:
-% \textbf{we need to reason about (the computation about) extensible
-% pattern matching}, just like "subst_lemma" in \cref{fig:STLC-example}.
-% When proving "subst_lemma", we have to know "subst" is invariant on
-% "tt", i.e., \mintinline{Coq}{(subst i x tt) = tt}. This kind of
-% information requires exposing \textit{computational rules} from the
-% recursors.
+\textbf{Extensible Inductive Type.} We provide the keyword "FInductive" to enable extensible inductive type. "Extend FInductive" is used to support extension of the parent inductive type inside a children family. The syntax of these two is close to the mundane "Inductive" keyword. 
 
 
-% we want tactic programming and certain level of automation
-% Finally, \textlabel{Req (5)}{chg:software-engineering}: \textbf{we desire tactic
-% programming} to relieve us from the hassle of direct manipulation of proof terms.
+To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
+"FRecursor" will be used to construct a recursor by refering to the handler family.
+\mintinline{Coq}{FRecursor recur about T motive f } "using"
+"handlers" will generate a new field "recur" that is really doing computation
+(using elimination principle of the inductive type "T") with motive "f". The handlers
+are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. Once recursor is created it will look like any other function fields(e.g. "subst" in \cref{fig:STLC-example2}).
+
+"FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving.
+
+% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+
+% We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
+% will override a field from the parent. "Inherit" can be used to inherit
+% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:definition-relevant-reasoning}. The fields inside a family
+% are order-sensitive because we have dependent types here. So "Inherit
+% Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
+% family can only be inherited or extended together with its belonging family
+% (i.e. ultimately top level family), thus our support of family polymorphism is
+% incomplete.
+
+We will explain the usage of "Closing Fact" and "MetaData" later---they are here to resolve \ref{chg:software-engineering} to some extent.
+% This incomplete support can already be useful for extending functions.
+% Take \cref{fig:plugin-example2} as example, if we want to extend boolean
+% inductive type and its negation, we only need to specify the new
+% constructor for boolean and how negation deals with the new constructor.
+% As a result, the programmer does not have to duplicate code---otherwise
+% the user will need to copy and paste the whole original negation
+% definition and add a new pattern matching case.
