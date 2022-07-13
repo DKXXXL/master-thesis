@@ -429,7 +429,7 @@ newly added value forms are not "tm_app". What's worse, similar
 scenario can happen on other statements like \mintinline{Coq}{~ value
 (tm_if cond x y)}. Everything here is extended correctly but we end up
 having boilerplate code, \textbf{semantically}.
-\begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}
+\begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}\EDJreply{Done}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
   FInductive tm : Set := ... 
@@ -444,9 +444,10 @@ Family STLC.
   MetaData tactic1.
     Ltac inv := (* ... the same definition as above ... *)
   EndMetaData.
+  (* ... STLC example continue ... *)
 EndFamily.
 \end{lstlisting}  
-\caption{Example for Global Reasoning and MetaData}\label{fig:plugin-example-global-reasoning-meta-data}
+\caption{Example for Global Reasoning and MetaData, using in STLC example}\label{fig:plugin-example-global-reasoning-meta-data}
 \end{figure}
 
 
