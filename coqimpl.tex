@@ -216,7 +216,7 @@ want to override "Field a", we simply replace that compiled module with
 the new module inside the list. This compiled module type serves as an
 abstraction that enables overriding. 
 
-Once the user closes a family with "EndFamily", they can access its fields by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined. This is achieved by a complete compilation from a family to a module, via aggregating the list of the modules in the internal representation: the plugin will repeatedly using Coq's "Include" command as the "Module A" in \cref{fig:plugin-example1} illustrates. Now, the user can use "Module A" anywhere as they are using "Family A".
+Once the user closes a family with "EndFamily", they can access its fields by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined.\YZ{1. move some of sec 3.2 ~> 3.1; 2. hint vaguely on how to do type checking in sec 3.1 (user interface).. metatheory part should also mention this part in sec 3.1} This is achieved by a complete compilation from a family to a module, via aggregating the list of the modules in the internal representation: the plugin will repeatedly using Coq's "Include" command as the "Module A" in \cref{fig:plugin-example1} illustrates. Now, the user can use "Module A" anywhere as they are using "Family A".
 \YZ{The reader wonders why this aggregation is needed. 
 Seems like the place to talk about how the programmer can use A outside Family A.}\EDJreply{Please check.}
 
@@ -411,7 +411,7 @@ The implementation of sealed family is not so different from that of the normal 
 We support extensible inductive types in Coq mentioned in
 \ref{chg:extensible-inductive-type} but we will not be aiming at the research of its formal semantic.\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort}\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
 
-\begin{figure}[!htb]
+\begin{figure}[!htb]\YZ{Change this one into STLC example, to see the layout}
   \begin{minipage}[t]{0.32\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family B.
@@ -550,7 +550,7 @@ simultaneously when solving \ref{chg:extensible-inductive-type} . (2) \ref{chg:e
 
 % Mention still needing total recursor, for exhaustiveness checking
 
-\textbf{Hack: Global Reasoning.}
+\textbf{Hack: Global Reasoning.}\YZ{This is more like an escape hatch. Escape from family poly into vanilla Coq. Maybe these two hacks should be grouped into one section}
 % explain the places using ``Closing Fact''
 % 1. No need to export partial recursor
 % 2. Computational rule for the total recursor
@@ -568,7 +568,7 @@ newly added value forms are not "tm_app". What's worse, similar
 scenario can happen on other statements like \mintinline{Coq}{~ value
 (tm_if cond x y)}. Everything here is extended correctly but we end up
 having boilerplate code, \textbf{semantically}.
-\begin{figure}[!htb]
+\begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
   FInductive tm : Set := ... 
