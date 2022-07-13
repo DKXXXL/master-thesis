@@ -26,11 +26,11 @@ Family STLC.
   | unit : ty
   | arrow : ty -> ty -> ty.
  FInductive term : Set := 
-  | var : id -> term 
-  | lam : id -> term -> term ...
+  | tm_var : id -> term 
+  | tm_abs : id -> term -> term ...
  Family subst_internal.
-  Final Field var := ..
-  Final Field lam := ..
+  Final Field tm_var := ..
+  Final Field tm_abs := ..
    ...
  EndFamily.
  FRecursor subst

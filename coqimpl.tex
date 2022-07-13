@@ -181,65 +181,154 @@ For example, the compiled module type of
 We support extensible inductive types in Coq mentioned in
 \ref{chg:extensible-inductive-type} but we will not be aiming at the research of its formal semantic.\footnote{Because to give a satisfactory formal definition and semantic for extensible inductive type is not something this paper aims at, and obviously requires more theoretical research effort}\YZ{I do consider that your plugin supports extensible inductive types. It's just that they are implemented as a plugin, rather than in the Coq core.}\EDJreply{I rephrased it. It is more like I don't think this is really the final form of extensible inductive type that everyone is happy about}
 
-\begin{figure}[!htb]\YZ{Change this one into STLC example, to see the layout}
+% \begin{figure}[!htb]\YZ{Change this one into STLC example, to see the layout}
+%   \begin{minipage}[t]{0.32\linewidth}
+% \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+% Family B.
+%   FInductive b : Set 
+%     := tt : b | ff : b.
+%   Family neg_handler. 
+%     Field tt : self_B.b 
+%       := self_B.ff.
+%     Field ff : self_B.b 
+%       := self_B.tt.
+%   EndFamily.
+%   FRecursor neg 
+%     about self_B.b 
+%     motive (fun _ => self_B.b)
+%     using self_B.neg_handler
+%     by _rec.
+%   Field example := 
+%     self_B.neg self_B.tt. 
+% EndFamily.
+% Family B2 extends B.
+%   Extend FInductive b : Set 
+%     := uu : b.
+%   Extend Family neg_handler.
+%     Field uu : self_B2.b 
+%       := self_B2.uu.
+%   EndFamily. 
+% EndFamily.
+% \end{lstlisting}
+%   \end{minipage}
+%   \begin{minipage}[t]{0.65\linewidth}
+% \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
+%   (* Abstraction for Inductive Type *)
+% Module Type b_3 (self_B: EmptySig_4).
+% Parameter (b : Set). Parameter (tt ff : b). End b_3.      
+% Module Type b_6 := b_3 EmptyMod.
+%   (* Recursor to Set for b *)
+% Module b_rec_12 (self_B: b_6).
+% Definition __recursor_type_b_rec :=
+%   forall P : self_B.b -> Set,
+%   P self_B.tt -> P self_B.ff 
+%   -> forall __i : self_B.b, P __i. End b_rec_12. 
+%   (* Field B.neg_handler.ff *)
+% Module ff_24 (self_B: b_6) 
+%              (self_neg_handler: tt_23 self_B).
+% Definition ff : self_B.b := self_B.tt. End ff_24.
+%   (* Intermediate Module solely for type checking *)
+% Module v_33_34 (self_B: neg_handler_26).
+% Include b_rec_12 self_B.
+% Parameter (recursor_for_type_checking : __recursor_type_b_rec).
+% Definition term_for_type_checking :=
+%   recursor_for_type_checking (fun _ : self_B.b => self_B.b)
+%     self_B.neg_handler.tt
+%     self_B.neg_handler.ff.  
+% End v_33_34.
+% \end{minted}
+%   \end{minipage}
+% \caption{Example Code for Inductive Type}\label{fig:plugin-example2}
+% \end{figure}
+
+
+\begin{figure}[!htb]
   \begin{minipage}[t]{0.32\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family B.
-  FInductive b : Set 
-    := tt : b | ff : b.
-  Family neg_handler. 
-    Field tt : self_B.b 
-      := self_B.ff.
-    Field ff : self_B.b 
-      := self_B.tt.
+Family STLC.
+(* ... *)
+  Family subst_internal. 
+  Final Field tm_var : ...
+:= fun s x t => 
+    if (eqb x s) 
+    then t else (tm_var s).
+  Final Field tm_abs : ...
+:= fun s (b : tm)   
+   (recb : id -> tm -> tm) 
+   x t => 
+    if (eqb x s) 
+    then (tm_abs s body)
+    else (tm_abs s (recb x t)).
+(* ... *)
   EndFamily.
-  FRecursor neg 
-    about self_B.b 
-    motive (fun _ => self_B.b)
-    using self_B.neg_handler
+  FRecursor subst 
+    about tm 
+    motive (fun _ => id -> tm -> tm)
+    using subst_internal
     by _rec.
-  Field example := 
-    self_B.neg self_B.tt. 
+(*
+Field test := (subst (tm_var 0) 0 (tm_var 0)).
+*)
+(* ... *)
 EndFamily.
-Family B2 extends B.
-  Extend FInductive b : Set 
-    := uu : b.
-  Extend Family neg_handler.
-    Field uu : self_B2.b 
-      := self_B2.uu.
-  EndFamily. 
+Family STLC_bool extends STLC.
+(* ... *)
+Extend FInductive tm : Set :=
+  | tm_true : tm ...
+
+Extend Family subst_internal.
+Final Field tm_true : ...
+  := fun x t => tm_true.
+(* ... *)
+EndFamily. 
+Inherits subst.
+(* ... *)
 EndFamily.
 \end{lstlisting}
   \end{minipage}
   \begin{minipage}[t]{0.65\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
-  (* Abstraction for Inductive Type *)
-Module Type b_3 (self_B: EmptySig_4).
-Parameter (b : Set). Parameter (tt ff : b). End b_3.      
-Module Type b_6 := b_3 EmptyMod.
-  (* Recursor to Set for b *)
-Module b_rec_12 (self_B: b_6).
-Definition __recursor_type_b_rec :=
-  forall P : self_B.b -> Set,
-  P self_B.tt -> P self_B.ff 
-  -> forall __i : self_B.b, P __i. End b_rec_12. 
-  (* Field B.neg_handler.ff *)
-Module ff_24 (self_B: b_6) 
-             (self_neg_handler: tt_23 self_B).
-Definition ff : self_B.b := self_B.tt. End ff_24.
-  (* Intermediate Module solely for type checking *)
-Module v_33_34 (self_B: neg_handler_26).
-Include b_rec_12 self_B.
-Parameter (recursor_for_type_checking : __recursor_type_b_rec).
-Definition term_for_type_checking :=
-  recursor_for_type_checking (fun _ : self_B.b => self_B.b)
-    self_B.neg_handler.tt
-    self_B.neg_handler.ff.  
+
+Module Type STLC_409.
+  Parameter (tm : Set).
+  Parameter (tm_var : id -> tm).
+  Parameter (tm_abs : id -> tm -> tm).
+  (* ... and all the fields defined before
+  and the abstraction for inductive type ...*)
+End STLC_409.
+(* Collect eliminator to Set for tm *)
+Module tm_rec_425 (STLC: STLC_409).
+  Definition __recursor_type_tm_rec :=
+    forall P : STLC.tm -> Set,
+    (forall n : id, P (STLC.tm_var n)) ->
+    (forall (n : id) (i : STLC.tm),
+    P i -> P (STLC.tm_abs n i)) ->
+    ... -> forall i : STLC.tm, P i.
+End tm_rec_425.
+(* Compiled Field STLC.subst_internal.tm_var *)
+Module tm_var_411 (STLC: STLC_409)
+  (subst_internal: EmptySig).
+  Definition tm_var :
+    forall (s : id) (x : id) (t : STLC.tm), STLC.tm :=
+    fun s x t => if eqb x s then t else STLC.var s.
+End tm_var_411. (* ... and more *)
+(* Aggregate into one subst_internal*)
+Module subst_internal_410 (STLC: STLC_409). 
+  Include tm_var_411 STLC. (* And other cases ... *)
+End subst_internal_410.
+Module v_33_34 (STLC: STLC_409).
+(* Intermediate Module solely for type checking *)
+  Include tm_rec_425 STLC.
+  Parameter (recursor_for_type_checking : __recursor_type_tm_rec).
+  Definition term_for_type_checking :=
+    recursor_for_type_checking (fun _  => id -> STLC.tm -> STLC.tm)
+      subst_internal_410.tm_var
+      subst_internal_410.tm_abs ... .
 End v_33_34.
 \end{minted}
   \end{minipage}
-\caption{Example Code for Inductive Type}\label{fig:plugin-example2}
-\end{figure}
+\caption{Exempler STLC Code, especially about Inductive Type}\label{fig:plugin-example2}
+\end{figure}\YZ{Change this one into STLC example, to see the layout}\EDJreply{Changed. I think it only make things worse.}
 
 
 
@@ -247,37 +336,39 @@ End v_33_34.
 
 
 
-Recall, to construct a recursor, we need to create for each
-constructor a handler (function) and aggregate them into a family (e.g. "neg_handler" in \cref{fig:plugin-example2}). We use "FRecursor" to declare a recursor (e.g. "neg") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "neg"). Here in \cref{fig:plugin-example2} we apply "neg" to "tt" as an exemplar field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "uu"), then the inherited family (e.g. "neg_handler") will need to extend correspondingly (e.g. "neg_handler.uu"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "neg".\EDJ{This paragraph is duplicating but I am not sure how to make it concise.}
+% Recall, to construct a recursor, we need to create for each
+% constructor a handler (function) and aggregate them into a family (e.g. "subst_internal" in \cref{fig:plugin-example2}). We use "FRecursor" to declare a recursor (e.g. "subst") by specifying the motive, the aiming inductive type and the handler family. Once recursor is created it will look like any other function fields (e.g. "subst"). Here in \cref{fig:plugin-example2} we can apply the function "subst" to "tm_var 0" as a new field. The inheritance of recursor is mainly delegated by the inheritance of the handler family---if the user extend with new constructor (e.g. "tm_true"), then the inherited family (e.g. "subst_handler") will need to extend correspondingly (e.g. "subst_internal.tm_true"). If not, the plugin will error with ``Non-exhaustiveness Pattern'' when inheriting the field "subst".\EDJ{This paragraph is duplicating but I am not sure how to make it concise.}
+
+
+
+Let's look at the exemplar \cref{fig:plugin-example2}, the example of "subst" on STLC. When we define the extensible inductive type "tm", all the following fields (e.g. "subst_internal.tm_var") can only know "tm" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface''---the compiled module type "STLC_409". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
+the eliminator of the inductive type "tm" to "STLC_409" because doing so all of the following fields (e.g. "subst_internal.tm_var" and the corresponding "tm_var_411") will not be able to be inherited to the context where "tm"
+is extended with a third constructor, \textbf{since the mere existence of the recursor will assert that there are only two constructors} in "STLC_bool", not
+\textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.} 
+
+However, we later still need the concrete eliminator on "tm" for doing exhaustiveness checking (as in \ref{chg:extensible-inductive-type}), thus we will store the corresponding info somewhere.  Here we show one exemplar extraction of the eliminator to \mintinline{Coq}{Set} as module "tm_rec_425". This concrete eliminator will be used by our "FRecursor". For example, in \cref{fig:plugin-example2}, "FRecursor" command will feed Coq a module "v_33_34" for doing type-checking with specified handlers (e.g. "neg_handler") during compilation---what it does is basically
+assert the existence of the recursor and apply to see if handlers can
+pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
+\begin{minted}{Coq}
+Definition subst := tm_rec (λ _ ⇒ id -> tm -> tm) subst_internal.tm_var ...
+\end{minted}
+where "tm_rec" and "tm" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields in the programming interface.
 
 The plugin actually realizes the "Extend FInductive" via overridding---when extending an inductive type $A$
 with new constructors $c$, our plugin will generate a new (syntactic) inductive definition $A'$ with this new $c$ on the fly and feed it to Coq. But we must be careful on the exposing data in the family type (the compiled module type) for the following field. In other words, we must be careful on what interface (context) the following fields are defined based on. 
 
-Let's look at the exemplar \cref{fig:plugin-example2}, the example of boolean and negation. When we define the extensible inductive type "b", all the following fields (e.g. "neg_handler.ff") can only know "b" is a type (of "Set") and there are at least two constructors for it, just like what we declare in ``the abstracted interface''---the compiled module type "b_3". We cannot export\YZ{export or put?}\EDJreply{Ok. I just figure out how my wording is confusing. put is absolutely correct but by put I want to mean ``export''. I think I use ``export'' in several places...}
-the eliminator of the inductive type "b" to "b_3" because doing so all of the following fields (e.g. "neg_handler.ff" and the corresponding "ff_24") will not be able to be inherited to the context where "b"
-is extended with a third constructor, \textbf{since the mere existence of the recursor will assert that there are only two constructors} in "b", not
-\textbf{extensible} at all!\YZ{I can see how the existence of the recursor alone prevents extensibility, but I don't see why it has to do with ff_24.}\EDJreply{You are right. It is not only about "ff_24".I rephrased it. Please check.} 
-
-However, we later still need the concrete eliminator "b" for doing exhaustiveness checking (as in \ref{chg:extensible-inductive-type}), thus we will store the corresponding info somewhere.  Here we show one exemplar extraction of the eliminator to \mintinline{Coq}{Set} as module "b_rec_12". This concrete eliminator will be used by our "FRecursor". For example, in \cref{fig:plugin-example2}, "FRecursor" command will feed Coq a module "v_33_34" for doing type-checking with specified handlers (e.g. "neg_handler") during compilation---what it does is basically
-assert the existence of the recursor and apply to see if handlers can
-pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
-\begin{minted}{Coq}
-Definition neg := b_rec (λ _ ⇒ b) neg_handler.tt neg_handler.ff.
-\end{minted}
-where "b_rec" and "b" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields.
-
-Importantly, the recursor field (e.g. "neg") is not actually inheritable, because it is not compiled like any other fields---recall how other fields are compiled into reusable pieces of (parametrized) modules, a recursor field is not compiled like that. For all the children family, we have to reconstruct and override the "FRecursor" field with a ``new'' recursor using (maybe the same) handler family. This is affordable since each aggregated recursor handler doesn't need
-to be rechecked---look at "B2.neg_handler", there is only one new
-handler for "uu" and the handlers (mundane fields) from the parent
-"B.neg_handler.tt,B.neg_handler.ff" have already been type-checked and
+Importantly, the recursor field (e.g. "subst") is not actually inheritable, because it is not compiled like any other fields---recall how other fields are compiled into reusable pieces of (parametrized) modules, a recursor field is not compiled like that. For all the children family, we have to reconstruct and override the "FRecursor" field with a ``new'' recursor using (maybe the same) handler family. This is affordable since each aggregated recursor handler doesn't need
+to be rechecked---look at "STLC_bool.neg_handler", there are only  new
+handlers for "tm_true" and the handlers (mundane fields) from the parent
+"B.subst_internal.tm_var" have already been type-checked and
 inherited (since they only rely on ``the abstracted
-interface'' module "b_3"). 
+interface'' module "STLC_409"). 
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
-the module "ff_24"---doesn't require another type-check and is re-used during the type-checking and compilation of "B2.neg". For example, for the new "neg", when compiling family "B2" into a module, at the appropriate place our plugin will insert
+the module "tm_var_411"---doesn't require another type-check and is re-used during the type-checking and compilation of "STLC_bool.subst". For example, for the new "subst", when compiling family "STLC_bool" into a module, at the appropriate place our plugin will insert
 \begin{minted}{Coq}
-Definition neg := b_rec (λ _ ⇒ b) neg_handler.tt neg_handler.ff neg_handler.uu.
+Definition subst := tm_rec (λ _ ⇒ id -> tm -> tm) subst_internal.tm_var ...
 \end{minted}
-where "b_rec" and "b" are the corresponding recursor and the (vanilla but extended and modified) inductive type in that compiled module. Note that, even though "b_rec" and "b" has the same name as before, they are in the newly-compiled module so they refer to totally different things. 
+where "tm_rec" and "tm" are the corresponding recursor and the (vanilla but extended and modified) inductive type in that compiled module. Note that, even though "tm_rec" and "tm" has the same name as before, they are in the newly-compiled module so they refer to totally different things. 
 
 
 

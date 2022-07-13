@@ -16,8 +16,8 @@ Inductive ty : Set :=
   | unit : ty
   | arrow : ty -> ty -> ty.
 Inductive term : Set := 
-  | var : id -> term 
-  | lam : id -> term -> term 
+  | tm_var : id -> term 
+  | tm_abs : id -> term -> term 
   | tunit : term ...
 Fixpoint subst 
   : id -> term -> term := ...
@@ -79,7 +79,7 @@ is extended with "tt" in the children family "STLC_bool", our compiler
 need to make sure "subst" and "subst_lemma" are also extended correctly
 otherwise signaling an error.
 Additionally, our compiler must support direct inheritance (and
-overriding) of the old case handlers for "var", "lam" and etc, to avoid
+overriding) of the old case handlers for "tm_var", "tm_abs" and etc, to avoid
 the boilerplate code. 
 
 
