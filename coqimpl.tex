@@ -87,26 +87,139 @@ EndFamily.
   \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
 
-These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
-Nested families are also allowed.
+\textbf{Family and Defining Fields.} These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
+Nested families are also allowed. 
+
+
+The user can use "self__A.<path>" to access the former defined fields inside a surrounding defining "Family A".\footnote{Note that, in most of our examples in the paper, these "self__" prefix is too long and verbose so we omitted them.} Note that, "self__A" is only visible in the Vernacular commands from our plugin.\footnote{(In other words, using "Definition" from Coq will not invoke the plugin to prepare "self__A" to be accessible---most original Vernacular command from vanilla Coq will not do such preparation.)}  Once the user closes a \textbf{top} family with "EndFamily", they can access the fields of the closed family by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined. This "A" is truly accessible anywhere by vanilla Coq without any plugin preparation, just like a mundane module.
+
+Most programming experiences are preserved from Coq---each term inside the field definition is a well-typed Gallina term in vanilla Coq. Note that, a Family is not a first class value and thus we need to project out the Gallina terms from them.
+
+% Inheritance here
+\textbf{Inheritance on Fields.} "Family A extends B" has to appear at the top level (not inside any Family) and will start to construct the children "Family A" given the parent "Family B". Every field inside the inheriting family will be one of the three kinds of ``inheritance''---extending, overriding, and inheriting. The syntax of extending a new field is to directly use "Field", while overriding requires a prefix of "Override" before "Field f : .." and "Inherit f" will inherits field "f" from the parent. 
+
+To resolve \ref{chg:consistency}, we make sure when inheriting or overriding on "f" happens, the context of the field "f" is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty thus "self.g" doesn't type-check. Thus, before we inherit "g", the dependee "f" needs to be inherited.  
+
+
+\begin{figure}[!htb]
+  \begin{minipage}[t]{0.45\linewidth}
+\begin{lstlisting}[language=Coq, escapeinside={@}{@}]
+Family I.
+ Field a : nat := 1.
+ Field b : a = a := eq_refl.
+ Fail Field c : a = 1 := eq_refl. (*Fail 1*)
+
+ Final Field a' : nat := 1.
+ Field c : a' = 1 := eq_refl.
+ Field bop : nat -> nat -> nat := (+).
+ Fail Field comm_bop : ...
+
+ Family MonotonicF.
+  Field f : nat -> nat := non_impl.
+  Field p : monotonic f := non_impl.
+ SealFamily. 
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+\begin{minipage}[t]{0.45\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family I2 extends I.
+ Override Field a : nat := 1. (* Override *)
+ Inherit b.                   (* Inherit  *)
+
+ Field d : nat := a.          (* Extend   *)
+ Fail Override Field a' : nat := 2. (*Fail 2*)
+
+ Override Field bop := (-).
+
+ Inherits Until MonotonicF.
+ Override Family MonotonicF.
+  Field f : nat -> nat := (+ 1).
+  Field p : monotonic f := ...
+ EndFamily. 
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \caption{Example Code for Inheritance and Reasoning}\label{fig:plugin-example3}
+\end{figure}
+
+
+% Talk about Final
+\textbf{Final as non-overridable.} Every field is by default overridable, reminding us \ref{chg:definition-relevant-reasoning}.  To resolve it, we provide the keyword "Final" to allow the user to specify \textit{non-overridability} and give the user the opportunity to choose from overriding and exposing the definition.
+
+Take the field "c" of "Family I" in \cref{fig:plugin-example3} as the
+example. We can see that the first attempt of proving "a = 1" fails.
+This should fail---because we want to retain the possibility
+to override "a" and inheriting "c" in the future, but they are conflicting, since "c" witnesses "a" fix to "1". On the other hand, once we decorate it upon "a'", the second attempt \mintinline{Coq}{c : a' = 1 := eq_refl} will succeed. Contrary to "a", our "a'" is not overridable in "Family I2", mediating the \ref{chg:definition-relevant-reasoning}.
+
+This example might sound trivial and contrived. Let's look at the
+example field binary operation "bop" initially set to be addition.\YZ{This 'add' field is no longer there.}\EDJreply{Thanks. Fixed} Now that we only expose the type of "bop", we
+cannot prove its commutativity in "comm_bop" (because we don't have
+access to its concrete definition) but we can override "bop" with
+subtraction function in "Family I2". This makes sense because we
+shouldn't (have the ability to) inherit commutativity property for subtraction
+anyway. This is contrary to how "a'" is declared "Final", the second "c"
+can prove that it's equal to 1 but "a'" is not overridable in the
+"Family I2". 
+
+In our example, the seal family "I.MonotonicF" is actually simulating
+interfaces as well.  We have
+\mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
+and we assigned it to both "f" and "p", and later instantiate in
+"I2" with concrete implementation by overriding this family
+"I.MonotonicF".
+
+\textbf{Overridable/Sealed Family as better Sigma Type.} Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
+(definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
+because to prove
+the latter we need to have concrete definition of "f" in the family type, which
+makes "f" non-overridable at all. One option is to use sigma type
+\mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
+a bundle of stuff with multiple refinements. 
+
+To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be ``sealed'' with a ``relaxed family type''---it is an aggregation of the types instead of the concrete definitions of all the field. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
+
+For example, the "MonotonicF" in \cref{fig:plugin-example3}:
+we simply seal
+\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
+together inside an sealed family.
+Because the definition of "f" is exposed inside the family, 
+its definition is
+transparent and can be used to prove "p".
+However, because the enclosing family of "f" is overridable, to swap the
+implementation of "f", we just override the whole ``sealed'' family,
+like we do in "I2.MonotonicF". 
+
+
+% if the user wants a given field to be non-overridable. We will later elaborate its detail application.
+
+\textbf{Inheritance on Nested Families.} We also provide extending, inheriting and overriding for nested family (member). Extension is done by simply declaring a nested family; the same syntax for inheriting a field is used in inheriting a family. However, overriding is special---overriding can only apply to \textit{sealed} nested family in the parent family. A family is sealed when using "SealFamily" as the scoping instead of "EndFamily". We will later elaborate the motivation and details of sealed family. 
+
+% Currently, every sealed family can only be direct inherited or overridden as a whole. It cannot be extended.
+
+\textbf{Extensible Inductive Type.} We provide the keyword "FInductive" to enable extensible inductive type. "Extend FInductive" is used to support extension of the parent inductive type inside a children family. The syntax of these two is close to the mundane "Inductive" keyword. 
+
 
 To resolve \ref{chg:extensible-inductive-type}, our first step is to \textit{decouple} the definition of recursor handlers and the checking of exhaustiveness. The users will define recursive handlers for one inductive type by aggregating the (function) handlers into one family. Then
 "FRecursor" will be used to construct a recursor by refering to the handler family.
 \mintinline{Coq}{FRecursor recur about T motive f } "using"
 "handlers" will generate a new field "recur" that is really doing computation
 (using elimination principle of the inductive type "T") with motive "f". The handlers
-are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. For example, in \cref{fig:STLC-example2},  "FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving.
+are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. Once recursor is created it will look like any other function fields(e.g. "subst" in \cref{fig:STLC-example2}).
 
-We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+"FTheorem" has a similar functionality but is expected to be used for theorem proving---the handler and the family will be automatically constructed during proving.
 
-We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
-will override a field from the parent. "Inherit" can be used to inherit
-nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:definition-relevant-reasoning}. The fields inside a family
-are order-sensitive because we have dependent types here. So "Inherit
-Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
-family can only be inherited or extended together with its belonging family
-(i.e. ultimately top level family), thus our support of family polymorphism is
-incomplete.
+% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+
+% We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
+% will override a field from the parent. "Inherit" can be used to inherit
+% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:definition-relevant-reasoning}. The fields inside a family
+% are order-sensitive because we have dependent types here. So "Inherit
+% Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
+% family can only be inherited or extended together with its belonging family
+% (i.e. ultimately top level family), thus our support of family polymorphism is
+% incomplete.
 
 We will explain the usage of "Closing Fact" and "MetaData" later---they are here to resolve \ref{chg:software-engineering} to some extent.
 % This incomplete support can already be useful for extending functions.
@@ -216,7 +329,9 @@ want to override "Field a", we simply replace that compiled module with
 the new module inside the list. This compiled module type serves as an
 abstraction that enables overriding. 
 
-Once the user closes a family with "EndFamily", they can access its fields by using module syntax. For example, they can access "A.a" to get "1" after "Family A" is defined.\YZ{1. move some of sec 3.2 ~> 3.1; 2. hint vaguely on how to do type checking in sec 3.1 (user interface).. metatheory part should also mention this part in sec 3.1} This is achieved by a complete compilation from a family to a module, via aggregating the list of the modules in the internal representation: the plugin will repeatedly using Coq's "Include" command as the "Module A" in \cref{fig:plugin-example1} illustrates. Now, the user can use "Module A" anywhere as they are using "Family A".
+
+
+\YZ{1. move some of sec 3.2 ~> 3.1; 2. hint vaguely on how to do type checking in sec 3.1 (user interface).. metatheory part should also mention this part in sec 3.1} This is achieved by a complete compilation from a family to a module, via aggregating the list of the modules in the internal representation: the plugin will repeatedly using Coq's "Include" command as the "Module A" in \cref{fig:plugin-example1} illustrates. Now, the user can use "Module A" anywhere as they are using "Family A".
 \YZ{The reader wonders why this aggregation is needed. 
 Seems like the place to talk about how the programmer can use A outside Family A.}\EDJreply{Please check.}
 
@@ -237,59 +352,15 @@ thus maintains all the computational mechanism from Coq, fulfilling requirements
 
 
 
-\begin{figure}[!htb]
-  \begin{minipage}[t]{0.45\linewidth}
-\begin{lstlisting}[language=Coq, escapeinside={@}{@}]
-Family I.
- Field a : nat := 1.
- Field b : a = a := eq_refl.
- Fail Field c : a = 1 := eq_refl. (*Fail 1*)
-
- Final Field a' : nat := 1.
- Field c : a' = 1 := eq_refl.
- Field bop : nat -> nat -> nat := (+).
- Fail Field comm_bop : ...
-
- Family MonotonicF.
-  Field f : nat -> nat := non_impl.
-  Field p : monotonic f := non_impl.
- SealFamily. 
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-\begin{minipage}[t]{0.45\linewidth}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family I2 extends I.
- Override Field a : nat := 1. (* Override *)
- Inherit b.                   (* Inherit  *)
-
- Field d : nat := a.          (* Extend   *)
- Fail Override Field a' : nat := 2. (*Fail 2*)
-
- Override Field bop := (-).
-
- Inherits Until MonotonicF.
- Override Family MonotonicF.
-  Field f : nat -> nat := (+ 1).
-  Field p : monotonic f := ...
- EndFamily. 
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-  \caption{Example Code for Inheritance and Reasoning}\label{fig:plugin-example3}
-\end{figure}
-
 % explaining inheritance
 \textbf{Implementing Inheritance.}
-To resolve \ref{chg:consistency}, we make sure when inheritance happens, not only the content will be inherited, but the context of the corresponding field is also ``inherited''. Thus the mentioned informal example in \ref{chg:consistency} will not apply here because the overriding "f" is also in the context where "self" is empty thus "self.g" doesn't type-check. 
-
 To simplify the implementation, we can consider all families as
 inheritance and the standalone families are extending the empty family.
 Thus, we need to deal with only inheritance during interactive theorem proving.
 
 
-There are three kinds of inheritance---extend, override, and inherit. Simiarly, we
-use a list to encode inheritance data in the
+Simiarly, we
+use a list to encode the three kinds of inheritance data in the
 implementation. The inheritance data will include the
 information of (1) the ``type'' of the parent family, (2) a list of
 operation indicating how each field of the parent will be dealt with
@@ -308,102 +379,29 @@ Though inheritance is solely a first-order data rather
 than a ``mapping'', it is still possible to
 \text{mixin} two inheritance data---by carefully ``mix'' the internal list, we can compose the inheritance. However, a good definition of mixin is still under investigation. We will show one practical example of \textit{mixin} later.\YZ{How about making mixin composition one of your Req's? Also does any example in the paper illustrate how to do this?}\EDJreply{mixin is not really formalized. There is no example illustrate it. The only example is the STLC example at the very end and I just kind of ``mention'' it. I think here I just want to emphasize, inheritance as first order data is still possible to support composition.}
 
-
-
-
-
-\textbf{Reasoning Needs Non-Overridable.}
-This compilation strategy
-has already allowed fields to be type-dependent on former fields thus we can see concretely how
-\ref{chg:definition-relevant-reasoning} appears in our current formulation and how "Final" can help to solve this challenge. 
-
-% However, the current implementation is not satisfactory enough. There are cases where we need to expose
-% the concrete definition of a given field (especially when we are proving
-% properties about it).
-
-% For example, we may
-% define $"add" : \mathbb{Z} \to \mathbb{Z} \to \mathbb{Z}$ as one field
-% and intend to prove its commutativity in a following field $"comm"$.
-% But to prove so, we need to know more than just a type interface of
-% "add" but also its \textbf{concrete fixpoint definition}. Otherwise, in the
-% future, once "add" is overridden into a subtraction function then
-% "comm" will have problem to be inherited.\YZ{The sentence reads as if you want to enable overriding "add", whereas what you really want is to expose the definition equality about "add".}
-% A more concrete example is in \cref{fig:plugin-example1}, consider the
-% case we have "Field b : a = 1 := .." instead. Then our
-% compilation and Coq's type checking will both fail: in the context of
-% "b" (module type "a_6") we only know "a" is of type "nat" but nothing
-% more (and this is necessary so that "a" can be overridden in the
-% future).
-Take the field "c" of "Family I" in \cref{fig:plugin-example3} as the
-example. We can see that the first attempt of proving "a = 1" fails.
-\textit{This should fail}---because we want to retain the possibility
-to override "a" in the future, but the mere existence of the field "c"
-will stop that, since "c" witnesses "a" fix to "1". \textit{This will fail} in our implementation---the proof of "c" will require a concrete definition of "a",
+Our implementation also make sure the first attempt of defining "c" failed successfully in \cref{fig:plugin-example3}---the proof of "c" will require a concrete definition of "a",
 but our compilation will type check \mintinline{Coq}{c : a = 1 := eq_refl} in (a module with) the context where we only know \mintinline{Coq}{a : nat} thus failed.  
 
-To enable the exposure of the concrete definition,
-our plugin provide "Final" keyword. Once we decorate it upon "a'", the second attempt \mintinline{Coq}{c : a' = 1 := eq_refl} will succeed. Contrary to "a", our "a'" is not overridable in "Family I2".
 
-This example might sound trivial and contrived. Let's look at the
-example field binary operation "bop" initially set to be addition.\YZ{This 'add' field is no longer there.}\EDJreply{Thanks. Fixed} Now that we only expose the type of "bop", we
-cannot prove its commutativity in "comm_bop" (because we don't have
-access to its concrete definition) but we can override "bop" with
-subtraction function in "Family I2". This makes sense because we
-shouldn't (have the ability to) inherit commutativity property for subtraction
-anyway. This is contrary to how "a'" is declared "Final", the second "c"
-can prove that it's equal to 1 but "a'" is not overridable in the
-"Family I2".
 
-% To fix that, we need more information on "a" than its type---we
-% need to expose the concrete definition "a = 1" to the context of "b".
-%\YZ{I had a hard time working through these two paras. I guess they are
-%saying that there is a need to expose definitional equalities, and
-%therefore we need non-overridables. This causal flow should be made
-%more explicit.}\EDJreply{Good suggestion. I try to add this casual flow into the first line of the paragraph. Please check and resolve if find satisfied.}
-
+\textbf{Implemening "Final" and "Sealed Family".}
 We implement "Final" by
-exposing the whole definition directly into the compiled module type. Doing so we will prohibit overriding because
-subtraction doesn't have the same definition as $add$. We require the
+exposing the whole definition directly into the compiled module type. Doing so will prohibit overriding. Say, the example "bop" in \cref{fig:plugin-example3}, will be prohibited to be overridden by $(-)$
+subtraction doesn't have the same definition as $(+)$. We require the
 users to manual decorate field as `Final' so that the plugin will proceed with this special treatment.
 %\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
-\textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
-Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
-(definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
-\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
-because to prove
-the latter we need to have concrete definition of "f" in the family type, which
-makes "f" non-overridable at all. One option is to use sigma type
-\mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
-a bundle of stuff with multiple refinements. 
+% \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
 
-To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be sealed into a ``relaxed family type''. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
+The implementation of sealed family is not so different from that of the normal family, but we need to deal with the compiled module type. The compiled module type is the aggregation of the type instead of the concrete definition of the fields.
+For example, the compiled module type of
+"MonotonicF" in \cref{fig:plugin-example3} will be "{f : nat -> nat; p : monotonic f}". Thus any future overriding family will always have these two fields "f, p" with the corresponding type.\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
-For example, the "MonotonicF" in \cref{fig:plugin-example3}:
-we simply seal
-\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
-together inside an sealed family.
-Because the definition of "f" is exposed inside the family, 
-its definition is
-transparent and can be used to prove "p".
-However, because the enclosing family of "f" is overridable, to swap the
-implementation of "f", we just override the whole ``sealed'' family,
-like we do in "I2.MonotonicF". 
 
-And the compiled module type of
-"MonotonicF" will be fixed throughout the extension in different
-families. Any overriding family will always have these two fields "f, p".\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
-
-In our example, the seal family "I.MonotonicF" is actually simulating
-interfaces as well.  We have
-\mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
-and we assigned it to both "f" and "p", and later instantiate in
-"I2" with concrete implementation by overriding this family
-"I.MonotonicF".
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
 %   this refinement/property
-The implementation of sealed family is not so different from that of the normal family, but we need to be careful about the compiled module type. 
+
 
 
 
@@ -473,7 +471,7 @@ End v_33_34.
 
 
 
-We start with the programming interface. We use "FInductive" to define an extensible inductive type and in the children family we use "Extend Finductive ..." to extend the type with new constructors. In \cref{fig:plugin-example2}, we make the example of boolean and three-valued boolean. 
+% We start with the programming interface. We use "FInductive" to define an extensible inductive type and in the children family we use "Extend Finductive ..." to extend the type with new constructors. In \cref{fig:plugin-example2}, we make the example of boolean and three-valued boolean. 
 
 
 
