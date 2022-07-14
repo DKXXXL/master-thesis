@@ -254,7 +254,7 @@ Family STLC.
     then t else (tm_var s).
   Final Field tm_abs : ...
 := fun s (b : tm)   
-   (recb : id -> tm -> tm) 
+   (recb : id → tm → tm) 
    x t => 
     if (eqb x s) 
     then (tm_abs s body)
@@ -263,7 +263,7 @@ Family STLC.
   EndFamily.
   FRecursor subst 
     about tm 
-    motive (fun _ => id -> tm -> tm)
+    motive (fun _ => id → tm → tm)
     using subst_internal
     by _rec.
 (*
@@ -291,8 +291,8 @@ EndFamily.
 
 Module Type STLC_409.
   Parameter (tm : Set).
-  Parameter (tm_var : id -> tm).
-  Parameter (tm_abs : id -> tm -> tm).
+  Parameter (tm_var : id → tm).
+  Parameter (tm_abs : id → tm → tm).
   (* ... and all the fields defined before
   and the abstraction for inductive type ...*)
 End STLC_409.
@@ -310,7 +310,7 @@ Module tm_var_411 (STLC: STLC_409)
   (subst_internal: EmptySig).
   Definition tm_var :
     forall (s : id) (x : id) (t : STLC.tm), STLC.tm :=
-    fun s x t => if eqb x s then t else STLC.var s.
+    fun s x t ⇒ if eqb x s then t else STLC.var s.
 End tm_var_411. (* ... and more *)
 (* Aggregate into one subst_internal*)
 Module subst_internal_410 (STLC: STLC_409). 
@@ -321,7 +321,7 @@ Module v_33_34 (STLC: STLC_409).
   Include tm_rec_425 STLC.
   Parameter (recursor_for_type_checking : __recursor_type_tm_rec).
   Definition term_for_type_checking :=
-    recursor_for_type_checking (fun _  => id -> STLC.tm -> STLC.tm)
+    recursor_for_type_checking (fun _  ⇒ id → STLC.tm → STLC.tm)
       subst_internal_410.tm_var
       subst_internal_410.tm_abs ... .
 End v_33_34.
@@ -350,7 +350,7 @@ However, we later still need the concrete eliminator on "tm" for doing exhaustiv
 assert the existence of the recursor and apply to see if handlers can
 pass the type checking by Coq. Note that, at this point of the example, "FRecursor" will only do type check. The compilation of "FRecursor" into a component of the compiled module only happens when closing the whole family, by inserting the following into the compiled module: 
 \begin{minted}{Coq}
-Definition subst := tm_rec (λ _ ⇒ id -> tm -> tm) subst_internal.tm_var ...
+Definition subst := tm_rec (λ _ ⇒ id → tm → tm) subst_internal.tm_var ...
 \end{minted}
 where "tm_rec" and "tm" are the corresponding recursor and the (vanilla) inductive type in that compiled module. Thus a "FRecursor" field is unlike other fields, even though it is exposed as a mundane function for the following fields in the programming interface.
 
@@ -366,7 +366,7 @@ interface'' module "STLC_409").
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
 the module "tm_var_411"---doesn't require another type-check and is re-used during the type-checking and compilation of "STLC_bool.subst". For example, for the new "subst", when compiling family "STLC_bool" into a module, at the appropriate place our plugin will insert
 \begin{minted}{Coq}
-Definition subst := tm_rec (λ _ ⇒ id -> tm -> tm) subst_internal.tm_var ...
+Definition subst := tm_rec (λ _ ⇒ id → tm → tm) subst_internal.tm_var ...
 \end{minted}
 where "tm_rec" and "tm" are the corresponding recursor and the (vanilla but extended and modified) inductive type in that compiled module. Note that, even though "tm_rec" and "tm" has the same name as before, they are in the newly-compiled module so they refer to totally different things. 
 
@@ -564,6 +564,8 @@ We call this \textit{propositional partial recursor}.\YZ{What is propositional a
 For example, the propositional partial recursor for \mintinline{Coq}{B.b} is\YZ{Mention that partial recursors can be automatically generated}\EDJreply{Added below please check.}
 
 \begin{minted}[escapeinside=@@]{Coq}
+(* Inside Family B *)
+FInductive b : Set := tt : b | ff : b.
 b_prec : forall R, option R -> option R -> b -> option R.@\YZ{Not clear what it takes to define/prove partial recursors. The reader needs to be told if they require breaking abstraction like recursors do.}\EDJreply{What do you mean? recursor doesn't break abstraction but break extensibility. Below mentioned partial recursor doesn't break extensibility}@
 \end{minted}
 with appropriate computational axioms. This partial recursor differs from original recursor only by decorating an "option" with the return type thus possible to be automatically generated (and the case is similar for those computational axiom). The partiality doesn't break
@@ -573,13 +575,13 @@ extensibility (i.e. all future extensions of "b" can support this
 The first thing to check is that, if partial recursor is theoretically enough for injectiveness of the constructor. The rough idea to achieve this
 is to use "b_prec" to reflect our special inductive type into vanilla
 inductive type, and use the original "injection" and "discriminate"
-tactics. For example, we want to prove \mintinline{Coq}{self_B.tt ≠
-self_B.ff}, we simply 
+tactics. For example, we want to prove \mintinline{Coq}{B.tt ≠
+B.ff}, we simply 
 \begin{minted}{Coq}
-Definition reflect : self_B.b → option bool 
+Definition reflect : B.b → option bool 
                    := b_prec (fun _ => bool) (Some true) (Some false).
-Definition tt_neq_ff : self_B.tt = self_B.ff → False.
-(* Because self_B.tt = self_B.ff → reflect self_B.tt = reflect self_B.ff 
+Definition tt_neq_ff : B.tt = B.ff → False.
+(* Because B.tt = B.ff → reflect B.tt = reflect B.ff 
       → Some true = Some false    (by computational axiom)
       → False           (by discriminate of bool and injection of Some) *)
 \end{minted}
