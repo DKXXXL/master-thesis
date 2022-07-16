@@ -1,12 +1,14 @@
 % Motivation of using QIIT
-We start with the formulation of the syntax, which is based on the
+We start with the formulation of the syntax in the declarative style, which is based on the
 formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT)
-given by~\citet{coquand2018canonicity}. Thus we will omit a great deal
-of details about MLTT here\YZ{What details are omitted?} but focus on the new facility we introduced. 
+given by~\citet{coquand2018canonicity}. 
+% Thus we will omit a great deal of details about MLTT here
+\YZ{What details are omitted?} 
+We will mainly focus on the new facility that we introduced 
 
 Though phrased in Latex, we are following~\citet{altkap2016} to use as
-our meta-logic a type theoretical framework (like Agda), 
-together with \textit{Quotient Inductive Inductive Type} (QIIT). Our work can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We base our formulation of the syntax in this type theory instead of a more conventional and informal representation, because (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a proof because proof checking then is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real theorem prover so that the reader can have an idea about how mechanized formalization can be carried out.
+our meta-logic an extensional type theoretical framework (with Agda-like syntax), 
+together with \textit{Quotient Inductive Inductive Type} (QIIT). Our work can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We use as the formulation the intrinsically-typed debruijn syntax in this type-theoretical QIIT instead of a more conventional and untyped representation, because (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a proof because proof checking then is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real theorem prover so that the reader can have an idea about how mechanized formalization can be carried out (5) We can still use named-variables for intuition and example illustration (6) using QIIT as syntax encoding can avoid the reader from the concept of \textit{presupposition}~\citet{gratzer-sterling-birkedal:2019}---these \textit{presupposition} can be understood as \textit{implicit parameters} of the declaration of the judgemental rules in QIIT.
 
 % In our syntax, each judgement will actually be represented by a QIIT type, which are
 % mutually recursively defined together. Quotient is used to represent

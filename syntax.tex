@@ -1,5 +1,23 @@
 
+\subsubsection{Warm Up}
+\textit{Quotient Inductive Inductive Type}~(QIIT) is an extension of \textit{inductive-inductive type} (IIT)~\cite{nordvall2010inductive}. IIT can be roughly considered as several inductive type mutually defined, in a more expressible way than mutual-inductive type. QIIT is allowing to have \textit{quotient}, in other words, equality results as part of the constructors. For example, in \mintinline{Agda}{data N2: Set where O : N2 | S : N2 → N2 | B : S (S x) ≡ x }, "B" will be a valid (equality) constructor, and "N2" is a set of two elements in our extensional setting.
 
+We highlight some special features of declarative style in QIIT that differ from a
+conventional setting: 
+(1) This declarative formulation of type theory does not
+have an operational semantics but only judgemental equality---$\beta$-reduction is now $\beta$-equality.\footnote{Later we will prove
+canonicity which can imply a certain level of computational ability of
+our theory} 
+(2) We directly use the equality from QIIT to represent judgemental equality in our syntax, relieve from us the burden to explicit mentioning equivalence closure; however, this also mean that, \textit{every piece of the syntax data}, including all kinds of judgements (QIIT type) and their derivations will have equality information upon them  
+%We will recover canonicity afterwards, which implies the computational ability of our theory. 
+(3) We are dealing with quotient data, so we are actually manipulating
+\textit{equivalence classes of terms} instead of one representative (term) from the equivalence class.
+(4) Instead of using meta-level substitution, we use explicit
+substitution and de Bruijn indices in our intrinsic formulation. This is
+also called substitution calculus in the literature and is favoured due
+to its closedness to categorical semantic. We will go through these four details one-by-one.
+
+\textbf{Judgements}
 We formalize our language as a deep embedding in a type theory with QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms in MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
@@ -9,7 +27,7 @@ follows the style of~\citet{kaposi2019gluing} and thus a predicative MLTT, but f
 omit the universe levels.
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the (pseudo) Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
 Latex-wise, we spell out these \textit{well-formedness rules} of type
-judgements and their Agda counterparts to make things more accessible. Of
+judgements and their (pseudo-)Agda counterparts to make things more accessible. Of
 course, a well-formed judgement is not necessarily derivable, just as
 a well-formed QIIT type is not necessarily inhabited. These well-formedness rules are direct translations of the \textit{well-typedness} of QIIT. 
 
@@ -35,18 +53,6 @@ some obvious equality judgements. Most of the reasoning can be formulated
 using the \textit{algebra} of QIIT (mapping out function from this
 quotient data-type). 
 
-Now we highlight some other special features that differ from a more
-conventional setting: (1) This modern formulation of type theory does not
-have an operational semantics but only equality.\footnote{Later we will prove
-canonicity which can imply a certain level of computational ability of
-our theory}
-%We will recover canonicity afterwards, which implies the computational ability of our theory. 
-(2) Instead of using meta-level substitution, we use explicit
-substitution and de Bruijn indices in our intrinsic formulation. This is
-also called substitution calculus in the literature and is favoured due
-to its closedness to categorical semantic.
-(3) We are dealing with quotient data, so we are actually manipulating
-equivalence classes of terms instead of one representative (term) from the equivalence class.
 
 We quickly review the substitution calculus.
 Substitution is very (if not the most) important because function is
