@@ -1,6 +1,6 @@
 % Motivation of using QIIT
 We start with the formulation of the syntax in the declarative style, which is based on the
-formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT)
+formalization of a predicative \textit{Martin-Lof Type Theory} (MLTT)~\cite{martin1982constructive}
 given by~\citet{coquand2018canonicity}. 
 % Thus we will omit a great deal of details about MLTT here
 \YZ{What details are omitted?} 
@@ -8,7 +8,11 @@ We will mainly focus on the new facility that we introduced
 
 Though phrased in Latex, we are following~\citet{altkap2016} to use as
 our meta-logic an extensional type theoretical framework (with Agda-like syntax), 
-together with \textit{Quotient Inductive Inductive Type} (QIIT). Our work can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We use as the formulation the intrinsically-typed debruijn syntax in this type-theoretical QIIT instead of a more conventional and untyped representation, because (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a proof because proof checking then is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real theorem prover so that the reader can have an idea about how mechanized formalization can be carried out (5) We can still use named-variables for intuition and example illustration (6) using QIIT as syntax encoding can avoid the reader from the concept of \textit{presupposition}~\cite{gratzer-sterling-birkedal-2019}---these \textit{presupposition} can be understood as \textit{implicit parameters} of the declaration of the judgemental rules in QIIT.
+together with \textit{Quotient Inductive Inductive Type} (QIIT). 
+
+\textit{Quotient Inductive Inductive Type}~(QIIT) is an extension of \textit{inductive-inductive type} (IIT)~\cite{nordvall2010inductive}. IIT can be roughly considered as several inductive type mutually defined, in a more expressible way than mutual-inductive type. QIIT is allowing to have \textit{quotient}, in other words, equality results as part of the constructors. For example, in \\ \mintinline{Agda}{data N2: Set where O : N2 | S : N2 → N2 | B : S (S x) ≡ x }, the "B" here is a valid (equality) constructor, and "N2" is a set of two elements in our extensional setting.
+
+Our formulation can be seen as following the practice ``type theory should eat itself''\cite{dybjer1995internal, chapman2009type}. We use as the formulation the intrinsically-typed debruijn syntax in this type-theoretical QIIT instead of a more conventional and untyped representation, because (1) we hope our formulation can be precise on the mathematical object we are using (2) it is easier to validate a pen-and-paper proof now because proof checking then is simply type checking in type theory (3) when using QIIT to formulate syntax, the induction principle used in reasoning about syntax is itself justified (4) we hope our formulation can be closer to a real mechanized one so that the reader can have an idea about how mechanization can be carried out (5) We can still use named-variables for intuition and example illustration (6) using QIIT as syntax encoding can avoid the reader from the concept of \textit{presupposition}~\cite{gratzer-sterling-birkedal-2019}---these \textit{presupposition} can be understood as \textit{implicit parameters} of the declaration of the judgemental rules in QIIT.
 
 % In our syntax, each judgement will actually be represented by a QIIT type, which are
 % mutually recursively defined together. Quotient is used to represent

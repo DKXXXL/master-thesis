@@ -1,11 +1,10 @@
 
-\subsubsection{\textbf{Warm Up}}
-\textit{Quotient Inductive Inductive Type}~(QIIT) is an extension of \textit{inductive-inductive type} (IIT)~\cite{nordvall2010inductive}. IIT can be roughly considered as several inductive type mutually defined, in a more expressible way than mutual-inductive type. QIIT is allowing to have \textit{quotient}, in other words, equality results as part of the constructors. For example, in \mintinline{Agda}{data N2: Set where O : N2 | S : N2 → N2 | B : S (S x) ≡ x }, "B" will be a valid (equality) constructor, and "N2" is a set of two elements in our extensional setting.
+\subsubsection{\textbf{Warm Up: Review Declarative MLTT}}
 
 We highlight some specialities of declarative style in QIIT that differ from a
 conventional setting: 
 (1) This declarative formulation of type theory does not
-have an operational semantics but only judgemental equality---$\beta$-reduction is now $\beta$-equality.\footnote{Later we will prove
+have an operational semantics but only judgemental equality (e.g. $\beta$-reduction is now $\beta$-equality).\footnote{Later we will prove
 canonicity which can imply a certain level of computational ability of
 our theory} 
 (2) We directly use the equality from QIIT to represent judgemental equality in our syntax, relieve from us the burden to explicit mentioning equivalence closure; however, this also mean that, \textit{every piece of the syntax data}, including all kinds of judgements (QIIT type) and their derivations will have equality information upon them  
@@ -14,21 +13,58 @@ our theory}
 % \textit{equivalence classes of terms} instead of one representative (term) from the equivalence class.
 (3) Instead of using meta-level substitution, we use explicit
 substitution and de Bruijn indices in our intrinsic formulation. This is
-also called substitution calculus in the literature and is favoured due
+also called \textit{substitution calculus} in the literature and is favoured due
 to its closedness to categorical semantic. We will go through these details one-by-one.
 
+
+
+
+\newcommand\mathboxtext[1]{
+  \fcolorbox{black}{faint-gray}{\ensuremath{#1}}
+}
+
+\begin{figure}[!htb]
+  \begin{align*}
+    &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  && t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
+  \end{align*}
+\caption{Judgement forms, as Agda types and as presented in this section.}\label{fig:vanillaMLTTjudgeQIIT}
+\end{figure}
+\begin{figure}[!htb]
+  \begin{minipage}[b]{0.3\linewidth}
+      $$
+      \Rule[name=Tm]
+      {\goodCtx{\Gamma}{i} \quad \goodType{\Gamma}{T}{j}}
+      {\goodTerm{\Gamma}{\_}{T}}
+      $$
+      $$
+      \Rule[name=Tms]
+      {\goodCtx{\Gamma}{i} \quad \goodCtx{\Delta}{i}}
+      {\goodSub{\Gamma}{\_}{\Delta} \text{ is well-formed}}
+      $$
+  \end{minipage}
+  \begin{minipage}[b]{0.6\linewidth}
+    \begin{minted}[]{agda}
+      data Con   : Set 
+      data Ty    : Con → Set   
+      data Tms   : Con → Con → Set 
+      data Tm    : (Γ : Con) → Ty Γ  → Set 
+    \end{minted}
+  \end{minipage}
+
+\caption{Well-formedness rules of the judgements}\label{fig:vanillaMLTTjudgewellformed}
+\end{figure}
 \underline{\textit{\textbf{Judgements and Universe.}}}
 % Judgements in QIIT
-We formalize our language as a deep embedding in a type theory with QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms from (vanilla) MLTT,
+We formalize our language as a deep embedding in a type theory using QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms from (vanilla) MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
-well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. These four judgements (QIIT types) are
-mutually recursively defined together. Our presentation
+well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. The QIITs corresponding of these four judgements are
+mutually recursively defined together, and declared in \cref{fig:vanillaMLTTjudgeQIIT}. Our presentation
 follows the style of~\citet{kaposi2019gluing} and thus a predicative MLTT, but for readability we
 omit the universe levels.
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the (pseudo) Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
-Latex-wise, we spell out these \textit{well-formedness rules} of type
-judgements and their (pseudo-)Agda counterparts to make things more accessible. Of
+Latex-wise, in \cref{fig:vanillaMLTTjudgewellformed}, we spell out these \textit{well-formedness rules} of type
+judgements and their (pseudo-)Agda counterparts to make things more accessible. In (pseudo-)Agda, well-formedness rules are just well-typedness of (indexed) QIIT family---(the judgement)"Tm~$\Gamma$~$T$" is well-typed (well-formed) only when $\Gamma$ and $T$ are both well-typed (well-formed). We omitted a bunch for latex version. Of
 course, a well-formed judgement is not necessarily derivable, just as
 a well-formed QIIT type is not necessarily inhabited. 
 These well-formedness rules are direct translations of the \textit{well-typedness} of QIIT. 
@@ -57,15 +93,15 @@ using, there is always equality among these data but only those equalities betwe
 
 % Example : how judgemental equality is used for the universe
 We review the concept of ``Universe'' and at the same time showing how equality is representing semantic. In dependent type setting, function now can return type, of which the type is ``type of type'', i.e., \textit{the universe} $\cU$. We follow the style of \textit{type universe à la Tarski}~\cite{hofmann1997syntax} and
-distinguish types from their \textit{codes or names} as showin in \ruleref{Codes/Get Type}: given a \textit{code} (actually a term) $\goodTerm{\Gamma}{T}{\cU}$ we can retrieve the corresponding type
-$\goodType{\Gamma}{El~T}{}$, and vice-versa (given a  
+distinguish types from their \textit{codes or names} as showin in \ruleref{Code/Get Type}: given a \textit{code} (term) $\goodTerm{\Gamma}{T}{\cU}$ we can retrieve the corresponding type
+$\goodType{\Gamma}{El~T}{}$, and vice-versa.
 
 In other words, (1) a universe $\cU$ is a type including the \textit{codes or names} of types.
 (2) a code (term) $\goodTerm{\Gamma}{T}{\cU}$ is not allowed to locate at type position
 (i.e., at the rightmost position of a term judgement) but $El \ T$ is (i.e. we distinguish the code and the type). (3)
 "c" is the ``inverse'' of $El$, obtaining  the \underline{"c"}ode of a
 type, with the following \textit{two (omitted) equations representing their semantic} $"c" (El~T) \equiv T$ and $El
-("c"~T) \equiv T$---notice how the two sides of each equality is term of the same type thus well-typed. More concretely, 
+("c"~T) \equiv T$---notice how the two sides of each equality is term of the same type thus a well-typed equality. More concretely, 
 
 
 Note that we are actually using predicative universe, so we actually
@@ -73,11 +109,11 @@ have different levels of universes $\cU_j$. However, we omit universe levels in 
 % Most of the reasoning can be formulated using the \textit{algebra} of QIIT (mapping out function from this quotient data-type). 
 
 \underline{\textit{\textbf{Substitution Calculus.}}}
-We quickly review the substitution calculus.
+Now we review the substitution calculus.
 Substitution is very (if not the most) important because (dependent) functions are
 first-class citizens, and lambdas can wrap (almost) every parts and can return
-(almost) everything, thus we require \textbf{the resulting substitution to
-commute} with most (if not all) type/term constructs. 
+(almost) everything---once we apply the functions,  \textbf{the substitution will happen and needs to
+commute} with most all type/term constructs in the function body. 
 
 A term $\goodTerm{\Gamma}{t}{A}$ can be understood as one term $t$ of
 type $A$, with a bunch of holes (of type $\Gamma$) inside the term $t$.
@@ -111,37 +147,14 @@ for $\pi_2~"id"$, typed as $\goodTerm{\Gamma, A}{\pi_2~"id"}{A[\pi_1]}$.
 
 
 \subsubsection{\textbf{Core Syntax of the Extended MLTT}}
-The core language builds on MLTT and adds four new judgement forms.
-Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is just a
-shorthand for term judgement
-$\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
-
-
-
-\newcommand\mathboxtext[1]{
-  \fcolorbox{black}{faint-gray}{\ensuremath{#1}}
-}
-
 \begin{figure}[!htb]
   \begin{align*}
-    &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  \\ & t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
-    &&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I have fixed fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
+&\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I have fixed fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
   \end{align*}
-\caption{Judgement forms, as Agda types and as presented in this section.}
+\caption{Judgement forms, as Agda types, continued}
 \end{figure}
-
 \begin{figure}[!htb]
   \begin{minipage}[b]{0.3\linewidth}
-      $$
-      \Rule[name=Tm]
-      {\goodCtx{\Gamma}{i} \quad \goodType{\Gamma}{T}{j}}
-      {\goodTerm{\Gamma}{\_}{T}}
-      $$
-      $$
-      \Rule[name=Tms]
-      {\goodCtx{\Gamma}{i} \quad \goodCtx{\Delta}{i}}
-      {\goodSub{\Gamma}{\_}{\Delta} \text{ is well-formed}}
-      $$
       $$
       \Rule[name=Sig]
       {\goodCtx{\Gamma}{i} \quad n \in \nat}
@@ -156,10 +169,6 @@ $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
-      data Con   : Set 
-      data Ty    : Con → Set   
-      data Tms   : Con → Con → Set 
-      data Tm    : (Γ : Con) → Ty Γ  → Set 
       data Sig  : Con → ℕ → Set
       data WSig : Con → ℕ → Set 
       data Inh  : (Γ : Con) → Sig Γ n → Sig Γ m → Set
@@ -167,8 +176,16 @@ $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
     \end{minted}
   \end{minipage}
 
-\caption{Well-formedness rules of the judgements}
+\caption{Well-formedness rules of the extended judgements}
 \end{figure}
+
+
+The core language builds on MLTT and adds four new judgement forms.
+Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is just a
+shorthand for term judgement
+$\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
+
+
 
 
 
