@@ -1,8 +1,8 @@
 
-\subsubsection{Warm Up}
+\subsubsection{\textbf{Warm Up}}
 \textit{Quotient Inductive Inductive Type}~(QIIT) is an extension of \textit{inductive-inductive type} (IIT)~\cite{nordvall2010inductive}. IIT can be roughly considered as several inductive type mutually defined, in a more expressible way than mutual-inductive type. QIIT is allowing to have \textit{quotient}, in other words, equality results as part of the constructors. For example, in \mintinline{Agda}{data N2: Set where O : N2 | S : N2 → N2 | B : S (S x) ≡ x }, "B" will be a valid (equality) constructor, and "N2" is a set of two elements in our extensional setting.
 
-We highlight some special features of declarative style in QIIT that differ from a
+We highlight some specialities of declarative style in QIIT that differ from a
 conventional setting: 
 (1) This declarative formulation of type theory does not
 have an operational semantics but only judgemental equality---$\beta$-reduction is now $\beta$-equality.\footnote{Later we will prove
@@ -10,15 +10,16 @@ canonicity which can imply a certain level of computational ability of
 our theory} 
 (2) We directly use the equality from QIIT to represent judgemental equality in our syntax, relieve from us the burden to explicit mentioning equivalence closure; however, this also mean that, \textit{every piece of the syntax data}, including all kinds of judgements (QIIT type) and their derivations will have equality information upon them  
 %We will recover canonicity afterwards, which implies the computational ability of our theory. 
-(3) We are dealing with quotient data, so we are actually manipulating
-\textit{equivalence classes of terms} instead of one representative (term) from the equivalence class.
-(4) Instead of using meta-level substitution, we use explicit
+% (3) We are dealing with quotient data, so we are actually manipulating
+% \textit{equivalence classes of terms} instead of one representative (term) from the equivalence class.
+(3) Instead of using meta-level substitution, we use explicit
 substitution and de Bruijn indices in our intrinsic formulation. This is
 also called substitution calculus in the literature and is favoured due
-to its closedness to categorical semantic. We will go through these four details one-by-one.
+to its closedness to categorical semantic. We will go through these details one-by-one.
 
-\textbf{Judgements}
-We formalize our language as a deep embedding in a type theory with QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms in MLTT,
+\underline{\textit{\textbf{Judgements and Universe.}}}
+% Judgements in QIIT
+We formalize our language as a deep embedding in a type theory with QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms from (vanilla) MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
 well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. These four judgements (QIIT types) are
@@ -29,34 +30,52 @@ omit the universe levels.
 Latex-wise, we spell out these \textit{well-formedness rules} of type
 judgements and their (pseudo-)Agda counterparts to make things more accessible. Of
 course, a well-formed judgement is not necessarily derivable, just as
-a well-formed QIIT type is not necessarily inhabited. These well-formedness rules are direct translations of the \textit{well-typedness} of QIIT. 
+a well-formed QIIT type is not necessarily inhabited. 
+These well-formedness rules are direct translations of the \textit{well-typedness} of QIIT. 
 
-
-Due to our intrinsic setting, \textbf{we can and will omit a lot of premises of the typing rules}. This can work because we are using
-QIIT and everything is intrinsically well-formed(well-typed). For example, we don't
-spell out that the rule \ruleref{Type Universe} requires a well-formed
-context, even though it does implicitly, \textbf{because it is not
+% omitting presupposition
+Due to our intrinsic setting, \textbf{we can and will omit a lot of premises of the typing rules}~(the presuppositions). 
+For example, we don't explicitly
+spell out that the rule \ruleref{Type Universe} (that is stating a universe is a proper type) requires a well-formed
+context, even though it does implicitly inferrable, \textbf{because it is not
 possible to have ill-formed(ill-typed) contexts in our intrinsic setting}. This is
-a bit unusual for conventional extrinsic setting where they will put
-well-formedness of context everywhere in a lot of term judgements. We
+a bit unusual for conventional extrinsic setting where they will have
+well-formedness of context everywhere in most of the term judgements. We
 consider this as one advantage of using intrinsic setting---this
 ``well-formed context'' condition is usually attached to some other premises thus
 inferrable and can be considered as ``boilerplate code''. Free of
-such boilerplate code, our intrinsic setting provides a more concise
+such boilerplate code, the intrinsic setting provides a more concise
 representation.
 
+
+% How judgemental equality is used
 Quotient is used to represent definitional equality (aka judgemental
 equality) between QIIT types concisely.
 This way, for all four kinds of judgements we are
-using, there is always equality among these data. Doing so, we can omit
-some obvious equality judgements. Most of the reasoning can be formulated
-using the \textit{algebra} of QIIT (mapping out function from this
-quotient data-type). 
+using, there is always equality among these data but only those equalities between terms and types are emphasized due to their non-triviality.
 
 
+% Example : how judgemental equality is used for the universe
+We review the concept of ``Universe'' and at the same time showing how equality is representing semantic. In dependent type setting, function now can return type, of which the type is ``type of type'', i.e., \textit{the universe} $\cU$. We follow the style of \textit{type universe à la Tarski}~\cite{hofmann1997syntax} and
+distinguish types from their \textit{codes or names} as showin in \ruleref{Codes/Get Type}: given a \textit{code} (actually a term) $\goodTerm{\Gamma}{T}{\cU}$ we can retrieve the corresponding type
+$\goodType{\Gamma}{El~T}{}$, and vice-versa (given a  
+
+In other words, (1) a universe $\cU$ is a type including the \textit{codes or names} of types.
+(2) a code (term) $\goodTerm{\Gamma}{T}{\cU}$ is not allowed to locate at type position
+(i.e., at the rightmost position of a term judgement) but $El \ T$ is (i.e. we distinguish the code and the type). (3)
+"c" is the ``inverse'' of $El$, obtaining  the \underline{"c"}ode of a
+type, with the following \textit{two (omitted) equations representing their semantic} $"c" (El~T) \equiv T$ and $El
+("c"~T) \equiv T$---notice how the two sides of each equality is term of the same type thus well-typed. More concretely, 
+
+
+Note that we are actually using predicative universe, so we actually
+have different levels of universes $\cU_j$. However, we omit universe levels in our latex presentation for conciseness and accessibility.
+% Most of the reasoning can be formulated using the \textit{algebra} of QIIT (mapping out function from this quotient data-type). 
+
+\underline{\textit{\textbf{Substitution Calculus.}}}
 We quickly review the substitution calculus.
-Substitution is very (if not the most) important because function is
-first-class citizens, and can be applied (almost) everywhere and can return
+Substitution is very (if not the most) important because (dependent) functions are
+first-class citizens, and lambdas can wrap (almost) every parts and can return
 (almost) everything, thus we require \textbf{the resulting substitution to
 commute} with most (if not all) type/term constructs. 
 
@@ -91,7 +110,7 @@ $\goodSub{\Gamma,A}{\pi_1~"id"}{\Gamma}$, and $\pi_2$ as a shorthand
 for $\pi_2~"id"$, typed as $\goodTerm{\Gamma, A}{\pi_2~"id"}{A[\pi_1]}$.
 
 
-
+\subsubsection{\textbf{Core Syntax of the Extended MLTT}}
 The core language builds on MLTT and adds four new judgement forms.
 Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is just a
 shorthand for term judgement
@@ -175,18 +194,7 @@ $\goodTerm{\Gamma}{\sigma}{\Delta}$ and a type
 $\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
 $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.
 
-Because in dependent type, function now can return type, of which the type is ``type of type'', \textit{the universe} $\cU$. We follow the style of \textit{type universe à la Tarski}~\cite{hofmann1997syntax} and
-distinguish types from their \textit{codes or names}, and thus we use
-$El\ T$ as the type given \textit{type name} $T : \cU$.
-In this case, (1) $\cU$ is the type including the \textit{codes or
-names} of types, and (2) $T$ is not allowed to locate at type position
-(i.e., at the rightmost position of a term judgement) but $El \ T$ is.
-"c" is the ``inverse'' of $El$, obtaining  the \underline{"c"}ode of a
-type, with the following two equations $"c" (El~T) \equiv T$ and $El
-("c"~T) \equiv T$.
-Recall that we are actually using predicative universe, so we actually
-have different levels of universes $\cU_j$.
-We omit universe levels for conciseness.
+
 
 
   \label{fig:rules:well-typed-ctx}
@@ -250,7 +258,7 @@ $$
 $$
 \judgebox{ \goodTerm{\Gamma}{t}{T} }
 $$
-\Rule[]
+\Rule[name=Code/Get Type]
 {\goodType{\Gamma}{T}{j}}
 {\goodTerm{\Gamma}{"c" \ T}{\cU}
 }\quad
