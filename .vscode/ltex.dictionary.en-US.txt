@@ -18,3 +18,7 @@ metavariables
 Bruijn
 Metatheory
 metatheories
+Mixins
+superclass
+mixins
+Subtyping
