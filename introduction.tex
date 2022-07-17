@@ -5,20 +5,20 @@
 There is a growing trend among programming languages researchers
 to use proof assistants to mechanize meta\-theories.
 %
-However, the programmer runs into an old problem,
-the Expression Problem (EP) \cite{wadler-ep},
-in the new setting of proof engineering.
+However, the programmer runs into an old problem
+in the new setting of proof engineering:
+the Expression Problem (EP) \cite{wadler-ep}.
 
 The EP is a programming challenge that
 epitomizes the difficulty of writing type-safe, extensible code.
-To define an expression language that can be reused for future extension,
+To define an expression language that can be reused for future extensions,
 the programmer faces a fundamental tension \cite{reynolds1975} between
 adding new constructors of a data type (e.g., new abstract syntax) and
 adding new functions over the data type (e.g., new compiler passes).
 
-The EP is well studied in the conventional setting of functional and
-object-oriented (OO) languages.
-Modern languages, such as Scala \cite{scala-oopsla05}, now have a good
+The EP is well studied in the conventional setting of functional
+programming and object-oriented (OO) programming.
+Modern languages, such as Scala \cite{scala-oopsla05}, have a good
 supply of linguistic features that offer expressive power to solve the
 EP.
 
@@ -32,65 +32,103 @@ A programming challenge there is to define distinct extensions of this
 STLC formalization to support distinct features,
 and then selectively compose these extensions to form new STLC variants.
 
-Because in Coq, code and proofs are closed to extension, the programmer
-cannot easily reuse them.
-The common practice is still to copy the existing mechanization and
-modify it for each extension.
+In Coq, inductive types, as well as functions and theorems over
+inductive types, are closed to extension.
+So to reuse mechanized metatheories,
+the common practice is still to copy and modify them for each extension.
 But having to maintain multiple copies is highly non-modular and
-inimical to good software engineering.
+antithetical to good software engineering.
 %
 The programmer could also turn to design patterns~\cite{delaware2011,delaware2013}.
 But they require heavy lifting from the programmer to make code
-extensible, often leading to complex, non-idiomatic programming styles.
+extensible, often leading to verbose, non-idiomatic programming styles.
 
-A question naturally arises: can linguistic solutions to EP, as studied
+A question thus arises: can linguistic solutions to the EP, as studied
 in the conventional setting, be adapted to metatheory mechanization in
 a proof assistant?
 
-At the core of many linguistic solutions to EP is \emph{inheritance}.
+At the core of many linguistic solutions to the EP is \emph{inheritance}.
 Inheritance is sometimes interpreted narrowly as a subclass'
 inheriting methods and fields from a superclass.
 But its language-theoretic essence is more general:
 inheritance is a linguistic approach to incrementally
-modifying \emph{recursive, record-like structures}~\cite{cook1990inheritance}.
+modifying \emph{recursive, record-like definitions}~\cite{cook1990inheritance}.
 
 Language mechanisms including
 mixins~\cite{mixin-1990},
 virtual classes~\cite{virtualclasses-1989,vc-calculus-2006},
 virtual types~\cite{thorup97} and associated types~\cite{ckj05},
 extensible cases~\cite{bac2006},
-and so on, are all based on the idea of inheritance.
-
+and so on, are all based on the essential idea of inheritance.
+%
 In particular, when a language mechanism enables inheritance over
-recursive, record-like definitions containing related types and terms,
+recursive definitions containing related types and terms,
 it is said to support \emph{family polymorphism}~\cite{ernst2001family}:
-code is polymorphic to a family it is nested within.
+types and terms are polymorphic to a family they are nested within.
 
 \paragraph{Main ideas.}
 
 We contribute a language design that integrates family polymorphism into
 a proof assistant.
-Because code and proofs are polymorphic to a family it is nested
+Because code and proofs are polymorphic to a family they are nested
 within, they can be inherited and reused by a derived family.
 %
 Family polymorphism enables extensible metatheory mechanization.
 As \cref{fig:?} shows,
-different extensions to STLC all inherit from the base STLC family:
-they reuse proofs of metatheories including the progress and
-preservation theorems, only adding new cases to the induction proofs as
-needed by the extension.
+different extensions to STLC can all inherit from the base STLC family:
+they reuse mechanized metatheories from syntax to the type safety
+theorem, only adding new constructors to inductive types
+and new cases to the induction proofs as needed by an extension.
 
 Integrating family polymorphism into a dependent type theory with
 inductive types poses significant technical challenges, however.
-\TODO
+As we analyze, inductive types, definitional equalities, and logical
+consistency, are all inimical to the kind of family polymorphism
+found in existing language designs.
+Thus, our core contributions include design recipes for dealing with
+these issues and strong metatheoretical guarantees on consistency and
+canonicity.
 
-\paragraph{Structure of the paper} 
-We will quickly introduce Family Polymorphism and the challenges to adapt it into dependent type setting in \cref{sec:background+challenge}. After that, we will talk about the language design of family polymorphism in dependent type setting and the implementation of our Coq plugin in \cref{sec:coqimpl}. Then, we consider the meta-theory of incorporating family polymorphism into predicative MLTT, and deriving consistency and canonicity results in \cref{sec:metatheory}. \ref{sec:related-work} discusses related works and \ref{sec:conclusion} concludes.
+\paragraph{Contributions} To our knowledge, we offer the first
+language design that enables extensible metatheory mechanization
+in a higher-order, dependent type theory with inductive types.
 
+\begin{itemize}[leftmargin=3.5ex]
 
-\paragraph{Contributions} include the following
-\begin{itemize}
-  \item To our knowledge, this is the first attempt incorporating family polymorphism with theorem proving and higher order logic
-  \item We contribute a prototypical Coq plugin for the interested users and developers 
-  \item We provide some first-step meta-theoretical results, including consistency and canonicity
+\item We show how to integrate family polymorphism into a proof
+assistant (\cref{sec:lang-design}).
+The language design reconciles the expressiveness enabled by
+family polymorphism with the exactness of a proof assistant,
+while retaining an idiomatic programming style.
+
+\item We contribute a prototypical implementation of our language
+mechanism as a Coq plugin (\cref{sec:coqimpl}). The plugin works by
+compiling surface-language terms into Gallina terms parameterized by
+extensibility hooks.
+
+\item We capture the new language mechanism formally by extending
+Martin–Löf type theory with family polymorphism and extensible inductive
+types (\cref{sec:metatheory}).
+We derive strong metatheoretical results including on consistency and
+canonicity.
+We also formalize the translation implemented by the Coq plugin.
+
+\item We present case studies of using our Coq plugin to mechanize
+language metatheories.
+They show how our linguistic approach naturally solves the EP and
+enables a high degree of reusability and extensibility
+for proof engineering.
+
 \end{itemize}
+
+%\paragraph{Structure of the paper} We will quickly introduce Family
+%Polymorphism and the challenges to adapt it into dependent type setting
+%in \cref{sec:background+challenge}. After that, we will talk about the
+%language design of family polymorphism in dependent type setting and the
+%implementation of our Coq plugin in \cref{sec:coqimpl}. Then, we
+%consider the meta-theory of incorporating family polymorphism into
+%predicative MLTT, and deriving consistency and canonicity results in
+%\cref{sec:metatheory}. \ref{sec:related-work} discusses related works
+%and \ref{sec:conclusion} concludes.
+
+
