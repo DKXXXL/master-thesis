@@ -2,17 +2,15 @@
 % proof engineering, not being focused, fampoly on proof engineering
 % contribution
 
-There is a growing trend among semantics researchers to
-use proof assistants to mechanize meta\-theories.
-Consequently, it has become ever more important that proof assistants
-make it easy to write reusable, extensible code and proofs.
-
+There is a growing trend among programming languages researchers
+to use proof assistants to mechanize meta\-theories.
+%
 However, the programmer runs into an old problem,
 the Expression Problem (EP) \cite{wadler-ep},
-that has deep roots in language design.
-%
-The EP is a programming challenge
-epitomizing the difficulty of writing type-safe, extensible code.
+in the new setting of proof engineering.
+
+The EP is a programming challenge that
+epitomizes the difficulty of writing type-safe, extensible code.
 To define an expression language that can be reused for future extension,
 the programmer faces a fundamental tension \cite{reynolds1975} between
 adding new constructors of a data type (e.g., new abstract syntax) and
@@ -24,14 +22,14 @@ Modern languages, such as Scala \cite{scala-oopsla05}, now have a good
 supply of linguistic features that offer expressive power to solve the
 EP.
 
-In contrast, proof assistants offer few linguistic solutions to
-programmers who want to mechanize their metatheories.
+In contrast, proof assistants offer few linguistic solutions that
+address the EP.
 Yet the challenge of writing extensible, type-safe code (and proofs!) is
-as real.
+as real, especially for metatheory mechanization.
 As an example, consider \cref{fig:STLC-example}, the simply typed
 lambda calculus (STLC) mechanized in Coq.
-A programming challenge is to define distinct extensions of this STLC
-formalization to support distinct features,
+A programming challenge there is to define distinct extensions of this
+STLC formalization to support distinct features,
 and then selectively compose these extensions to form new STLC variants.
 
 Because in Coq, code and proofs are closed to extension, the programmer
@@ -63,7 +61,7 @@ virtual types~\cite{thorup97} and associated types~\cite{ckj05},
 extensible cases~\cite{bac2006},
 and so on, are all based on the idea of inheritance.
 
-In particular, when a language mechanism applies inheritance to
+In particular, when a language mechanism enables inheritance over
 recursive, record-like definitions containing related types and terms,
 it is said to support \emph{family polymorphism}~\cite{ernst2001family}:
 code is polymorphic to a family it is nested within.
@@ -74,10 +72,16 @@ We contribute a language design that integrates family polymorphism into
 a proof assistant.
 Because code and proofs are polymorphic to a family it is nested
 within, they can be inherited and reused by a derived family.
-Extensible metatheory mechanization is thus made possible.
+%
+Family polymorphism enables extensible metatheory mechanization.
+As \cref{fig:?} shows,
+different extensions to STLC all inherit from the base STLC family:
+they reuse proofs of metatheories including the progress and
+preservation theorems, only adding new cases to the induction proofs as
+needed by the extension.
 
-Integrating family polymorphism into a dependent type theory poses
-significant technical challenges, however.
+Integrating family polymorphism into a dependent type theory with
+inductive types poses significant technical challenges, however.
 \TODO
 
 \paragraph{Structure of the paper} 
