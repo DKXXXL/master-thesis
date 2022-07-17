@@ -111,7 +111,16 @@ Note that we are actually using predicative universe, so we actually
 have different levels of universes $\cU_j$. However, we omit universe levels in our latex presentation for conciseness and accessibility.
 % Most of the reasoning can be formulated using the \textit{algebra} of QIIT (mapping out function from this quotient data-type). 
 
-
+\begin{figure}[!htb]
+  \begin{alignat*}{3}
+    \text{Context} \quad & \Gamma, \Delta &&= \cdot~|~ \Gamma, A \\ 
+    \text{Types}   \quad & A, B, T        &&= \cU~|~\cB~|~\bot~|~\top~|~\Pi A B~|~\Sigma A B~|~El~t~|~T[\gamma]\\
+    \text{Terms}   \quad & t, t_1, t_2    &&= "c"~T~|~t[\gamma]~|~\lambda t~|~"app"~t~|~(t_1,t_2)~|~"pjl"~t~|~"pjr"~t~|~"tt"~|~"ff"~|~\pi_2 \gamma  \\
+    \text{Substitution}   \quad & \gamma, \gamma_1, \gamma_2    &&= \epsilon~|~"id"~|~\gamma_1 \circ \gamma_2~|~(\gamma, t)~|~\pi_1 \gamma \\
+  \end{alignat*}
+\caption[Caption for LOF]{Overview of Instrinsically-typed Syntax for vanilla MLTT\protect\footnotemark}
+\end{figure}
+\footnotetext{This is not the definition of our syntax, just a grand overview of the intrinsically-typed syntax, to expose the reader with an idea on, for example, whether a syntax piece is a term or type, the general impression of the expressiveness of the calculus}
 
 \label{fig:rules:well-typed-ctx}
 \judgebox{\goodCtx{\Gamma}{i}}
@@ -241,22 +250,22 @@ $$
   \quad \goodSub{\Gamma}{\gamma}{\Delta} 
 }{\goodSub{\Gamma}{\delta \circ \gamma}{\Theta}}
 \Rule[name=Sub Extend]
-{\goodSub{\Gamma}{\sigma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
-{\goodSub{\Gamma}{(\sigma, t)}{(\Delta, A)}}
+{\goodSub{\Gamma}{\gamma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
+{\goodSub{\Gamma}{(\gamma, t)}{(\Delta, A)}}
 $$
 
 $$
 \Rule[name=Proj Subst-1]
-{\goodSub{\Gamma}{\sigma}{(\Delta, A)}}
-{\goodSub{\Gamma}{\pi_1 \sigma}{\Delta}}
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_1 \gamma}{\Delta}}
 \quad
 \Rule[name=Proj Subst-2]
-{\goodSub{\Gamma}{\sigma}{(\Delta, A)}}
-{\goodSub{\Gamma}{\pi_2 \sigma}{A[\pi_1 \sigma]}}
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_2 \gamma}{A[\pi_1 \gamma]}}
 \quad
 \Rule[name=Proj-Ext]
 {}
-{\goodSub{\Gamma}{(\pi_1 \sigma, \pi_2 \sigma) \equiv \sigma}{\Delta}}
+{\goodSub{\Gamma}{(\pi_1 \gamma, \pi_2 \gamma) \equiv \gamma}{\Delta}}
 $$
 
 \underline{\textit{\textbf{Substitution Calculus.}}}
@@ -301,7 +310,7 @@ We only include  the dependent function types, dependent pair types, boolean typ
 linkages to modules. We also have $\beta,\eta$-rule for both dependent
 function type and dependent pair type. 
 
-For these two types using binder, de Bruijn indices emphasizes its difference from the conventional setting---we directly use $\lambda t$ as a function term where $t$ is the body, no binder indication is required---to refer to variables in the context, we use $\pi_1,\pi_2$ from substitution calculus instead of using their names in the conventional setting.  For example, the identity function $\lambda x. x$ is actually $\lambda(\pi_2 id)$. $"app"~t$ is even more different than that of the original setting---we don't require an application argument now. The reason is, (1) we asked for argument in conventional setting so we can use meta-level substitution as part of the dynamic, but here we use explicit substitution. If the user want to substitute some arguments, they can just use $[\gamma]$ instead. (2) Formulated in this way, "app" and $\lambda$ is symmetrical inverse to each other (just like how $El$ and "c" are to each other). This makes the $\beta\eta$-rule elegantly straightforward. Besides $\lambda$, $\Pi$ and $\Sigma$ are also using binders and are formulated in a similar style.
+For these two types using binder, de Bruijn indices emphasizes its difference from the conventional setting---we directly use $\lambda t$ as a function term where $t$ is the body, no binder indication is required---to refer to variables in the context, we use $\pi_1,\pi_2$ from substitution calculus instead of using their names in the conventional setting.  For example, the identity function $\lambda x. x$ is actually $\lambda(\pi_2 "id")$. $"app"~t$ is even more different than that of the original setting---we don't require an application argument now. The reason is, (1) we asked for argument in conventional setting so we can use meta-level substitution as part of the dynamic, but here we use explicit substitution. If the user want to substitute some arguments, they can just use $[\gamma]$ instead. (2) Formulated in this way, "app" and $\lambda$ is symmetrical inverse to each other (just like how $El$ and "c" are to each other). This makes the $\beta\eta$-rule elegantly straightforward. Besides $\lambda$, $\Pi$ and $\Sigma$ are also using binders and are formulated in a similar style.
 
 
 Apparently, all of the type constructs have to commute with substitution somehow. The substitution law for dependent function and dependent pair
@@ -311,6 +320,17 @@ $\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
 $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.
 
 \subsubsection{\textbf{Core Syntax of the Extended MLTT}}
+
+\begin{figure}[!htb]
+  \begin{alignat*}{3}
+    \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|\tau[\gamma] \\
+    \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma~| \\
+    \text{Seal}          \quad & f       &&= t~|~p_f\nu'~\sigma\\    
+    \text{Types}   \quad & A, B, T        &&= \bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\\
+    \text{Terms}   \quad & t, t_1, t_2    &&= "W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t  \\
+  \end{alignat*}
+\caption{Overview of Instrinsically-typed Syntax for extended MLTT}
+\end{figure}
 \begin{figure}[!htb]
   \begin{align*}
 &\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}\YZ{A little unfriendly to the reader that there are three different things that sigma can range over. Besides, later you also use gamma to range over substitutions and s to range over W-types, which add to the confusion.}\EDJreply{Fair point. I have fixed fix sigma and tau to be about signatures and W signature, and use gamma as substitutions}
@@ -350,7 +370,6 @@ The core language builds on MLTT and adds four new judgement forms.
 % $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
 % We have shown some exemplar rules for all four standard types of
 % judgments. Now we focus on the newly introduced facility. 
-
 We have two kinds of signatures, one for inductive types, the other for linkages. We start with inductive type signature.
 
 
