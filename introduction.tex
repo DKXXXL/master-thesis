@@ -82,15 +82,16 @@ and new cases to the induction proofs as needed by an extension.
 
 Integrating family polymorphism into a dependent type theory with
 inductive types poses significant technical challenges, however.
-As we analyze, inductive types, definitional equalities, and logical
-consistency, are all inimical to the kind of family polymorphism
-found in existing language designs.
-Thus, our core contributions include design recipes for dealing with
-these issues and strong metatheoretical guarantees on consistency and
-canonicity.
+As we analyze, pillars of such a dependent type theory—including
+inductive types, definitional equalities, and logical consistency—are
+all inimical to the kind of extensibility and family polymorphism
+found in existing OO language designs.
+Thus, our contributions include novel design recipes for dealing with
+these challenges and strong meta\-theoretical guarantees on the
+underlying logic.
 
 \paragraph{Contributions} To our knowledge, we offer the first
-language design that enables extensible metatheory mechanization
+language-based solution that enables extensible metatheory mechanization
 in a higher-order, dependent type theory with inductive types.
 
 \begin{itemize}[leftmargin=3.5ex]
@@ -109,14 +110,14 @@ extensibility hooks.
 \item We capture the new language mechanism formally by extending
 Martin–Löf type theory with family polymorphism and extensible inductive
 types (\cref{sec:metatheory}).
-We derive strong metatheoretical results including on consistency and
+We derive strong meta\-theoretical results including on consistency and
 canonicity.
 We also formalize the translation implemented by the Coq plugin.
 
 \item We present case studies of using our Coq plugin to mechanize
 language metatheories.
-They show how our linguistic approach naturally solves the EP and
-enables a high degree of reusability and extensibility
+They show how our language design naturally solves the EP and
+enables a high degree of reuse and extensibility
 for proof engineering.
 
 \end{itemize}
