@@ -658,3 +658,14 @@ We can support partial dependent eliminator as well, but partial dependent elimi
     -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
 \end{minted}
 To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. Please refer to the supplementary material and appendix for a formalization of the left inverse in the context of indexed inductive type.   
+
+
+\subsection{Limitation}
+We list some of the current limitation of our implementation. We believe some of these limitations can be remedied by more engineering efforts.
+\begin{itemize}
+  \item We don't support the full power of inductive facility in Coq, that includes mutual inductive type, notation for inductive type and parameters in the inductive type (we only support indexed inductive type right now)
+  \item We don't support mutual fixpoint definition
+  \item We don't support incorporating "Hint" Vernacular commands, and thus the users cannot specify the database hints
+  \item Unicode (i.e. "Require Import Coq.Unicode.Utf8.") is not compatible with our plugin 
+  \item We don't consider the compatibility of universe polymorphism mechanism with our plugin
+\end{itemize}
