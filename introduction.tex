@@ -49,10 +49,10 @@ a proof assistant?
 
 At the core of many linguistic solutions to the EP is \emph{inheritance}.
 Inheritance is sometimes interpreted narrowly as a subclass'
-inheriting methods and fields from a superclass.
-But its language-theoretic essence is more general:
-inheritance is a linguistic approach to incrementally
-modifying \emph{recursive, record-like definitions}~\cite{cook1990inheritance}.
+inheriting methods and instance variables from its superclass.
+But the language-theoretic essence of inheritance is more general:
+it is a linguistic approach to incrementally modifying
+\emph{recursive, record-like definitions}~\cite{cook1990inheritance}.
 
 Language mechanisms including
 mixins~\cite{mixin-1990},
@@ -80,10 +80,10 @@ they reuse mechanized metatheories from syntax to the type safety
 theorem, only adding new constructors to inductive types
 and new cases to the induction proofs as needed by an extension.
 
-Integrating family polymorphism into a dependent type theory with
-inductive types poses significant technical challenges, however.
-As we analyze, pillars of such a dependent type theory—including
-inductive types, definitional equalities, and logical consistency—are
+Integrating family polymorphism into a dependent type theory for
+logical reasoning, however, poses significant technical challenges.
+As we analyze, pillars of dependent type theories—including
+inductive types, definitional equality, and logical consistency—are
 all inimical to the kind of extensibility and family polymorphism
 found in existing OO language designs.
 Thus, our contributions include novel design recipes for dealing with

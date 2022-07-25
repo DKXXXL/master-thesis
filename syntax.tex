@@ -96,11 +96,13 @@ We review the concept of ``universe'' and at the same time showing how equality 
 distinguish types from their \textit{codes or names} as showin in \ruleref{Code/Get Type}: given a \textit{code} (term) $\goodTerm{\Gamma}{T}{\cU}$ we can retrieve the corresponding type
 $\goodType{\Gamma}{El~T}{}$, and vice-versa.
 
-In other words, (1) a universe $\cU$ is a type including the \textit{codes or names} of types.
-(2) a code (term) $\goodTerm{\Gamma}{T}{\cU}$ is not allowed to locate at type position
-(i.e., at the rightmost position of a term judgement) but $El \ T$ is (i.e. we distinguish the code and the type). (3)
-"c" is the ``inverse'' of $El$, obtaining  the \underline{"c"}ode of a
-type. More concretely, using QIIT, the corresponding constructors will look like, (notice that the type on both sides of the equalities are always the same and thus a well-typed equality) 
+In other words, (1) a universe $\cU$ is a type inhabited by the \textit{codes or names} of types.
+(2) a code (term) $\goodTerm{\Gamma}{T}{\cU}$ cannot be used at type position
+(i.e., at the rightmost position of a term judgement) but $El \ T$ can (i.e., we distinguish the code and the type).
+(3) "c" is the ``inverse'' of $El$, obtaining  the \underline{"c"}ode of
+a type. More concretely, using QIIT, the corresponding constructors will
+look like, (notice that the type on both sides of the equalities are
+always the same and thus a well-typed equality) 
 \begin{align*}
   &\mintinline{Agda}{c : Ty Γ → Tm Γ U} &&\mintinline{Agda}{El : (a : Tm Γ U) → Ty } \\
   &\mintinline{Agda}{Elc : El (c T) ≡ T} && \mintinline{Agda}{cEl : c (El T) ≡ T}
