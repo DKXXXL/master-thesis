@@ -439,8 +439,9 @@ $$
 {\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
 $$
 
-
-Recall in W-type~\cite{martin1982constructive}, a pair of type $x : A
+We base our formalization of the inductive type on W-type~\cite{martin1982constructive}. 
+W-type, despite of the simplicity of its formulation, is able to construct a wide range of inductive type in extensional setting~\cite{martin1984intuitionistic,dybjer1997representing,abbott2004representing} and intensional setting (with the help of identity type~\cite{hugunin2021not}).
+Recall in W-type, a pair of type $x : A
 \vdash B(x)$ decides a W-type. To simulate extensible inductive types, we
 have to equip our inductive types with multiple constructors, and for
 simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ :
