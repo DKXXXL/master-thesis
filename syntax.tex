@@ -110,7 +110,7 @@ always the same and thus a well-typed equality)
 These two equations indicate how \textit{dynamic} should react when $El~"c"~T$ appears. Later we will see other similar $\beta$-equations but we won't display their (pseudo-)Agda formulation.
 
 Note that we are actually using predicative universe, so we actually
-have different levels of universes $\cU_j$. However, we omit universe levels in our latex presentation for conciseness and accessibility.
+have different levels of universes $\cU_j$. However, we omit universe levels in our latex presentation for conciseness and readability.
 % Most of the reasoning can be formulated using the \textit{algebra} of QIIT (mapping out function from this quotient data-type). 
 
 \begin{figure}[!htb]
@@ -252,7 +252,7 @@ $$
   \quad \goodSub{\Gamma}{\gamma}{\Delta} 
 }{\goodSub{\Gamma}{\delta \circ \gamma}{\Theta}}
 \Rule[name=Sub Extend]
-{\goodSub{\Gamma}{\gamma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\sigma]}}
+{\goodSub{\Gamma}{\gamma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\gamma]}}
 {\goodSub{\Gamma}{(\gamma, t)}{(\Delta, A)}}
 $$
 
@@ -283,8 +283,8 @@ understood in the way that $\gamma$ will output a \textbf{series} of
 (dependently-typed related) terms of types $\Delta$, parametrized by
 $\Gamma$ (i.e., we can consider there are holes of type $\Gamma$ in $\gamma$).
 Thus (1) \ruleref{Sub Extend} looks like concatenating one
-series of terms with a new term (the weird looking type of
-$\goodTerm{\Gamma}{t}{A[\sigma]}$ in the premise is due to our need of type $A$ in
+series of terms with a new term (the weird-looking type of
+$\goodTerm{\Gamma}{t}{A[\gamma]}$ in the premise is due to our need of type $A$ in
 the context $\Delta$ so that we can use \ruleref{Context Extension} to
 create new context); (2) we have \ruleref{Proj Subst-1} to extract a
 subpart of a given substitution; (3) \ruleref{Proj-Ext} explains why
