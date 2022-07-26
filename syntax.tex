@@ -351,8 +351,8 @@ We also have identity type as part of our core syntax from the original MLTT. bu
     \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|~\tau[\gamma] \\
     \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma \\
     \text{Seal}          \quad & f       &&= t~|~p_f\nu'~\sigma\\    
-    \text{Types}   \quad & A, B, T        &&= \bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\YZ{No universes? And what is p1 nu′?}\\
-    \text{Terms}   \quad & t, t_1, t_2    &&= "W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t
+    \text{Types}   \quad & A, B, T        &&= ...~|~\bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\YZ{No universes? And what is p1 nu′?}\EDJreply{Universe is described in Figure 9.``Overview of Instrinsically-typed Syntax for vanilla MLTT``. p_1 nu' is getting the resulting abstracted type after sealing. You can see that from Sig Proj rule.}\\
+    \text{Terms}   \quad & t, t_1, t_2    &&= ...~|~"W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t
   \end{alignat*}
 \caption{Overview of Instrinsically-typed Syntax for extended MLTT}
 \end{figure}
@@ -562,8 +562,8 @@ $$
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
-\\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{cL or cC?}
-\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}
+\\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cC \nu\cdot}\YZ{cL or cC?}\EDJreply{cC. You are right.}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}\EDJreply{There should be something but the space is not enough.}
 }
 $$
 % $$
