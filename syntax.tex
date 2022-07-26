@@ -107,7 +107,9 @@ always the same and thus a well-typed equality)
   &\mintinline{Agda}{c : Ty Γ → Tm Γ U} &&\mintinline{Agda}{El : (a : Tm Γ U) → Ty } \\
   &\mintinline{Agda}{Elc : El (c T) ≡ T} && \mintinline{Agda}{cEl : c (El T) ≡ T}
 \end{align*}
-These two equations indicate how \textit{dynamic} should react when $El~"c"~T$ appears. Later we will see other similar $\beta$-equations but we won't display their (pseudo-)Agda formulation.
+These two equations indicate how the \textit{dynamics} should react when
+$El~"c"~T$ appears. Later we will see other similar $\beta$-equations
+but we won't display their (pseudo-)Agda formulation.
 
 Note that we are actually using predicative universe, so we actually
 have different levels of universes $\cU_j$. However, we omit universe levels in our latex presentation for conciseness and readability.
@@ -291,7 +293,7 @@ subpart of a given substitution; (3) \ruleref{Proj-Ext} explains why
 substitution really looks like a (deeply-nested) pair. 
 
 Since the $\Gamma$ before the $\vdash$ is always indicating the types of
-``holes'', this explains the \ruleref{Term Subst} and \ruleref{Type
+``holes'', this explains rules \ruleref{Term Subst} and \ruleref{Type
 Subst}: given a term $\goodTerm{\Delta}{t}{A}$ and a substitution
 $\goodSub{\Gamma}{\gamma}{\Delta}$, we will have a new term
 $\goodTerm{\Gamma}{t[\gamma]}{A[\gamma]}$ after the substitution---this
@@ -308,28 +310,47 @@ for $\pi_2~"id"$, typed as $\goodTerm{\Gamma, A}{\pi_2~"id"}{A[\pi_1]}$.
 
 
 \underline{\textit{\textbf{Original MLTT Constructs.}}}
-We only include  the dependent function types, dependent pair types, boolean type (as a base type later for canonicity), unit type, empty type and the universe type from the original MLTT. Dependent pair type is used to model Coq module, which is useful when we need to later model the ``compilation'' from
-linkages to modules. We also have $\beta,\eta$-rule for both dependent
-function type and dependent pair type. 
+We only include  the dependent function types, dependent pair types,
+the boolean type (as a base type later for canonicity), the unit type,
+the empty type, and the universe type from the original MLTT. Dependent
+pair types are used to model Coq module, which is useful when we need to
+later model the ``compilation'' from families to modules. We also have
+$\beta$- and $\eta$-rules for both dependent function types and
+dependent pair types. 
 
-For these two types using binder, de Bruijn indices emphasizes its difference from the conventional setting---we directly use $\lambda t$ as a function term where $t$ is the body, no binder indication is required---to refer to variables in the context, we use $\pi_1,\pi_2$ from substitution calculus instead of using their names in the conventional setting.  For example, the identity function $\lambda x. x$ is actually $\lambda(\pi_2 "id")$. $"app"~t$ is even more different than that of the original setting---we don't require an application argument now. The reason is, (1) we asked for argument in conventional setting so we can use meta-level substitution as part of the dynamic, but here we use explicit substitution. If the user want to substitute some arguments, they can just use $[\gamma]$ instead. (2) Formulated in this way, "app" and $\lambda$ is symmetrical inverse to each other (just like how $El$ and "c" are to each other). This makes the $\beta\eta$-rule elegantly straightforward. Besides $\lambda$, $\Pi$ and $\Sigma$ are also using binders and are formulated in a similar style.
+For these two types using binder, de Bruijn indices emphasizes its
+difference from the conventional setting---we directly use $\lambda t$
+as a function term where $t$ is the body, no binder indication is
+required---to refer to variables in the context, we use $\pi_1,\pi_2$
+from substitution calculus instead of using their names in the
+conventional setting.  For example, the identity function $\lambda x. x$
+is actually $\lambda(\pi_2 "id")$. $"app"~t$ is even more different than
+that in the original setting---we don't require an application argument
+now. The reason is, (1) we asked for argument in conventional setting so
+we can use meta-level substitution as part of the dynamics, but here we
+use explicit substitution. If the user wants to substitute some
+arguments, they can just use $[\gamma]$ instead. (2) Formulated in this
+way, "app" and $\lambda$ are symmetrical inverse to each other (just like
+how $El$ and "c" are to each other). This makes the $\beta\eta$-rule
+elegantly straightforward. Besides $\lambda$, $\Pi$ and $\Sigma$ are
+also using binders and are formulated in a similar style.
 
 
 Apparently, all of the type constructs have to commute with substitution somehow. The substitution law for dependent function and dependent pair
 requires \textit{de Bruijn lifting}: for a given substitution
-$\goodTerm{\Gamma}{\sigma}{\Delta}$ and a type
+$\goodTerm{\Gamma}{\gamma}{\Delta}$ and a type
 $\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
-$\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.
+$\goodTerm{\Gamma,A[\gamma]}{\gamma^\uparrow := (\gamma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.
 
 \subsubsection{\textbf{Core Syntax of the Extended MLTT}}
 
 \begin{figure}[!htb]
   \begin{alignat*}{3}
-    \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|\tau[\gamma] \\
-    \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma~| \\
+    \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|~\tau[\gamma] \\
+    \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma \\
     \text{Seal}          \quad & f       &&= t~|~p_f\nu'~\sigma\\    
-    \text{Types}   \quad & A, B, T        &&= \bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\\
-    \text{Terms}   \quad & t, t_1, t_2    &&= "W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t  \\
+    \text{Types}   \quad & A, B, T        &&= \bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\YZ{No universes? And what is p1 nu′?}\\
+    \text{Terms}   \quad & t, t_1, t_2    &&= "W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t
   \end{alignat*}
 \caption{Overview of Instrinsically-typed Syntax for extended MLTT}
 \end{figure}
@@ -439,24 +460,27 @@ $$
 {\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
 $$
 
-We base our formalization of the inductive type on W-type~\cite{martin1982constructive}. 
-W-type, despite of the simplicity of its formulation, is able to construct a wide range of inductive type in extensional setting~\cite{martin1984intuitionistic,dybjer1997representing,abbott2004representing} and intensional setting (with the help of identity type~\cite{hugunin2021not}).
-Recall in W-type, a pair of type $x : A
-\vdash B(x)$ decides a W-type. To simulate extensible inductive types, we
+We base our formalization of inductive types on W-type~\cite{martin1982constructive}.
+W-types, despite their simplicity, are able to construct a wide range of
+inductive types in extensional setting~\cite{martin1984intuitionistic,dybjer1997representing,abbott2004representing}
+and intensional setting (with the help of identity types~\cite{hugunin2021not}).
+Recall with W-type, a pair of type $x : A \vdash B(x)$ decides a W-type.
+To simulate extensible inductive types, we
 have to equip our inductive types with multiple constructors, and for
-simplicity, each constructor has a fixed form \mintinline{agda}{cstrᵢ :
-(x : Aᵢ) → (Bᵢ x → W) → W}.
+simplicity, each constructor has a fixed form
+\mintinline{agda}{cstrᵢ : (x : Aᵢ) → (Bᵢ x → W) → W}.
 Thus, we use a `list' of pairs ($\goodWSig{\Gamma}{w^+~A_i~B_i~\tau}{}$) as the signature of one
-inductive type. Given an inductive type signature, we can use
-\ruleref{WSig-Proj} to extract the corresponding $A_i, B_i$.
+inductive type. Given the signature $\tau$ of an inductive type, \ruleref{WSig-Proj}
+extracts the corresponding $A_i, B_i$ via $\pi_1^i~\tau$ and $\pi_2^i~\tau$.
 
-Of course we need to put an eye on the substitution law for each piece
-of the syntax. Here $\bW \sigma$ is a large singleton
+Of course, we need to put an eye on the substitution law for each piece
+of the syntax. Here, $\bW \tau$ is a large singleton
 type~\cite{stone2000}, and it only has one ``element''---the inductive
 type itself, inside. We formulate in this cumbersome way because we want
-to have inductive type to be a field element and exposing the
-constructors at the type level for later \textit{exhaustiveness checking} (Since otherwise, if an inductive type as field element has type
-$\cU$, then no information about the inductive type is exposed).
+to have inductive types as family members and expose the
+constructors at the type level for later \textit{exhaustiveness checking}
+(otherwise inductive types as family members would have type~$\cU$, and
+no information about the inductive types could be exposed).
  
 
 The formulation of our recursor is closely related to that of linkages,
@@ -533,11 +557,11 @@ $$
 \Rule[name=Compile]
 {}
 {\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
-\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}
 \\
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
-\\\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
+\\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cL \nu\cdot}\YZ{cL or cC?}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}
 }
 $$
 % $$
@@ -561,19 +585,42 @@ $\mu^+,\nu^+$ rules, we will omit the sealing $\{f\}$ if possible.
 % \footnote{This omission can be supported
 %  by Agda using Implicit Arguments}
 
-\textit{A side note}: before we dive in more details of our metatheory for linkage (especially the meaning of sealing and $\cC$), we have to mention that, the challenge of incorporating family polymorphism with inductive type mentioned in \ref{chg:extensible-inductive-type} mutates in metatheory because of de Bruijn indices. (Using named variables), consider the example of a linkage $\{a~:~\bW \sigma; b_1 : a \to T;b_2 ..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need to solve here is between \textit{exhaustiveness checking} and \textit{inheritance (code reuse)}---on one hand, if we want to make sure $b_i$ is pattern matching correctly, then we have to construct $b_i$ term in the context of $a : \bW\sigma$; on the hand, if we want to let $b_i$ to be inherited into children family with extended inductive type $a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the context of $b_i$ is stopping that and thus we hope $b_i$ constructed in the context of $a : \cU$ (and thus later this $a$ can be compatible with inductive type of any signature). Our metatheory formulation of linkage is mainly trying to solve this tension.
+\textit{A side note}: before we dive in more details of our metatheory
+for linkage (especially the meaning of sealing and $\cC$), we have to
+mention that, the challenge of incorporating family polymorphism with
+inductive type mentioned in \ref{chg:extensible-inductive-type} mutates
+in metatheory because of de Bruijn indices. (Using named variables),
+consider the example of a linkage $\{a~:~\bW \sigma;\ b_1 : a \to T;\
+b_2 ..\}$ with a bunch of $b_i$ \textit{using} $a$. The tension we need
+to solve here is between \textit{exhaustiveness checking} and
+\textit{inheritance (code reuse)}---on one hand, if we want to make sure
+$b_i$ is pattern matching correctly, then we have to construct $b_i$
+term in the context of $a : \bW\sigma$; on the hand, if we want to let
+$b_i$ to be inherited into a derived family with extended inductive type
+$a~:~\bW \sigma'$, then the old inductive type $a~:~\bW \sigma$ in the
+context of $b_i$ is stopping that and thus we hope $b_i$ constructed in
+the context of $a : \cU$ (and thus later this $a$ can be compatible with
+inductive type of any signature). Our metatheory formulation of linkage
+is mainly trying to solve this tension.
 
 
 
-We use $\cL$ to retrieve the corresponding types of linkage of a given signature, and $\cC$ to get the compiled linkage type (an existential type).
-$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$, according to \ruleref{Compile}, is a deeply nested dependent pair. $\cCt \sigma$ provide the concrete module of type $\cC\sigma$ given a linkage of type $\cL\sigma$. 
+We use $\cL$ to retrieve the type of some linkage of a given signature,
+and $\cC$ to get the (existential) type of the compiled linkage.
+$\cL\sigma$ corresponds to the type of a family term, but $\cC\sigma$,
+according to \ruleref{Compile}, is a deeply nested dependent pair.
+$\cCt \sigma$ provides the concrete module of type $\cC\sigma$ given a
+linkage of type $\cL\sigma$. 
 
 The reason we need this additional type construct of $\cC\sigma$ here is
 to support \textit{code reuse}, as the rule of linkages hinders its
 ability to do abstraction. Concretely speaking, (using named variables)
-we don't have \\ $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma; b~:~a \to
-T\})}{h}{\cL(\{a~:~\cU; b~:~a \to T\})}$\footnote{If we had one,
-consider the case $T$ is bottom type and $\sigma$ is empty record and
+we cannot have $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma;~b~:~a \to
+T\})}{h}{\cL(\{a~:~\cU;~b~:~a \to T\})}$, which would mean that any
+subsequent field such as $b$ would be universally quantified under
+$a\,:\,\cU$ and thus leads to inconsistency
+\footnote{%
+Consider the case $T$ is bottom type and $\sigma$ is empty record and
 thus $a$ is initially bottom type. Now the direct projection using
 \ruleref{Sig Proj} $\goodTerm{\Gamma, a : \cU}{h.b}{a \to \bot}$ will
 lead to problem because every field in linkage has this implicit
@@ -583,18 +630,23 @@ arbitrary type, say $\top$: $\goodTerm{\Gamma}{h.b[a \mapsto \top]}{\top
 However, this underivable term is important for us to abstract the
 concrete inductive type so that the later field can depend on the
 ``abstract interface'' (i.e. something like $\cL(\{a:\cU~;~b:a \to T\})$) and achieve \textit{code reuse}. 
-\YZ{It reads as if you want to have 'h : L\{a : U, b : a -> T\}'. But it is problematic because it leads to inconsistency, as you describe in a footnote.}\EDJreply{Good point. I rephrased it so the introduction of sigma type is smoother. Please check.}
-\\ The good news, we don't have to stick with $\cL(\sigma)$ to express the abstract interface. We can also use sigma type, and actually 
+
+The good news is that we don't have to use $\cL(\sigma)$ to
+express the abstract interface. We can also use $\Sigma$-types, and actually
 we do have $\goodTerm{\Gamma, (\Sigma a : \bW\sigma, a \to T)
-}{h}{(\Sigma a : \cU, a \to T)}$ because of the rules for sigma type.\footnote{The intro rule for sigma type decides that there is no such implicit universal quantification happening.}
-\YZ{This sentence still speaks of overriding. Explain in terms of projection instead?}\EDJreply{Fixed. Please check.}
-Thus to allow abstraction happens, we need $\cC\sigma$ to compile a
-linkage to module as a part of the context and we also need
+}{h}{(\Sigma a : \cU, a \to T)}$ because of the rules for
+$\Sigma$-types.\footnote{The intro rule for $\Sigma$-types decides that
+there is no such implicit universal quantification happening.}
+So to enable abstraction, we need $\cC\sigma$ to compile a
+linkage to module as part of the context, and we also need
 \ruleref{Lnkg Compile} to specify the compilation from linkage to
 module.
 
 
-This is also reflected in the implementation of our plugin : we know every field is defined in the context of the former fields, but our implementation actually make every field dependent on \textbf{the compiled module of the already-defined-part of the family}. 
+This is also reflected in the implementation of our plugin: we know
+every field is defined in the context of the former fields, and our
+implementation makes every field depend on \textbf{the
+compiled module of the already-defined-part of the family}. 
 %\YZ{Why is Csigma needed? How is it different from Lsigma?}\EDJreply{It corresponds to the compilation of the family ``type'', which is part of the implementation detail. Basically we know every field of a family is dependent on the former fields. The implementation detail here is that, every field of a family is dependent on the compiled module of the former family (and thus includes all the former fields)}\YZreply{I don't think you should explain the metatheory from the angle of how things are implemented in your plugin. Rather, when describing your Coq plugin, you can say it matches the metatheory.
 %PS: you use two terminologies: 'compile' and 'seal', but I guess they mean very similar things. So avoid saying 'compile' here.
 %PPS: Sealing means hiding, so what is being hided? Why do you need to hide it? And how does the 'Compile' and 'Seal' rules perform hiding?}\EDJreply{  Compile is very different from seal.  Compile is making a linkage into a module, depriving the ability to override---if we understand a linkage as a module with a lot of universal quantifier inside. Compile cannot hide things, but only translate a linkage into a module. Seal is really something that does hiding---because existential type can hide stuff. Seal is an term between existential types. \\
@@ -605,7 +657,7 @@ This is also reflected in the implementation of our plugin : we know every field
 
 However, $\cC$ can only make sure we have $\cL(\{a~:~\bW \sigma; b~:~a
 \to T\}) \to (\Sigma a:\bW \sigma, a \to T)$, we still need $(\Sigma
-a:\bW \sigma, a \to T) \to (\Sigma a:\cU \sigma, a \to T)$ to complete
+a:\bW \sigma, a \to T) \to (\Sigma a:\cU, a \to T)$ to complete
 this shifting of the context. This is sealing's job.
 
 

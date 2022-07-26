@@ -25,3 +25,5 @@ Subtyping
 metatheoretical
 Gallina
 extensionality
+Intuitionistic
+intensional
