@@ -527,6 +527,18 @@ $$
 }
 $$
 
+$$ 
+\Rule[name=Sig Proj Beta]
+{\goodSig{\Gamma}{\sigma}{n} 
+\quad \goodSeal{\Gamma}{f}{\sigma}{A}
+\quad \goodType{\Gamma, A}{T}{i}}
+{\goodSig{\Gamma}{p_1\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv \sigma}{n}
+\\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
+\\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}\YZ{Add beta or eta rules here to explain syntax term clearer}\EDJreply{Done}
+}
+$$
+
 $$
 \Rule[name=Ept Lnkg]
 {}
@@ -554,7 +566,15 @@ $$
   \goodTerm{\Gamma}{\cCt o}{\cC \sigma}
 }
 $$
-
+$$ 
+\Rule[name=Lnkg Proj Beta]
+{\goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
+ \quad \goodTerm{\Gamma, A}{t}{T}}
+{\goodTerm{\Gamma}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \sigma}
+\\ \goodTerm{\Gamma, A}{p_2\mu \  (\mu^+ \ o \ \{f\} \ t) \equiv t}{T}
+}
+$$
 $$
 \Rule[name=Compile]
 {}
