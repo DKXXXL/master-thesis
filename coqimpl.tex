@@ -132,7 +132,7 @@ requirements in \ref{chg:software-engineering}.\YZ{
 }\YZreply{
   Looks like individually compiling family members addresses not only
   this requirement, but also the "self vs. consistency" challenge.
-}
+}\EDJreply{Yes. Indivially compiling family member is to achieve both requirements}
 
 
 
@@ -402,7 +402,8 @@ pass the type checking by Coq.\YZ{
   Sounds like we can still claim the plugin is doing type checking.
   It's just that the checking is done by generating some Coq code and
   then having Coq check it.
-}
+}\EDJreply{Yes! If my phrasing doesn't make things clear (i.e. our plugin is doing typechecking),
+feel free to change the phrasing for me}
 Note that, at this point of the example,
 "FRecursor" will only do type check. The compilation of "FRecursor" into
 a component of the compiled module only happens when closing the whole
@@ -415,7 +416,8 @@ the (vanilla) inductive type in that compiled module. Thus a "FRecursor"
 field is unlike other fields, even though it is exposed as a mundane
 function for the following fields in the programming interface.\YZ{
   Why is this special treatment needed for compiling FRecursor?
-}
+}\EDJreply{because the non-special treatment cannot be applied to recursor --
+  the non-special treatment will require the recursor to be *exported* at the interface}
 
 The plugin actually realizes the "Extend FInductive" via overriding---%
 when extending an inductive type $A$ with new constructor $c$, our
