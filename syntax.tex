@@ -321,6 +321,8 @@ $\goodTerm{\Gamma}{\sigma}{\Delta}$ and a type
 $\goodType{\Delta}{A}{}$, we define its de Bruijn lifting
 $\goodTerm{\Gamma,A[\sigma]}{\sigma^\uparrow := (\sigma \circ \pi_1, \pi_2)}{\Delta, A}$ . Intuitively speaking, de Bruijn lifting is to ``fill all the holes except the last one''.
 
+We also have identity type as part of our core syntax from the original MLTT. but we omit its presentations here---we follow~\citet{kaposi2019gluing} and use based path induction~\citet{program2013homotopy} as the elimination rule.  
+
 \subsubsection{\textbf{Core Syntax of the Extended MLTT}}
 
 \begin{figure}[!htb]
