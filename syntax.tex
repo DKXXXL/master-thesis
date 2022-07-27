@@ -798,13 +798,17 @@ to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave
   Changed what? I think Lnkg Add and Sig Add were not changed.
   I still don't see how sealing converts \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}
   and how the latter is now used as the abstracted A.
-}
+}\EDJreply{I added the $\goodType{\Gamma}{A}{}$  as you suggested. 
+\cC \{a : \bW sigma ; ..\} is definitionally equal to a sigma type as Compile rule suggested. 
+If you expand the definition, you will see two sigma type. 
+You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}, which by definition is requesting (Sigma (a : \bW sigma ; ..)) to (Sigma (a : \cU ; ..)). 
+This is something doable in vanilla MLTT, with the help of transforming \bW sigma to \cU, by rule `Ind-Type'. }
 of the compilation $\cC\sigma$ (witnessed by the seal $f$).
 The ``concatenation'' of the
 $o$ and $t$ leads to a new linkage, of which the signature is the
 ``concatenation'' of the $\sigma$ and $T$ (we also record the sealing
 $f$ for simplicity). The key here is our signature, will \textit{record}
-this abstraction witness $f$,\YZ{Why is it necessary to record the witness f? I don't see how p_f nu is needed anywhere.}
+this abstraction witness $f$,\YZ{Why is it necessary to record the witness f? I don't see how p_f nu is needed anywhere.}\EDJreply{1. this is for the sake of eta/beta rule (local soundness + local completeness); 2.It is actually used in the rule Compile (the last one), if Ct is compile a variable, then the f will be replace by p_f}
 thus any projected member will still be in
 the abstracted context and thus possibly \textit{inheritable}.  The
 construction of linkage in \ruleref{Lnkg Add} requires $t$ to
@@ -854,7 +858,7 @@ $$
 $$
 \Rule[name=Rec-Constr]
 { \goodWSig{\Gamma}{\sigma}{N}
-\quad \goodType{\Gamma}{T}{\bW \sigma}
+\quad \goodTerm{\Gamma}{T}{\bW \sigma}
 \quad \goodType{\Gamma}{R}{}
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}
@@ -864,7 +868,7 @@ $$
 (2) Try using the same metavariables (j and n) as in the rules on W-types.
 (3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
 (4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
-}
+}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}
 $$
 
 In our metatheory, for simplicity we only formulate non-dependent eliminators, i.e.,
