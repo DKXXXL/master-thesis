@@ -824,7 +824,7 @@ $$
 {\goodWSig{\Gamma}{\sigma}{n}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodSig{\Gamma}{"RecSig"~\sigma~R}{n}\YZ{Why does this Sig not have a superscript?}\EDJreply{Fixed now.}}
+{\goodSig{\Gamma}{"RecSig"~\sigma~R}{n}}
 $$
 $$
 \Rule[name=Hdler-Proj]
@@ -845,8 +845,9 @@ $$
 {\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
 $$
 
-In our meta-theory, we only formulate non-dependent eliminator for simplicity, i.e., the
-\textit{recursor}.\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. } 
+In our meta-theory, for simplicity we only formulate non-dependent eliminators, i.e.,
+\textit{recursors}.
+%\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. } 
 Like our plugin implementation, each recursor is constructed by a linkage containing handlers dealing with each
 constructor and code reuse for recursor is delegated to linkage
 inheritance. This greatly simplifies the metatheory development.
