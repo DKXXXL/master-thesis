@@ -794,13 +794,18 @@ abstractions on $\Sigma$-types.
 Now, together with sealing, we can read \ruleref{Sig Add} and
 \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$
 of signature $\sigma$, the next added field $t : T$ will have
-to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{It is not unspecified. I now change it so that it is more clear. It is parametric as well. Just note that when specifying the abstraction `A', the seal `f' has to be specified at the sametime. (Thus I omitted it initially because it is implicitly specified w.r.t. the speicifcation of `f') }
+to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{It is not unspecified. I now change it so that it is more clear. It is parametric as well. Just note that when specifying the abstraction `A', the seal `f' has to be specified at the sametime. (Thus I omitted it initially because it is implicitly specified w.r.t. the speicifcation of `f') }\YZreply{
+  Changed what? I think Lnkg Add and Sig Add were not changed.
+  I still don't see how sealing converts \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}
+  and how the latter is now used as the abstracted A.
+}
 of the compilation $\cC\sigma$ (witnessed by the seal $f$).
 The ``concatenation'' of the
 $o$ and $t$ leads to a new linkage, of which the signature is the
 ``concatenation'' of the $\sigma$ and $T$ (we also record the sealing
 $f$ for simplicity). The key here is our signature, will \textit{record}
-this abstraction witness $f$, thus any projected member will still be in
+this abstraction witness $f$,\YZ{Why is it necessary to record the witness f? I don't see how p_f nu is needed anywhere.}
+thus any projected member will still be in
 the abstracted context and thus possibly \textit{inheritable}.  The
 construction of linkage in \ruleref{Lnkg Add} requires $t$ to
 \textbf{only} refer to the (abstraction $A$ of) former part of the
@@ -808,10 +813,10 @@ defining family $o : \cL\sigma$, this is to avoid inconsistency
 mentioned in \ref{chg:consistency} in metatheory.
 
 This sealing is the general version of the sealed family implemented in
-the plugin. Our plugin will deduce a sealed ``interface'' (which is the "A" in \ruleref{Sig Add}) \YZ{Does this 'interface' correspond to A?}\EDJreply{Yes.}
+the plugin. Our plugin will deduce a sealed ``interface'' (which is the "A" in \ruleref{Sig Add})
 for a sealed family using a fixed set of rules, but here sealing in
 metatheory can be arbitrary local morphism  $\goodTerm{\Gamma , \cC
-\sigma}{\_}{A[\pi_1]}$.\YZ{why?}\EDJreply{local morphism is exactly term of this form}
+\sigma}{\_}{A[\pi_1]}$.
 With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
 implementation. In the implementation, we will have "self__" all around
