@@ -350,7 +350,7 @@ We also have identity type as part of our core syntax from the original MLTT. bu
   \begin{alignat*}{3}
     \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|~\tau[\gamma] \\
     \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma \\
-    \text{Seal}          \quad & f       &&= t~|~p_f\nu'~\sigma\\    
+    \text{Seal}          \quad & f       &&= t~|~p_f\nu~\sigma\\    
     \text{Types}   \quad & A, B, T        &&= ...~|~\bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\\
     \text{Terms}   \quad & t, t_1, t_2    &&= ...~|~"W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t
   \end{alignat*}
@@ -538,7 +538,7 @@ $$
 \\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
 \\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
 \\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
-}\YZ{p_f nu' or p_f nu? In the syntax figure, you only have p_f nu, I think.}\EDJreply{p_f nu, I don't have p_f nu' here. the prime is just for specifying we are taken out the abstraction result.}
+}
 $$
 
 $$
@@ -744,7 +744,7 @@ $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, sinc
 }\EDJreply{You are absolutely right. s and sf' s are techincally the same. sf s is a substitution.
   About s and sf' s, I can say that, I don't allow something like $\goodSeal{\Gamma}{sf'~s}{\sigma}{A}$. The reason I don't allow it is only notational consideration. 
   I mean technically we can consider them the same. I can just remove all the appearances of sf' if you want and find it less confusing.
-}
+}\YZreply{Yes, sf' is confusing to me.}
 Notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
 \cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.
