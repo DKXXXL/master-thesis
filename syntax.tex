@@ -859,15 +859,21 @@ $$
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
+(1) Use \tau for inductive types and \sigma for linkage signatures.
+(2) Try using the same metavariables (j and n) as in the rules on W-types.
+(3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
+(4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
+}
 $$
 
-In our meta-theory, for simplicity we only formulate non-dependent eliminators, i.e.,
+In our metatheory, for simplicity we only formulate non-dependent eliminators, i.e.,
 \textit{recursors}.
 %\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. } 
-Like our plugin implementation, each recursor is constructed by a linkage containing handlers dealing with each
-constructor and code reuse for recursor is delegated to linkage
-inheritance. This greatly simplifies the metatheory development.
+Like our plugin implementation, each recursor is constructed by a
+linkage containing handlers dealing with each constructor, and code
+reuse for recursor is delegated to linkage inheritance.
+This greatly simplifies the metatheory development.
 
 Intuitively \ruleref{Hdler} is indicating the type of recursor handler
 for one specific constructor, and \ruleref{Hdlers} is the linkage type
@@ -877,7 +883,8 @@ omit the definition of "RecSig" but \ruleref{Hdler-Proj} indicates its
 from the handler linkage, and is helpful for the formulation of
 $\beta$-rule of "Wrec" (omitted here). Finally \ruleref{Rec-Constr} is
 used to construct a concrete recursor given a specific linkage of aggregated
-handlers. All these rules satisfy substitution laws and omitted here. Thus, we are still using \textit{decoupling} of the syntax of the case
+handlers. All these rules satisfy substitution laws, which are omitted here.
+Thus, we are still using \textit{decoupling} of the syntax of the case
 handlers and exhaustiveness checking to resolve
 \ref{chg:extensible-inductive-type}. 
 
