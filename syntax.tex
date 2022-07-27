@@ -512,6 +512,7 @@ $$
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gamma}{\sigma}{n} 
+ \quad \goodType{\Gamma}{A}{}
  \quad \goodSeal{\Gamma}{f}{\sigma}{A}
  \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
@@ -523,19 +524,20 @@ $$
 {\goodSig{\Gamma}{p_1\nu \ \sigma}{n}
 \\ \goodType{\Gamma}{p_1\nu' \ \sigma}{}
 \\ \goodSeal{\Gamma}{p_f\nu \  \sigma}{p_1\nu \  \sigma}{p_1\nu' \sigma}
-\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ \sigma}{}\YZ{Add beta or eta rules here to explain syntax term clearer}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ \sigma}{}\YZ{Add beta or eta rules here to explain syntax term clearer}\EDJreply{Done}
 }
 $$
 
 $$ 
 \Rule[name=Sig Proj Beta]
 {\goodSig{\Gamma}{\sigma}{n} 
+\quad \goodType{\Gamma}{A}{}
 \quad \goodSeal{\Gamma}{f}{\sigma}{A}
 \quad \goodType{\Gamma, A}{T}{i}}
 {\goodSig{\Gamma}{p_1\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv \sigma}{n}
 \\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
 \\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
-\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}\YZ{Add beta or eta rules here to explain syntax term clearer}\EDJreply{Done}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
 }
 $$
 
@@ -546,6 +548,7 @@ $$
 \quad
 \Rule[name=Lnkg Add]
 { \goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad \goodType{\Gamma}{A}{}
 \quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
  \quad \goodTerm{\Gamma, A}{t}{T}
 }
@@ -569,6 +572,7 @@ $$
 $$ 
 \Rule[name=Lnkg Proj Beta]
 {\goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad \goodType{\Gamma}{A}{}
 \quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
  \quad \goodTerm{\Gamma, A}{t}{T}}
 {\goodTerm{\Gamma}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \sigma}
@@ -733,7 +737,7 @@ derivable using $\gamma^\uparrow$.
 
 For notation clarity, we will sometimes use $sf'$ to emphasize that we
 consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
-$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}
+$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}
 Notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
 \cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.
@@ -783,7 +787,7 @@ abstractions on $\Sigma$-types.
 Now, together with sealing, we can read \ruleref{Sig Add} and
 \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$
 of signature $\sigma$, the next added field $t : T$ will have
-to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}
+to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{It is not unspecified. I now change it so that it is more clear. It is parametric as well. Just note that when specifying the abstraction `A', the seal `f' has to be specified at the sametime. (Thus I omitted it initially because it is implicitly specified w.r.t. the speicifcation of `f') }
 of the compilation $\cC\sigma$ (witnessed by the seal $f$).
 The ``concatenation'' of the
 $o$ and $t$ leads to a new linkage, of which the signature is the
@@ -797,9 +801,10 @@ defining family $o : \cL\sigma$, this is to avoid inconsistency
 mentioned in \ref{chg:consistency} in metatheory.
 
 This sealing is the general version of the sealed family implemented in
-the plugin. Our plugin will deduce a sealed ``interface''\YZ{Does this 'interface' correspond to A?}
+the plugin. Our plugin will deduce a sealed ``interface'' (which is the "A" in \ruleref{Sig Add}) \YZ{Does this 'interface' correspond to A?}\EDJreply{Yes.}
 for a sealed family using a fixed set of rules, but here sealing in
-metatheory can be arbitrary local morphism.\YZ{why?}
+metatheory can be arbitrary local morphism  $\goodTerm{\Gamma , \cC
+\sigma}{\_}{A[\pi_1]}$.\YZ{why?}\EDJreply{local morphism is exactly term of this form}
 With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
 implementation. In the implementation, we will have "self__" all around
