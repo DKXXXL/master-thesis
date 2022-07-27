@@ -538,7 +538,7 @@ $$
 \\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
 \\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
 \\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
-}\YZ{p_f nu' or p_f nu? In the syntax figure, you only have p_f nu, I think.}
+}\YZ{p_f nu' or p_f nu? In the syntax figure, you only have p_f nu, I think.}\EDJreply{p_f nu, I don't have p_f nu' here. the prime is just for specifying we are taken out the abstraction result.}
 $$
 
 $$
@@ -741,6 +741,9 @@ $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, sinc
   I'm still confused about the difference among s, sf s and sf' s.
   I thought s and sf' s were technically the same; they are both terms of type A[pi1] in a context that contains cC sigma.
   I thought sf s was different because it is a substitution.
+}\EDJreply{You are absolutely right. s and sf' s are techincally the same. sf s is a substitution.
+  About s and sf' s, I can say that, I don't allow something like $\goodSeal{\Gamma}{sf'~s}{\sigma}{A}$. The reason I don't allow it is only notational consideration. 
+  I mean technically we can consider them the same. I can just remove all the appearances of sf' if you want and find it less confusing.
 }
 Notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
