@@ -617,21 +617,21 @@ linkage of type $\cL\sigma$.
 The reason we need this additional type construct of $\cC\sigma$ here is
 to support \textit{code reuse}, as the rule of linkages hinders its
 ability to do abstraction. Concretely speaking, (using named variables)
-we cannot have $\goodTerm{\Gamma, \cL(\{a~:~\bW \sigma;~b~:~a \to
-T\})}{h}{\cL(\{a~:~\cU;~b~:~a \to T\})}$, which would mean that any
+we cannot have $\goodTerm{\Gamma} %, \cL(\{a~:~\bW \sigma;~b~:~a \to T\})}
+{h}{\cL(\{a~:~\cU;~b~:~a \to T\})}$. It would otherwise mean that any
 subsequent field such as $b$ would be universally quantified under
-$a\,:\,\cU$ and thus leads to inconsistency
-\footnote{%
+$a\,:\,\cU$, leading to inconsistency.\footnote{%
 Consider the case $T$ is bottom type and $\sigma$ is empty record and
 thus $a$ is initially bottom type. Now the direct projection using
 \ruleref{Sig Proj} $\goodTerm{\Gamma, a : \cU}{h.b}{a \to \bot}$ will
 lead to problem because every field in linkage has this implicit
 universal quantification, and for this case we can substitute $a$ with
 arbitrary type, say $\top$: $\goodTerm{\Gamma}{h.b[a \mapsto \top]}{\top
-\to \bot}$ is a contradiction}.
+\to \bot}$ is a contradiction}
 However, this underivable term is important for us to abstract the
-concrete inductive type so that the later field can depend on the
-``abstract interface'' (i.e. something like $\cL(\{a:\cU~;~b:a \to T\})$) and achieve \textit{code reuse}. 
+concrete inductive type so that a later field can depend on the
+``abstract interface'' (i.e., something like $\cL(\{a:\cU~;~b:a \to T\})$)
+and achieve \textit{code reuse}. 
 
 The good news is that we don't have to use $\cL(\sigma)$ to
 express the abstract interface. We can also use $\Sigma$-types, and actually
@@ -711,8 +711,12 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
-For notation clarity, we will sometimes use $"sf'"$ to emphasize
-that we consider that seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]} $ and "sf" notation (used in \ruleref{Compile}) is defined as \\ $\goodSub{\Gamma, \cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.\YZ{What is sf and sf'? sf first appears in Compile rules, so explain sf there.}\EDJreply{Fixed. They both are explained at here now}
+For notation clarity, we will sometimes use $sf'$ to emphasize that we
+consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
+$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}
+Notation "sf"
+(used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
+\cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.
 
 Sealing judgement is still about the important term $h$ we mentioned
 earlier. Thanks to $\cC$, a field $t_{new}$ that depends on $a$ is now
@@ -725,7 +729,7 @@ because we have a sealing $\goodTerm{\Gamma, \cC\{a : \bW \sigma;
 \sigma,..)}{s}{(\Sigma a : \cU,..)}$. Then we can construct
 $t_{new}$ in the context containing $(\Sigma a : \cU,..)$, ready for
 inheritance. Thus sealing itself can be considered as proving 
-abstractions on sigma type. 
+abstractions on $\Sigma$-types.
 
 %\YZ{It occurs to me that you use the word "sealing" to mean
 %different (though tangentially related) things. Previously you used it
@@ -756,13 +760,33 @@ abstractions on sigma type.
 % because $t$ only consider $X_1$ as an arbitrary type, inheritance is
 % possible. 
 
-Now, together with sealing, we can read \ruleref{Sig Add} and \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$ of signature $\sigma$, the next added field $t : T$ will have to be in the context of the abtraction $A$ of the compilation $\cC\sigma$ (witnessed by the seal $f$). The ``concatenation'' of the $o$ and $t$ leads to a new linkage, of which the signature is the ``concatenation'' of the $\sigma$ and $T$ (we also record the sealing $f$ for simplicity). The key here is our signature, will \textit{record} this abstraction witness $f$, thus any projected member will still be in the abstracted context and thus possibly \textit{inheritable}.  The construction of linkage in \ruleref{Lnkg Add} requires $t$ to \textbf{only} refer to the (abstraction $A$ of) former part of the defining family $o : \cL\sigma$, this is to avoid inconsistency mentioned in \ref{chg:consistency} in metatheory.
+Now, together with sealing, we can read \ruleref{Sig Add} and
+\ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$
+of signature $\sigma$, the next added field $t : T$ will have
+to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}
+of the compilation $\cC\sigma$ (witnessed by the seal $f$).
+The ``concatenation'' of the
+$o$ and $t$ leads to a new linkage, of which the signature is the
+``concatenation'' of the $\sigma$ and $T$ (we also record the sealing
+$f$ for simplicity). The key here is our signature, will \textit{record}
+this abstraction witness $f$, thus any projected member will still be in
+the abstracted context and thus possibly \textit{inheritable}.  The
+construction of linkage in \ruleref{Lnkg Add} requires $t$ to
+\textbf{only} refer to the (abstraction $A$ of) former part of the
+defining family $o : \cL\sigma$, this is to avoid inconsistency
+mentioned in \ref{chg:consistency} in metatheory.
 
-This sealing is the general version of the sealed family implemented in the plugin. Our plugin will deduce a sealed ``interface'' for a sealed family using a fixed set of rules but here sealing in metatheory can be arbitrary local morphism. With the definition of sealing judgement in mind, we can see
+This sealing is the general version of the sealed family implemented in
+the plugin. Our plugin will deduce a sealed ``interface''\YZ{Does this 'interface' correspond to A?}
+for a sealed family using a fixed set of rules, but here sealing in
+metatheory can be arbitrary local morphism.\YZ{why?}
+With the definition of sealing judgement in mind, we can see
 \ruleref{Sig Add} and \ruleref{Lnkg Add} work exactly as the
 implementation. In the implementation, we will have "self__" all around
 when defining new fields in our plugin, and this "self__" is exactly the
-$A$ in the context of the two fields---in our implementation, there is only sealing of inductive type happening (where each inductive type we only know \mintinline{Coq}{T : Set}).
+$A$ in the context of the two fields---in our implementation, sealing
+happens only to inductive types (where each inductive type we only know
+\mintinline{Coq}{T : Set}).
 
 In summary, with the help of both sealing and $\cC$, we can shift the context from $\cL(\{a~:~\bW \sigma; ..\})$ to $\Sigma a : \cU,..$ and thus achieve code reuse. However, this is just allow \textit{possible} {code reuse}, we still need to solve the mutated tension in \ref{chg:extensible-inductive-type}. To make things concrete, we need to introduce the rules for recursors.
 
