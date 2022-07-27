@@ -538,7 +538,7 @@ $$
 \\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
 \\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
 \\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
-}
+}\YZ{p_f nu' or p_f nu? In the syntax figure, you only have p_f nu, I think.}
 $$
 
 $$
@@ -737,7 +737,11 @@ derivable using $\gamma^\uparrow$.
 
 For notation clarity, we will sometimes use $sf'$ to emphasize that we
 consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
-$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}
+$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}\YZreply{
+  I'm still confused about the difference among s, sf s and sf' s.
+  I thought s and sf' s were technically the same; they are both terms of type A[pi1] in a context that contains cC sigma.
+  I thought sf s was different because it is a substitution.
+}
 Notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
 \cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.
