@@ -144,18 +144,72 @@ EndFamily.
 
 
 
-Here we explain how  our detailed construction in Figure \cref{fig:example-construction} is constructed. We first elaborate that how our inductive type "N" is written in the specific format (the style of W-type). We use 1, 0 here to indicate unit type and bottom type. 
+Here we explain how  our detailed construction in Figure
+\cref{fig:example-construction} is constructed. We first elaborate that
+how our inductive type "N" is written in the specific format (the style
+of W-type). We use 1, 0 here to indicate unit type and bottom type. 
 
-Next, we alias each part of the derivation with a name. Every derivation here is well-typed term. We also annotate in the original pseudocode the name of the related derivation. 
+Next, we alias each part of the derivation with a name. Every derivation
+here is well-typed term. We also annotate in the original pseudocode the
+name of the related derivation. 
 
-We start with the construction of "Osig" which is the signature of a standalone "O" constructor. With this we will have $"sig"_1, "obj"_1, "sig"_2, "obj"_2$ as the signature and object of the linkage with that inductive type, and the signature and the linkage once we export the concrete constructor $"O"_1$. 
+We start with the construction of "Osig" which is the signature of a
+standalone "O" constructor. With this we will have $"sig"_1, "obj"_1,
+"sig"_2, "obj"_2$ as the signature and object of the linkage with that
+inductive type, and the signature and the linkage once we export the
+concrete constructor $"O"_1$. 
 
-Now sealing comes in to seal these concrete component into an abstract interface $"sig"_2'$ for decoupling the following fields. To make sure the sealing exists, we take a look at the resulting $\cC "sig"_2$, and doing abstraction on it to get $"sl"_1$. 
+Now sealing comes in to seal these concrete component into an abstract
+interface $"sig"_2'$ for decoupling the following fields. To make sure
+the sealing exists, we take a look at the resulting $\cC "sig"_2$, and
+doing abstraction on it to get $"sl"_1$. 
 
-Now we construct the recursor, with the help of the handler module $"handler"_1$, with which we can construct the real recursor $"pred"_1$. Both detailed constructions are omitted. Then we again abstract the concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$ can applys it without resorting to the concrete recursor. Finally we have $"sig"_5$ as final signature. 
+Now we construct the recursor, with the help of the handler module
+$"handler"_1$, with which we can construct the real recursor $"pred"_1$.
+Both detailed constructions are omitted. Then we again abstract the
+concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$
+can applys it without resorting to the concrete recursor. Finally we
+have $"sig"_5$ as final signature. 
 
-Now we construct the inheritance judgement for $"A"_2$. Still, we start with signature for inductive type, "Nsig". But to ``extend'' the inductive type, we actually \textit{override} the inductive type with the enriched inductive type in $"inh"_1$. Because inductive type is overridden, inheritance on the constructors are not pausible and thus we need to override the old $"O"_1$ constructor using $"O"_2$ and extend with new constructor for "S", resulting $"inh"_3$. These newly overridden constructors are sealed by $"sl"_{22}$. However, look closely, our sealed abstract interface in the children still has more fields than the sealed abstract interface in the parent. We still need $\uparrow^s$ to indicate the ``compatibility'' between two abstract interfaces so that the inheritance from the parents can work. It can be understood as ``upcasting'', but this ``upcasting'' is used to upcast the context of the children. We immeidately see its usage in $"pN"_3$ and $"inh"_{in0}$. Upon this, we construct the complete inner-inheritance $"inh"_{in}$ that is responsible for extending "handler". Then we continue the construction for $"inh"_4$ that ``nest'' the inner-inheritance into the whole $"inh"_3$, and we re-do exhaustiveness checking when constructing $"inh"_5$ using $"inhov"$ and "Wrec". Since it is another recursor requiring concrete inductive definition, we do another abstraction on it using $"sl"_41$. After that, $\uparrow^s_2$ again witnesses the compatibility of the abstract interface, and the two are both used for constructing $"inh"_6$, which is responsible for inheriting field "k". 
+Now we construct the inheritance judgement for $"A"_2$. Still, we start
+with signature for inductive type, "Nsig". But to ``extend'' the
+inductive type, we actually \textit{override} the inductive type with
+the enriched inductive type in $"inh"_1$. Because inductive type is
+overridden, inheritance on the constructors are not pausible and thus we
+need to override the old $"O"_1$ constructor using $"O"_2$ and extend
+with new constructor for "S", resulting $"inh"_3$. These newly
+overridden constructors are sealed by $"sl"_{22}$. However, look
+closely, our sealed abstract interface in the children still has more
+fields than the sealed abstract interface in the parent. We still need
+$\uparrow^s$ to indicate the ``compatibility'' between two abstract
+interfaces so that the inheritance from the parents can work. It can be
+understood as ``upcasting'', but this ``upcasting'' is used to upcast
+the context of the children. We immeidately see its usage in $"pN"_3$
+and $"inh"_{in0}$. Upon this, we construct the complete
+inner-inheritance $"inh"_{in}$ that is responsible for extending
+"handler". Then we continue the construction for $"inh"_4$ that ``nest''
+the inner-inheritance into the whole $"inh"_3$, and we re-do
+exhaustiveness checking when constructing $"inh"_5$ using $"inhov"$ and
+"Wrec". Since it is another recursor requiring concrete inductive
+definition, we do another abstraction on it using $"sl"_41$. After that,
+$\uparrow^s_2$ again witnesses the compatibility of the abstract
+interface, and the two are both used for constructing $"inh"_6$, which
+is responsible for inheriting field "k". 
 
-The resulting constructed families are $\goodTerm{\cdot}{"obj"_5}{\cL"sig"_5}$ as "Family A" and \\ $\goodTerm{\cdot}{("inh"~"inh"_6~"obj"_5)}{\cL((\nu^+ \ "sig"_{41} \{"sl"_{41}\} \ "pN"_2[(\pi_1, \uparrow^s_2)]))}$ as "Family" $"A"_2$.
+The resulting constructed families are
+$\goodTerm{\cdot}{"obj"_5}{\cL"sig"_5}$ as "Family A" and \\
+$\goodTerm{\cdot}{("inh"~"inh"_6~"obj"_5)}{\cL((\nu^+ \ "sig"_{41}
+\{"sl"_{41}\} \ "pN"_2[(\pi_1, \uparrow^s_2)]))}$ as "Family" $"A"_2$.
 
-Finally we make some comments on how a family is encoded in our metatheory. A family object will have a signature that expose the type of fields and the details of inductive type . This exposure can make sure inheritance can override and inherit field correctly. Sealing is only hiding information \textbf{inside one family}, i.e. hiding information of the former fields for the later fields, and thus the later fields is defined on the abstract interface of the former fields. The signature will expose the sealing itself and the inductive type. (See $"sig"_5$ has all the sealing information and inductive definition). A former sealing might not be related to any later sealing, for example, $"sig"_3$ is constructed using $"sl"_1$ but $"sig"_4$ is using trivial sealing $id_s$.
+Finally we make some comments on how a family is encoded in our
+metatheory. A family object will have a signature that expose the type
+of fields and the details of inductive type . This exposure can make
+sure inheritance can override and inherit field correctly. Sealing is
+only hiding information \textbf{inside one family}, i.e. hiding
+information of the former fields for the later fields, and thus the
+later fields is defined on the abstract interface of the former fields.
+The signature will expose the sealing itself and the inductive type.
+(See $"sig"_5$ has all the sealing information and inductive
+definition). A former sealing might not be related to any later sealing,
+for example, $"sig"_3$ is constructed using $"sl"_1$ but $"sig"_4$ is
+using trivial sealing $id_s$.
