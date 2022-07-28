@@ -794,14 +794,7 @@ abstractions on $\Sigma$-types.
 Now, together with sealing, we can read \ruleref{Sig Add} and
 \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$
 of signature $\sigma$, the next added field $t : T$ will have
-to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{It is not unspecified. I now change it so that it is more clear. It is parametric as well. Just note that when specifying the abstraction `A', the seal `f' has to be specified at the sametime. (Thus I omitted it initially because it is implicitly specified w.r.t. the speicifcation of `f') }\YZreply{
-  Changed what? I think Lnkg Add and Sig Add were not changed.
-  I still don't see how sealing converts \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}
-  and how the latter is now used as the abstracted A.
-}\EDJreply{I added the $\goodType{\Gamma}{A}{}$  as you suggested. \\
-\cC \{a : \bW sigma ; ..\} is definitionally equal to a sigma type as Compile rule suggested. \\
-If you expand the definition, you will see two sigma type. 
-You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}, which by definition is requesting (Sigma (a : \bW sigma ; ..)) to (Sigma (a : \cU ; ..)). \\
+to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}, which by definition is requesting (Sigma (a : \bW sigma ; ..)) to (Sigma (a : \cU ; ..)). \\
 This is something doable in vanilla MLTT, with the help of transforming \bW sigma to \cU, by rule `Ind-Type'. And this function's type should be directly the sealing type.}\YZreply{
   My confusion is this: it seems that in Lnkg Add and Sig Add, A could well be the top type and f a value of the top type. In this sense, A seems unspecified.
   Or maybe in the metatheory, it is the programmer's responsibility to find this A?
@@ -903,10 +896,11 @@ $\bW\sigma$ in the context (can be spotted from \ruleref{Ind-Term} and
 \ruleref{Rec-Constr}), and responsible for exhaustiveness checking will be non-inheritable---in these cases, "Wsup"
 can be understood as concrete constructors and "Wrec" are
 \textit{exhaustiveness checking}. These fields together with inductive
-types are the ones sealing is responsible for hiding. After compilation
+types are the ones sealing is responsible for hiding.\YZ{Is sealing really hiding these fields (that use Wsup and Wrec), or is it that the concrete definition of an inductive type is not hidden for these fields so that they can assume knowledge about the inductive type's signature?}
+After compilation
 of linkage types into existential types, we can easily hide the
 \textit{concrete} definition of the inductive type while exposing all
-the fields using "Wsup" and "Wrec" like an abstract interface.
+the fields that use "Wsup" and "Wrec" as an abstract interface.
 Apparently, future fields relying on this abstract interface will have no
 problem on inheritance. 
 For example, $t_{new}$ above cannot be doing \textit{exhaustiveness
