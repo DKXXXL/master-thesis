@@ -805,7 +805,8 @@ You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU 
 This is something doable in vanilla MLTT, with the help of transforming \bW sigma to \cU, by rule `Ind-Type'. And this function's type should be directly the sealing type.}\YZreply{
   My confusion is this: it seems that in Lnkg Add and Sig Add, A could well be the top type and f a value of the top type. In this sense, A seems unspecified.
   Or maybe in the metatheory, it is the programmer's responsibility to find this A?
-}
+}\EDJreply{You are absolutely right. In metatheory it is programmer's responsibility to specify the A they want. If they set A to top, they can do that but it will be hard for them to achieve meaningful program. \\
+A bit off-topic : this is not the only place that such specification is postponed to the user (in metatheory) another place is in inheritance when specifying upcasting function.}
 of the compilation $\cC\sigma$ (witnessed by the seal $f$).
 The ``concatenation'' of the
 $o$ and $t$ leads to a new linkage, of which the signature is the
