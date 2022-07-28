@@ -922,7 +922,12 @@ used.
 
 
 
-Next we talk about inheritance judgement. Note that, there will be a lot of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the result of the sealing of $\sigma_1$, i.e. we assume we have a term $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$, $\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the premises of judgements when needed.
+Next we talk about inheritance judgements. Note that, there will be a lot
+of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the
+result of the sealing of $\sigma_1$, i.e. we assume we have a term
+$\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$,
+$\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the premises of judgements
+when needed.
 
 
 \judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
@@ -980,10 +985,14 @@ $$
 {\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \  \{f_1\} \ t) \newline  \equiv \mu^+ \ ("inh" \ h \ m) \  \{f_2\} \ t[(\pi_1, \uparrow^s)]}{...}} 
 $$
 
-Inheritance are
-judgement so naturally second class citizen data (i.e. not something
-function can return and cannot be assigned to variables), and it looks
-very much like a function that transform a given linkage. Similar to plugin implementation and \ruleref{Lnkg Add}, we resolve \ref{chg:consistency} by making sure corresponding fields are in corresponding context during inheritance, and thus an overriding term can only refer to fields before the overriden field. 
+Inheritance are judgements so naturally second class citizen data (i.e.,
+not something function can return and cannot be assigned to variables),
+and it looks very much like a function that transforms a given linkage.
+Similar to plugin implementation and \ruleref{Lnkg Add}, we resolve
+\ref{chg:consistency} by making sure that a derived family preserves the
+ordering of fields in its base family:
+in an inheritance judgment, an overriding term is checked in a context
+that contains those fields preceding it in the base family.
 
 The syntax of the inheritance judgement is very close to how Family is
 defined in the surface syntax---a Family with no parent is an
@@ -999,13 +1008,30 @@ inheritance.
 empty inheritance, and the latter gives the programmer the ability to
 add new fields.
 
-"inhinh" is special because it requires user to provide a proof of
+"inhinh" is special because it requires the user to provide a proof of
 ``upcasting'' from the context of the child to that of the parent.
 In other words, if I want to inherit a specific field from the parent, I
 have to convince the type checker that my current context can
 ``accommodate'' the inherited field. 
 
-Override "inhov" is even more special because in mundane OO programming language, we usually require that the overriding term has the same type/interface as the overriden one.  Here we don't since the very reason we want the same type/interface is that we hope other inherited fields can use this overridden/late-binding field without breaking abstraction, and this reason is already managed by the premises of "inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like "inhext", where overriding is just throwing away one parent field. This difference also show one of the distinct feature of our vanilla family inheritance compared to the mainstream OO inheritance---family inheritance don't need to introduce the concept of ``subclassing'' between families and thus no bounded polymorphism yet\footnote{Of course once trait and interface comes in, we can have bounded polymorphism back}, and code reuse is mainly achieved by late binding. Without ``subclassing'', there is no way of confusing inheritance and subtyping. Note that, "inhov" is also responsible for ``extending'' inductive type---the extended inductive type directly override the old ones when using metatheory to program, just like how plugin implementation works.
+Override "inhov" is even more special because in mundane OO programming
+language, we usually require that the overriding term has the same
+type/interface as the overriden one.  Here we don't since the very
+reason we want the same type/interface is that we hope other inherited
+fields can use this overridden/late-binding field without breaking
+abstraction, and this reason is already managed by the premises of
+"inhinh", the upcasting proof $\uparrow^s$. Thus "inhov" is quite like
+"inhext", where overriding is just throwing away one parent field. This
+difference also shows one of the distinct features of our vanilla family
+inheritance compared to the mainstream OO inheritance---family
+inheritance need not introduce the concept of ``subclassing''
+between families and thus no bounded polymorphism yet\footnote{Of course
+once trait and interface comes in, we can have bounded polymorphism
+back}, and code reuse is mainly achieved by late binding. Without
+``subclassing'', there is no way of confusing inheritance and subtyping.
+Note that, "inhov" is also responsible for ``extending'' inductive
+types---an extended inductive type directly overrides the old one when
+using metatheory to program, just like how plugin implementation works.
 
 Next, we introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need ``upcasting'' again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement to derive children family and how the beta rule is defined. We omit most of the other substitution laws here.
 
