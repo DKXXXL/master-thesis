@@ -75,9 +75,9 @@ EndFamily.
   \small
 \begin{align*}
   "Osig" &\coloneqq \goodWSig{\cdot}{w^+\ w\cdot\ \top\ \bot}{1} \\
-  "sig"_1 &\coloneqq \goodSig{\cdot}{\nu^+ \ \nu\cdot  \ (\bW \ "Osig"[\pi_1])}{1}  \\
+  "sig"_1 &\coloneqq \goodSig{\cdot}{\nu^+ \ \nu\cdot \ {id_s} \ (\bW \ "Osig"[\pi_1])}{1}  \\
   "obj"_1 &\coloneqq \goodTerm{\cdot}{\mu^+ \ \mu\cdot \ {id_s} \ *}{\cL"sig"_1}\\
-  \cC"sig"_1 &= \goodType{\cdot}{\Sigma \ \top \ (\bW \ "Osig"[\pi_1]) }{} \\
+  \cC"sig"_1 &\coloneqq \goodType{\cdot}{\Sigma \ \top \ (\bW \ "Osig"[\pi_1]) }{} \\
   "sig"_2 &\coloneqq  \goodSig{\cdot}{\nu^+ \ "sig"_1 \ {id_s} \ El ("W" ("pjr" \ \pi_2))}{2} \\ 
   "O"_1 &\coloneqq {"Wsup" \ ("pjr" \pi_2) \ () \ ("elim-"\bot \ \pi_2)}  \\ 
   & \text{ and thus }  \goodTerm{\cdot, \cC"sig"_1}{"O"_1}{El ("W" ("pjr" \pi_2))} \\
@@ -99,6 +99,7 @@ EndFamily.
 \end{align*}
 \end{minipage}%
 \begin{minipage}[t]{0.4\linewidth}
+  \small
 \begin{align*}
   "sig"_5 &\coloneqq \nu^+ \ "sig"_4 \ \{"sl"_4\} \  "pN"_2 \\ 
   "obj"_5 &: \goodTerm{\cdot}{\mu^+~"obj"_4~\_}{\cL"sig"_4}\\
@@ -111,8 +112,7 @@ EndFamily.
   & \text{ but }  \goodTerm{\cdot, \cC"sig"_{11}}{"O"_2}{El ("W" ("pjr" \pi_2))} \\
   "sig"_{21} &\coloneqq \nu^+ \ "sig"_{11} \ \{id_s\} (El (W (pjr p₂))) \\ 
   "inh"_2 &\coloneqq \goodInh{\cdot}{"inhov" \ "inh"_1 \ "O"_2}{"sig"_2}{"sig"_{21}}\\
-  "S"_T := (\Pi & \ El ("W"("pjr"  ("pjl" \pi_2))) \\  
-  & (El ("W" ("pjr" ("pjl"  \pi_2)))[\pi_1])) \\
+  "S"_T &\coloneqq \Pi \ El ("W"("pjr"  ("pjl" \pi_2))) \ El ("W" ("pjr" ("pjl"  \pi_2)))[\pi_1] \\
   "sig"_{22} &\coloneqq \nu^+ \ "sig"_{21} \ \{id_s\} \ "S"_T \\ 
   "sig"_{21}' &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top \cU) (El ("pjr" \pi_2))}{} \\
   "sig"_{22}' &\coloneqq \Sigma "sig"_{21}' (\Pi \ El ("pjr"  ("pjl" \pi_2)) \  ...) \\
@@ -124,6 +124,7 @@ EndFamily.
   \end{minipage}
 
   \begin{minipage}{0.8\linewidth}
+    \small
     \centering
     \begin{align*}
       "inh"_{in0} &\coloneqq \goodInh{\cdot, "sig"_{22}'}{"inhid"}{(\nu^+ \ \nu\cdot \ ("pN"_1[\pi_1]))[(\pi_1, \uparrow^s)]}{(\nu^+ \cdot ("pN"_3[\pi_1]))} \\
