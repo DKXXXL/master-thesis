@@ -83,7 +83,7 @@ EndFamily.
   & \text{ and thus }  \goodTerm{\cdot, \cC"sig"_1}{"O"_1}{El ("W" ("pjr" \pi_2))} \\
   "obj"_2 &\coloneqq \goodTerm{\cdot}{\mu^+ \ "obj"_1 \ "O"_1}{\cL"sig"_2} \\
   "sig"_2' &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top \cU)El ("pjr" \pi_2)}{} \\ 
-  \cC"sig"_2 &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top (\bW \ "Osig"[\pi_1]))El \ W("pjr" \pi_2) }{} \\ 
+  \cC"sig"_2 &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top (\bW \ "Osig"[\pi_1]))El ("W"("pjr" \pi_2)) }{} \\ 
   "sl"_1 &\coloneqq ((*, "W" ("pjr" ("pjl" \pi_2)) ), "pjr" \pi_2) \\ 
   & \text{ and thus }  \goodSeal{\cdot}{"sl"_1}{"sig"_2}{"sig"_2'} \\
   "pN"_1 &\coloneqq \goodType{\cdot, "sig"_2'}{El ("pjr" ("pjl" \pi_2)) * El ("pjr" ("pjl" \pi_2))}{} \\
@@ -145,8 +145,8 @@ EndFamily.
 
 
 
-Here we explain how  our detailed construction in Figure
-\cref{fig:example-construction} is constructed. We first elaborate that
+Here we explain how  our detailed construction in
+\cref{fig:example-construction}. We first elaborate that
 how our inductive type "N" is written in the specific format (the style
 of W-type). We use 1, 0 here to indicate unit type and bottom type. 
 
@@ -169,8 +169,11 @@ Now we construct the recursor, with the help of the handler module
 $"handler"_1$, with which we can construct the real recursor $"pred"_1$.
 Both detailed constructions are omitted. Then we again abstract the
 concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$
-can applys it without resorting to the concrete recursor. Finally we
-have $"sig"_5$ as final signature. 
+can apply it without resorting to the concrete recursor. Finally we
+have $"sig"_5$ as final signature.\YZ{
+  Maybe it is a good place to point out what El(pjr (pjl pi_2)) in pN_2 stands for
+  and what El(W(pjr(pjl^2 pi_2))) in predT stands for.
+}
 
 Now we construct the inheritance judgement for $"A"_2$. Still, we start
 with signature for inductive type, "Nsig". But to ``extend'' the
@@ -185,7 +188,7 @@ fields than the sealed abstract interface in the parent. We still need
 $\uparrow^s$ to indicate the ``compatibility'' between two abstract
 interfaces so that the inheritance from the parents can work. It can be
 understood as ``upcasting'', but this ``upcasting'' is used to upcast
-the context of the children. We immeidately see its usage in $"pN"_3$
+the context of the children. We immediately see its usage in $"pN"_3$
 and $"inh"_{in0}$. Upon this, we construct the complete
 inner-inheritance $"inh"_{in}$ that is responsible for extending
 "handler". Then we continue the construction for $"inh"_4$ that ``nest''
