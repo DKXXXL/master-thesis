@@ -148,7 +148,7 @@ EndFamily.
 Here we explain how  our detailed construction in
 \cref{fig:example-construction}. We first elaborate that
 how our inductive type "N" is written in the specific format (the style
-of W-type). We use 1, 0 here to indicate unit type and bottom type. 
+of W-type). We use 1, 0 here to indicate unit type and bottom type. Recall from \ruleref{Sigma Elim}, we have "pjl" and "pjr" as two projection from the sigma type (dependent pair). We will also use $"pjl"^n$ as a consecutive composition of "pjl", (e.g. $"pjl"^2~t$ is exactly $("pjl" ("pjl"~t))$ ).
 
 Next, we alias each part of the derivation with a name. Every derivation
 here is well-typed term. We also annotate in the original pseudocode the
@@ -167,16 +167,46 @@ doing abstraction on it to get $"sl"_1$.
 
 Now we construct the recursor, with the help of the handler module
 $"handler"_1$, with which we can construct the real recursor $"pred"_1$.
-Both detailed constructions are omitted. Then we again abstract the
-concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$
-can apply it without resorting to the concrete recursor. Finally we
-have $"sig"_5$ as final signature. Recall from \ruleref{Sigma Elim}, we have "pjl" and "pjr" as two projection from the sigma type (dependent pair). We will also use $"pjl"^n$ as a consecutive composition of "pjl", (e.g. $"pjl"^2~t$ is exactly $("pjl" ("pjl"~t))$ ). \YZ{
+Both detailed constructions are omitted. $"obj"_3$ and $"sig"_3$ is the resulting linkage and linkage signature aggregating the nested family $"handler"_1$. $"pred"_1$ is then the constructed recursor over $"sig"_3$ , without any abstraction, for the sake of exhaustiveness checking. We show the example $"sig"_4$ as the result of adding this new recursor. 
+
+Then we again abstract the concrete recursor $"pred"_1$ away using $"sl"_4$ so that the field $"k"$ (of type $"pN"_2$)
+can apply the recursor without resorting to any concrete recursor, thus achieving late-binding. Finally we
+have $"sig"_5$ as final signature. 
+
+Note that, since in our example there is only one type, the complicated debruijn indices $El("pjr" ("pjl" \pi_2)) $ in $"pN"_2$ and  $El("W"("pjr"("pjl"^2 \pi_2)))$ in "predT" are both referring to the type "N". The distinguishing difference is we have "W" (\ruleref{Ind-Type}) for the latter as "predT" is constructed in the context knowing the concrete definition of the inductive type, thus generally not inheritable. On the contrary,  $"pN"_2$ has as its context only $"N" : \cU$ and manifests its late-binding and its overridability for its former fields. \YZ{
   Maybe it is a good place to point out what El(pjr (pjl pi_2)) in pN_2 stands for
   and what El(W(pjr(pjl^2 pi_2))) in predT stands for.
 }\EDJreply{Done.}\YZreply{
   I was actually alluding to how the type of pN_2 manifests late binding
   while the type of predT refers to the concrete signature of the
   inductive type.
+}\YZreply{
+  It’s good to be consistent in notations.  You later use * for products definition of pN_1, but you also use * as the term of type ($\bW$ $\sigma$) 
+}\EDJreply{Sry. Now I attempt another try. I also change the above paragraph a bit to explain the details on sig₃, sig₄, and etc.
+I also copy the comments in our slack to here to remind me about the changes.
+Also let me paste the full example here for future reference: \\
+% following is the body of pred₁
+pred_ = Wrec ...  
+  : Tm (⋅ ▹ 𝓒sig₃ ▹ (El (W (pjr (pjl (pjl π₂)))))) (El (W (pjr (pjl (pjl π₂)))))[π₁] \\
+% we do lambda abstraction now
+pred₁ = λ pred_ :   Tm (⋅ ▹ 𝓒sig₃) (∏ El (W (pjr (pjl (pjl π₂)))) (El (W (pjr (pjl (pjl p₂))))[π₁])) \\
+% we can see that, the type of pred₁ is predT 
+% now we construct sig4, this should not have any abstraction inside
+sig₄ = ∨+ sig₃ id_s (∏ El (W (pjr (pjl (pjl π₂)))) (El (W (pjr (pjl (pjl π₂))))[π₁])) \\ 
+% we omit the construction of obj₄
+obj₄ : Tm ⋅ 𝓛sig₄ \\
+% since pred is define in context 𝓒sig₃, we need to abstract 𝓒sig₄ into sig₄'
+% again for later field,
+sig₄' = 
+  Σ (Σ ((Σ (Σ ⊤ 𝕌) (El (pjr π₂))) 𝓛(∨+ ⋅ (pN[π₁]))[sf sl₁])) 
+    (∏ El (pjr (pjl (pjl π₂))) (El (pjr (pjl (pjl π₂)))[π₁]))
+% and we have, omitting the detail construction 
+sl₄ : Seal ⋅ sig₄ sig₄' \\
+% pN₂ now is constructed in the context of the sealed context sig₄'
+pN₂ = El (pjr (pjl π₂)) * El (pjr (pjl π₂)) : Ty (⋅ ▹ sig₄') 
+% the product type \\ 
+sig₅ = ∨+ sig₄ {sl₄} pN₂ \\ % the full example is in my gist last time I sent to you (Attempt 9), if you like it I can send the link again but note that the omission is still there and a lot of naming convention is different.
+It seems that as you last night complained, I forget to add sig₄' causing problems.  Do I also need to make a note that those primed variables are always the result of abstraction?
 }
 
 Now we construct the inheritance judgement for $"A"_2$. Still, we start
