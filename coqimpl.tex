@@ -297,7 +297,7 @@ Family STLC.
     using subst_internal
     by _rec.
 (*
-Field test := (subst (tm_var 0) 0 (tm_var 0)).
+Field test := (subst (tm_var 0) 0 (tm_var 0)).@\YZ{Why is "test" commented out?}@
 *)
 (* ... *)
 EndFamily.
@@ -354,7 +354,7 @@ Module v_33_34 (STLC: STLC_409).
     recursor_for_type_checking (fun _  ⇒ id → STLC.tm → STLC.tm)
       subst_internal_410.tm_var
       subst_internal_410.tm_abs ... .
-End v_33_34.
+End v_33_34.@\YZ{It'd be useful to (1) show how the parts of the STLC family are assembled and recursor inserted, and (2) show the code compiled for STLC\_bool and how code from STLC is shared with STLC\_bool.}@
 \end{minted}
   \end{minipage}
 \caption{Exemplar STLC Code, especially about Inductive Type}\label{fig:plugin-example2}
