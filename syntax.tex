@@ -739,19 +739,21 @@ a special form of \textit{local morphism}~\cite{abbott2003category}.
 The substitution law should be understood as a lemma, and it is easily
 derivable using $\gamma^\uparrow$. 
 
-For notation clarity, we will sometimes use $sf'$ to emphasize that we
-consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
-$\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}\YZreply{
+% For notation clarity, we will sometimes use $sf'$ to emphasize that we
+% consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
+% $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.
+
+\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}\YZreply{
   I'm still confused about the difference among s, sf s and sf' s.
   I thought s and sf' s were technically the same; they are both terms of type A[pi1] in a context that contains cC sigma.
   I thought sf s was different because it is a substitution.
 }\EDJreply{You are absolutely right. s and sf' s are techincally the same. sf s is a substitution.
   About s and sf' s, I can say that, I don't allow something like $\goodSeal{\Gamma}{sf'~s}{\sigma}{A}$. The reason I don't allow it is only notational consideration. 
   I mean technically we can consider them the same. I can just remove all the appearances of sf' if you want and find it less confusing.
-}\YZreply{Yes, sf' is confusing to me.}
-Notation "sf"
+}\YZreply{Yes, sf' is confusing to me.}\EDJreply{sf' notation removed. Please check.}
+Note that, given $\goodSeal{\Gamma}{s}{\sigma}{A} = \goodTerm{\Gamma, \cC\sigma}{s}{A}$, notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
-\cC \sigma}{(sf~s) := (\pi_1, sf'~s)}{\Gamma, A}$.
+\cC \sigma}{(sf~s) \coloneqq (\pi_1, s)}{\Gamma, A}$.
 
 Sealing judgement is still about the important term $h$ we mentioned
 earlier. Thanks to $\cC$, a field $t_{new}$ that depends on $a$ is now
