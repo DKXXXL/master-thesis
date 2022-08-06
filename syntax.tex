@@ -433,7 +433,8 @@ $$
 \quad
 \Rule[name=Ind-Univ]
 {\goodWSig{\Gamma}{\tau}{n}}
-{\goodType{\Gamma}{\bW \tau}{i}}
+{\goodType{\Gamma}{\bW \tau}{i}
+}
 $$
 %\YZ{Is there an introduction rule for terms of type 'bW sigma'?}
 %\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation below.}
@@ -453,7 +454,10 @@ $$
 $$
 \Rule[name=Ind-Type]
 {\goodTerm{\Gamma}{T}{\bW \tau}}
-{\goodTerm{\Gamma}{"W" \ T}{\cU}}
+{\goodTerm{\Gamma}{"W" \ T}{\cU}
+}
+\quad 
+\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}
 \quad
 \Rule[name=Ind-Term]
 {\goodTerm{\Gamma}{T}{\bW \tau}

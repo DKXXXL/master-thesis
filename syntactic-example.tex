@@ -76,7 +76,7 @@ EndFamily.
 \begin{align*}
   "Osig" &\coloneqq \goodWSig{\cdot}{w^+\ w\cdot\ \top\ \bot}{1} \\
   "sig"_1 &\coloneqq \goodSig{\cdot}{\nu^+ \ \nu\cdot \ {id_s} \ (\bW \ "Osig"[\pi_1])}{1}  \\
-  "obj"_1 &\coloneqq \goodTerm{\cdot}{\mu^+ \ \mu\cdot \ {id_s} \ *}{\cL"sig"_1}\\
+  "obj"_1 &\coloneqq \goodTerm{\cdot}{\mu^+ \ \mu\cdot \ {id_s} \ \star}{\cL"sig"_1}\\
   \cC"sig"_1 &\coloneqq \goodType{\cdot}{\Sigma \ \top \ (\bW \ "Osig"[\pi_1]) }{} \\
   "sig"_2 &\coloneqq  \goodSig{\cdot}{\nu^+ \ "sig"_1 \ {id_s} \ El ("W" ("pjr" \ \pi_2))}{2} \\ 
   "O"_1 &\coloneqq {"Wsup" \ ("pjr" \pi_2) \ () \ ("elim-"\bot \ \pi_2)}  \\ 
@@ -84,9 +84,9 @@ EndFamily.
   "obj"_2 &\coloneqq \goodTerm{\cdot}{\mu^+ \ "obj"_1 \ "O"_1}{\cL"sig"_2} \\
   "sig"_2' &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top \cU)El ("pjr" \pi_2)}{} \\ 
   \cC"sig"_2 &\coloneqq \goodType{\cdot}{\Sigma (\Sigma \top (\bW \ "Osig"[\pi_1]))El ("W"("pjr" \pi_2)) }{} \\ 
-  "sl"_1 &\coloneqq ((*, "W" ("pjr" ("pjl" \pi_2)) ), "pjr" \pi_2) \\ 
+  "sl"_1 &\coloneqq ((\star, "W" ("pjr" ("pjl" \pi_2)) ), "pjr" \pi_2) \\ 
   & \text{ and thus }  \goodSeal{\cdot}{"sl"_1}{"sig"_2}{"sig"_2'} \\
-  "pN"_1 &\coloneqq \goodType{\cdot, "sig"_2'}{El ("pjr" ("pjl" \pi_2)) * El ("pjr" ("pjl" \pi_2))}{} \\
+  "pN"_1 &\coloneqq \goodType{\cdot, "sig"_2'}{El ("pjr" ("pjl" \pi_2)) \times El ("pjr" ("pjl" \pi_2))}{} \\
   "handler"_1 &\coloneqq \goodTerm{\cdot, "sig"_2'}{\_}{\cL(\nu^+ \ \nu\cdot \ \{id_s\} "pN"_1)} \\
   "sig"_3 &\coloneqq \goodSig{\cdot}{\nu^+ "sig"_2 \{"sl"_1\} \ \cL(\nu^+ \ \nu\cdot \ \{id_s\} "pN"_1)}{3} \\ 
   "obj"_3 &\coloneqq \goodTerm{\cdot}{\mu^+~"obj"_2~"handler"_1}{\cL"sig"_3}\\
@@ -95,7 +95,7 @@ EndFamily.
   "sig"_4 &\coloneqq \nu^+ \ "sig"_3 \ \{id_s\} \ "predT" \\ 
   "obj"_4 &\coloneqq \goodTerm{\cdot}{\mu^+~"obj"_3~"pred"_1}{\cL"sig"_4}\\
   "sl"_4 &\coloneqq \goodSeal{\cdot}{\_}{"sig"_4}{"sig"_4'} \\
-  "pN"_2 &\coloneqq \goodType{\cdot, "sig"_4'}{El ("pjr" ("pjl" \pi_2)) * El ("pjr" ("pjl" \pi_2))}{}
+  "pN"_2 &\coloneqq \goodType{\cdot, "sig"_4'}{El ("pjr" ("pjl" \pi_2)) \times El ("pjr" ("pjl" \pi_2))}{}
 \end{align*}
 \end{minipage}%
 \begin{minipage}[t]{0.4\linewidth}
@@ -107,7 +107,7 @@ EndFamily.
   \text{Here we}&\text{ start to construct Family } "A"_2 \\ 
   "Nsig" &\coloneqq \goodWSig{\cdot}{w^+\ "Osig"\ \top \ \top}{2} \\ 
   "sig"_{11} &\coloneqq \goodSig{\cdot}{\nu^+ \ \nu\cdot  \ (\bW \ "Nsig"[\pi_1])}{1} \\
-  "inh"_1 &\coloneqq \goodInh{\cdot}{"inhov" \  "inhid" \ *}{"sig"_1}{"sig"_{11}}\\
+  "inh"_1 &\coloneqq \goodInh{\cdot}{"inhov" \  "inhid" \ \star}{"sig"_1}{"sig"_{11}}\\
   "O"_2 &\coloneqq {"Wsup" \ ("pjr" \pi_2) \ () \ ("elim-"\bot \ \pi_2)}  \\ 
   & \text{ but }  \goodTerm{\cdot, \cC"sig"_{11}}{"O"_2}{El ("W" ("pjr" \pi_2))} \\
   "sig"_{21} &\coloneqq \nu^+ \ "sig"_{11} \ \{id_s\} (El (W (pjr p₂))) \\ 
@@ -182,7 +182,8 @@ Note that, since in our example there is only one type, the complicated debruijn
   inductive type.
 }\YZreply{
   It’s good to be consistent in notations.  You later use * for products definition of pN_1, but you also use * as the term of type ($\bW$ $\sigma$) 
-}\EDJreply{Sry. Now I attempt another try. I also change the above paragraph a bit to explain the details on sig₃, sig₄, and etc.
+}\EDJreply{Notation replaced. First * replaced with $\star$, second * replaced with $\times$}
+\EDJreply{Sry. Now I attempt another try. I also change the above paragraph a bit to explain the details on sig₃, sig₄, and etc.
 I also copy the comments in our slack to here to remind me about the changes.
 Also let me paste the full example here for future reference: \\
 % following is the body of pred₁
