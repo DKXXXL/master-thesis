@@ -132,7 +132,7 @@ requirements in \ref{chg:software-engineering}.\YZ{
 }\YZreply{
   Looks like individually compiling family members addresses not only
   this requirement, but also the "self vs. consistency" challenge.
-}\EDJreply{Yes. Indivially compiling family member is to achieve both requirements}
+}\EDJreply{Yes. Indivially compiling family member can achieve both requirements}
 
 
 
@@ -297,7 +297,7 @@ Family STLC.
     using subst_internal
     by _rec.
 (*
-Field test := (subst (tm_var 0) 0 (tm_var 0)).@\YZ{Why is "test" commented out?}@
+Field test := (subst (tm_var 0) 0 (tm_var 0)).@\YZ{Why is "test" commented out?}\EDJreply{Because I want to show I can do it but I don't really want to d -- if I really do it the compilation result shown later will need to have this information.}@
 *)
 (* ... *)
 EndFamily.
