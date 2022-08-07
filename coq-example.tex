@@ -30,6 +30,14 @@ EndFamily.
 Family STLC_bool_prod 
     extends STLC 
     using STLC_bool using STLC_prod.
+Family STLC_bool_prod_sum 
+    extends STLC 
+    using STLC_sum using STLC_bool_prod.
+Family STLC_bool_prod_sum_fix 
+    extends STLC 
+    using STLC_bool_prod_sum using STLC_fix.
+(* ... and more, 
+   there are 11 mixins families ... *)
 \end{lstlisting}
 \includegraphics[width=0.5\textwidth]{coqexmaple/STLC-inheritances.pdf}
 \caption{Example STLC extended with product, and Mixin with \cref{fig:STLC-example2}}
@@ -44,8 +52,8 @@ Our emphasis here is that, we singled out some language features from
 STLC and prove the type safety for each feature separately, following
 the style of the examples in MTC~\cite{delaware2013,forsta2020}.
 And we use a \textit{not-yet-formally-defined} \textbf{mixin} feature
-to mix the semantics and properties of two language features---product
-and boolean (in \cref{fig:STLC-example})---with vanilla STLC.
+to mix the semantics and properties of language features---product
+, boolean (in \cref{fig:STLC-example}), sum type and iso-recursive type---with vanilla STLC.
 
 \textbf{Mixin} is implemented by making inheritance judgement/data supporting \textit{weakening} and composition. Then, using notation from metatheory, given $\goodInh{\cdot}{i_1}{\sigma_1}{\sigma_2}$ and $\goodInh{\cdot}{i_2}{\sigma_1}{\sigma_3}$, we can weaken $i_2$ to $\goodInh{\cdot}{i_2'}{\sigma_2}{\sigma_3'}$ and the composition of $i_1$ and $i_2'$ is the resulting mixin---this implementation breaks commutativity and will need to solve design problems on compatibility (mostly related to the \textit{diamond problem}): for example, when $i_1$ and $i_2$ are both extending with a field of the same name, do we signal error or use $i_2$'s extension and consider it as an `override'? However, our current example of STLC only uses a subset of the mixin with a clear semantic (i.e. every sensible design of mixin should agree on)---because our STLC examples only use extension of fields with different names and no overriding is used. 
 
@@ -76,7 +84,7 @@ inversion ``lemma'' like \textit{a constraint} and post-hoc-ly verify
 that our inductive definition does satisfy the constraint, which is
 exactly what we expect from "Closing Fact". If directly working on inductive definition doesn't bring us benefit during proof engineering, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
-Our formulation for bare STLC is around 400+ LOCs; the two families implementing product and boolean features both take around 250+ LOCs. 
+Our formulation for bare STLC is around 400+ LOCs; each families implementing product and boolean features both take around 300+ LOCs. 
 % need comparison with the original implementation
 
 The biggest difference in the proof script comes from the fact that we
@@ -96,23 +104,22 @@ The second example is adapted and modified from \citet{zm2017}.
 Contrary to our first example, here, we use a big-step interpreter with fuel
 as the operational semantics of an imperative language with
 side effects, and we specify the abstract interpretation and prove its
-soundness, with some postulation on both computation and property.
-Then we extend the base language with new features, and we instantiate
-the postulation on computation for
+soundness, with some postulation on both computation and property. Then we instantiate our abstract interpretation with two concrete computation---one for type inference and the other for constant propagation. Our analyzer will return the analysis result about the end of the program, e.g. our constant propagator will return what constant value each variable is at the end of the program. Thanks to the compilation to Coq module, we can directly run the resulting
 abstract interpreters.
-Thanks to the compilation to Coq module, we can directly run the resulting
-abstract interpreters.
+
+% Then we extend the base language with new features, and we instantiate
+% the postulation on computation for
+% abstract interpreters.
+
 
 \begin{figure}[!htb]
-  \includegraphics[width=\columnwidth]{coqexmaple/Family-Lang-Imp2.pdf}
-  \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows are overriding. Grey box are sealed families.}\label{fig:abstract-interpretation-example}
+  \includegraphics[width=\columnwidth]{coqexmaple/Family-Lang-Imp3.pdf}
+  \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows mean there are overriding.}\label{fig:abstract-interpretation-example}
 \end{figure}
 
-We construct four families, in one inheritance chain, illustrated in \cref{fig:abstract-interpretation-example}.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
-
-
+We construct four families, illustrated in \cref{fig:abstract-interpretation-example}.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
 The first family "Lang" define the big step operator (using fuel) of a
-while language, with expression and stmt defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200+ LOCs. 
+while language, with expression and stmt defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200 LOCs. 
 % We
 % can
 \YZ{In general, in a result section like this, you want to show what
@@ -129,19 +136,18 @@ to use family inheritance to extend a concrete interpreter with abstract
 interpreters. 
 % This example also shows in this family polymoprhism framework we can reason about "Lang" with computation details being abstracted. 
 
-The third Family "LangMore" extend "LangwAbs" with nat constant and
-addition, and if-then-else control flow, of course retaining all the
-soundness theorem. It takes about 200+ LOCs. This is one example of
-using family inheritance to support new language feature, and compatible
-with the existent reasoning in "LangwAbs.AbsInterpreter". 
+% The third Family "LangMore" extend "LangwAbs" with nat constant and
+% addition, and if-then-else control flow, of course retaining all the
+% soundness theorem. It takes about 200+ LOCs. This is one example of
+% using family inheritance to support new language feature, and compatible
+% with the existent reasoning in "LangwAbs.AbsInterpreter". 
 
-The fourth family "LangRun" instantiate some of the postulates of the
-"LangMore" and recover computational information of "analyze". The "absStateData" is overridden by a concrete definition. The resulting abstract interpreter is expected
-to act as a type-analyzer. It takes about 200+ LOCs. This is one example
-of instantiate the detail computation of abstract interpretation. 
+The third family and the fourth family "LangTyping" and "LangCP" instantiate some of the postulates of the
+"LangwAbs" and recover computational information of "analyze". The corresponding fields in "absStateData" is overridden by a concrete definition. The resulting abstract interpreter is expected
+to act as a type-analyzer and constant-propagator respectively. It takes about 200+ LOCs. 
+% These are two examples of instantiate the detail computation of abstract interpretation. 
 
 
-And at the end, we compile LangRun into module and use Coq to run it on
-some simple queries. This "LangRun" also illustrates that we still have
+And at the end, the compiled module for "LangTyping" and "LangCP" is put into tests over simple queries. These "LangTyping" and "LangCP" also illustrates that we still have
 computability in the presence of family.\YZ{Can there be a diagram (a la Figure 1 in Familia paper) illustrating the relationships between (and functionalities of) the different families?}\EDJreply{Done. Please check}
 
