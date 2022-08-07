@@ -40,12 +40,11 @@ So it needs to be addressed why deferring type checking to Coq is OK.}\EDJreply{
 
 \textbf{Family compiled into module.} The main idea of our plugin is to support family by compiling
 family components into Coq modules, family ``types'' into module types, and the context of a given term
-into parameters of the module. We need to faithfully
-reflect the \textit{late binding} nature of families: for each defining
-field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
+into parameters of the module. 
+
+Since by default every field is inheritable, for each defining field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
 ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall
-\cL \sigma. T$. However, instead of using Coq's universal quantifier, we
-choose module and module parameters to achieve this wrapping---each
+\cL \sigma. T$, so that field $t$ can be inherited to all the future family with strengthen context $\sigma^+$ with the help of weakening from $\sigma^+$ to $\sigma$.  However, instead of using Coq's universal quantifier, we choose module and module parameters to achieve this wrapping---each
 family type in the context will be one module parameter
 with the compiled module type, and thus each field of the family will
 compile into a functor parametrized by its context. Doing so we can also
