@@ -42,14 +42,14 @@ So it needs to be addressed why deferring type checking to Coq is OK.}\EDJreply{
 family components into Coq modules, family ``types'' into module types, and the context of a given term
 into parameters of the module. 
 
-Since by default every field is inheritable, for each defining field $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
+Since by default every field is inheritable, for each defining field (informally) $ .. \cL\sigma \vdash t : T $, we need to compile $t$ using
 ``universal-quantifier-wrapped term'' : $.. \vdash \lambda t : \forall
 \cL \sigma. T$, so that field $t$ can be inherited to all the future family with strengthen context $\sigma^+$ with the help of weakening from $\sigma^+$ to $\sigma$.  However, instead of using Coq's universal quantifier, we choose module and module parameters to achieve this wrapping---each
 family type in the context will be one module parameter
 with the compiled module type, and thus each field of the family will
 compile into a functor parametrized by its context. Doing so we can also
 get rapid feedback from type checking when the users are defining each
-field interactively with Coq.
+field interactively with Coq. Note that, when compiling the context during the  compilation of a default (non-overridable)  field, all the default (non-overridable) former fields will expose their definition in the context while overridable fields will only expose their types.
 % Insert one pseudo-code example for explanation of the mechanism
 \begin{figure}[!htb]
   \begin{minipage}[t]{0.30\linewidth}
@@ -65,16 +65,16 @@ EndFamily.
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
 Definition a : nat := 1. End a_4.
-Module Type a_5 (self_A: EmptySig).
-Parameter (a : nat). End a_5.
-Module Type a_6 := a_5 EmptyMod.
+Module Type a_6 (self_A: EmptySig).
+Include a_4. End a_5.
+
 \end{minted}
   \end{minipage}
   \begin{minipage}[t]{0.3\linewidth}
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module b_7 (self_A: a_6).
 Definition b 
-  : self_A.a = self_A.a 
+  : self_A.a = 1
   := eq_refl. End b_7.
   
 Module A. (* Final Aggregation *)
@@ -87,22 +87,22 @@ Include a_4. Include b_7. End A.
 
 % Concrete details of compilation of a family term data structure
 Taking \cref{fig:plugin-example1} as an example: immediately after the user inputs the line "Field a : nat := ..", our plugin will
-translate this statement into the "Module a_4", "Module Type a_5, a_6"
-three components.
+translate this statement into the "Module a_4", "Module Type a_6"
+two components.
 {The "EmptySig" is just an empty module type.} Then,
 these modules and module types will be generated and type-checked by Coq
-immediately. The compiled "Module a_4" is then part of the context of
-"Field b" (as the module type of "self_A") for "b" to refer to. The
+immediately. The compiled "Module a_6" is then part of the context of
+"Field b" (as the module type of "self_A") for "b" to refer to, so that "b" knows "a"'s concrete definition. The
 internal representation of family "A" is the list of these
 compiled modules and module types. We can achieve incremental
-checking as in \ref{chg:software-engineering}; overriding is also directly supported---for example, if we
+checking as in \ref{chg:software-engineering}. This makes all kinds of inheritance plausible---for example, if we
 want to override "Field a", we simply replace that compiled module with
-the new module inside the list. This compiled module type serves as an
-abstraction that enables overriding. 
+the new module inside the list. 
+% This compiled module type serves as an abstraction that enables overriding. 
 
 
 
-This is achieved by a complete compilation from a family to a module,
+After closing the top family, the user can access family "A" like it is a module. This is achieved by a complete compilation from a family to a module,
 via aggregating the list of the modules in the internal representation:
 the plugin will repeatedly using Coq's "Include" command as the "Module
 A" as \cref{fig:plugin-example1} illustrates.
@@ -115,7 +115,7 @@ functors without arguments---this is due to a peculiarity of Coq's
 instantiated by the appropriate fields in the surrounding defining
 module.
 For example, "b_7" requires a module of type "a_6". Inside module "A",
-when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat}
+when "Include a_4" is done, we will have a field \mintinline{Coq}{a : nat := 1}
 inside the current surrounding "A". Then when we
 \mintinline{Coq}{Include b_7} without specifying the module parameter,
 Coq will try to find fields in the surrounding module (i.e., module
@@ -132,6 +132,12 @@ requirements in \ref{chg:software-engineering}.\YZ{
   Looks like individually compiling family members addresses not only
   this requirement, but also the "self vs. consistency" challenge.
 }\EDJreply{Yes. Indivially compiling family member can achieve both requirements}
+
+\textbf{Implementing "Overridable" and Overriding Chain.}
+We implement "Overridable" by simply annotating the corresponding field type with a mark and its dependency. Then when compute the context during the compilation of the term for that field, we make sure only all the dependee and the non-overridable field will expose its definition in the context. Most parts of the implementation is quite similar to the default fields, except that when inheriting an overridable field, we need to make sure all its dependee is inherited earlier.  
+
+When aggregating the fields into a module, we will make sure all the overridable fields to expose its definition for simiplicity in the compilation. 
+
 
 
 
@@ -178,21 +184,25 @@ only know \mintinline{Coq}{a : nat}.
 
 
 
-\textbf{Implementing "Final" and "Sealed Family".}
-We implement "Final" by
-exposing the whole definition directly into the compiled module type.
-Doing so will prohibit overriding. Say, "bop", declared "Final" in
-\cref{fig:plugin-example3}, is not overridable.
-We require the users to manual decorate field as `Final' so that the
-plugin will proceed with this special treatment.
-%\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
+% \textbf{Implementing "Final" and "Sealed Family".}
+% We implement "Final" by
+% exposing the whole definition directly into the compiled module type.
+% Doing so will prohibit overriding. Say, "bop", declared "Final" in
+% \cref{fig:plugin-example3}, is not overridable.
+% We require the users to manual decorate field as `Final' so that the
+% plugin will proceed with this special treatment.
+% %\YZ{This para is confusing: which kind of equality is used, propositional or judgmental? Where does 'Final' show up in the example?}\EDJreply{I rephrase it and remove the part on talking about meta-theory. Now everything is about judgemental so I don't have to emphasize judgemental. I wanted to make the example small but I guess I can add one `Final' statement into our example. Don't resolve it until I add it into Figure 2.}
 
-% \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
+% % \textbf{Special Fields: Overridable/Sealed Family Simulating Sigma Type.} 
 
-The implementation of sealed family is not so different from that of the normal family, but we need to deal with the compiled module type. The compiled module type is the aggregation of the type instead of the concrete definition of the fields.
-For example, the compiled module type of
-"MonotonicF" in \cref{fig:plugin-example3} will be "{f : nat -> nat; p : monotonic f}". Thus any future overriding family will always have these two fields "f, p" with the corresponding type.\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
+% The implementation of sealed family is not so different from that of the normal family, but we need to deal with the compiled module type. The compiled module type is the aggregation of the type instead of the concrete definition of the fields.
+% For example, the compiled module type of
+% "MonotonicF" in \cref{fig:plugin-example3} will be "{f : nat -> nat; p : monotonic f}". Thus any future overriding family will always have these two fields "f, p" with the corresponding type.\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
+
+% The implementation of sealed family is not so different from that of the normal family, but we need to deal with the compiled module type. The compiled module type is the aggregation of the type instead of the concrete definition of the fields.
+% For example, the compiled module type of
+% "MonotonicF" in \cref{fig:plugin-example3} will be "{f : nat -> nat; p : monotonic f}". Thus any future overriding family will always have these two fields "f, p" with the corresponding type.\YZ{Can an overriding, sealed family define new fields not in its parent?}\EDJreply{I don't find this a problem but I didn't support it in my plugin. }
 
 % Basically, {a : int -> int; property : a is monotonic}, in this case
 %   we may want to override "a" using different computation, but we still wnat
