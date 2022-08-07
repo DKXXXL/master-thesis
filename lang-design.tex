@@ -112,39 +112,28 @@ inherited.
 
 
 \begin{figure}[!htb]
-  \begin{minipage}[t]{0.45\linewidth}
+  \begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[language=Coq, escapeinside={@}{@}]
 Family I.
  Field a : nat := 1.
- Field b : a = a := eq_refl.
- Fail Field c : a = 1 := eq_refl. (*Fail 1*)
-
- Final Field a' : nat := 1.
- Field c : a' = 1 := eq_refl.
- Field bop : nat -> nat -> nat := (+).
- Fail Field comm_bop : ...
-
- Family MonotonicF.
-  Field f : nat -> nat := non_impl.
+ Field b : a = 1 := eq_refl.
+ Overridable Field a' : nat := 1.
+ Fail Field c : a' = 1 := eq_refl. (* Fail 1*)
+ Overridable Field f : nat -> nat := non_impl.
+ Overridable 
   Field p : monotonic f := non_impl.
- SealFamily. 
 EndFamily.
 \end{lstlisting}
   \end{minipage}
 \begin{minipage}[t]{0.45\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family I2 extends I.
- Override Field a : nat := 1. (* Override *)
- Inherit b.                   (* Inherit  *)
+ 
+ Inherit Field b.
+ Override Field a' : nat := 2.  (* Override *)
 
- Field d : nat := a.          (* Extend   *)
- Fail Override Field a' : nat := 2. (*Fail 2*)
-
- Override Field bop := (-).
-
- Inherits Until MonotonicF.
- Override Family MonotonicF.
-  Field f : nat -> nat := (+ 1).
+ Override Field f : nat -> nat := (+ 1).
+ Override pins {f} 
   Field p : monotonic f := ...
  EndFamily. 
 EndFamily.
@@ -154,62 +143,99 @@ EndFamily.
 \end{figure}
 
 
-% Talk about Final
-\textbf{Final as non-overridable.} Every field is by default
-overridable, reminding us of \ref{chg:definition-relevant-reasoning}.  To
-resolve it, we provide the keyword "Final" to allow the user to specify
-\textit{non-overridability} and give the user the opportunity to choose
-from overriding and exposing the definition.
+% % Talk about Final
+% \textbf{Final as non-overridable.} Every field is by default
+% overridable, reminding us of \ref{chg:definition-relevant-reasoning}.  To
+% resolve it, we provide the keyword "Final" to allow the user to specify
+% \textit{non-overridability} and give the user the opportunity to choose
+% from overriding and exposing the definition.
 
-Take the field "c" of "Family I" in \cref{fig:plugin-example3} as an 
-example. We can see that the first attempt of proving "a = 1" fails.
-This should fail---because we want to retain the possibility
-to override "a" and inheriting "c" in the future, but they are
-conflicting, since "c" witnesses that "a" is fixed to "1". On the other
-hand, once we decorate \lstinline{a'} as final, the second attempt
-\lstinline{c : a' = 1 := eq_refl} will succeed. Contrary to "a",
-our \lstinline{a'} is not overridable in "Family I2", mediating the
-\ref{chg:definition-relevant-reasoning}.
+% Take the field "c" of "Family I" in \cref{fig:plugin-example3} as an 
+% example. We can see that the first attempt of proving "a = 1" fails.
+% This should fail---because we want to retain the possibility
+% to override "a" and inheriting "c" in the future, but they are
+% conflicting, since "c" witnesses that "a" is fixed to "1". On the other
+% hand, once we decorate \lstinline{a'} as final, the second attempt
+% \lstinline{c : a' = 1 := eq_refl} will succeed. Contrary to "a",
+% our \lstinline{a'} is not overridable in "Family I2", mediating the
+% \ref{chg:definition-relevant-reasoning}.
 
-This example might sound trivial and contrived. Let's look at the
-example field binary operation "bop" initially set to be addition.
-Now that we only expose the type of "bop", we
-cannot prove its commutativity in "comm_bop" (because we don't have
-access to its concrete definition) but we can override "bop" with
-subtraction function in "Family I2". This makes sense because we
-shouldn't (have the ability to) inherit commutativity property for
-subtraction anyway. This is contrary to how \lstinline{a'} is declared
-"Final": the second "c" can prove that it's equal to 1 but
-\lstinline{a'} is not overridable in the "Family I2". 
+% This example might sound trivial and contrived. Let's look at the
+% example field binary operation "bop" initially set to be addition.
+% Now that we only expose the type of "bop", we
+% cannot prove its commutativity in "comm_bop" (because we don't have
+% access to its concrete definition) but we can override "bop" with
+% subtraction function in "Family I2". This makes sense because we
+% shouldn't (have the ability to) inherit commutativity property for
+% subtraction anyway. This is contrary to how \lstinline{a'} is declared
+% "Final": the second "c" can prove that it's equal to 1 but
+% \lstinline{a'} is not overridable in the "Family I2". 
 
-In our example, the seal family "I.MonotonicF" is actually simulating
-interfaces as well.  We have
-\mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
-and we assigned it to both "f" and "p", and later instantiate in
-"I2" with concrete implementation by overriding this family
-"I.MonotonicF".
+% In our example, the seal family "I.MonotonicF" is actually simulating
+% interfaces as well.  We have
+% \mbox{``\mintinline{Coq}{Axiom non_impl : forall {T : Type}, T.}''},
+% and we assigned it to both "f" and "p", and later instantiate in
+% "I2" with concrete implementation by overriding this family
+% "I.MonotonicF".
 
-\textbf{Overridable/Sealed Family as better Sigma Type.} Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
-(definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
-\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
-because to prove
-the latter we need to have concrete definition of "f" in the family type, which
-makes "f" non-overridable at all. One option is to use sigma type
-\mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
-a bundle of stuff with multiple refinements. 
+% \textbf{Overridable/Sealed Family as better Sigma Type.} Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
+% (definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
+% \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
+% because to prove
+% the latter we need to have concrete definition of "f" in the family type, which
+% makes "f" non-overridable at all. One option is to use sigma type
+% \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
+% a bundle of stuff with multiple refinements. 
 
-To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be ``sealed'' with a ``relaxed family type''---it is an aggregation of the types instead of the concrete definitions of all the field. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
+% To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be ``sealed'' with a ``relaxed family type''---it is an aggregation of the types instead of the concrete definitions of all the field. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
 
-For example, the "MonotonicF" in \cref{fig:plugin-example3}:
-we simply seal
-\mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
-together inside an sealed family.
-Because the definition of "f" is exposed inside the family, 
-its definition is
-transparent and can be used to prove "p".
-However, because the enclosing family of "f" is overridable, to swap the
-implementation of "f", we just override the whole ``sealed'' family,
-like we do in "I2.MonotonicF". 
+% For example, the "MonotonicF" in \cref{fig:plugin-example3}:
+% we simply seal
+% \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
+% together inside an sealed family.
+% Because the definition of "f" is exposed inside the family, 
+% its definition is
+% transparent and can be used to prove "p".
+% However, because the enclosing family of "f" is overridable, to swap the
+% implementation of "f", we just override the whole ``sealed'' family,
+% like we do in "I2.MonotonicF". 
+
+% Non-overridable fields are still not expressive enough to achieve the full power of dependent type programming. There are cases where overriding and
+% (definition-relevant) reasoning are both needed. For example, we may want a monotonic function as a overridable field member. We cannot split into two fields
+% \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f},
+% because to prove
+% the latter we need to have concrete definition of "f" in the family type, which
+% makes "f" non-overridable at all. One option is to use sigma type
+% \mintinline{Coq}{{f | monotonic f}}, but that can be cumbersome when we have
+% a bundle of stuff with multiple refinements. 
+
+% To resolve this, we provide \textit{family sealing} mechanism to simulate the sigma type. In a sealed family, every field will expose its definition inside the sealed family but a family as a whole will be ``sealed'' with a ``relaxed family type''---it is an aggregation of the types instead of the concrete definitions of all the field. Thus we can override one sealed family as a whole and change the internal implementation as long as they can satisfy the ``relaxed family type''. 
+
+% For example, the "MonotonicF" in \cref{fig:plugin-example3}:
+% we simply seal
+% \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}
+% together inside an sealed family.
+% Because the definition of "f" is exposed inside the family, 
+% its definition is
+% transparent and can be used to prove "p".
+% However, because the enclosing family of "f" is overridable, to swap the
+% implementation of "f", we just override the whole ``sealed'' family,
+% like we do in "I2.MonotonicF". 
+
+\textbf{Overridable Fields with dependency.}  Each field is by default non-overridable. By the discussion of \ref{chg:definition-relevant-reasoning}, we can simply reason and access the definition about the former fields in a later field, just like Field "a" and "b" in \cref{fig:plugin-example3} and we lose the ability to override. 
+
+However, overridability is useful especially in Coq as programs in Coq are runnable. Consider the sceanrio when we use arbitrary monotonic function as field members \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}, and we make sure that all the following reasoning are only about the monotonicity. Then it should be allowed to swap the implementation of that monotonic function via overriding. 
+
+To resolve, we introduce overridable fields. Each overridable field will only expose its type instead of the concrete definition to the following default (non-overridable) fields. For example, the first failure in \cref{fig:plugin-example3} per the discussion of \ref{chg:definition-relevant-reasoning}: since overridability will break the inheritability of "c" and thus we don't allow such field to exist in the first place. Our plugin will only expose the fact that "a'" is an arbitrary natural number but hiding its concrete definition, and thus "eq_refl" will fail to type-check.
+
+In this stage, this feature is yet too weak since we cannot do definitional-relevant reasoning about overridable fields, like field "c" in the first failure. Thus we introduce \textit{dependency} between overridable fields---in the syntax of \mintinline{Coq}{Overridable pins {x,y,...} Field f := fexp}. In this case, field "f" will depend on the (overridable) field "x,y,...", and semantically, this means the concrete definition of "x,y,..." is \textit{exposed} to "fexp" during the type checking of "fexp". Every overridable field can only depend on former \textit{overridable} and \textit{definition-transparent} (non-"Qed"-Coq-term) fields. 
+
+To override an overridable field, we use the syntax \\ \mintinline{Coq}{Override [pins {x',y',...}] Field f := fexp'} in the definition of the children family. We can change the dependency \textbf{arbitrarily} in the children family if we want, just by specifying the new "pins" component and there is no restriction on the "x',y',..." we choose. The only restriction is that the overriden "f" has to have the same type as the parent field "f". 
+
+However, if we want to inherit any overridable field in the children family, we need to make sure every dependent (overridable) field is \textit{inherited instead of overridden} in the children family. That means, every overriding will lead to a chain of overriding on the depender fields. This coincides with our intuition about the example---when the dependee monotonic function is overridden, the proof about its monotonicity needs to be changed accordingly. 
+Look at the field "f" and "p" in \cref{fig:plugin-example3} in both families. Both fields are initially filled with place-holder in the parent family, but then in children family "I2", "f" is overridden by "(+ 1)" and then to prove its monotonicity, we need to expose the concrete definition of "f" and thus we need to \textit{newly} pins "f" when providing the overriding "p".
+
+
 
 
 % if the user wants a given field to be non-overridable. We will later elaborate its detail application.
