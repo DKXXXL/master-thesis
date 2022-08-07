@@ -349,10 +349,11 @@ We also have identity type as part of our core syntax from the original MLTT. bu
 \begin{figure}[!htb]
   \begin{alignat*}{3}
     \text{Inductive Type Signature}   \quad & \tau       &&= w\cdot~|~w^+~\tau~A~B~|~\tau[\gamma] \\
-    \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma \\
+    \text{Linkage Signature}          \quad & \sigma       &&= \nu\cdot~|~\nu^+~\sigma~\{f\}~T~|~\sigma[\gamma]~|~p_1\nu~\sigma~|~"RecSig"~\tau~T \\
     \text{Seal}          \quad & f       &&= t~|~p_f\nu~\sigma\\    
-    \text{Types}   \quad & A, B, T        &&= ...~|~\bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma\\
-    \text{Terms}   \quad & t, t_1, t_2    &&= ...~|~"W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t
+    \text{Types}   \quad & A, B, T        &&= ...~|~\bW \tau~|~\pi_1^j~|~\pi_2^j~|~\cL\sigma~|~\cC\sigma~|~p_1\nu'~\sigma~|~p_2\nu~\sigma~|~"RecSig1"~A~B~T~|\\
+    \text{Terms}   \quad & t, t_1, t_2    &&= ...~|~"W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t~|\\ & &&"prjR"~j~o~|~"Wrec"~t_1~t_2~|~"inh"~h~t\\
+    \text{Inheritance Structure} \quad & h, h' &&= "inhid"~|~"inhov"~h~t~|~"inhext"~h~t~|~"inhinh"~h~|~"inh"~h~|~"inhnest"~h~h'
   \end{alignat*}
 \caption{Overview of Instrinsically-typed Syntax for extended MLTT}
 \end{figure}
@@ -847,25 +848,25 @@ $$
 {\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
 \quad 
 \Rule[name=Hdlers]
-{\goodWSig{\Gamma}{\sigma}{n}
+{\goodWSig{\Gamma}{\tau}{n}
 \quad \goodType{\Gamma}{R}{}
 }
-{\goodSig{\Gamma}{"RecSig"~\sigma~R}{n}}
+{\goodSig{\Gamma}{"RecSig"~\tau~R}{n}}
 $$
 $$
 \Rule[name=Hdler-Proj]
-{ \goodWSig{\Gamma}{\sigma}{N}
-\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\sigma~R)}
-\quad n < N
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\tau~R)}
+\quad j < N
 }
-{\goodTerm{\Gamma}{"prjR"~n~o}{("RecSig1"~(\pi_1^n \sigma)~(\pi_2^n \sigma)~R)[\pi_1]}}
+{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)[\pi_1]}}
 $$
 $$
 \Rule[name=Rec-Constr]
-{ \goodWSig{\Gamma}{\sigma}{N}
-\quad \goodTerm{\Gamma}{T}{\bW \sigma}
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{T}{\bW \tau}
 \quad \goodType{\Gamma}{R}{}
-\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\sigma~R)}
+\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}
 }
 {\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
@@ -873,7 +874,7 @@ $$
 (2) Try using the same metavariables (j and n) as in the rules on W-types.
 (3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
 (4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
-}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}
+}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}\EDJreply{Done. Please Check.}
 $$
 
 In our metatheory, for simplicity we only formulate non-dependent eliminators, i.e.,
