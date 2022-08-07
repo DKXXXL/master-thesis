@@ -56,8 +56,12 @@ field interactively with Coq. Note that, when compiling the context during the  
 \begin{lstlisting}[language=Coq, escapeinside={@}{@}]
 Family A.
 Field a : nat := 1.
-Field b : a = a := eq_refl.
-Final Field a' : nat := 1. 
+Field b : a = 1 := eq_refl.
+Overridable Field a' : nat 
+                     := 1. 
+Overridable pins {a'}
+  Field b' : a' = 1 
+          := eq_refl.
 EndFamily.
 \end{lstlisting}
   \end{minipage}%\YZ{Can the self's be omitted?}\EDJreply{Yes. But in our current plugin implementation it is not omitted. I think altering example is fine. If you think some small distance between example and the current implementation is fine, please comment back and I will remove all the self_}\YZreply{If omitting the self's poses no technical challenges, then I'd say it's fine to also omit them in this figure.}\EDJreply{Omitting self_ is easy and not much engineering effort is required. But omitting self_ will lead to `A.a' instead of `a' actually. So if we really want `a' as you last time mentioned, then a resolution is required and more engineering effort is required. But I don't see any technical difficulties. I have removed all the self, please check.}
@@ -65,20 +69,33 @@ EndFamily.
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Module a_4 (self_A: EmptySig).
 Definition a : nat := 1. End a_4.
-Module Type a_6 (self_A: EmptySig).
+Module Type a_6.
 Include a_4. End a_5.
-
-\end{minted}
-  \end{minipage}
-  \begin{minipage}[t]{0.3\linewidth}
-\begin{minted}[fontsize=\footnotesize]{Coq}
 Module b_7 (self_A: a_6).
 Definition b 
   : self_A.a = 1
   := eq_refl. End b_7.
-  
+Module Type b_9.
+Include a_6. Include b_7. End b_9.
+Module a'_10 (self_A: b_9).
+Definition a' : nat := 1. End a_4.
+\end{minted}
+  \end{minipage}
+  \begin{minipage}[t]{0.3\linewidth}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+Module Type a'_12.
+Include b_9. Include a'_10. End a'_12.
+Module b'_16 (self_A: a'_12).
+Definition b' : self_A.a' = 1 := eq_refl. End b'_16.
+Module Type b'_19.
+Include b_9. Parameter a': nat.
+Parameter b': a' = 1. End b'_19.
+Module test_20 (self_A: b'_19).
+Definition test : nat := 1. End test_20.
+
 Module A. (* Final Aggregation *)
-Include a_4. Include b_7. End A.
+Include a_4. Include b_7. Include a'_10.
+Include b'_16. Include test_20. End A.
 \end{minted}
   \end{minipage}
   \caption{Example Code and Plugin Translation}\label{fig:plugin-example1}
@@ -134,10 +151,9 @@ requirements in \ref{chg:software-engineering}.\YZ{
 }\EDJreply{Yes. Indivially compiling family member can achieve both requirements}
 
 \textbf{Implementing "Overridable" and Overriding Chain.}
-We implement "Overridable" by simply annotating the corresponding field type with a mark and its dependency. Then when compute the context during the compilation of the term for that field, we make sure only all the dependee and the non-overridable field will expose its definition in the context. Most parts of the implementation is quite similar to the default fields, except that when inheriting an overridable field, we need to make sure all its dependee is inherited earlier.  
+We implement "Overridable" by simply annotating the corresponding field type with a mark and its dependency. Then when compute the context during the compilation of the term for that field, we make sure only all the dependee and the non-overridable field will expose its definition in the context. Most parts of the implementation is quite similar to the default fields, except that when inheriting an overridable field, we need to make sure all its dependee is inherited earlier.  For example, in \cref{fig:plugin-example1}, the module "b'_16" will compile "b'" in the context of "a'_12" where the concrete definition of "a'" is exposed since "b'" depends on "a'"; while the module "test_20" is compiled in the context "b'_19" only knowing the type of "a'" and "b'".
 
-When aggregating the fields into a module, we will make sure all the overridable fields to expose its definition for simiplicity in the compilation. 
-
+When aggregating the overridable fields into a module, since everything has concrete definition now, there won't be any problem---we just use the same way that aggregates the default fields.
 
 
 
