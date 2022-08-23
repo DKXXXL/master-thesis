@@ -518,75 +518,107 @@ meta-theory need to handle these two seemingly contradicting ideas
 simultaneously when solving \ref{chg:extensible-inductive-type} . (2) \ref{chg:extensible-inductive-type} is also resolved by this \textit{decoupling} of the syntax of implementation of recursor handlers and exhaustiveness checking. The former is handled by family inheritance and thus avoiding the boilerplate code; and the non-inheritance of the compiled recursor ensures the exhaustiveness checking happens for every recursor.  
 
 
-% Mention still needing total recursor, for exhaustiveness checking
+% Attempt to rewrite the section for Overridable pins inductive/Closing Fact , and also introduce the concept of mixin
 
-\textbf{Hack: Global Reasoning.}\YZ{This is more like an escape hatch. Escape from family poly into vanilla Coq. Maybe these two hacks should be grouped into one section}
-% explain the places using ``Closing Fact''
-% 1. No need to export partial recursor
-% 2. Computational rule for the total recursor
-Unfortunately, there are cases an extensible proof brings more boilerplate code. For example, in STLC, we expect
-``\mintinline{Coq}{~ value (tm_app x y)}'' to hold in all future
-extensions of STLC---applications will never be considered as values
-by any extension.
-We know the correct way to prove the proposition
-\mintinline{Coq}{value_not_app : value (tm_app x y) -> False.} is to use
-"FRecursor" to inductively reason "value (tm_app x y)". However, this
-means that every time we extend "value" with new value forms, we will
-need to extend corresponding inductive cases for "app_not_value". We can
-imagine the newly extended proof to be boring case analysis that the
-newly added value forms are not "tm_app". What's worse, similar
-scenario can happen on other statements like \mintinline{Coq}{~ value
-(tm_if cond x y)}. Everything here is extended correctly but we end up
-having boilerplate code, \textbf{semantically}.
-\begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}\EDJreply{Done}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family STLC.
-  FInductive tm : Set := ... 
-  FInductive value : tm -> Prop := ... 
-  Closing Fact value_not_app : forall x y, ~ value (tm_app x y) 
-      by { intros x y H; inversion H; eauto }.
-  Fail Ltac inv := 
-    match goal with 
-    | [h : value (tm_app _ _) |- ] => destruct (value_not_app _ _ h)
-    (* Fail: value, tm_app, value_not_app unfound *)
-    end. 
-  MetaData tactic1.
-    Ltac inv := (* ... the same definition as above ... *)
-  EndMetaData.
-  (* ... STLC example continue ... *)
-EndFamily.
-\end{lstlisting}  
-\caption{Example for Global Reasoning and MetaData, using in STLC example}\label{fig:plugin-example-global-reasoning-meta-data}
-\end{figure}
+However, "FRecursor" provides barely enough functionality for manipulating (extensible) inductive type, and it is far from satisfactory to be a legitimate programming interface---for example, the necessary tactic "inversion", "discriminate", "injection" is not applicable on (extensible) inductive type.
+
+To resolve this problem, we notice that, the power of "FRecursor" comes from its distinction from the mundane fields and its ability to stab through the abstraction of "FInductive". However, the latter is quite similar on how "Overridable .. pins {..}" can see through the abstraction of former pinned overrdiable fields. This inspires us to generalize pins to not only apply to overrdiable fields, but also "FInductive" and "FRecursor" fields. 
 
 
-Our proposal is to allow global reasoning by providing "Closing Fact" command. Ultimately, "Closing Fact" is asserting a constraint upon all the
-possible extension of the surrounding family and claiming that a proof script
-can solve the constraints.\YZ{This is a good one-liner that summarizes the intended usage scenarios of "Closing Fact". Should probably bring it out earlier.}\EDJreply{I put it here as you suggested but I think this one-liner at here will cause more confusion because it is too abstract.}
-The assertion will only be verified when the whole family is closed and compiled into a module.
+\textbf{Overridable pins Inductive Type and FRecursor}.
 
-% We provide "Closing Fact" as a command to
-% carry out this global reasoning, attached with a proof script and proof
-% term. This "Closing Fact" will look like an assertion during the
-% construction of the enclosing family. This assertion will only be
-% verified when the whole family is closed and compiled into a module,
-% with the help of the attached proof script and proof terms.
+Also, when pins "FInductive" and "FRecursor", we can have the primitive coq-providing recursor and judgemental equality for computation ability for "FRecursor". 
 
-Here we show the example to prove "value_not_app" in
-\cref{fig:plugin-example-global-reasoning-meta-data}, the script inside
-curly brackets after "by" is the attached proof script that will be
-executed upon "EndFamily", which triggers the compilation of the family
-being defined.
-Since we are dealing with a concrete (vanilla) inductive type during compilation,
-we can use Coq's "inversion" tactic to complete this proof.
-This "Closing Fact", as an assertion, will have no problem being
-inherited, but the proof script will be executed every time a derived
-family is compiled.
+Upon this design, it is natural to make "Overridable" fields to provide ``automatic overriding'' as it is likely the inherited tactic is able to provide a proof even in the context with the extended inductive type. 
 
-The downside is that "Closing Fact" cannot immediately check the correctness of the
-attached proof term/proof script because this verification only happens when we
-finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}\EDJreply{The proof script cannot be run immediately to reply the user whether the proof script is even correct. This is bad engineering to some extent. In those bad cases, because error only happens at the the very end ``EndFamily'' , the user will need to go back to the place of Closing Fact to adjust the proof script, or to adjust other parts. I am not sure if early check is possible to be done (engineering-wise) I think it is possible (imagine I just do an early compilation, i.e. only compile part of the family to the point closing fact is used) but it is a big engineering difficulty for me.}
-We expect it to be used only sporadically for maintainability, and as an alternative to using "FRecursor". This is called global reasoning because this is a post-hoc reasoning when the family as a \textit{whole} is compiled into a module.
+But a question arises: do we consider an ``automatic overridden'' field \textit{inheriting} the parent field or \textit{overriding} the parent field? 
+% TODO: Mention still needing total recursor, for exhaustiveness checking
+
+\textbf{Overridable Field and Closing Fact}
+It is natural to consider the ``automatic overridden'' resulting inheritance, as we are using the same tactic (or the same untyped Gallina term to provide the proof). But for type theorists, these are definitely overriding because these are definitely different typed Gallina term! 
+
+Instead of making a decision here, we introduce "Closing Fact":  "Closing Fact" will make a field tied with the untyped proof script and only allows inheritance. Of course, during inheritance, the untyped proof script will always be re-run and introduce (potentially) \textbf{different} typed terms\footnote{Thus called "Closing Fact" as its semantic depends on the closed  surrounding family in a global sense}. Thus, we encourage the user to use it in a proof-irrelevant way, where the difference between typed terms can be ignored. Then, the ``automatic overridden'' will always lead to overriding. 
+
+This is similar to "FRecursor"---we only allow inheritance for "FRecursor" as its semantic can be considered as a tie between a handler family and an extensible inductive type, where during each inheritance, the tie will be rechecked. 
+
+Just like "Overridable .. pins {..}", "Closing Fact" provides the ability to stab through all the abstraction of the former fields, and thus has the similar functionality  as "Overridable .. pins {..}".
+
+\textbf{Mixin}. The reason we introduce two different semantics for two similar functionality is due to the fact that, we want to introduce mixin in our facility. 
+
+% TODO: mixin implementation sketch
+
+However, we don't allow any overriding happening in either mix-edin inheritance, because it will break the commutativity and complicate the semantic without much benefit. Overriding is not allowed in this case, but "FRecursor" and "Closing Fact" is still allowed since they only allow to be inherited. 
+
+
+
+
+% \textbf{Hack: Global Reasoning.}\YZ{This is more like an escape hatch. Escape from family poly into vanilla Coq. Maybe these two hacks should be grouped into one section}
+% % explain the places using ``Closing Fact''
+% % 1. No need to export partial recursor
+% % 2. Computational rule for the total recursor
+% Unfortunately, there are cases an extensible proof brings more boilerplate code. For example, in STLC, we expect
+% ``\mintinline{Coq}{~ value (tm_app x y)}'' to hold in all future
+% extensions of STLC---applications will never be considered as values
+% by any extension.
+% We know the correct way to prove the proposition
+% \mintinline{Coq}{value_not_app : value (tm_app x y) -> False.} is to use
+% "FRecursor" to inductively reason "value (tm_app x y)". However, this
+% means that every time we extend "value" with new value forms, we will
+% need to extend corresponding inductive cases for "app_not_value". We can
+% imagine the newly extended proof to be boring case analysis that the
+% newly added value forms are not "tm_app". What's worse, similar
+% scenario can happen on other statements like \mintinline{Coq}{~ value
+% (tm_if cond x y)}. Everything here is extended correctly but we end up
+% having boilerplate code, \textbf{semantically}.
+% \begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}\EDJreply{Done}
+% \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+% Family STLC.
+%   FInductive tm : Set := ... 
+%   FInductive value : tm -> Prop := ... 
+%   Closing Fact value_not_app : forall x y, ~ value (tm_app x y) 
+%       by { intros x y H; inversion H; eauto }.
+%   Fail Ltac inv := 
+%     match goal with 
+%     | [h : value (tm_app _ _) |- ] => destruct (value_not_app _ _ h)
+%     (* Fail: value, tm_app, value_not_app unfound *)
+%     end. 
+%   MetaData tactic1.
+%     Ltac inv := (* ... the same definition as above ... *)
+%   EndMetaData.
+%   (* ... STLC example continue ... *)
+% EndFamily.
+% \end{lstlisting}  
+% \caption{Example for Global Reasoning and MetaData, using in STLC example}\label{fig:plugin-example-global-reasoning-meta-data}
+% \end{figure}
+
+
+% Our proposal is to allow global reasoning by providing "Closing Fact" command. Ultimately, "Closing Fact" is asserting a constraint upon all the
+% possible extension of the surrounding family and claiming that a proof script
+% can solve the constraints.\YZ{This is a good one-liner that summarizes the intended usage scenarios of "Closing Fact". Should probably bring it out earlier.}\EDJreply{I put it here as you suggested but I think this one-liner at here will cause more confusion because it is too abstract.}
+% The assertion will only be verified when the whole family is closed and compiled into a module.
+
+% % We provide "Closing Fact" as a command to
+% % carry out this global reasoning, attached with a proof script and proof
+% % term. This "Closing Fact" will look like an assertion during the
+% % construction of the enclosing family. This assertion will only be
+% % verified when the whole family is closed and compiled into a module,
+% % with the help of the attached proof script and proof terms.
+
+% Here we show the example to prove "value_not_app" in
+% \cref{fig:plugin-example-global-reasoning-meta-data}, the script inside
+% curly brackets after "by" is the attached proof script that will be
+% executed upon "EndFamily", which triggers the compilation of the family
+% being defined.
+% Since we are dealing with a concrete (vanilla) inductive type during compilation,
+% we can use Coq's "inversion" tactic to complete this proof.
+% This "Closing Fact", as an assertion, will have no problem being
+% inherited, but the proof script will be executed every time a derived
+% family is compiled.
+
+% The downside is that "Closing Fact" cannot immediately check the correctness of the
+% attached proof term/proof script because this verification only happens when we
+% finished defining a family, and thus a bit harder to handle.\YZ{'harder' in what way? I suppose you mean the "Fail Ltac" in Figure 5?}\EDJreply{The proof script cannot be run immediately to reply the user whether the proof script is even correct. This is bad engineering to some extent. In those bad cases, because error only happens at the the very end ``EndFamily'' , the user will need to go back to the place of Closing Fact to adjust the proof script, or to adjust other parts. I am not sure if early check is possible to be done (engineering-wise) I think it is possible (imagine I just do an early compilation, i.e. only compile part of the family to the point closing fact is used) but it is a big engineering difficulty for me.}
+% We expect it to be used only sporadically for maintainability, and as an alternative to using "FRecursor". This is called global reasoning because this is a post-hoc reasoning when the family as a \textit{whole} is compiled into a module.
 
 
 
@@ -661,9 +693,10 @@ This can fulfill \ref{chg:software-engineering} and define new customized tactic
 
 % Following needs a rewrite
 
-\textbf{Propositional Partial Recursor.} Notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''---they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. 
+\textbf{Propositional Partial Recursor.} This section is introducing the concept of \textit{partial recursor}. The motivations are various: (a) we want to have some semantic characterization of extensible inductive type. (b) We want to show that, some tactics reasoning like "inversion" is still valid even in extensible inductive type. (c) More generally speaking, notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''---they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. We want to see what leads to a conservative extension---and the partial recursor is helpful for this question.
 
-This raise an interesting question: what propositions are conservative extension? For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a \textbf{``best'' proposition} (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
+% This raise an interesting question: what propositions are conservative extension? 
+For example, apparently we know injectiveness of constructor, (i.e. \mintinline{Coq}{STLC.tt ≠ STLC.ff}) must be conservative because it holds for all extension of the inductive type "STLC.tm". But is there a \textbf{``best'' proposition} (i.e. the proposition that everything the proposition derives are exactly conservative extension)?
 
 Since injectiveness of the constructors are derived by recursor in vanilla inductive type, an educated guess would be related to recursor. But we know the original recursor won't work because the mere existence of the original recursor will break extensibility. Thus we need to modify it.
 The simplest idea is to allow partiality---i.e., returning
