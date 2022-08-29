@@ -686,14 +686,36 @@ Though partial recursor is provable by simply using "FRecursor", for convenience
 
 Finally, we should point out that, the mere postulation of partial recursor is \textit{conservative}. In other word, generally speaking, using "FRecursor" to prove theorems is not necessarily a ``\textit{conservative extension}''---the proved theorems might hinder future extensions of the inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)}\footnote{Achieved by three steps: first proving partial recursor using "FRecursor", then use partial recursor to prove "tm_var i $\neq$ tm_lam v body" and finally using "FRecursor" prove "var_not_value" by induction on "value"} in the "Family STLC" either using "FRecursor", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. But partial recursor will not cause this problem.
 
-\textbf{Overridable Field and Closing Fact}
-It is natural to consider the ``automatic overridden'' resulting inheritance, as we are using the same tactic (or the same untyped Gallina term to provide the proof). But for type theorists, these are definitely overriding because these are definitely different typed Gallina term! 
 
-Instead of making a decision here, we introduce "Closing Fact":  "Closing Fact" will make a field tied with the untyped proof script and only allows inheritance. Of course, during inheritance, the untyped proof script will always be re-run and introduce (potentially) \textbf{different} typed terms\footnote{Thus called "Closing Fact" as its semantic depends on the closed  surrounding family in a global sense}. Thus, we encourage the user to use it in a proof-irrelevant way, where the difference between typed terms can be ignored. Then, the ``automatic overridden'' will always lead to overriding. 
+\textbf{Escape Hatches: "Meta-data" and "Closing Fact".} There are cases the developers want to refer to global reasoning or just escape from the programming paradigm of family polymorphism. Thus we provide the following mechanism.
 
-This is similar to "FRecursor"---we only allow inheritance for "FRecursor" as its semantic can be considered as a tie between a handler family and an extensible inductive type, where during each inheritance, the tie will be rechecked. 
+\textit{"MetaData".} Due to our implementation of the family,
+the family data is invisible to Coq internal and thus causes some
+inconvenience. For example, in
+\cref{fig:plugin-example-global-reasoning-meta-data} the first attempt
+of defining tactic "inv" fails. Because the earlier defining "tm",
+"value", and "value_not_app" are currently just data structure in the
+plugin and not visible for Coq internal (only visible after the family
+is compiled into module). 
 
-Just like "Overridable .. pins {..}", "Closing Fact" provides the ability to stab through all the abstraction of the former fields, and thus has the similar functionality  as "Overridable .. pins {..}".
+Thus to refer to them, we have to scope the defining tactic with
+"MetaData" and our plugin will set up the appropriate environment. After
+a "MetaData" block is closed, the plugin will aggregate the content into
+the family being defined so that they can also be used when defining
+the following fields of the family.\YZ{It reads like this MetaData wrapping could be automatically inserted, no?}\EDJreply{Not sure. This auto-insertion will practically look like hijack the original Coq command. I am not sure this kind of hijacking can happen.}
+This can fulfill \ref{chg:software-engineering} and define new customized tactic.
+
+
+\textit{"Closing Fact".} We have described how to use partial recursor to "discriminate" different constructors of an extensible inductive type. Practically, "discriminate" is used when proving inversion lemma, like forementioned "var_not_value". 
+
+% \textbf{Overridable Field and Closing Fact}
+% It is natural to consider the ``automatic overridden'' resulting inheritance, as we are using the same tactic (or the same untyped Gallina term to provide the proof). But for type theorists, these are definitely overriding because these are definitely different typed Gallina term! 
+
+% Instead of making a decision here, we introduce "Closing Fact":  "Closing Fact" will make a field tied with the untyped proof script and only allows inheritance. Of course, during inheritance, the untyped proof script will always be re-run and introduce (potentially) \textbf{different} typed terms\footnote{Thus called "Closing Fact" as its semantic depends on the closed  surrounding family in a global sense}. Thus, we encourage the user to use it in a proof-irrelevant way, where the difference between typed terms can be ignored. Then, the ``automatic overridden'' will always lead to overriding. 
+
+% This is similar to "FRecursor"---we only allow inheritance for "FRecursor" as its semantic can be considered as a tie between a handler family and an extensible inductive type, where during each inheritance, the tie will be rechecked. 
+
+% Just like "Overridable .. pins {..}", "Closing Fact" provides the ability to stab through all the abstraction of the former fields, and thus has the similar functionality  as "Overridable .. pins {..}".
 
 \textbf{Mixin}. The reason we introduce two different semantics for two similar functionality is due to the fact that, we want to introduce mixin in our facility. 
 
@@ -808,21 +830,6 @@ However, we don't allow any overriding happening in either mix-edin inheritance,
 %\YZ{What is the alternative if not using "Closing Fact"?}\EDJreply{(1) For partial recursor and recursor, that should be generated by plugin (2) For general global reasoning, I don't know. There must be some other ways in the literature. }\YZ{Still not entirely clear to me what is gained and what is lost by using "Closing Fact".}\EDJreply{Please check.}
 % This ``Global Reasoning'' will be again useful in later examples.
 
-\textbf{Hack: ``Meta-data''.} Due to our implementation of the family,
-the family data is invisible to Coq internal and thus causes some
-inconvenience. For example, in
-\cref{fig:plugin-example-global-reasoning-meta-data} the first attempt
-of defining tactic "inv" fails. Because the earlier defining "tm",
-"value", and "value_not_app" are currently just data structure in the
-plugin and not visible for Coq internal (only visible after the family
-is compiled into module). 
-
-Thus to refer to them, we have to scope the defining tactic with
-"MetaData" and our plugin will set up the appropriate environment. After
-a "MetaData" block is closed, the plugin will aggregate the content into
-the family being defined so that they can also be used when defining
-the following fields of the family.\YZ{It reads like this MetaData wrapping could be automatically inserted, no?}\EDJreply{Not sure. This auto-insertion will practically look like hijack the original Coq command. I am not sure this kind of hijacking can happen.}
-This can fulfill \ref{chg:software-engineering} and define new customized tactic.
 
 
 
