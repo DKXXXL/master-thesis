@@ -708,6 +708,21 @@ This can fulfill \ref{chg:software-engineering} and define new customized tactic
 
 \textit{"Closing Fact".} We have described how to use partial recursor to "discriminate" different constructors of an extensible inductive type. Practically, "discriminate" is used when proving inversion lemma, like forementioned "var_not_value". 
 
+However, it seems verbose to prove this simple inversion lemma using "FRecursor", let alone the fact this "FRecursor" will need to be extended every time the inductive type (e.g. "value") is extended. Thus we provide a command "Closing Fact". "Closing Fact" will prove the given lemma in the context where all the definitions \textbf{are exposed}. Thus the above "var_not_value" can be simply achieved by 
+\begin{minted}[fontsize=\footnotesize]{Coq}
+Closing Fact var_not_value : 
+  forall i, ~ self__STLC.value (self__STLC.tm_var i) 
+    by { intros i H; inversion H; eauto }.
+\end{minted}
+We can use "inversion" tactic here thanks to the exposure of the vanilla inductive type in the context. 
+
+We simply support inheritance for "Closing Fact". However, we fix the semantic of the "Closing Fact" by this one-line \textbf{untyped} proof script---and thus we restrict "Closing Fact" to be used in a proof-irrelevant way.
+
+\textit{"Overridable .. pins {..}" vs. "Closing Fact".} A keen reader will notice a great deal of similarity between "Overridable .. pins {..}" vs. "Closing Fact" as they both expose the concrete definition of the former fields (including extensible inductive type). In fact, using "Overridable" can prove this "var_not_value" in an almost identical way. The only difference seems to be the ``auto-inheritance'' of "Closing Fact" with the help of the proof script where even if the extensible inductive type is extended---but this difference seems superficial as we can implement something similar for "Overridable".
+
+The main difference is that, the semantic of a "Closing Fact" field is the \textbf{untyped} proof script but the semantic of a "Overridable" field is always a \textbf{typed} proof term. Thus when a pinned extensible inductive type/former field is extended/overridden, we can still \textbf{inherit} the "Closing Fact" but we can only \textbf{override} the overridable field.
+
+This difference might seem small and irrelevant to the user from the first sight but this becomes quite relevant when we introduce \textit{mixin} of two inheritances.
 % \textbf{Overridable Field and Closing Fact}
 % It is natural to consider the ``automatic overridden'' resulting inheritance, as we are using the same tactic (or the same untyped Gallina term to provide the proof). But for type theorists, these are definitely overriding because these are definitely different typed Gallina term! 
 
@@ -717,11 +732,24 @@ This can fulfill \ref{chg:software-engineering} and define new customized tactic
 
 % Just like "Overridable .. pins {..}", "Closing Fact" provides the ability to stab through all the abstraction of the former fields, and thus has the similar functionality  as "Overridable .. pins {..}".
 
-\textbf{Mixin}. The reason we introduce two different semantics for two similar functionality is due to the fact that, we want to introduce mixin in our facility. 
+% \textbf{Mixin}. The reason we introduce two different semantics for two similar functionality for "Overridable ... pins {...}" and "Closing Fact" is due to the fact that, we want to introduce mixin in our facility. 
 
-% TODO: mixin implementation sketch
 
-However, we don't allow any overriding happening in either mix-edin inheritance, because it will break the commutativity and complicate the semantic without much benefit. Overriding is not allowed in this case, but "FRecursor" and "Closing Fact" is still allowed since they only allow to be inherited. 
+
+% \textit{Mixin} is implemented by making inheritance judgement/data supporting \textit{weakening} and composition.  
+\textbf{Mixin} is implemented by making inheritance judgement/data supporting \textit{weakening} and composition.More concretely,  for an inheritance from parent family type $\sigma_1$ to children family type ${\sigma_2}$ and another inheritance from ${\sigma_1}$ to ${\sigma_3}$, we can weaken(expand the input of) the second inheritance to ${\sigma_2}$ then the output children family type becomes ${\sigma_3'}$. Then the ``composition'' of the very first inheritance and the altered second inheritance is the resulting mixin. 
+
+However, this implementation breaks commutativity: for example, when the two inheritances are overriding a given field in different ways, the order of composition becomes important. Thus to avoid this ambiguity, we simply \textit{don't allow overriding fields} inside any inheritance when we do mixin. In this case, a proof irrelevant "Closing Fact" is a useful alternative for overriding.
+
+Note that, every top level family can be considered as an inheritance because (1) our implementation is simplified by considering every family as an inheritance, and (2) we want to align with the complete family polymorphism advocated by \citet{zm2017} where the user can override the parent of the inheriting family (inside a family due to late-binding), and in these case the nested inheriting family is more a inheritance data than a ``standalone'' linkage. Thus we will store for every top level family in our plugin the corresponding inheritance data together with a ``reference'' to the parent family. 
+
+
+
+% Mixin example:
+
+% Then our mixin command can single out the inheritance data from "STLC_bool" and "STLC_prod" and ``mixin'' the inheritance to reach "STLC_bool_prod". 
+
+% However, we don't allow any overriding happening in either mix-edin inheritance, because it will break the commutativity and complicate the semantic without much benefit. Overriding is not allowed in this case, but "FRecursor" and "Closing Fact" is still allowed since they only allow to be inherited. 
 
 
 
@@ -833,12 +861,13 @@ However, we don't allow any overriding happening in either mix-edin inheritance,
 
 
 
-\subsection{Engineering Limitation}
+\subsection{Implementation Limitation}
 We list some of the current limitation of our implementation. We believe some of these limitations can be remedied by more engineering efforts.
 \begin{itemize}
-  \item We don't support the full power of inductive facility in Coq, that includes mutual inductive type, notation for inductive type and parameters in the inductive type (we only support indexed inductive type right now)
+  \item We don't support the full power of inductive facility in Coq for extensible inductive type---concretely, we don't support mutual inductive type, notation for inductive type and parameters in the inductive type (we only support indexed inductive type right now)
   \item We don't support mutual fixpoint definition
   \item We don't support incorporating "Hint" Vernacular commands, and thus the users cannot specify the database hints
   \item Unicode (i.e. "Require Import Coq.Unicode.Utf8.") is not compatible with our plugin 
   \item We don't consider the compatibility of universe polymorphism mechanism with our plugin
+  \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
 \end{itemize}
