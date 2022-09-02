@@ -3,17 +3,20 @@ the following extension to Coq's Vernacular Commands, and the corresponding STLC
 % basically write down the specification of surface Coq commandline
 %   and then explain  how the language design makes the programmer’s life easier
 \begin{align*}
-  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ident\rangle] 
+  V := \quad &"Family"~\langle ident\rangle~["extends"~\langle ref\rangle] 
   \quad |\quad "EndFamily" \quad | \quad "SealFamily" \\
-  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle~"using"~\langle ident\rangle \\
+  & |\quad "FRecursor"~\langle ident\rangle~"about"~\langle ref\rangle~"motive"~\langle term\rangle~"using"~\langle ref\rangle \\
+  & |\quad "FScheme CompEq about"~\langle ref \rangle~|\quad "FScheme " \langle ident\rangle " PRecT about"~\langle ref \rangle\\
   & | \quad "FTheorem"~\langle ident\rangle~"about"~\langle ident\rangle~"motive"~\langle term\rangle \\
-  & |\quad ["Extend" | "Override"]~"Family"~\langle ident\rangle \\ 
+  & |\quad ["Extend"]~"Family"~\langle ident\rangle \\ 
   & |\quad ["Extend"]~"FInductive"~\langle ident\rangle \\ 
-  & |\quad ["Final" | "Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & |\quad ["Overridable " ["pins " \{ \langle ident\rangle ... \}]]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
+  & |\quad ["Override"]~"Field"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\
   & | \quad "FieldClaim"~\langle ident\rangle~":"~\langle term \rangle \\
   & | \quad "Inherit"~\langle ident\rangle \quad | \quad "Inherit Until"~\langle ident\rangle \quad \\
   & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~":="~\langle term \rangle \\ 
   & | \quad "Closing Fact"~\langle ident\rangle~":"~\langle term \rangle~"by"~"\{"\langle \text{one tactic expression}\rangle"\}" \\ 
+  & | \quad "Family"~\langle ident\rangle~"extends"~\langle ref\rangle~"using"~\langle ref\rangle~"using"~\langle ref\rangle \\ 
   & | \quad "MetaData"~\langle ident\rangle \quad | \quad "EndMetaData" \\ 
 \end{align*}
 
@@ -256,6 +259,8 @@ to enable extensible inductive type. "Extend FInductive" is used to
 support extension of the parent inductive type inside a children family.
 The syntax of these two is close to the mundane "Inductive" keyword. 
 
+Unlike how Coq's "Inductive" will automatically generate the eliminator for the inductive type, we require the user to explicit use "FScheme .. PRecT" to generate a \textit{partial recursor} for the "FInductive". We will later explain what a partial recursor is, at this point the reader can just consider it as a mundane eliminator. 
+
 
 To resolve \ref{chg:extensible-inductive-type}, our first step is to
 \textit{decouple} the definition of recursor handlers and the checking
@@ -268,9 +273,22 @@ Then
 (using elimination principle of the inductive type "T") with motive "f". The handlers
 are located in the family "handlers", similar to a large pattern-matching statement. This way, the reuse and the extension of the case handlers will be delegated by the inheritance of the family. Once recursor is created it will look like any other function fields(e.g. "subst" in \cref{fig:STLC-example2}).
 
+
+
+
 "FTheorem" has a similar functionality but is expected to be used for
 theorem proving---the handler and the family will be automatically
 constructed during proving.\YZ{Cool. Can the same be done to FRecursor?}\EDJreply{I think last time I have answered it. FRecursor for fixpoint command}
+
+% Explain FScheme
+However, "FRecursor" doesn't specify any reduction/computation information until a family is defined completely and closed (e.g. "subst" in \cref{fig:STLC-example2} cannot reduce when application during the definition of the surrounding family). To remedy this, we introduce "FScheme CompEq" that will generate proposition of equations indicating reductions. For example, for "subst", it will generate the equation
+\mintinline{Coq}{subst tm_unit = subst_internal.tm_unit}. 
+
+Similarly, the generated partial recursor using "FScheme .. PRecT" doesn't have computation information either, and require "FScheme CompEq" to generate them.
+
+% Explain Mixin
+
+\textbf{Mixin.} For two inheritance with the same parent family, we support mixin the two using "Family ... extends ... using ... using ...". However, the candidates for mixin cannot have any overriding term (i.e. only allow inheritance and extension).   
 
 % We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
@@ -283,7 +301,7 @@ constructed during proving.\YZ{Cool. Can the same be done to FRecursor?}\EDJrepl
 % (i.e. ultimately top level family), thus our support of family polymorphism is
 % incomplete.
 
-We will explain the usage of "Closing Fact" and "MetaData" later---they are here to resolve \ref{chg:software-engineering} to some extent.
+We will explain the usage of "Closing Fact" and "MetaData" later---they are \textit{escape-hatches} to resolve \ref{chg:software-engineering} to some extent.
 % This incomplete support can already be useful for extending functions.
 % Take \cref{fig:plugin-example2} as example, if we want to extend boolean
 % inductive type and its negation, we only need to specify the new
