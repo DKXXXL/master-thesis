@@ -151,7 +151,9 @@ requirements in \ref{chg:software-engineering}.\YZ{
 }\EDJreply{Yes. Indivially compiling family member can achieve both requirements}
 
 \textbf{Implementing "Overridable" and Overriding Chain.}
-We implement "Overridable" by simply annotating the corresponding field type with a mark and its dependency. Then when compute the context during the compilation of the term for that field, we make sure only all the dependee and the non-overridable field will expose its definition in the context. Most parts of the implementation is quite similar to the default fields, except that when inheriting an overridable field, we need to make sure all its dependee is inherited earlier.  For example, in \cref{fig:plugin-example1}, the module "b'_16" will compile "b'" in the context of "a'_12" where the concrete definition of "a'" is exposed since "b'" depends on "a'"; while the module "test_20" is compiled in the context "b'_19" only knowing the type of "a'" and "b'".
+We implement "Overridable" by simply annotating the corresponding field type with a mark and its dependency. Then when compute the context during the compilation of the term for that field, we make sure only all the dependee and the non-overridable field will expose its definition in the context. 
+
+Most parts of the implementation is quite similar to the default fields, except that when inheriting an overridable field, we need to make sure all its dependee is inherited earlier.  For example, in \cref{fig:plugin-example1}, the module "b'_16" will compile "b'" in the context of "a'_12" where the concrete definition of "a'" is exposed since "b'" depends on "a'"; while the module "test_20" is compiled in the context "b'_19" only knowing the type of "a'" and "b'".
 
 When aggregating the overridable fields into a module, since everything has concrete definition now, there won't be any problem---we just use the same way that aggregates the default fields.
 
@@ -227,7 +229,7 @@ only know \mintinline{Coq}{a : nat}.
 
 
 
-\textbf{Special Fields: ``Extensible'' Inductive Type and Defining Recursor.}
+\textbf{``Extensible'' Inductive Type and Defining Recursor/Eliminator.}
 We support extensible inductive types in Coq mentioned in
 \ref{chg:extensible-inductive-type}, but we will not be aiming at the
 research of its formal semantic.\footnote{Because to give a satisfactory
@@ -523,17 +525,20 @@ simultaneously when solving \ref{chg:extensible-inductive-type} . (2) \ref{chg:e
 However, "FRecursor" provides barely enough functionality for manipulating our(extensible) inductive type, and it is far from satisfactory to be a legitimate programming interface. (1) We do not yet have any computational information using this "FRecursor" until its compilation into module, i.e. we cannot do computation with it during the construction of the family using the current compilation strategy. (2) The necessary tactic like "discriminate" and "injection" is not applicable on (extensible) inductive type.
 
 
-\textit{Generating Scheme for Propositional Computation Axiom for FRecursor}. We support "FScheme" that our plugin will automatically generate(postulate) the computational ``axiom'' for the specified  into the family. During compilation, these ``axiom'' can be easily proved/instantiated with concrete/vanilla inductive type.
 
-However, this method, though remedies problem (1) to some extent, is only introducing computational information \textbf{propositionally} but not judgementally. Thus, for example, during theorem proving, we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. And in the full dependent type theory, propositional equality is sometimes not enough and bringing a lot of coding challenges\footnote{For example, for "u : F a"， "v : F b", "u = v" is not even well-typed when "a = b" only propositionally hold. Transport is required during reasoning.}.
+% \textit{Generating Scheme for Propositional Computation Axiom for FRecursor}. 
+
+Thus we support "FScheme" to remedy problem (1): our plugin can automatically generate(postulate) the computational ``axiom'' for the specified  into the family and prove them during compilation into modules. However, it is only introducing computational information \textbf{propositionally} but not judgementally, and we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. 
+
+% However, this method, though remedies problem (1) to some extent, is only introducing computational information \textbf{propositionally} but not judgementally. Thus, for example, during theorem proving, we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. And in the full dependent type theory, propositional equality is sometimes not enough and bringing a lot of coding challenges\footnote{For example, for "u : F a"， "v : F b", "u = v" is not even well-typed when "a = b" only propositionally hold. Transport is required during reasoning.}.
 
 % To resolve (2), we can simply  Our following three sections will try to resolve these problems. 
 % we notice that, the power of "FRecursor" comes from its distinction from the mundane fields and its ability to stab through the abstraction of "FInductive". However, the latter is quite similar on how "Overridable .. pins {..}" can see through the abstraction of former pinned overrdiable fields. This inspires us to generalize pins to not only apply to overrdiable fields, but also "FInductive" and "FRecursor" fields. 
 
 
-\textit{Overridable pins Inductive Type and FRecursor}. We notice that, the power of "FRecursor" comes from its distinction from the mundane fields and its ability to stab through the abstraction of "FInductive". However, the latter is quite similar on how "Overridable .. pins {..}" can see through the abstraction of former pinned overrdiable fields. This inspires us to generalize pins---we support pinning inductive type and "FRecursor". Once "FInductive" and "FRecursor" fields are pinned, we can stab through its abstraction and have the primitive coq-providing recursor and \textbf{judgemental equality} for the computational information for "FRecursor". 
+\textit{Overridable pins Inductive Type and FRecursor}. We notice that, the power of "FRecursor" comes from its distinction from the mundane fields and its ability to stab through the abstraction of "FInductive". Interestingly, the latter is quite similar on how "Overridable .. pins {..}" can see through the abstraction of former pinned overrdiable fields. This inspires us to generalize "pins"---we support pinning inductive type and "FRecursor". Once "FInductive" and "FRecursor" fields are pinned, we are directly exposed with the primitive coq-providing recursor and \textbf{judgemental equality} of the computational information for "FRecursor". 
 
-The compilation mechanism is simply make the underlying, compiled definition of inductive type and recursor included inside the parameters of the module, just like how the the concrete definition of overridable fields are included inside the parameters when pinned. This way, the computational information from vanilla Coq can be transimitted into the context.  
+The compilation mechanism is simply make the underlying, compiled definition of inductive type and recursor included as part of the parameters of the module, just like how the the concrete definition of overridable fields are included inside the parameters when pinned. This way, the computational information from vanilla Coq can be transimitted into the context.  
 
 
 % However, only overridable fields can pin the (extensible) inductive type and "FRecursor".
@@ -563,17 +568,17 @@ The compilation mechanism is simply make the underlying, compiled definition of 
 
 
 % Following needs a rewrite
-To achieve "injection" in problem (2), we can easily generate/postulate $n$ propositions for $n$ constructors, just like how we did for computational information. But for "discriminate" tactic, this way will generate $O(n^2)$ propositions. 
+To achieve "injection" in problem (2), we can easily generate/postulate $n$ ``injection'' propositions for $n$ constructors, just like how we did for computational information. But for "discriminate" tactic, this way will generate $O(n^2)$ propositions in a verbose way. 
 
 What's more, to manipulate inductive type, it is not necessarily enough to only support "injection" and "discriminate" tactic (and their corresponding axioms). Recall in vanilla inductive type, we believe that eliminator is the strong-enough ``toolkit'' because the eliminator (with its computational information) is the \textit{universal property} of the inductive type---it extensionally describes the inductive type up to (certain) isomorphism. This universal property is much more powerful than "injection" and "discriminate" and maybe the most powerful tool we can have to reason about inductive type. 
 
-For example, given a new inductive type, to prove "discriminate" between two constructors, i.e., "c$_i$ .. $\neq$ c$_j$ .." for two different constructors, we simply use the eliminator to map each constructor to different natural number, assuming we can "discriminate" different natural number.\footnote{Rigorously, to avoid any suspicious circular reasoning, we can use large elimination to map them to $\top$ and $\bot$, and because $\exists a : ?, \top$ holds for the former not the later, thus $\top \neq \bot$.} "injection" can be supported in a similar way---we can simply let eliminator map each inductive type to the arguments of the constructors. 
+For example, given a new inductive type, to prove "discriminate" between two constructors, i.e., "c$_i$ .. $\neq$ c$_j$ .." for two different constructors, we simply use the eliminator to map each constructor to different natural number, assuming we can "discriminate" different natural number.\footnote{Rigorously, to avoid any suspicious circular reasoning, we can use large elimination to map them to $\top$ and $\bot$, and because $\exists a : \_, \top$ holds for the former not the later, thus $\top \neq \bot$.} "injection" can be supported in a similar way---we can simply let eliminator map each inductive type to the arguments of the constructors. 
 
-Thus it is natural for us to think if (an altered form of) eliminator can be postulated into the context, since apparently we cannot directly postulate the original eliminator here---because the sole existence of the eliminator prevents any possible future extension of the inductive type. 
+Thus it is natural to think if (an altered form of) eliminator can be postulated into our context, since apparently we cannot directly postulate the original eliminator here---because the sole existence of the eliminator prevents any possible future extension of the inductive type. 
 
-Thus we alter eliminators into \text{partial recursor}, such that (1) it will not hinder the future extension, and (2) it is still powerful enough to derive injectiveness like tactic "inject" and "discriminate". What's more, (3) we can actually prove this \text{partial recursor} is actually good enough because it can act as an \textit{extensional characterization} for extensible inductive type. We will call it \textit{propositional} because we only prpositionally postulate its computational informations in Coq.
+Thus we alter eliminators into \text{partial recursor}, such that (1) it will not hinder the future extension, and (2) it is still powerful enough to derive injectiveness like tactic "inject" and "discriminate". What's more, (3) we can actually prove this \text{partial recursor} is actually good enough because it can act as an \textit{extensional characterization} for extensible inductive type \textit{to some extent}. We will call it \textit{propositional} because we only prpositionally postulate its computational informations for Coq.
 
-\textbf{Propositional Partial Recursor.} Partial recursor is simply adding partially into the signature of the eliminator, by wrapping each motive with "option". 
+\textbf{Propositional Partial Recursor.} Partial recursor is simply adding partiality into the signature of the eliminator, by wrapping each motive with "option". 
 % This section is introducing the concept of \textit{partial recursor}. The motivations are various: (a) we want to have some semantic characterization of extensible inductive type. (b) We want to show that, some tactics reasoning like "inversion" is still valid even in extensible inductive type. (c) More generally speaking, notice that, for both "FRecursor" and "Closing Fact", they are not necessarily ``\textit{conservative extension}''---they will possibly disrupt arbitrary extension of inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)} in the "Family STLC" either using "FRecursor" or "Closing", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. We want to see what leads to a conservative extension---and the partial recursor is helpful for this question.
 
 % This raise an interesting question: what propositions are conservative extension? 
@@ -658,7 +663,9 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
 \end{theorem}
 The reason we have this weird looking \ref{prop:detectable-partiality} is because the construction of "linv"---at one point, using "prec" to construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option C) → option C}, generally not provable, only if we have \mintinline{Coq}{option (Bᵢ a → C)} as an argument instead. This \ref{prop:detectable-partiality} is exactly transforming former to the later: recall that, according to the semantic of inductive type, \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using "linv" on the substructure of "D". This function points out each of the translation result from "D" to "C" and some of them are "None" because of failing. For us, we only care about if \textbf{any} of the substructure of "D" is failed to translate---if any one substructure fails, then the whole transltion fails and thus we should have "None" as return. 
 
-\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that includes all of the examples shown in this paper. \ref{prop:detectable-partiality} is not supported when using function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". In those cases, we still have the fact that partial recursor is a conservative extension, but we cannot show that partial recursor is the extensional characterization any more。
+\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that includes all of the examples shown in this paper. 
+
+\ref{prop:detectable-partiality} is not generally supported when using function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". However, in those cases, we still have partial recursor provable and useful---we just cannot see the partial recursor as a strong toolkit anymore.
 
 
 We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
@@ -684,7 +691,7 @@ To generalize to indexed inductive type, we need to base on indexed W type~\cite
 
 Though partial recursor is provable by simply using "FRecursor", for convenience, we support using "FScheme" to automatic generate it. At the meantime, we implement a tactic "prec_discriminate" that when fed with the appropriate partial recursor, it can discriminate an absurd equation between two different constructors of extensible inductive type.
 
-Finally, we should point out that, the mere postulation of partial recursor is \textit{conservative}. In other word, generally speaking, using "FRecursor" to prove theorems is not necessarily a ``\textit{conservative extension}''---the proved theorems might hinder future extensions of the inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)}\footnote{Achieved by three steps: first proving partial recursor using "FRecursor", then use partial recursor to prove "tm_var i $\neq$ tm_lam v body" and finally using "FRecursor" prove "var_not_value" by induction on "value"} in the "Family STLC" either using "FRecursor", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. But partial recursor will not cause this problem.
+Finally, we should point out that, the mere postulation of partial recursor is \textit{conservative}. In other word, generally speaking, using "FRecursor" to prove theorems is not necessarily a ``\textit{conservative extension}''---the proved theorems might hinder future extensions of the inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)}\footnote{Achieved by three steps: first proving partial recursor using "FRecursor", then use partial recursor to prove "tm_var i $\neq$ tm_lam v body" and finally using "FRecursor" prove "var_not_value" by induction on "value"} in the "Family STLC" either using "FRecursor", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. But the postulation of partial recursor will not cause this problem.
 
 
 \textbf{Escape Hatches: "Meta-data" and "Closing Fact".} There are cases the developers want to refer to global reasoning or just escape from the programming paradigm of family polymorphism. Thus we provide the following mechanism.
@@ -703,7 +710,9 @@ Thus to refer to them, we have to scope the defining tactic with
 a "MetaData" block is closed, the plugin will aggregate the content into
 the family being defined so that they can also be used when defining
 the following fields of the family.\YZ{It reads like this MetaData wrapping could be automatically inserted, no?}\EDJreply{Not sure. This auto-insertion will practically look like hijack the original Coq command. I am not sure this kind of hijacking can happen.}
-This can fulfill \ref{chg:software-engineering} and define new customized tactic.
+
+
+This can not only fulfill \ref{chg:software-engineering} and define new customized tactic but also integrate any vanilla Coq's feature into family. For example, if the user don't want to use "FInductive" but only the non-extensible "Inductive" type, the user can simply declare the inductive type inside "MetaData" to be part of the family.
 
 
 \textit{"Closing Fact".} We have described how to use partial recursor to "discriminate" different constructors of an extensible inductive type. Practically, "discriminate" is used when proving inversion lemma, like forementioned "var_not_value". 
@@ -772,26 +781,26 @@ Note that, every top level family can be considered as an inheritance because (1
 % scenario can happen on other statements like \mintinline{Coq}{~ value
 % (tm_if cond x y)}. Everything here is extended correctly but we end up
 % having boilerplate code, \textbf{semantically}.
-% \begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}\EDJreply{Done}
-% \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-% Family STLC.
-%   FInductive tm : Set := ... 
-%   FInductive value : tm -> Prop := ... 
-%   Closing Fact value_not_app : forall x y, ~ value (tm_app x y) 
-%       by { intros x y H; inversion H; eauto }.
-%   Fail Ltac inv := 
-%     match goal with 
-%     | [h : value (tm_app _ _) |- ] => destruct (value_not_app _ _ h)
-%     (* Fail: value, tm_app, value_not_app unfound *)
-%     end. 
-%   MetaData tactic1.
-%     Ltac inv := (* ... the same definition as above ... *)
-%   EndMetaData.
-%   (* ... STLC example continue ... *)
-% EndFamily.
-% \end{lstlisting}  
-% \caption{Example for Global Reasoning and MetaData, using in STLC example}\label{fig:plugin-example-global-reasoning-meta-data}
-% \end{figure}
+\begin{figure}[!htb]\YZ{Make this part concise. (Just say this is a continuation of the earlier STLC example)}\EDJreply{Done}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC.
+  FInductive tm : Set := ... 
+  FInductive value : tm -> Prop := ... 
+  Closing Fact value_not_app : forall x y, ~ value (tm_app x y) 
+      by { intros x y H; inversion H; eauto }.
+  Fail Ltac inv := 
+    match goal with 
+    | [h : value (tm_app _ _) |- ] => destruct (value_not_app _ _ h)
+    (* Fail: value, tm_app, value_not_app unfound *)
+    end. 
+  MetaData tactic1.
+    Ltac inv := (* ... the same definition as above ... *)
+  EndMetaData.
+  (* ... STLC example continue ... *)
+EndFamily.
+\end{lstlisting}  
+\caption{Example for Global Reasoning and MetaData, using in STLC example}\label{fig:plugin-example-global-reasoning-meta-data}
+\end{figure}
 
 
 % Our proposal is to allow global reasoning by providing "Closing Fact" command. Ultimately, "Closing Fact" is asserting a constraint upon all the

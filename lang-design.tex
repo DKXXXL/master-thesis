@@ -286,9 +286,7 @@ However, "FRecursor" doesn't specify any reduction/computation information until
 
 Similarly, the generated partial recursor using "FScheme .. PRecT" doesn't have computation information either, and require "FScheme CompEq" to generate them.
 
-% Explain Mixin
-
-\textbf{Mixin.} For two inheritance with the same parent family, we support mixin the two using "Family ... extends ... using ... using ...". However, the candidates for mixin cannot have any overriding term (i.e. only allow inheritance and extension).   
+ 
 
 % We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
@@ -309,3 +307,8 @@ We will explain the usage of "Closing Fact" and "MetaData" later---they are \tex
 % As a result, the programmer does not have to duplicate code---otherwise
 % the user will need to copy and paste the whole original negation
 % definition and add a new pattern matching case.
+
+
+% Explain Mixin
+
+Finally, \textbf{Mixin.} For two children family with the same parent family, we support mixin the two using "Family ... extends ... using ... using ...". (In this case, it is better to consider the children family itself as \textit{an inheritance object}.) However, the candidates for mixin cannot have any overriding term (i.e. only allow inheritance and extension).  
