@@ -13,7 +13,7 @@ The EP is a programming challenge that
 epitomizes the difficulty of writing type-safe, extensible code.
 To define an expression language that can be reused for future extensions,
 the programmer faces a fundamental tension \cite{reynolds1975} between
-adding new constructors of a data type (e.g., new abstract syntax) and
+adding new constructors to a data type (e.g., new abstract syntax) and
 adding new functions over the data type (e.g., new compiler passes).
 
 The EP is well studied in the conventional setting of functional
@@ -24,61 +24,77 @@ EP.
 
 In contrast, proof assistants offer few linguistic solutions that
 address the EP.
-Yet the challenge of writing extensible, type-safe code (and proofs!) is
+Yet, the challenge of writing extensible, type-safe code is
 as real, especially for metatheory mechanization.
-As an example, consider \cref{fig:STLC-example}, the simply typed
-lambda calculus (STLC) mechanized in Coq.
-A programming challenge there is to define distinct extensions of this
-STLC formalization to support distinct features,
-and then selectively compose these extensions to form new STLC variants.
+The programmer faces a tension between adding new constructors to an inductive data type
+(e.g., new abstract syntax) and adding new functions and theorems over
+the data type (e.g., new meta\-theoretical results).
 
-In Coq, inductive types, as well as functions and theorems over
-inductive types, are closed to extension.
+In the Coq proof assistant~\cite{coq}, inductive types, as well as functions and
+theorems over inductive types, are closed to extension.
 So to reuse mechanized metatheories,
-the common practice is still to copy and modify them for each extension.
+the common practice is still to copy code and proofs and then modify them in each extension.
 But having to maintain multiple copies is highly non-modular and
 antithetical to good software engineering.
 %
 The programmer could also turn to design patterns~\cite{delaware2011,delaware2013}.
-But they require heavy lifting from the programmer to make code
+But they tend to require heavy lifting from the programmer to make code
 extensible, often leading to verbose, non-idiomatic programming styles.
 
-A question thus arises: can linguistic solutions to the EP, as studied
-in the conventional setting, be adapted to metatheory mechanization in
-a proof assistant?
+We answer the following question:
+can linguistic features designed to solve the EP (in
+conventional OO and functional languages)
+be adapted to metatheory mechanization in a proof assistant?
 
 At the core of many linguistic solutions to the EP is \emph{inheritance}.
 Inheritance is sometimes interpreted narrowly as a subclass'
 inheriting methods and instance variables from its superclass.
 But the language-theoretic essence of inheritance is more general:
-it is a linguistic approach to incrementally modifying
-\emph{recursive, record-like definitions}~\cite{cook1990inheritance}.
+it is a linguistic approach to \emph{incrementally modifying
+recursive definitions}~\cite{cook1990inheritance}.
 
 Language mechanisms including
 mixins~\cite{mixin-1990},
 virtual classes~\cite{virtualclasses-1989,vc-calculus-2006},
 virtual types~\cite{thorup97} and associated types~\cite{ckj05},
 extensible cases~\cite{bac2006},
-and so on, are all based on the essential idea of inheritance.
+and so on, are all based on this essential idea of inheritance.
 %
 In particular, when a language mechanism enables inheritance over
 recursive definitions containing related types and terms,
 it is said to support \emph{family polymorphism}~\cite{ernst2001family}:
 types and terms are polymorphic to a family they are nested within.
 
-\paragraph{Main ideas.}
+\begingroup
+
+\paragraph{Contributions}
 
 We contribute a language design that integrates family polymorphism into
 a proof assistant.
 Because code and proofs are polymorphic to a family they are nested
-within, they can be inherited and reused by a derived family.
-%
-Family polymorphism enables extensible metatheory mechanization.
-As \cref{fig:?} shows,
-different extensions to STLC can all inherit from the base STLC family:
-they reuse mechanized metatheories from syntax to the type safety
+within, they can be
+
+\begin{wrapfigure}[6]{r}{.215\textwidth}
+\includegraphics[scale=.48]{graphics/stlc-intro.pdf}
+\end{wrapfigure}
+
+\noindent
+inherited and reused by a derived family—%
+family polymorphism enables extensible metatheory mechanization.
+
+%As an example, consider \cref{fig:STLC-example}, the simply typed
+%lambda calculus (STLC) mechanized in Coq.
+%A programming challenge there is to define distinct extensions of this
+%STLC formalization to support distinct features,
+%and then selectively compose these extensions to form new STLC variants.
+As an example, the diagram to the right depicts an extensible
+mechanization of the simply typed λ-calculus (STLC), using family
+polymorphism.
+Different extensions to STLC can all inherit from the base STLC family:
+they reuse mechanized metatheories, from syntax to the type safety
 theorem, only adding new constructors to inductive types
-and new cases to the induction proofs as needed by an extension.
+and new cases to the induction proofs and recursive functions as needed
+by an extension.
 
 Integrating family polymorphism into a dependent type theory for
 logical reasoning, however, poses significant technical challenges.
@@ -90,14 +106,15 @@ Thus, our contributions include novel design recipes for dealing with
 these challenges and strong meta\-theoretical guarantees on the
 underlying logic.
 
-\paragraph{Contributions} To our knowledge, we offer the first
-language-based solution that enables extensible metatheory mechanization
-in a higher-order, dependent type theory with inductive types.
+\endgroup
+
+Specifically, we make the following contributions.
 
 \begin{itemize}[leftmargin=3.5ex]
 
-\item We show how to integrate family polymorphism into a proof
-assistant (\cref{sec:lang-design}).
+\item We present the first language design that enables extensible
+metatheory mechanization in a higher-order, dependent type theory with
+inductive types (\cref{sec:lang-design}).
 The language design reconciles the expressiveness enabled by
 family polymorphism with the exactness of a proof assistant,
 while retaining an idiomatic programming style.
@@ -107,7 +124,7 @@ mechanism as a Coq plugin (\cref{sec:coqimpl}). The plugin works by
 compiling surface-language terms into Gallina terms parameterized by
 extensibility hooks.
 
-\item We capture the new language mechanism formally by extending
+\item We capture the essence of the new language mechanism formally by extending
 Martin–Löf type theory with family polymorphism and extensible inductive
 types (\cref{sec:metatheory}).
 We derive strong meta\-theoretical results including consistency and
