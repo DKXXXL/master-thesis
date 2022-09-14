@@ -1,5 +1,23 @@
 
 With the growing practice of mechanizing language metatheories,
-it has become ever more important that proof assistants
+it has become ever more pressing that interactive theorem provers 
 make it easy to write reusable, extensible code and proofs.
-We ...
+%
+This paper presents a language design useful for extensible metatheory
+mechanization in a proof assistant.
+The new design achieves reuse and extensibility via a form of family
+polymorphism, a seemingly object-oriented idea, that allows code and
+proofs to be polymorphic to their enclosing families.
+Our development addresses significant technical challenges that arise
+from the underlying language being simultaneously functional,
+dependently typed, a logic, and an interactive tool.
+%
+Our results include
+\begin{enumerate*}
+\item a prototypical implementation of the language design as a Coq plugin,
+\item a formalization of the language design as a constructive type theory with inductive types,
+\item proofs of strong guarantees afforded by the type theory,
+and 
+\item case studies showing how the new expressiveness naturally addresses real
+programming challenges in metatheory mechanization.
+\end{enumerate*}
