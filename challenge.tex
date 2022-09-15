@@ -147,10 +147,10 @@ constructors, without redefining or forcing the rechecking of those cases
 already handled by the base family?
 
 The tension results from the duality between variants and records.
-Existing family-polymorphism mechanisms are designed for record-like
-language constructs like classes and objects; inductive types, by
-contrast, are variant-like.
-
+For record-like language constructs (e.g., classes and objects), it is
+safe for an extension to add more fields.
+By contrast, variant-like language constructs (e.g., inductive types)
+do not automatically enjoy safe, modular addition of constructors.
 
 \noindentparagraph{Late binding vs.\ dependent typing.}
 
