@@ -60,12 +60,10 @@ virtual types~\cite{thorup97} and associated types~\cite{ckj05},
 extensible cases~\cite{bac2006},
 and so on, are all based on this essential idea of inheritance.
 %
-In particular, when a language mechanism enables inheritance over
+In particular, when a language mechanism allows inheritance over
 recursive definitions containing related types and terms,
 it is said to support \emph{family polymorphism}~\cite{ernst2001family}:
 types and terms are polymorphic to a family they are nested within.
-
-\begingroup
 
 \paragraph{Contributions}
 
@@ -73,15 +71,16 @@ We contribute a language design that integrates family polymorphism into
 a proof assistant.
 Because code and proofs are polymorphic to a family they are nested
 within, they can be
+inherited and reused by a derived family.
+Hence, family polymorphism allows for extensible metatheory mechanization.
 
-\begin{wrapfigure}[6]{r}{.215\textwidth}
+\begingroup
+
+\begin{wrapfigure}[6]{r}{.200\textwidth}
 \includegraphics[scale=.48]{graphics/stlc-intro.pdf}
 \end{wrapfigure}
 
-\noindent
-inherited and reused by a derived family—%
-family polymorphism enables extensible metatheory mechanization.
-
+%\noindent
 %As an example, consider \cref{fig:STLC-example}, the simply typed
 %lambda calculus (STLC) mechanized in Coq.
 %A programming challenge there is to define distinct extensions of this
@@ -90,11 +89,13 @@ family polymorphism enables extensible metatheory mechanization.
 As an example, the diagram to the right depicts an extensible
 mechanization of the simply typed λ-calculus (STLC), using family
 polymorphism.
-Different extensions to STLC can all inherit from the base STLC family:
-they reuse mechanized metatheories, from syntax to the type safety
-theorem, only adding new constructors to inductive types
-and new cases to the induction proofs and recursive functions as needed
-by an extension.
+An extension of STLC with products and another with iso-recursive types
+can both inherit from the base STLC family:
+they reuse mechanized metatheories,
+from abstract syntax all the way to the type-safety theorem,
+only adding new constructors to inductive types
+and adding new cases to recursive functions and induction proofs
+\emph{as needed} by an extension.
 
 Integrating family polymorphism into a dependent type theory for
 logical reasoning, however, poses significant technical challenges.
@@ -132,7 +133,7 @@ canonicity.
 We also formalize the translation implemented by the Coq plugin.
 
 \item We present case studies of using our Coq plugin to mechanize
-language metatheories.
+language metatheories (\cref{sec:coqexample}).
 They show how our language design naturally solves the EP and
 enables a high degree of reuse and extensibility
 for proof engineering.

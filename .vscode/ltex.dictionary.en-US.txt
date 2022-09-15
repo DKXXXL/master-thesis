@@ -28,3 +28,7 @@ extensionality
 Intuitionistic
 intensional
 provers
+fixpoint
+iso-recursive
+λ-calculus
+exhaustivity
