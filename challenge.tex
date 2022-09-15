@@ -17,130 +17,16 @@ inductive types, by allowing a \emph{derived family} to add new constructors
 to inductive types inherited from a \emph{base family}.
 Such capability would be useful for extending mechanized languages.
 For example, \cref{fig:?} shows the part of an STLC extension that could
-potentially be mechanized using extensible inductive types: a derived family
+potentially be mechanized using such extensible inductive types: a derived family
 inherits constructors of inductive types from the base family (viz.\ the $\cdots$'s)
-and adds new constructors to model iso-recursive types.
+and adds new constructors to model the new language feature.
 
-\begin{figure}
-\fontsize{8.5}{9}\selectfont
-\def\MathparLineskip{\lineskip=0.50ex}
-
-\fcolorbox{black}{black!10}{
-\begin{minipage}{0.38\textwidth}
-
-\noindent%
-Types \quad
-$ \tau \ \Coloneqq\ \mathbb{1} \bnf  \tau_1 \to \tau_2 $
-\medskip
-
-Terms \quad
-$ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
-\medskip
-
-Typing rules
-\begin{mathpar}
-\Rule{ \Gamma(x)=\tau }{ \Gamma \vdash x : \tau }
-
-\Rule{ \Gamma, x:\tau_1 \vdash e : \tau_2 }{ \Gamma \vdash \lambda x.\,e : \tau_1 \to \tau_2 }
-
-\Rule{}{ \Gamma \vdash () : \mathbb{1} }
-\quad
-\Rule{
-  \Gamma \vdash e_1 : \tau_1 \to \tau_2
-  \quad
-  \Gamma \vdash e_2 : \tau_1
-}{
-  \Gamma \vdash e_1~e_2 : \tau_2
-}
-
-\end{mathpar}
-
-Values
-\begin{mathpar}
-\Rule{}{\textit{Val}(())}
-
-\Rule{}{\textit{Val}(\lambda x.\,e)}
-\end{mathpar}
-
-Reduction rules
-\begin{mathpar}
-\Rule{\textit{Val}(e_2)}{ (\lambda x.\,e_1)~e_2 \longrightarrow \subst{e_2}{e_1}{x} }
-
-\Rule{ e_1 \longrightarrow e_1' }{ e_1~e_2 \longrightarrow e_1'~e_2 }
-
-\Rule{ \textit{Val}(e_1) \quad e_2 \longrightarrow e_2' }{ e_1~e_2 \longrightarrow e_1~e_2' }
-
-\end{mathpar}
-
-\end{minipage}
-}%
-%\tikz \draw [arrows = {-Latex[width'=0pt .5, length=10pt, fill=white]}] (0,0) -- (1,0);
-\tikz \draw [
-  line width = .5pt,
-  arrows = {-Stealth[inset=0pt, length=5pt, fill=white, angle'=60, scale=2]}
-] (1,0) -- (0,0);%
-%https://tikz.dev/tikz-arrows
-\fcolorbox{black}{black!10}{
-\begin{minipage}{0.49\textwidth}
-
-\noindent%
-Types \quad $ \tau \ \Coloneqq\ \cdots \bnf \alpha \bnf \mu\alpha.\,\tau$
-\medskip
-
-Terms \quad $ e \ \Coloneqq\ \cdots \bnf \mathrm{fold}\;e \bnf \mathrm{unfold}\;e $
-\medskip
-
-Typing rules
-\begin{mathpar}
-\cdots
-\quad
-\Rule{
-  \Gamma \vdash e : \subst{\tau}{\mu\alpha.\,\tau}{\alpha}
-}{
-  \Gamma \vdash \mathrm{fold}\;e : \mu\alpha.\,\tau
-}
-\quad
-\Rule{
-  \Gamma \vdash e : \mu\alpha.\,\tau
-}{
-  \Gamma \vdash \mathrm{unfold}\;e : \subst{\tau}{\mu\alpha.\,\tau}{\alpha}
-}
-
-\end{mathpar}
-
-Values
-\begin{mathpar}
-\cdots
-
-\Rule{ \textit{Val}(e) }{ \textit{Val}(\mathrm{fold}\;e) }
-
-\end{mathpar}
-
-Reduction rules
-\begin{mathpar}
-\cdots
-
-\Rule{ e \longrightarrow e' }{ \mathrm{unfold}\;e \longrightarrow \mathrm{unfold}\;e' }
-
-\Rule{ e \longrightarrow e' }{ \mathrm{fold}\;e \longrightarrow \mathrm{fold}\;e' }
-
-\Rule{ \textit{Val}(e) }{ \mathrm{unfold}\;(\mathrm{fold}\;e) \longrightarrow e }
-
-\end{mathpar}
-
-\end{minipage}
-}
-
-\caption{%
-  Statics and dynamics of STLC (left) and its extension with iso-recursive types (right).
-}
-\label{fig:?}
-\end{figure}
+\input{stlc-nonmechanized.tex}
 
 However, there is a tension between extensibility of inductive types
 and exhaustivity of induction reasoning.
-The substitution function and the substitution lemma are examples that
-require induction reasoning.
+In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
+the substitution function, require induction reasoning.
 In the derived family, to ensure that induction remains exhaustive,
 how could the programmer account for the new cases arising from the new
 constructors, without redefining or forcing the rechecking of those cases
