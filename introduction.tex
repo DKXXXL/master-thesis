@@ -30,21 +30,24 @@ The programmer faces a tension between adding new constructors to an inductive d
 (e.g., new abstract syntax) and adding new functions and theorems over
 the data type (e.g., new meta\-theoretical results).
 
-In the Coq proof assistant~\cite{coq}, inductive types, as well as functions and
+In the Coq proof assistant~\cite{coq}, for instance, inductive types, as well as functions and
 theorems over inductive types, are closed to extension.
 So to reuse mechanized metatheories,
 the common practice is still to copy code and proofs and then modify them in each extension.
 But having to maintain multiple copies is highly non-modular and
 antithetical to good software engineering.
 %
-The programmer could also turn to design patterns~\cite{delaware2011,delaware2013}.
+The programmer could also turn to design patterns~\cite{delaware2011,delaware2013} that
+use software product lines or Church encodings.
 But they tend to require heavy lifting from the programmer to make code
-extensible, often leading to verbose, non-idiomatic programming styles.
+extensible, often leading to non-idiomatic programming styles.
 
-We answer the following question:
-can linguistic features designed to solve the EP (in
-conventional OO and functional languages)
-be adapted to metatheory mechanization in a proof assistant?
+We thus set out to answer the following question:
+can extensible metatheory mechanization be made easier by
+having a proof assistant support new \emph{linguistic features} that address the EP?
+%can linguistic features designed to solve the EP for designed to solve the EP (in
+%conventional OO and functional languages)
+%be adapted to metatheory mechanization in a proof assistant?
 
 At the core of many linguistic solutions to the EP is \emph{inheritance}.
 Inheritance is sometimes interpreted narrowly as a subclass'
@@ -56,9 +59,9 @@ recursive definitions}~\cite{cook1990inheritance}.
 Language mechanisms including
 mixins~\cite{mixin-1990},
 virtual classes~\cite{virtualclasses-1989,vc-calculus-2006},
-virtual types~\cite{thorup97} and associated types~\cite{ckj05},
-extensible cases~\cite{bac2006},
-and so on, are all based on this essential idea of inheritance.
+virtual types~\cite{thorup97}, % and associated types~\cite{ckj05},
+extensible cases~\cite{bac2006}, etc.\ 
+are all based on this essential idea of inheritance.
 %
 In particular, when a language mechanism allows inheritance over
 recursive definitions containing related types and terms,
@@ -89,7 +92,7 @@ Hence, family polymorphism allows for extensible metatheory mechanization.
 As an example, the diagram to the right depicts an extensible
 mechanization of the simply typed λ-calculus (STLC), using family
 polymorphism.
-An extension of STLC with products and another with iso-recursive types
+An extension of STLC with products and another with fixpoints
 can both inherit from the base STLC family:
 they reuse mechanized metatheories,
 from abstract syntax all the way to the type-safety theorem,

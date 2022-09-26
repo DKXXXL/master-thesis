@@ -7,7 +7,7 @@ TARGETS = $(DOC).pdf
 
 # TeX source files
 TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
-	acmart.cls syntax.tex metatheory.tex standardmodel.tex canonicitymodel.tex coqimpl.tex introduction.tex syntactic-example.tex coq-example.tex lang-design.tex related-work.tex syn-translate.tex challenge.tex	\
+	acmart.cls formalisms.sty syntax.tex metatheory.tex standardmodel.tex canonicitymodel.tex coqimpl.tex introduction.tex syntactic-example.tex coq-example.tex lang-design.tex related-work.tex syn-translate.tex challenge.tex	\
 	stlc-nonmechanized.tex	\
 	stlc-intro.pdf
 
@@ -21,11 +21,8 @@ include $(MAKEDIR)/commondefs
 # Change to wherever you put paperversions.tex and the .sty files.
 TEXDIR = tex-macros
 
-# Directory where formalism files are
-FORMALISMDIR = formalisms
-
-VPATH = $(TEXDIR):$(FORMALISMDIR):$(FIGS):
-TEXINPUTS = $(TEXDIR):$(FORMALISMDIR):$(FIGS):
+VPATH = $(TEXDIR):$(FIGS):
+TEXINPUTS = $(TEXDIR):$(FIGS):
 
 default: $(TARGETS)
 

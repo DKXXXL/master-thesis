@@ -1,5 +1,7 @@
 \begin{figure}
 
+\newcommand{\headerfont}[1]{\textbf{#1}}
+
 \BeforeBeginEnvironment{mathpar}{%
   \vspace{-1ex}
 }
@@ -11,15 +13,15 @@
 \begin{minipage}{0.42\textwidth}
 
 \noindent%
-Types \quad
+\headerfont{Types} \quad
 $ \tau \ \Coloneqq\ \mathbb{1} \bnf  \tau_1 \to \tau_2 $
 \medskip
 
-Terms \quad
+\headerfont{Terms} \quad
 $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 \medskip
 
-Typing rules
+\headerfont{Typing rules}
 \begin{mathpar}
 \Rule{ \Gamma(x)=\tau }{ \Gamma \vdash x : \tau }
 
@@ -37,25 +39,25 @@ Typing rules
 
 \end{mathpar}
 
-Values
+\headerfont{Values}
 \begin{mathpar}
 \Rule{}{\textit{Val}(())}
 
 \Rule{}{\textit{Val}(\lambda x.\,e)}
 \end{mathpar}
 
-Substitution
+\headerfont{Substitution}
 \begin{mathpar}
-  \subst{y}{e}{x} = \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
+  \subst{y}{e}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
 
-  \subst{()}{e}{x} = ()
+  \subst{()}{e}{x} \defeq ()
 
-  \subst{(\lambda y.\,e')}{e}{x} = \begin{cases} \lambda y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \lambda y.\,e', & \text{if } x = y \end{cases}
+  \subst{(\lambda y.\,e')}{e}{x} \defeq \begin{cases} \lambda y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \lambda y.\,e', & \text{if } x = y \end{cases}
 
-  \subst{(e_1~e_2)}{e}{x} = \subst{e_1}{e}{x}~\subst{e_2}{e}{x}
+  \subst{(e_1~e_2)}{e}{x} \defeq \subst{e_1}{e}{x}~\subst{e_2}{e}{x}
 \end{mathpar}
 
-Reduction rules
+\headerfont{Reduction rules}
 \begin{mathpar}
 \Rule{ e_1 \longrightarrow e_1' }{ e_1~e_2 \longrightarrow e_1'~e_2 }
 
@@ -66,8 +68,8 @@ Reduction rules
 \end{mathpar}
 
 \begin{tabular}{@{}l@{\qquad}l@{}}
-Substitution lemma & Preservation theorem \smallskip\\
-Progress theorem & Type-safety theorem
+\headerfont{Substitution lemma} & \headerfont{Preservation theorem} \smallskip\\
+\headerfont{Progress theorem} & \headerfont{Type-safety theorem}
 \end{tabular}%}
 
 \end{minipage}
@@ -80,16 +82,16 @@ Progress theorem & Type-safety theorem
 ] (1.2,0) -- (0,0);%
 %https://tikz.dev/tikz-arrows
 \fcolorbox{black}{black!10}{
-\begin{minipage}{0.36\textwidth}
+\begin{minipage}{0.39\textwidth}
 
 \noindent%
-Types \quad $ \tau \ \Coloneqq\ \cdots $ \textit{(no change)}
+\headerfont{Types} \quad $ \tau \ \Coloneqq\ \cdots $ \textit{(no change)}
 \medskip
 
-Terms \quad $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
+\headerfont{Terms} \quad $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
 \medskip
 
-Typing rules
+\headerfont{Typing rule}
 \begin{mathpar}
 \cdots
 
@@ -101,25 +103,33 @@ Typing rules
 
 \end{mathpar}
 
-Values $\quad \cdots$ \textit{(no change)}
-\medskip
+\headerfont{Values}
+\begin{mathpar}
+\cdots \textit{ (no change)}
 
-Substitution $\quad \cdots$ \textit{(no change)}
-\medskip
+\end{mathpar}
 
-Reduction rules
+\headerfont{Substitution}
+\begin{mathpar}
+\cdots\medskip
+
+\subst{(\mathrm{fix}\,y.\,e')}{e}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,e', & \text{if } x = y \end{cases}
+
+\end{mathpar}
+
+\headerfont{Reduction rules}
 \begin{mathpar}
 \cdots
 
-\Rule{}{ \mathrm{fix}.\,x.\,e \longrightarrow \subst{e}{\mathrm{fix}.\,x.\,e}{x} }
+\Rule{}{ \mathrm{fix}\,x.\,e \longrightarrow \subst{e}{\mathrm{fix}\,x.\,e}{x} }
 
 \end{mathpar}
 
 \begin{tabular}{@{}l@{\ \ }l@{}}
-Substitution lemma   & \textit{(a new case required)} \smallskip\\
-Preservation theorem & \textit{(a new case required)} \smallskip\\
-Progress theorem     & \textit{(a new case required)} \smallskip\\
-Type-safety theorem  & \textit{(no change)}
+\headerfont{Substitution lemma}   & \textit{(a new case required)} \smallskip\\
+\headerfont{Preservation theorem} & \textit{(a new case required)} \smallskip\\
+\headerfont{Progress theorem}     & \textit{(a new case required)} \smallskip\\
+\headerfont{Type-safety theorem}  & \textit{(no change)}
 \end{tabular}
 
 \end{minipage}

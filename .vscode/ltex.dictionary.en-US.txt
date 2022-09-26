@@ -32,3 +32,5 @@ fixpoint
 iso-recursive
 λ-calculus
 exhaustivity
+prover
+overridings

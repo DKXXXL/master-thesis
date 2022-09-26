@@ -1,5 +1,5 @@
-Supporting inheritance and family polymorphism in a proof assistant poses challenges
-far beyond those encountered in an object-oriented setting~\cite{ncm2004,vc-calculus-2006,zm2017},
+Integrating family polymorphism into an interactive theorem prover poses challenges
+far beyond those found in an object-oriented setting~\cite{ncm2004,vc-calculus-2006,zm2017},
 because the underlying programming language is simultaneously
 functional, dependently typed, a logic, and an interactive tool.
 
@@ -16,9 +16,9 @@ A family-polymorphism mechanism could potentially support extensible
 inductive types, by allowing a \emph{derived family} to add new constructors
 to inductive types inherited from a \emph{base family}.
 Such capability would be useful for extending mechanized languages.
-For example, \cref{fig:?} shows the part of an STLC extension that could
+For example, \cref{fig:stlc-nonmechanized} shows the part of an STLC extension that could
 potentially be mechanized using such extensible inductive types: a derived family
-inherits constructors of inductive types from the base family (viz.\ the $\cdots$'s)
+inherits constructors of inductive types from the base family (viz.\ the ellipsis under ``Typing rule'')
 and adds new constructors to model the new language feature.
 
 \input{stlc-nonmechanized.tex}
@@ -27,20 +27,35 @@ However, there is a tension between extensibility of inductive types
 and exhaustivity of induction reasoning.
 In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
 the substitution function, require induction reasoning.
-In the derived family, to ensure that induction remains exhaustive,
-how could the programmer account for the new cases arising from the new
-constructors, without redefining or forcing the rechecking of those cases
-already handled by the base family?
-
-The tension results from the duality between variants and records.
+A language design must enforce that induction remains exhaustive in the
+derived family despite the new constructors, without requiring
+redefinition or rechecking of those cases already handled by the base
+family.
+%
+The tension reflects a duality between variants and records.
 For record-like language constructs (e.g., classes and objects), it is
-safe for an extension to add more fields.
-By contrast, variant-like language constructs (e.g., inductive types)
-do not automatically enjoy safe, modular addition of constructors.
+safe for an extension to add more fields: projection of existent fields
+still works.
+But variant-like constructs (e.g., inductive types) do not automatically
+enjoy safe, modular addition of constructors:
+pattern matching could potentially become non-exhaustive.
 
-\noindentparagraph{Late binding vs.\ dependent typing.}
+\noindentparagraph{Overriding vs.\ dependent typing.}
 
-\noindentparagraph{Essence of inheritance vs.\ consistency of a logic.}
+Common to many family-polymorphism mechanisms is the ability for a
+derived family to override fields defined in the base family.
+As we show later, this expressiveness is also useful for metatheory
+mechanization.
+However, it is in conflict with dependent typing, wherein type checking
+often involves unfolding definitions.
+In \cref{fig:stlc-nonmechanized}, the proof of the substitution lemma is
+checked against the definition of the substitution function.
+If a derived family were allowed to arbitrarily override how
+substitution is defined, then the proof, when inherited, would be
+ill-formed.
+A language design should only allow those overridings that are safe.
+
+\noindentparagraph{Self reference vs.\ logical consistency.}
 
 \noindentparagraph{Family vs.\ interactivity.}
 
