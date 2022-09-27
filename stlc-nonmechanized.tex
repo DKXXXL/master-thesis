@@ -3,7 +3,7 @@
 \newcommand{\headerfont}[1]{\textbf{#1}}
 
 \BeforeBeginEnvironment{mathpar}{%
-  \vspace{-1ex}
+  \vspace{-.8ex}
 }
 
 \fontsize{8.0}{8.8}\selectfont
@@ -39,7 +39,7 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \end{mathpar}
 
-\headerfont{Values}
+\headerfont{Value forms}
 \begin{mathpar}
 \Rule{}{\textit{Val}(())}
 
@@ -74,7 +74,7 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \end{minipage}
 }%
-\raisebox{20pt}{%
+\raisebox{26pt}{%
 %\tikz \draw [arrows = {-Latex[width'=0pt .5, length=10pt, fill=white]}] (0,0) -- (1,0);
 \tikz \draw [
   line width = .5pt,
@@ -103,7 +103,7 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \end{mathpar}
 
-\headerfont{Values}
+\headerfont{Value forms}
 \begin{mathpar}
 \cdots \textit{ (no change)}
 
@@ -111,7 +111,7 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \headerfont{Substitution function}
 \begin{mathpar}
-\cdots\medskip
+{\raisebox{-8pt}{$\cdots$}}\medskip
 
 \subst{(\mathrm{fix}\,y.\,e')}{e}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,e', & \text{if } x = y \end{cases}
 
@@ -134,7 +134,22 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \end{minipage}
 }%
+
 }
+
+\vspace{-42pt}
+\hfill
+\begin{minipage}{.48\textwidth}
+\fontsize{9.0}{10}\selectfont
+
+Mechanization of
+types, terms, typing rules, value forms, and reduction rules use
+inductive types.\smallskip
+
+Mechanization of
+lemmas, theorems, and the substitution function use
+induction over inductive types.
+\end{minipage}
 
 \caption{%
   STLC metatheories (left) and its extension with fixpoints (right).
