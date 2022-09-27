@@ -30,15 +30,14 @@ the substitution function, require induction reasoning.
 A language design must enforce that induction remains exhaustive in the
 derived family despite the new constructors, without requiring
 redefinition or rechecking of those cases already handled by the base
-family.
-%
+family.\footnote{%
 The tension reflects a duality between variants and records.
 For record-like language constructs (e.g., classes and objects), it is
-safe for an extension to add more fields: projection of existent fields
-still works.
+safe for an extension to add more fields: existing fields can still be
+projected.
 But variant-like constructs (e.g., inductive types) do not automatically
 enjoy safe, modular addition of constructors:
-pattern matching could potentially become non-exhaustive.
+pattern matching could potentially become non-exhaustive.}
 
 \noindentparagraph{Overriding vs.\ dependent typing.}
 
@@ -48,14 +47,24 @@ As we show later, this expressiveness is also useful for metatheory
 mechanization.
 However, it is in conflict with dependent typing, wherein type checking
 often involves unfolding definitions.
-In \cref{fig:stlc-nonmechanized}, the proof of the substitution lemma is
-checked against the definition of the substitution function.
-If a derived family were allowed to arbitrarily override how
-substitution is defined, then the proof, when inherited, would be
-ill-formed.
+For example, in an STLC mechanization, the substitution lemma is checked
+against the definition of the substitution function.
+If a derived family were allowed to arbitrarily override the
+substitution function, then the proof of the substitution lemma, when
+inherited, would be ill-formed (even in the absence of any inductive-type extensions).
 A language design should only allow those overridings that are safe.
 
 \noindentparagraph{Self reference vs.\ logical consistency.}
+
+Inheritance and family polymorphism are mechanisms for
+incrementally modifying self-referential definitions~\cite{cook1990inheritance}:
+the implicit self parameterization is how they achieve late binding and thus extensibility.
+However, self reference could easily lead to divergence.
+Divergence is not a concern for the design of ordinary OO or
+functional languages, but it means logical inconsistency---and
+hence unsoundness---for a language aimed at logical reasoning.
+A language design must ensure that the added extensibility does not
+go rogue.
 
 \noindentparagraph{Family vs.\ interactivity.}
 
@@ -167,10 +176,7 @@ These three examples both show the incompatibility between exposing the
 concrete definition of a field for reasoning (this second example even
 involves the definition of fixpoint and pattern matching) and
 overridability. We need to be careful about this tension when designing
-the language.\YZ{
-  The two examples seem to suggest there should not be any overriding allowed at all.
-  Is there an example where you actually want the ability to override?
-}\EDJreply{Added a new example. Please check.}
+the language.
 
 \textlabel{Challenge (3)}{chg:consistency}~\textbf{Consistency vs. Self Parametrization}.
 The meta\-theoretical formulation in~\citet{zm2017} for family
@@ -197,14 +203,15 @@ more, we want our family ``term'' to be incorporated into Coq \textbf{without
 breaking its other functionality}. For example, the user may want to
 project the family member anywhere inside an arbitrary Gallina term,
 that may later be computed and normalized. However, families themselves
-can be second class citizens just like \citet{zm2017}.\YZ{I was thinking
-if the paper should start by talking about the functional encoding of
-inheritance (namely exposing a self parameter to allow late binding, and
-later taking the fixpoint of the extensible module when it needs to be
-accessed outside the family).  I think most readers will benefit from a
-recap of this encoding.\\
-Coq is total but that doesn’t prevent Coq from having a Fixpoint keyword (plus you proved your language is consistent).
-}\EDJreply{Feel free to add these. I don't have many knowledge about this part.}
+can be second class citizens just like \citet{zm2017}.
+%\YZ{I was thinking
+%if the paper should start by talking about the functional encoding of
+%inheritance (namely exposing a self parameter to allow late binding, and
+%later taking the fixpoint of the extensible module when it needs to be
+%accessed outside the family).  I think most readers will benefit from a
+%recap of this encoding.\\
+%Coq is total but that doesn’t prevent Coq from having a Fixpoint keyword (plus you proved your language is consistent).
+%}\EDJreply{Feel free to add these. I don't have many knowledge about this part.}
 
 % \subsection{Design Space}
 

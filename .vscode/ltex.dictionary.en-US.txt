@@ -34,3 +34,4 @@ iso-recursive
 exhaustivity
 prover
 overridings
+expressivity
