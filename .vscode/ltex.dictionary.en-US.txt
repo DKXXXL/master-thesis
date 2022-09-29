@@ -35,3 +35,5 @@ exhaustivity
 prover
 overridings
 expressivity
+propositionally
+disjointness
