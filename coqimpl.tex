@@ -475,7 +475,7 @@ a module, at the appropriate place our plugin will insert
 Definition subst := tm_rec (λ _ ⇒ id → tm → tm) subst_internal.tm_var ...
 \end{minted}
 where "tm_rec" and "tm" are the corresponding recursor and the (vanilla
-but extended and modified) inductive type in that compiled module. Note
+but extended and modified) inductive type in that compiled module.\YZ{Where is this "tm" inductive type in figure 6?} Note
 that, even though "tm_rec" and "tm" has the same name as before, they
 are in the newly-compiled module so they refer to totally different
 things. 
