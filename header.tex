@@ -306,9 +306,17 @@
 \newcommand\TODO{\colorbox{pure-apple}{\color{white}\texttt{TODO}}}
 
 \makeatletter
-\newcommand*{\textlabel}[2]{%
+\newcommand{\textlabel}[2]{%
   \edef\@currentlabel{#1}% Set target label
-  \phantomsection% Correct hyper reference link
-  #1\label{#2}% Print and store label
+  #1\phantomsection% Correct hyper reference link
+  \label{#2}% Print and store label
+}
+\newcommand{\headinglabel}[2]{%
+  \edef\@currentlabel{#1}% Set target label
+  #1% Correct hyper reference link
+  \label{#2}% Print and store label
 }
 \makeatother
+
+\newif\ifShowOldWriting
+\ShowOldWritingtrue

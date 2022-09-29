@@ -13,22 +13,22 @@
 \begin{minipage}{0.42\textwidth}
 
 \noindent%
-\headerfont{Types} \quad
+\headerfont{Types} \hspace{1.0em}
 $ \tau \ \Coloneqq\ \mathbb{1} \bnf  \tau_1 \to \tau_2 $
 \medskip
 
-\headerfont{Terms} \quad
+\headerfont{Terms} \hspace{0.85em}
 $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 \medskip
 
 \headerfont{Typing rules}
 \begin{mathpar}
+\Rule{}{ \Gamma \vdash () : \mathbb{1} }
+
 \Rule{ \Gamma(x)=\tau }{ \Gamma \vdash x : \tau }
 
 \Rule{ \Gamma, x:\tau_1 \vdash e : \tau_2 }{ \Gamma \vdash \lambda x.\,e : \tau_1 \to \tau_2 }
 
-\Rule{}{ \Gamma \vdash () : \mathbb{1} }
-\quad
 \Rule{
   \Gamma \vdash e_1 : \tau_1 \to \tau_2
   \quad
@@ -85,10 +85,12 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 \begin{minipage}{0.39\textwidth}
 
 \noindent%
-\headerfont{Types} \quad $ \tau \ \Coloneqq\ \cdots $ \textit{(no change)}
+\headerfont{Types} \hspace{1.0em}
+$ \tau \ \Coloneqq\ \cdots $ \textit{(no change)}
 \medskip
 
-\headerfont{Terms} \quad $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
+\headerfont{Terms} \hspace{0.85em}
+$ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
 \medskip
 
 \headerfont{Typing rules}
@@ -143,11 +145,11 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 \fontsize{9.0}{10}\selectfont
 
 Mechanization of
-types, terms, typing rules, value forms, and reduction rules use
+types, terms, typing rules, value forms, and reduction rules is via
 inductive types.\smallskip
 
 Mechanization of
-lemmas, theorems, and the substitution function use
+lemmas, theorems, and the substitution function is by
 induction over inductive types.
 \end{minipage}
 

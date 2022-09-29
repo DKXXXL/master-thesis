@@ -1,0 +1,66 @@
+\begin{figure}
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC.
+ FInductive ty : Set :=
+  | unit : ty
+  | arrow : ty -> ty -> ty.
+ FInductive term : Set := 
+  | tm_var : id -> term 
+  | tm_abs : id -> term -> term ...
+ Family subst_internal.
+  Final Field tm_var := ..
+  Final Field tm_abs := ..
+   ...
+ EndFamily.
+ FRecursor subst
+  about tm motive ..
+  using subst_internal.
+ ...
+ FInductive has_type 
+  : context -> term -> type := ...
+ FTheorem subst_lemma 
+  about has_type 
+  motive ...
+ Proof.  ...
+ Qed.
+ FInductive step : term -> term -> Prop 
+  := ...
+(* ... and more, end with type safety *)
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \begin{minipage}[t]{0.47\linewidth}
+\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
+Family STLC_bool extends STLC.
+ Extend FInductive ty : Set :=
+  | bool : ty.
+
+ Extend FInductive term : Set := 
+  | tt : term | ff : term 
+  | tif : term -> term -> term -> term
+ Extend Family subst_internal.
+  Final Field tt := ..
+  Final Field ff := ..
+  Final Field tif := ..
+ EndFamily. (* Automatic inheriting others 
+              from STLC.subst_internal *)
+ Inherit subst.
+(* Plugin will redo exhaustiveness check, in case 
+ subst_internal is not extended correctly *)
+ Extend FInductive has_type (* .. and new ty too *)
+  : context -> term -> type := ...
+ Extend FTheorem subst_lemma. Proof.
+  ... (* Need to prove extra cases *)
+ Qed.
+
+
+ Extend FInductive step : term -> term -> Prop 
+  := ... (* Need to expand this binary relation *)
+(* ... and more extension *)
+EndFamily.
+\end{lstlisting}
+  \end{minipage}
+  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
+\end{figure}
+  

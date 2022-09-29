@@ -1,45 +1,51 @@
-Integrating family polymorphism into an interactive theorem prover poses challenges
+Integrating family polymorphism into a proof assistant presents challenges
 far beyond those found in an object-oriented setting~\cite{ncm2004,vc-calculus-2006,zm2017},
 because the underlying programming language is simultaneously
 functional, dependently typed, a logic, and an interactive tool.
 
-\noindentparagraph{Extensible inductive types vs.\ exhaustive induction reasoning.}
+\noindentparagraph{%
+\headinglabel{C1}{chg:extensible-v-exhaustive}.\,
+Extensible inductive types vs.\ exhaustive induction reasoning.%
+}
 
 Inductive types, generalizing algebraic data types found in
-functional languages, are a central feature of any proof assistant being
-used for mechanizing language metatheories.
-They offer a means to define abstract syntax, typing rules, reduction
-rules, and so on.
-Unfortunately, inductive types are closed to extension.
+functional languages, are a central feature of any proof assistant
+in use for mechanizing language metatheories.
+They offer a means to define abstract syntax and inference rules.
+But unfortunately, inductive types are closed to extension by design.
 
-A family-polymorphism mechanism could potentially support extensible
+A family-polymorphism design could potentially support extensible
 inductive types, by allowing a \emph{derived family} to add new constructors
 to inductive types inherited from a \emph{base family}.
-Such capability would be useful for extending mechanized languages.
+Such a feature would be useful for extending mechanized languages.
 For example, \cref{fig:stlc-nonmechanized} shows the part of an STLC extension that could
 potentially be mechanized using such extensible inductive types: a derived family
-inherits constructors of inductive types from the base family (viz.\ the ellipsis under ``Typing rule'')
+inherits constructors of inductive types from the base family (e.g., the ellipsis under ``Typing rules'')
 and adds new constructors to model the new language feature.
 
 \input{stlc-nonmechanized.tex}
 
 However, there is a tension between extensibility of inductive types
-and exhaustivity of induction reasoning.
-In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
-the substitution function, require induction reasoning.
-A language design must enforce that induction remains exhaustive in the
-derived family despite the new constructors, without requiring
-redefinition or rechecking of those cases already handled by the base
-family.\footnote{%
+and exhaustivity of induction reasoning.\footnote{%
 The tension reflects a duality between variants and records.
 For record-like language constructs (e.g., classes and objects), it is
 safe for an extension to add more fields: existing fields can still be
 projected.
 But variant-like constructs (e.g., inductive types) do not automatically
 enjoy safe, modular addition of constructors:
-pattern matching could potentially become non-exhaustive.}
+existing pattern matches could potentially become non-exhaustive.}
+In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
+the substitution function, require induction reasoning.
+A language design must enforce that induction remains exhaustive in the
+face of the new constructors in the derived family.
+For modularity, it should do so without requiring
+redefinition or rechecking of those cases already handled by the base
+family.
 
-\noindentparagraph{Overriding vs.\ dependent typing.}
+\noindentparagraph{%
+\headinglabel{C2}{chg:override-v-dependent}.\,
+Overriding vs.\ dependent typing.%
+}
 
 Common to many family-polymorphism mechanisms is the ability for a
 derived family to override fields defined in the base family.
@@ -54,19 +60,25 @@ substitution function, then the proof of the substitution lemma, when
 inherited, would be ill-formed (even in the absence of any inductive-type extensions).
 A language design should only allow those overridings that are safe.
 
-\noindentparagraph{Self reference vs.\ logical consistency.}
+\noindentparagraph{%
+\headinglabel{C3}{chg:self-v-consistency}.\,
+Self reference vs.\ logical consistency.%
+}
 
 Inheritance and family polymorphism are mechanisms for
 incrementally modifying self-referential definitions~\cite{cook1990inheritance}:
-the implicit self parameterization is how they achieve late binding and thus extensibility.
+the implicit self parameterization is how they achieve late binding and
+thus offer extensibility.
 However, self reference could easily lead to divergence.
 Divergence is not a concern for the design of ordinary OO or
-functional languages, but it means logical inconsistency---and
+functional languages, but it would mean logical inconsistency---and
 hence unsoundness---for a language aimed at logical reasoning.
-A language design must ensure that the added extensibility does not
-go rogue.
+A family-polymorphism design must tame self reference to guarantee consistency.
 
-\noindentparagraph{Tooling and user experience.}
+\noindentparagraph{%
+\headinglabel{C4}{chg:tooling}.\,
+User experience and tooling.%
+}
 
 Interactive theorem proving and tactic programming are
 part of the idiomatic programming experience in a proof assistant.
@@ -76,6 +88,9 @@ In particular, it should be possible in our tool to
 incrementally navigate through vernacular commands and, moreover, construct proofs
 using tactics with instant feedback on the proof state,
 even in the middle of a family definition.
+In addition, it should remain possible to perform computation on Gallina terms.
+
+\ifShowOldWriting
 
 \newpage
 
@@ -306,3 +321,7 @@ can be second class citizens just like \citet{zm2017}.
 % we want tactic programming and certain level of automation
 % Finally, \textlabel{Req (5)}{chg:software-engineering}: \textbf{we desire tactic
 % programming} to relieve us from the hassle of direct manipulation of proof terms.
+
+\newpage
+
+\fi

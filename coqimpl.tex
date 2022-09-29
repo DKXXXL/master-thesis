@@ -440,8 +440,8 @@ Definition subst := tm_rec (λ _ ⇒ id → tm → tm) subst_internal.tm_var ...
 \end{minted}
 where "tm_rec" and "tm" are the corresponding recursor and
 the (vanilla) inductive type in that compiled module. Thus a "FRecursor"
-field is unlike other fields, even though it is exposed as a mundane
-function for the following fields in the programming interface.\YZ{
+field is unlike other fields, even though it is exposed as a plain
+function for the succeeding fields in the programming interface.\YZ{
   Why is this special treatment needed for compiling FRecursor?
 }\EDJreply{because the non-special treatment cannot be applied to recursor --
   the non-special treatment will require the recursor to be *exported* at the interface}
@@ -451,8 +451,8 @@ when extending an inductive type $A$ with new constructor $c$, our
 plugin will generate a new (syntactic) inductive definition $A'$ with
 this new $c$ on the fly and feed it to Coq. But we must be careful on
 the exposing data in the family type (the compiled module type) for the
-following field. In other words, we must be careful on what interface
-(context) the following fields are defined based on. 
+succeeding field. In other words, we must be careful on the interface
+(context) based on which the succeeding fields are defined. 
 
 Importantly, the recursor field (e.g. "subst") is not actually
 inheritable, because it is not compiled like any other fields.
@@ -538,7 +538,7 @@ Thus we support "FScheme" to remedy problem (1): our plugin can automatically ge
 
 \textit{Overridable pins Inductive Type and FRecursor}. We notice that, the power of "FRecursor" comes from its distinction from the mundane fields and its ability to stab through the abstraction of "FInductive". Interestingly, the latter is quite similar on how "Overridable .. pins {..}" can see through the abstraction of former pinned overrdiable fields. This inspires us to generalize "pins"---we support pinning inductive type and "FRecursor". Once "FInductive" and "FRecursor" fields are pinned, we are directly exposed with the primitive coq-providing recursor and \textbf{judgemental equality} of the computational information for "FRecursor". 
 
-The compilation mechanism is simply make the underlying, compiled definition of inductive type and recursor included as part of the parameters of the module, just like how the the concrete definition of overridable fields are included inside the parameters when pinned. This way, the computational information from vanilla Coq can be transimitted into the context.  
+The compilation mechanism is simply make the underlying, compiled definition of inductive type and recursor included as part of the parameters of the module, just like how the concrete definition of overridable fields are included inside the parameters when pinned. This way, the computational information from vanilla Coq can be transimitted into the context.  
 
 
 % However, only overridable fields can pin the (extensible) inductive type and "FRecursor".

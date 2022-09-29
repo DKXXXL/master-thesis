@@ -1,3 +1,12 @@
+We demonstrate key ingredients of our design as a plugin to the Coq proof assistant,
+though we believe our design could be adapted to other proof assistants such as Lean.
+
+\ref{chg:extensible-v-exhaustive}
+
+\input{stlc-mechanized.tex}
+
+\newpage
+
 Inspired by the above challenges and Family Polymorphism, we propose
 the following extension to Coq's Vernacular Commands, and the corresponding STLC example.
 % basically write down the specification of surface Coq commandline
@@ -19,73 +28,6 @@ the following extension to Coq's Vernacular Commands, and the corresponding STLC
   & | \quad "Family"~\langle ident\rangle~"extends"~\langle ref\rangle~"using"~\langle ref\rangle~"using"~\langle ref\rangle \\ 
   & | \quad "MetaData"~\langle ident\rangle \quad | \quad "EndMetaData" \\ 
 \end{align*}
-
-
-\begin{figure}[!htb]
-  \begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family STLC.
- FInductive ty : Set :=
-  | unit : ty
-  | arrow : ty -> ty -> ty.
- FInductive term : Set := 
-  | tm_var : id -> term 
-  | tm_abs : id -> term -> term ...
- Family subst_internal.
-  Final Field tm_var := ..
-  Final Field tm_abs := ..
-   ...
- EndFamily.
- FRecursor subst
-  about tm motive ..
-  using subst_internal.
- ...
- FInductive has_type 
-  : context -> term -> type := ...
- FTheorem subst_lemma 
-  about has_type 
-  motive ...
- Proof.  ...
- Qed.
- FInductive step : term -> term -> Prop 
-  := ...
-(* ... and more, end with type safety *)
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-  \begin{minipage}[t]{0.47\linewidth}
-\begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
-Family STLC_bool extends STLC.
- Extend FInductive ty : Set :=
-  | bool : ty.
-
- Extend FInductive term : Set := 
-  | tt : term | ff : term 
-  | tif : term -> term -> term -> term
- Extend Family subst_internal.
-  Final Field tt := ..
-  Final Field ff := ..
-  Final Field tif := ..
- EndFamily. (* Automatic inheriting others 
-              from STLC.subst_internal *)
- Inherit subst.
-(* Plugin will redo exhaustiveness check, in case 
- subst_internal is not extended correctly *)
- Extend FInductive has_type (* .. and new ty too *)
-  : context -> term -> type := ...
- Extend FTheorem subst_lemma. Proof.
-  ... (* Need to prove extra cases *)
- Qed.
-
-
- Extend FInductive step : term -> term -> Prop 
-  := ... (* Need to expand this binary relation *)
-(* ... and more extension *)
-EndFamily.
-\end{lstlisting}
-  \end{minipage}
-  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
-\end{figure}
 
 \textbf{Family and Defining Fields.} These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
 Nested families are also allowed. 
@@ -278,7 +220,7 @@ are located in the family "handlers", similar to a large pattern-matching statem
 
 "FTheorem" has a similar functionality but is expected to be used for
 theorem proving---the handler and the family will be automatically
-constructed during proving.\YZ{Cool. Can the same be done to FRecursor?}\EDJreply{I think last time I have answered it. FRecursor for fixpoint command}
+constructed during proving.
 
 % Explain FScheme
 However, "FRecursor" doesn't specify any reduction/computation information until a family is defined completely and closed (e.g. "subst" in \cref{fig:STLC-example2} cannot reduce when application during the definition of the surrounding family). To remedy this, we introduce "FScheme CompEq" that will generate proposition of equations indicating reductions. For example, for "subst", it will generate the equation
