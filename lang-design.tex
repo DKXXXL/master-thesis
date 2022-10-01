@@ -1,4 +1,4 @@
-We demonstrate key ingredients of our design as a plugin to the Coq proof assistant,
+We demonstrate the key ingredients of our design as a plugin to the Coq proof assistant,
 though we believe our design could be adapted to other proof assistants such as Lean.
 
 \ref{chg:extensible-v-exhaustive}
@@ -29,7 +29,7 @@ the following extension to Coq's Vernacular Commands, and the corresponding STLC
   & | \quad "MetaData"~\langle ident\rangle \quad | \quad "EndMetaData" \\ 
 \end{align*}
 
-\textbf{Family and Defining Fields.} These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:consistency}.
+\textbf{Family and Defining Fields.} These are the core extensions we proposed to support \cref{fig:STLC-example}, and we adapt them into \cref{fig:STLC-example2}. We use "Family" and "EndFamily" to scope. "Field" is used to define new members in a family. "FieldClaim" is similar as "Field" but will invoke proof-mode in Coq and thus the user can use tactic programming to define new members.\footnote{We expect "FieldClaim" to be used in a \textit{proof-irrelevant} situation and thus whether overridable or not doesn't matter.} Both "Field" and "FieldClaim" are only allowed to refer to the former fields, to avoid possible inconsistency mentioned in \ref{chg:self-v-consistency}.
 Nested families are also allowed. 
 
 
@@ -47,10 +47,10 @@ The syntax of extending a new field is to directly use "Field", while
 overriding requires a prefix of "Override" before "Field f : .." and
 "Inherit f" will inherit field "f" from the parent. 
 
-To resolve \ref{chg:consistency}, we make sure when inheriting or
+To resolve \ref{chg:self-v-consistency}, we make sure when inheriting or
 overriding on "f" happens, the context of the field "f" is also
 ``inherited''. Thus the mentioned informal example in
-\ref{chg:consistency} will not apply here, because the overriding "f" is
+\ref{chg:self-v-consistency} will not apply here, because the overriding "f" is
 in a context where "self" is empty thus "self.g" doesn't
 type-check. Thus, before we inherit "g", the dependee "f" needs to be
 inherited.  
@@ -90,7 +90,7 @@ EndFamily.
 
 % % Talk about Final
 % \textbf{Final as non-overridable.} Every field is by default
-% overridable, reminding us of \ref{chg:definition-relevant-reasoning}.  To
+% overridable, reminding us of \ref{chg:override-v-dependent}.  To
 % resolve it, we provide the keyword "Final" to allow the user to specify
 % \textit{non-overridability} and give the user the opportunity to choose
 % from overriding and exposing the definition.
@@ -103,7 +103,7 @@ EndFamily.
 % hand, once we decorate \lstinline{a'} as final, the second attempt
 % \lstinline{c : a' = 1 := eq_refl} will succeed. Contrary to "a",
 % our \lstinline{a'} is not overridable in "Family I2", mediating the
-% \ref{chg:definition-relevant-reasoning}.
+% \ref{chg:override-v-dependent}.
 
 % This example might sound trivial and contrived. Let's look at the
 % example field binary operation "bop" initially set to be addition.
@@ -167,11 +167,11 @@ EndFamily.
 % implementation of "f", we just override the whole ``sealed'' family,
 % like we do in "I2.MonotonicF". 
 
-\textbf{Overridable Fields with dependency.}  Each field is by default non-overridable. By the discussion of \ref{chg:definition-relevant-reasoning}, we can simply reason and access the definition about the former fields in a later field, just like Field "a" and "b" in \cref{fig:plugin-example3} and we lose the ability to override. 
+\textbf{Overridable Fields with dependency.}  Each field is by default non-overridable. By the discussion of \ref{chg:override-v-dependent}, we can simply reason and access the definition about the former fields in a later field, just like Field "a" and "b" in \cref{fig:plugin-example3} and we lose the ability to override. 
 
 However, overridability is useful especially in Coq as programs in Coq are runnable. Consider the sceanrio when we use arbitrary monotonic function as field members \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}, and we make sure that all the following reasoning are only about the monotonicity. Then it should be allowed to swap the implementation of that monotonic function via overriding. 
 
-To resolve, we introduce overridable fields. Each overridable field will only expose its type instead of the concrete definition to the following default (non-overridable) fields. For example, the first failure in \cref{fig:plugin-example3} per the discussion of \ref{chg:definition-relevant-reasoning}: since overridability will break the inheritability of "c" and thus we don't allow such field to exist in the first place. Our plugin will only expose the fact that "a'" is an arbitrary natural number but hiding its concrete definition, and thus "eq_refl" will fail to type-check.
+To resolve, we introduce overridable fields. Each overridable field will only expose its type instead of the concrete definition to the following default (non-overridable) fields. For example, the first failure in \cref{fig:plugin-example3} per the discussion of \ref{chg:override-v-dependent}: since overridability will break the inheritability of "c" and thus we don't allow such field to exist in the first place. Our plugin will only expose the fact that "a'" is an arbitrary natural number but hiding its concrete definition, and thus "eq_refl" will fail to type-check.
 
 In this stage, this feature is yet too weak since we cannot do definitional-relevant reasoning about overridable fields, like field "c" in the first failure. Thus we introduce \textit{dependency} between overridable fields---in the syntax of \mintinline{Coq}{Overridable pins {x,y,...} Field f := fexp}. In this case, field "f" will depend on the (overridable) field "x,y,...", and semantically, this means the concrete definition of "x,y,..." is \textit{exposed} to "fexp" during the type checking of "fexp". Every overridable field can only depend on former \textit{overridable} and \textit{definition-transparent} (non-"Qed"-Coq-term) fields. 
 
@@ -204,7 +204,7 @@ The syntax of these two is close to the mundane "Inductive" keyword.
 Unlike how Coq's "Inductive" will automatically generate the eliminator for the inductive type, we require the user to explicit use "FScheme .. PRecT" to generate a \textit{partial recursor} for the "FInductive". We will later explain what a partial recursor is, at this point the reader can just consider it as a mundane eliminator. 
 
 
-To resolve \ref{chg:extensible-inductive-type}, our first step is to
+To resolve \ref{chg:extensible-v-exhaustive}, our first step is to
 \textit{decouple} the definition of recursor handlers and the checking
 of exhaustiveness. The users will define recursive handlers for one
 inductive type by aggregating the (function) handlers into one family.
@@ -230,18 +230,18 @@ Similarly, the generated partial recursor using "FScheme .. PRecT" doesn't have 
 
  
 
-% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:definition-relevant-reasoning}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:override-v-dependent}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
 % We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
 % will override a field from the parent. "Inherit" can be used to inherit
-% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:definition-relevant-reasoning}. The fields inside a family
+% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:override-v-dependent}. The fields inside a family
 % are order-sensitive because we have dependent types here. So "Inherit
 % Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
 % family can only be inherited or extended together with its belonging family
 % (i.e. ultimately top level family), thus our support of family polymorphism is
 % incomplete.
 
-We will explain the usage of "Closing Fact" and "MetaData" later---they are \textit{escape-hatches} to resolve \ref{chg:software-engineering} to some extent.
+We will explain the usage of "Closing Fact" and "MetaData" later---they are \textit{escape-hatches} to resolve \ref{chg:tooling} to some extent.
 % This incomplete support can already be useful for extending functions.
 % Take \cref{fig:plugin-example2} as example, if we want to extend boolean
 % inductive type and its negation, we only need to specify the new

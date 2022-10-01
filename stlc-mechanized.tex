@@ -1,4 +1,83 @@
 \begin{figure}
+\begin{minipage}{\textwidth}
+\begin{multicols}{2}
+
+\begin{lstlisting}
+Family STLC.
+FInductive ty : Set :=[@\hfill\codecomment{Types}@]
+| ty_unit  : ty
+| ty_arrow : ty -> ty -> ty.
+
+FInductive tm : Set :=[@\hfill\codecomment{Terms}@]
+| tm_var  : id -> tm
+| tm_unit : tm
+| tm_abs  : id -> tm -> tm
+| tm_app  : tm -> tm -> tm.
+
+Field env : Type := id -> option ty.
+Field empty : env := \lambda _, None.
+
+FInductive ofty : env -> tm -> ty -> Prop :=
+| ot_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
+| ot_unit : [@\dadada@]
+| ot_abs  : [@\dadada@]
+| ot_app  : [@\dadada@].
+
+FInductive value : tm -> Prop :=[@\hfill\codecomment{Value forms}@]
+| v_unit : value tm_unit
+| v_abs  : \forall x e, value (tm_abs x e).
+
+FRecursion subst on tm[@\hfill\codecomment{Subst function}@] 
+  motive \lambda(_ : tm), id -> tm -> tm.
+Case tm_var := \lambda y x e,
+  if (eqb x y) then e else (tm_var y)
+Case tm_unit := \lambda x e, tm_unit
+Case tm_abs := \lambda y e' IHe' x e, [@\dadada@]
+Case tm_app := \lambda e1 IHe1 e2 IHe2 x e,
+  tm_app (IHe1 x e) (IHe2 x e).
+End subst.
+
+FInductive step : tm -> tm -> Prop :=
+| st_app1 : [@\dadada@][@\hfill\codecomment{Reduction rules}@]
+| st_app2 : [@\dadada@]
+| st_beta : \forall x e v, value v ->
+  step (tm_app (tm_abs x e) v) (subst e x v).
+
+FInduction subst_lemma on ofty[@\hfill\codecomment{Subst lemma}@]
+  motive \lambda G' e T (_ : ofty G' e T),
+  \forall G x e' T', G' = extend G x T' ->
+  ofty empty e' T' -> ofty G (subst e x e') T.
+Case ot_var.  [@\dadada@] Qed.
+Case ot_unit. [@\dadada@] Qed.
+Case ot_abs.  [@\dadada@] Qed.
+Case ot_app.  [@\dadada@] Qed.
+End subst_lemma.
+
+End STLC.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Family STLC_fix extends STLC.
+
+End STLC_fix.
+
+\end{lstlisting}
+
+\end{multicols}
+\end{minipage}
+
+\vspace{2em}
+
   \begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.

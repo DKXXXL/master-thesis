@@ -159,57 +159,162 @@
     \usepackage[disabled]{aplcomments}
 \fi
 
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{ltblue}{rgb}{0,0.4,0.4}
+\definecolor{dkviolet}{rgb}{0.54,0.17,0.89}
+\definecolor{dkblue}{rgb}{0.0,0.53,0.74}
+\definecolor{dkred}{rgb}{0.76,0.13,0.28}
+
 \definecolor{keyword-color}{HTML}{4E6C9D}
 \definecolor{keyword-color-1}{HTML}{9465B6}
 \definecolor{keyword-color-2}{HTML}{9465B6}
 %\definecolor{idcolor}{HTML}{000000}
-\definecolor{codecomment-color}{HTML}{AA99CC}
+\colorlet{codecomment-color}{dkgreen}
 \colorlet{string-color}{gray}
+
 \usepackage{listings,lstautogobble}
+\lstdefinelanguage{Coq}{
+  % Anything betweeen $ becomes LaTeX math mode
+  mathescape=true,
+  % Comments may or not include Latex commands
+  texcl=false, 
+  % Vernacular commands
+  morekeywords=[1]{Section, Module, End, Require, Import, Export,
+      Variable, Variables, Parameter, Parameters, Axiom, Hypothesis,
+      Hypotheses, Notation, Local, Tactic, Reserved, Scope, Open, Close,
+      Bind, Delimit, Definition, Let, Ltac, Fixpoint, CoFixpoint, Add,
+      Morphism, Relation, Implicit, Arguments, Unset, Contextual,
+      Strict, Prenex, Implicits, Inductive, CoInductive, Record,
+      Structure, Canonical, Coercion, Context, Class, Global, Instance,
+      Program, Infix, Theorem, Lemma, Corollary, Proposition, Fact,
+      Remark, Example, Proof, Goal, Save, Qed, Defined, Hint, Resolve,
+      Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
+      Projections, inside, outside, Def,
+      % For Family Poly
+      Family, Extend, Field, EndFamily, SealFamily, FInductive,
+      FRecursion, FInduction, Case, MetaData, EndMetaData, Closing, Final, Inherit,
+      },
+  % Gallina
+  morekeywords=[2]{forall, exists, exists2, fun, fix, cofix, struct,
+      match, with, end, as, in, return, let, if, is, then, else, for, of,
+      nosimpl, when,
+      },
+  % Gallina: Family Poly
+  morekeywords=[3]{on, motive,},
+  % Sorts
+  morekeywords=[4]{Type, Prop, Set, true, false, option},
+  % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
+  morekeywords=[5]{pose, set, move, case, elim, apply, clear, hnf,
+      intro, intros, generalize, rename, pattern, after, destruct,
+      induction, using, refine, inversion, injection, rewrite, congr,
+      unlock, compute, ring, field, fourier, replace, fold, unfold,
+      change, cutrewrite, simpl, have, suff, wlog, suffices, without,
+      loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
+      symmetry, transitivity, auto, split, left, right, autorewrite},
+  % Terminators
+  morekeywords=[6]{by, done, exact, reflexivity, tauto, romega, omega,
+      assumption, solve, contradiction, discriminate},
+  % Control
+  morekeywords=[7]{do, last, first, try, idtac, repeat},
+  % Comments delimiters, we do turn this off for the manual
+  morecomment=[s]{(*}{*)},
+  % Spaces are not displayed as a special character
+  showstringspaces=false,
+  % String delimiters
+  morestring=[b]",
+  morestring=[d],
+  % Size of tabulations
+  tabsize=2,
+  % Enables ASCII chars 128 to 255
+  extendedchars=false,
+  % Case sensitivity
+  sensitive=true,
+  % Automatic breaking of long lines
+  breaklines=false,
+  % Default style fors listings
+  basicstyle=\fontsize{8.0}{8.5}\ttfamily,
+  % Position of captions is bottom
+  captionpos=b,
+  % flexible columns
+  columns=[l]flexible,
+  % Style for (listings') identifiers
+  identifierstyle={\ttfamily\color{black}},
+  % Style for declaration keywords
+  keywordstyle=[1]{\ttfamily\color{dkviolet}},
+  % Style for gallina family poly keywords
+  keywordstyle=[2]{\ttfamily\color{violet}},
+  % Style for gallina keywords
+  keywordstyle=[3]{\ttfamily\color{blue}},
+  % Style for sorts keywords
+  keywordstyle=[4]{\ttfamily\color{ltblue}},
+  % Style for tactics keywords
+  keywordstyle=[5]{\ttfamily\color{dkblue}},
+  % Style for terminators keywords
+  keywordstyle=[6]{\ttfamily\color{orange}},
+  %Style for iterators
+  %keywordstyle=[6]{\ttfamily\color{dkpink}},
+  % Style for strings
+  stringstyle=\ttfamily,
+  % Style for comments
+  commentstyle={\ttfamily\itshape\color{codecomment-color}},
+  %moredelim=**[is][\ttfamily\color{red}]{/&}{&/},
+  literate=
+  {\\forall}{{\color{violet}{$\forall$}}}1
+  {\\exists}{{\color{violet}{$\exists$}}}1
+  {\\lambda}{{\color{violet}{$\lambda$}}}1
+  {<-}{{$\leftarrow$}}1
+  {=>}{{$\Rightarrow$}}1
+  {==}{{\code{==}}}1
+  {==>}{{\code{==>}}}1
+  %    {:>}{{\code{:>}}}1
+  {->}{{$\rightarrow$}}1
+  {<->}{{$\leftrightarrow$}}1
+  {<==}{{$\leq$}}1
+  {\#}{{$^\star$}}1 
+  {\\o}{{$\circ$}}1 
+  {\@}{{$\cdot$}}1 
+  {\/\\}{{$\wedge$}}1
+  {\\\/}{{$\vee$}}1
+  {++}{{\code{++}}}1
+  {~}{{\ }}1
+  {\@\@}{{$@$}}1
+  {\\mapsto}{{$\mapsto$}}1
+  {\\hline}{{\rule{\linewidth}{0.5pt}}}1
+  %
+}[keywords,comments,strings]
   \lstset{autogobble=true}
-  \lstset{language={[Objective]Caml}}
-  \lstset{tabsize=2}
+  \lstset{language={Coq}}
   \lstset{escapeinside={[@}{@]}}
-  \lstset{
-%    backgroundcolor=\color{faint-gray},
-%    frame=tlbr,
-%    framesep=2pt,
-%    framerule=.4pt,
-%    rulecolor=\color{black},
-  }
+% \lstset{
+%   backgroundcolor=\color{faint-gray},
+%   frame=tlbr,
+%   framesep=2pt,
+%   framerule=.4pt,
+%   rulecolor=\color{black},
+% }
   \lstset{
     numbersep=1.2ex,
     numberstyle=\color{gray}\scriptsize\itshape\ttfamily,
     numberblanklines=true,
     numbers=none,
   }
-  \lstset{lineskip=.2ex}
-  \lstset{tabsize=2}
-  \lstset{columns=fullflexible}
-  \lstset{basicstyle=
-    \fontsize{9.3}{9.9}
-    \color{keyword-color}
-    \ttfamily%\rmfamily
-  }
-  \lstset{commentstyle=\color{codecomment-color}\rmfamily\itshape}
-  \lstset{stringstyle=\color{string-color}}
-  \lstset{identifierstyle=\color{black}\itshape}
-  \lstset{keepspaces=true,xleftmargin=0ex,breaklines=false}
-  \lstset{deletekeywords={val,fun,end}}
-  \lstset{morekeywords={module,mixin,extends,def,effect,raises,raise,handle,→,⇒,int,bool,unit,string}}
-  \lstset{keywordstyle=\bfseries\color{keyword-color}}
-  \lstset{
-    classoffset=1,% starting new class
-    morekeywords={},
-    keywordstyle=\color{keyword-color-1},
-    classoffset=0,
-    classoffset=2,% starting new class
-    morekeywords={},
-    keywordstyle=\color{keyword-color-2},
-    classoffset=0,
-  }
-  \lstset{showstringspaces=false}
-  \lstset{breaklines=\lst@ifdisplaystyle false \else true \fi}
+  \lstset{lineskip=0pt}
+  \lstset{keepspaces=true,xleftmargin=0ex}
+% \lstset{tabsize=2}
+% \lstset{columns=fullflexible}
+% \lstset{basicstyle=
+%   \fontsize{9.3}{9.9}
+%   \color{keyword-color}
+%   \ttfamily%\rmfamily
+% }
+% \lstset{commentstyle=\color{codecomment-color}\rmfamily\itshape}
+% \lstset{stringstyle=\color{string-color}}
+% \lstset{identifierstyle=\color{black}\itshape}
+% \lstset{deletekeywords={val,fun,end}}
+% \lstset{morekeywords={module,mixin,extends,def,effect,raises,raise,handle,→,⇒,int,bool,unit,string}}
+% \lstset{keywordstyle=\bfseries\color{keyword-color}}
+% \lstset{showstringspaces=false}
+% \lstset{breaklines=\lst@ifdisplaystyle false \else true \fi}
   \let\origthelstnumber\thelstnumber
   \makeatletter
   \newcommand*\Suppressnumber{%
@@ -226,12 +331,7 @@
 \makeatother
 
 \newcommand\codecomment[1]{%
-  \color{codecomment-color}%
-  \textrm{\itshape//~#1}
-}
-\newcommand\codecommentinline[1]{%
-  \color{codecomment-color}%
-  \textrm{\itshape/$*$~{#1}~$*$/}%
+  {\color{codecomment-color}\ttfamily(*\;#1\;*)}%
 }
 \newcommand\codestring[1]{%
   \color{dark-gray}%
@@ -247,7 +347,7 @@
   \setlength\fboxsep{1pt}\colorbox{codeemph-color}{\textcolor{color}{\mbox{#2}}}%
 }
 
-\newcommand{\dadada}{\textnormal{\textcolor{black}{...}}}
+\newcommand{\dadada}{\textnormal{\textcolor{gray}{...}}}
 
 \newcommand{\citea}[1]{\citeauthor{#1}}
 \newcommand{\citelink}[2]{\hyperlink{cite.#1}{#2}\xspace}
@@ -318,5 +418,5 @@
 }
 \makeatother
 
-\newif\ifShowOldWriting
-\ShowOldWritingtrue
+\newif\ifShowOldWriting% Hide EDJ's old writing?
+%\ShowOldWritingtrue
