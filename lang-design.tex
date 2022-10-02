@@ -1,9 +1,39 @@
-We demonstrate the key ingredients of our design as a plugin to the Coq proof assistant,
+We use a plugin to the Coq proof assistant to demonstrate the key
+ingredients of our design,
 though we believe our design could be adapted to other proof assistants such as Lean.
 
-\ref{chg:extensible-v-exhaustive}
-
 \input{stlc-mechanized.tex}
+
+\cref{fig:stlc-mechanized} shows how STLC and its extension with
+fixpoints can be mechanized using our plugin, in a style envisioned in
+\cref{fig:stlc-nonmechanized}.
+The base family "STLC" hosts the STLC metatheories, from abstract syntax
+to the type-safety theorem.
+Family "STLC_fix", derived from "STLC", makes adjustments as needed by a fixpoints extension:
+it adds new constructors to the inductive types ("FInductive") and
+adds new cases to the recursive functions ("FRecursion") and induction proofs ("FInduction").
+Existing constructors and cases, as well as those definitions and
+theorems that need no adjustments ("ty", "env", "empty", "steps", and
+"typesafe"), are automatically inherited and reused.
+
+\noindentparagraph{Inductive types are extensible.}
+
+In family "SLTC_fix", inductive type "tm" is formed by the four
+constructors inherited from "STLC" and a fifth constructor "tm_fix".
+
+Crucially, the types of the constructors are polymorphic to their enclosing family.
+For example, although "tm_app" is defined in the base family,
+it can be used to construct applications of fixpoints in the derived family:
+%such as \lstinline[mathescape]{tm_app (tm_fix "f" (tm_abs "x" $\dadada$)) tm_unit},
+its type \lstinline{tm -> tm -> tm} says "tm_app" can be applied to any
+Gallina terms of type "tm",
+which in family "SLTC_fix" include those constructed from "tm_fix".
+
+
+\noindentparagraph{Induction remains exhaustive.}
+
+
+\ref{chg:extensible-v-exhaustive}
 
 \newpage
 

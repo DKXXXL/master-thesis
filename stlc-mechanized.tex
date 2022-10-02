@@ -2,6 +2,10 @@
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
+\lstset{
+  basicstyle=\fontsize{8}{8.5}\ttfamily,
+}
+
 \begin{lstlisting}[numbers=left]
 Family STLC.
 
@@ -13,7 +17,7 @@ FInductive tm : Set :=[@\hfill\codecomment{Terms}@]
 | tm_var  : id -> tm
 | tm_unit : tm
 | tm_abs  : id -> tm -> tm
-| tm_app  : tm -> tm -> tm.
+| tm_app  : tm -> tm -> tm.[@\label{line:tm-app}@]
 
 Field env : Type := id -> option ty.
 Field empty : env := \lambda _, None.
@@ -125,8 +129,8 @@ End STLC_fix.
 
 \end{multicols}
 \end{minipage}
-\caption{Using our plugin to mechanize STLC and the fixpoints extension
-as depicted in \cref{fig:stlc-nonmechanized}.}
+\caption{Using our plugin to mechanize STLC and the fixpoints extension,
+as envisioned in \cref{fig:stlc-nonmechanized}.}
 \label{fig:stlc-mechanized}
 \end{figure}
 
