@@ -32,6 +32,7 @@
 \usepackage{ttquot}
 \usepackage[T1]{fontenc} 
 \usepackage{placeins,multirow,multicol}
+\setlength\columnsep{19pt}
 \usepackage{formalisms}
 \usepackage{minted}
 \usepackage{lipsum}
@@ -191,7 +192,7 @@
       Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
       Projections, inside, outside, Def,
       % For Family Poly
-      Family, Extend, Field, EndFamily, SealFamily, FInductive,
+      Family, extends, Extend, Field, EndFamily, SealFamily, FInductive,
       FRecursion, FInduction, Case, MetaData, EndMetaData, Closing, Final, Inherit,
       },
   % Gallina
@@ -256,7 +257,7 @@
   % Style for strings
   stringstyle=\ttfamily,
   % Style for comments
-  commentstyle={\ttfamily\itshape\color{codecomment-color}},
+  commentstyle={\rmfamily\itshape\color{codecomment-color}},
   %moredelim=**[is][\ttfamily\color{red}]{/&}{&/},
   literate=
   {\\forall}{{\color{violet}{$\forall$}}}1
@@ -285,16 +286,16 @@
   \lstset{autogobble=true}
   \lstset{language={Coq}}
   \lstset{escapeinside={[@}{@]}}
-% \lstset{
+  \lstset{
 %   backgroundcolor=\color{faint-gray},
 %   frame=tlbr,
-%   framesep=2pt,
+%   framesep=3pt,
 %   framerule=.4pt,
 %   rulecolor=\color{black},
-% }
+  }
   \lstset{
-    numbersep=1.2ex,
-    numberstyle=\color{gray}\scriptsize\itshape\ttfamily,
+    numbersep=2.0ex,
+    numberstyle=\color{gray}\tiny\itshape,
     numberblanklines=true,
     numbers=none,
   }
@@ -331,7 +332,7 @@
 \makeatother
 
 \newcommand\codecomment[1]{%
-  {\color{codecomment-color}\ttfamily(*\;#1\;*)}%
+  {\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1\;\textls[-50]{\texttt{*)}}}%
 }
 \newcommand\codestring[1]{%
   \color{dark-gray}%

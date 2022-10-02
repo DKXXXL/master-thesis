@@ -2,8 +2,9 @@
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=left]
 Family STLC.
+
 FInductive ty : Set :=[@\hfill\codecomment{Types}@]
 | ty_unit  : ty
 | ty_arrow : ty -> ty -> ty.
@@ -17,22 +18,20 @@ FInductive tm : Set :=[@\hfill\codecomment{Terms}@]
 Field env : Type := id -> option ty.
 Field empty : env := \lambda _, None.
 
-FInductive ofty : env -> tm -> ty -> Prop :=
-| ot_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
-| ot_unit : [@\dadada@]
-| ot_abs  : [@\dadada@]
-| ot_app  : [@\dadada@].
+FInductive hasty : env -> tm -> ty -> Prop :=
+| ht_var  : [@\dadada@]  | ht_unit : [@\dadada@][@\hfill\codecomment{Typing rules}@]
+| ht_abs  : [@\dadada@]  | ht_app  : [@\dadada@].
 
 FInductive value : tm -> Prop :=[@\hfill\codecomment{Value forms}@]
 | v_unit : value tm_unit
 | v_abs  : \forall x e, value (tm_abs x e).
 
-FRecursion subst on tm[@\hfill\codecomment{Subst function}@] 
-  motive \lambda(_ : tm), id -> tm -> tm.
+FRecursion subst on tm[@\hfill\codecomment{Substitution function}@] 
+motive \lambda(_ : tm), id -> tm -> tm.
 Case tm_var := \lambda y x e,
-  if (eqb x y) then e else (tm_var y)
-Case tm_unit := \lambda x e, tm_unit
-Case tm_abs := \lambda y e' IHe' x e, [@\dadada@]
+  if (eqb x y) then e else (tm_var y).
+Case tm_unit := \lambda x e, tm_unit.
+Case tm_abs := \lambda y e' IHe' x e, [@\dadada@].
 Case tm_app := \lambda e1 IHe1 e2 IHe2 x e,
   tm_app (IHe1 x e) (IHe2 x e).
 End subst.
@@ -43,41 +42,100 @@ FInductive step : tm -> tm -> Prop :=
 | st_beta : \forall x e v, value v ->
   step (tm_app (tm_abs x e) v) (subst e x v).
 
-FInduction subst_lemma on ofty[@\hfill\codecomment{Subst lemma}@]
-  motive \lambda G' e T (_ : ofty G' e T),
+Field steps := clos_refl_trans step.
+
+FInduction weakening on hasty[@\hfill\codecomment{Weaken.\ lemma}@]
+motive \lambda G e T (_ : hasty G e T),
+  \forall G', includedin G G' -> hasty G' e T.
+Case ht_var.  [@\dadada@] Qed.[@\hfill@]Case ht_unit. [@\dadada@] Qed.
+Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app.  [@\dadada@] Qed.
+End weakening.
+
+FInduction substlemma on hasty[@\hfill\codecomment{Subst.\ lemma}@]
+motive \lambda G' e T (_ : hasty G' e T),
   \forall G x e' T', G' = extend G x T' ->
-  ofty empty e' T' -> ofty G (subst e x e') T.
-Case ot_var.  [@\dadada@] Qed.
-Case ot_unit. [@\dadada@] Qed.
-Case ot_abs.  [@\dadada@] Qed.
-Case ot_app.  [@\dadada@] Qed.
+  hasty empty e' T' -> hasty G (subst e x e') T.
+Case ht_var.  [@\dadada@] Qed.[@\hfill@]Case ht_unit. [@\dadada@] Qed.
+Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app.  [@\dadada@] Qed.
 End subst_lemma.
 
+FInduction preserve on hasty[@\hfill\codecomment{Preserv.\ theorem}@]
+motive \lambda G e T (_ : hasty G e T),
+  G = empty -> \forall e', step e e' -> hasty empty e' T.
+Case ht_var.  [@\dadada@] Qed.[@\hfill@]Case ht_unit. [@\dadada@] Qed.
+Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app.  [@\dadada@] Qed.
+End preserve.
+
+FInduction progress on hasty[@\hfill\codecomment{Progress theorem}@]
+motive \lambda G e T (_ : hasty G e T),
+  G = empty -> value e \/ \exists e', step e e'.
+Case ht_var.  [@\dadada@] Qed.[@\hfill@]Case ht_unit. [@\dadada@] Qed.
+Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app.  [@\dadada@] Qed.
+End progress.
+
+Field typesafe :[@\hfill\codecomment{Type-safety theorem}@]
+  \forall e e' T, steps e e' -> hasty empty e T ->
+  value e' \/ \exists e'', step e' e''.
+Proof. [@\dadada@] Qed.
+
 End STLC.
+\end{lstlisting}
+\medskip
 
+\hrule
+\hrule
+\medskip
 
-
-
-
-
-
-
-
-
-
-
-
+\begin{lstlisting}[numbers=left,firstnumber=77]
 Family STLC_fix extends STLC.
 
-End STLC_fix.
+FInductive tm : Set +=
+| tm_fix : id -> tm -> tm.
 
+FInductive hasty : env -> tm -> ty -> Prop +=
+| ht_fix : \forall G x e T, hasty (extend G x T) e T ->
+  hasty G (tm_fix x e) T.
+
+FRecursion subst on tm motive \lambda _, id -> tm -> tm.
+Case tm_fix := [@\dadada@].
+End subst.
+
+FInductive step : tm -> tm -> Prop +=
+| st_fix : \forall x e,
+  step (tm_fix x e) (subst e x (tm_fix x e)).
+
+FInduction weakening on hasty motive [@\dadada@].
+Case ht_fix. [@\dadada@] Qed.
+End weakening.
+
+FInduction substlemma on hasty motive [@\dadada@].
+Case ht_fix. [@\dadada@] Qed.
+End subst_lemma.
+
+FInduction preserve on hasty motive [@\dadada@].
+Case ht_fix. [@\dadada@] Qed.
+End preserve.
+
+FInduction progress on hasty motive [@\dadada@].
+Case ht_fix. [@\dadada@] Qed.
+End progress.
+
+End STLC_fix.
 \end{lstlisting}
 
 \end{multicols}
 \end{minipage}
+\caption{Using our plugin to mechanize STLC and the fixpoints extension
+as depicted in \cref{fig:stlc-nonmechanized}.}
+\label{fig:stlc-mechanized}
+\end{figure}
 
-\vspace{2em}
 
+
+
+\ifShowOldWriting
+
+\begin{figure}
   \begin{minipage}[t]{0.47\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
@@ -142,4 +200,5 @@ EndFamily.
   \end{minipage}
   \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
-  
+
+\fi
