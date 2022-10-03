@@ -14,27 +14,27 @@
 
 \noindent%
 \headerfont{Types} \hspace{1.0em}
-$ \tau \ \Coloneqq\ \mathbb{1} \bnf  \tau_1 \to \tau_2 $
+$ T \ \Coloneqq\ \mathbb{1} \bnf  T_1 \to T_2 $
 \medskip
 
 \headerfont{Terms} \hspace{0.85em}
-$ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
+$ t \ \Coloneqq\ () \bnf x \bnf \lambda x.\,t \bnf t_1~t_2 $
 \medskip
 
 \headerfont{Typing rules}
 \begin{mathpar}
 \Rule{}{ \Gamma \vdash () : \mathbb{1} }
 
-\Rule{ \Gamma(x)=\tau }{ \Gamma \vdash x : \tau }
+\Rule{ \Gamma(x)=T }{ \Gamma \vdash x : T }
 
-\Rule{ \Gamma, x:\tau_1 \vdash e : \tau_2 }{ \Gamma \vdash \lambda x.\,e : \tau_1 \to \tau_2 }
+\Rule{ \Gamma, x:T_1 \vdash t : T_2 }{ \Gamma \vdash \lambda x.\,t : T_1 \to T_2 }
 
 \Rule{
-  \Gamma \vdash e_1 : \tau_1 \to \tau_2
+  \Gamma \vdash t_1 : T_1 \to T_2
   \quad
-  \Gamma \vdash e_2 : \tau_1
+  \Gamma \vdash t_2 : T_1
 }{
-  \Gamma \vdash e_1~e_2 : \tau_2
+  \Gamma \vdash t_1~t_2 : T_2
 }
 
 \end{mathpar}
@@ -43,27 +43,27 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 \begin{mathpar}
 \Rule{}{\textit{Val}(())}
 
-\Rule{}{\textit{Val}(\lambda x.\,e)}
+\Rule{}{\textit{Val}(\lambda x.\,t)}
 \end{mathpar}
 
 \headerfont{Substitution function}
 \begin{mathpar}
-  \subst{y}{e}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
+  \subst{()}{t}{x} \defeq ()
 
-  \subst{()}{e}{x} \defeq ()
+  \subst{y}{t}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
 
-  \subst{(\lambda y.\,e')}{e}{x} \defeq \begin{cases} \lambda y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \lambda y.\,e', & \text{if } x = y \end{cases}
+  \subst{(\lambda y.\,t')}{t}{x} \defeq \begin{cases} \lambda y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \lambda y.\,t', & \text{if } x = y \end{cases}
 
-  \subst{(e_1~e_2)}{e}{x} \defeq \subst{e_1}{e}{x}~\subst{e_2}{e}{x}
+  \subst{(t_1~t_2)}{t}{x} \defeq \subst{t_1}{t}{x}~\subst{t_2}{t}{x}
 \end{mathpar}
 
 \headerfont{Reduction rules}
 \begin{mathpar}
-\Rule{ e_1 \longrightarrow e_1' }{ e_1~e_2 \longrightarrow e_1'~e_2 }
+\Rule{ t_1 \longrightarrow t_1' }{ t_1~t_2 \longrightarrow t_1'~t_2 }
 
-\Rule{ \textit{Val}(e_1) \quad e_2 \longrightarrow e_2' }{ e_1~e_2 \longrightarrow e_1~e_2' }
+\Rule{ \textit{Val}(t_1) \quad t_2 \longrightarrow t_2' }{ t_1~t_2 \longrightarrow t_1~t_2' }
 
-\Rule{\textit{Val}(e_2)}{ (\lambda x.\,e_1)~e_2 \longrightarrow \subst{e_2}{e_1}{x} }
+\Rule{\textit{Val}(t_2)}{ (\lambda x.\,t_1)~t_2 \longrightarrow \subst{t_2}{t_1}{x} }
 
 \end{mathpar}
 
@@ -87,11 +87,11 @@ $ e \ \Coloneqq\ x \bnf () \bnf \lambda x.\,e \bnf e_1~e_2 $
 
 \noindent%
 \headerfont{Types} \hspace{1.0em}
-$ \tau \ \Coloneqq\ \cdots $ \textit{(no change)}
+$ T \ \Coloneqq\ \cdots $ \textit{(no change)}
 \medskip
 
 \headerfont{Terms} \hspace{0.85em}
-$ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
+$ t \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,t $
 \medskip
 
 \headerfont{Typing rules}
@@ -99,9 +99,9 @@ $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
 \cdots
 
 \Rule{
-  \Gamma, x : \tau \vdash e : \tau
+  \Gamma, x : T \vdash t : T
 }{
-  \Gamma \vdash \mathrm{fix}\,x.\,e : \tau
+  \Gamma \vdash \mathrm{fix}\,x.\,t : T
 }
 
 \end{mathpar}
@@ -116,7 +116,7 @@ $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
 \begin{mathpar}
 {\raisebox{-8pt}{$\cdots$}}\medskip
 
-\subst{(\mathrm{fix}\,y.\,e')}{e}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{e'}{e}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,e', & \text{if } x = y \end{cases}
+\subst{(\mathrm{fix}\,y.\,t')}{t}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,t', & \text{if } x = y \end{cases}
 
 \end{mathpar}
 
@@ -124,7 +124,7 @@ $ e \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,e $
 \begin{mathpar}
 \cdots
 
-\Rule{}{ \mathrm{fix}\,x.\,e \longrightarrow \subst{e}{\mathrm{fix}\,x.\,e}{x} }
+\Rule{}{ \mathrm{fix}\,x.\,t \longrightarrow \subst{t}{\mathrm{fix}\,x.\,t}{x} }
 
 \end{mathpar}
 

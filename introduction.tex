@@ -53,8 +53,8 @@ At the core of many linguistic solutions to the EP is \emph{inheritance}.
 Inheritance is sometimes interpreted narrowly as a subclass'
 inheriting methods and instance variables from its superclass.
 But the language-theoretic essence of inheritance is more general:
-it is a linguistic approach to \emph{incrementally modifying
-recursive definitions}~\cite{cook1990inheritance}.
+it is a linguistic approach to incrementally modifying
+record-like definitions by allowing \emph{late binding}~\cite{cook1990inheritance}.
 
 Language mechanisms including
 mixins~\cite{mixin-1990},
@@ -63,8 +63,8 @@ virtual types~\cite{thorup97}, % and associated types~\cite{ckj05},
 extensible cases~\cite{bac2006}, etc.\ 
 are all based on this essential idea of inheritance.
 %
-In particular, when a language mechanism allows inheritance over
-recursive definitions containing related types and terms,
+In particular, when a language mechanism allows late binding of the
+meaning of nested types and terms,
 it is said to support \emph{family polymorphism}~\cite{ernst2001family}:
 types and terms are polymorphic to a family they are nested within.
 

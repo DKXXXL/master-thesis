@@ -39,3 +39,10 @@ propositionally
 disjointness
 fixpoints
 STLC
+FInduction
+FInductive
+FRecursion
+tm
+ty
+Exhaustivity
+subst

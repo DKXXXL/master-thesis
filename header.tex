@@ -174,6 +174,7 @@
 \colorlet{string-color}{gray}
 
 \usepackage{listings,lstautogobble}
+\def\lsti{\lstinline}
 \lstdefinelanguage{Coq}{
   % Anything betweeen $ becomes LaTeX math mode
   mathescape=true,
@@ -263,6 +264,8 @@
   {\\forall}{{\color{violet}{$\forall$}}}1
   {\\exists}{{\color{violet}{$\exists$}}}1
   {\\lambda}{{\color{violet}{$\lambda$}}}1
+  {:=}{{\color{blue}$\coloneqq$}}1
+  {+=}{{\color{blue}$\mathrel{{+}{=}}$}}1
   {<-}{{$\leftarrow$}}1
   {=>}{{$\Rightarrow$}}1
   {==}{{\code{==}}}1
