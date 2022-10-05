@@ -189,7 +189,7 @@ EndFamily.
 
 % % Talk about Final
 % \textbf{Final as non-overridable.} Every field is by default
-% overridable, reminding us of \ref{chg:override-v-dependent}.  To
+% overridable, reminding us of \ref{chg:latebind-v-defeq}.  To
 % resolve it, we provide the keyword "Final" to allow the user to specify
 % \textit{non-overridability} and give the user the opportunity to choose
 % from overriding and exposing the definition.
@@ -202,7 +202,7 @@ EndFamily.
 % hand, once we decorate \lstinline{a'} as final, the second attempt
 % \lstinline{c : a' = 1 := eq_refl} will succeed. Contrary to "a",
 % our \lstinline{a'} is not overridable in "Family I2", mediating the
-% \ref{chg:override-v-dependent}.
+% \ref{chg:latebind-v-defeq}.
 
 % This example might sound trivial and contrived. Let's look at the
 % example field binary operation "bop" initially set to be addition.
@@ -266,11 +266,11 @@ EndFamily.
 % implementation of "f", we just override the whole ``sealed'' family,
 % like we do in "I2.MonotonicF". 
 
-\textbf{Overridable Fields with dependency.}  Each field is by default non-overridable. By the discussion of \ref{chg:override-v-dependent}, we can simply reason and access the definition about the former fields in a later field, just like Field "a" and "b" in \cref{fig:plugin-example3} and we lose the ability to override. 
+\textbf{Overridable Fields with dependency.}  Each field is by default non-overridable. By the discussion of \ref{chg:latebind-v-defeq}, we can simply reason and access the definition about the former fields in a later field, just like Field "a" and "b" in \cref{fig:plugin-example3} and we lose the ability to override. 
 
 However, overridability is useful especially in Coq as programs in Coq are runnable. Consider the sceanrio when we use arbitrary monotonic function as field members \mintinline{Coq}{f : nat → nat} and \mintinline{Coq}{p : monotonic f}, and we make sure that all the following reasoning are only about the monotonicity. Then it should be allowed to swap the implementation of that monotonic function via overriding. 
 
-To resolve, we introduce overridable fields. Each overridable field will only expose its type instead of the concrete definition to the following default (non-overridable) fields. For example, the first failure in \cref{fig:plugin-example3} per the discussion of \ref{chg:override-v-dependent}: since overridability will break the inheritability of "c" and thus we don't allow such field to exist in the first place. Our plugin will only expose the fact that "a'" is an arbitrary natural number but hiding its concrete definition, and thus "eq_refl" will fail to type-check.
+To resolve, we introduce overridable fields. Each overridable field will only expose its type instead of the concrete definition to the following default (non-overridable) fields. For example, the first failure in \cref{fig:plugin-example3} per the discussion of \ref{chg:latebind-v-defeq}: since overridability will break the inheritability of "c" and thus we don't allow such field to exist in the first place. Our plugin will only expose the fact that "a'" is an arbitrary natural number but hiding its concrete definition, and thus "eq_refl" will fail to type-check.
 
 In this stage, this feature is yet too weak since we cannot do definitional-relevant reasoning about overridable fields, like field "c" in the first failure. Thus we introduce \textit{dependency} between overridable fields---in the syntax of \mintinline{Coq}{Overridable pins {x,y,...} Field f := fexp}. In this case, field "f" will depend on the (overridable) field "x,y,...", and semantically, this means the concrete definition of "x,y,..." is \textit{exposed} to "fexp" during the type checking of "fexp". Every overridable field can only depend on former \textit{overridable} and \textit{definition-transparent} (non-"Qed"-Coq-term) fields. 
 
@@ -329,11 +329,11 @@ Similarly, the generated partial recursor using "FScheme .. PRecT" doesn't have 
 
  
 
-% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:override-v-dependent}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
+% We can also use "Family" and "SealFamily" to scope a (nested) family. The resulting family only support direct inheritance or "Override" (i.e. we can only override a sealed family as a whole together)---we will later explain this design decision and its usage, especially on resolving \ref{chg:latebind-v-defeq}. What's more, "Override" family can only apply to sealed family as well (not allowed on normal family).
 
 % We can inherit a top-level family "parent" using \mintinline{Coq}{Family ... extends parent} as a new top-level family. As expected, "Override"
 % will override a field from the parent. "Inherit" can be used to inherit
-% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:override-v-dependent}. The fields inside a family
+% nested families, inductive types, and fields. "Final" is used to claim that the decorated field is non-overridable, and later we will show how it is used to resolve \ref{chg:latebind-v-defeq}. The fields inside a family
 % are order-sensitive because we have dependent types here. So "Inherit
 % Until" is used if the user wants to inherit a range of fields.  "Extend Family" is used only inside a inheriting family. Thus nested
 % family can only be inherited or extended together with its belonging family

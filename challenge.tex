@@ -18,10 +18,12 @@ A family-polymorphism design could potentially support extensible
 inductive types, by allowing a \emph{derived family} to add new constructors
 to inductive types inherited from a \emph{base family}.
 Such a feature would be useful for extending mechanized languages.
-For example, \cref{fig:stlc-nonmechanized} shows the part of an STLC extension that could
-potentially be mechanized using such extensible inductive types: a derived family
-inherits constructors of inductive types from the base family (e.g., the ellipsis under ``Typing rules'')
-and adds new constructors to model the new language feature.
+As an example, \cref{fig:stlc-nonmechanized} shows an STLC extension,
+the mechanization of which would be made easier by extensible inductive types.
+Code would be organized into two families, with the
+derived family inheriting constructors from the base family (e.g., the
+ellipsis under ``Typing rules'') and adding new constructors to model
+the syntax and semantics of a fixpoint construct.
 
 \input{stlc-nonmechanized.tex}
 
@@ -35,15 +37,51 @@ But variant-like constructs (e.g., inductive types) do not automatically
 enjoy safe, modular addition of constructors:
 existing pattern matches could potentially become non-exhaustive.}
 In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
-the substitution function, require induction reasoning.
+the substitution function, require induction (i.e., elimination of inductive types).
 A language design must enforce that induction remains exhaustive in the
 face of the new constructors in the derived family.
-For modularity, it should do so without requiring
+For modularity, the type system should do so without requiring
 redefinition or rechecking of those cases already handled by the base
 family.
 
 \noindentparagraph{%
-\headinglabel{C2}{chg:self-v-consistency}.\,
+\headinglabel{C2}{chg:latebind-v-defeq}.\,
+Late binding vs.\ definitional equality.%
+}
+
+Family polymorphism enables modular reuse via late binding:
+code of a base family can be reused by a derived family,
+because what fields referenced by that code unfold to is polymorphic to
+the enclosing family.
+
+This flexibility, however, prevents \emph{definitional equality}
+that one takes for granted when programming in a proof assistant.
+In \cref{fig:stlc-nonmechanized}, a proof assistant supporting family
+polymorphism cannot equate references to the substitution function and
+its definition (i.e., a pattern match against four cases),
+as a derived family may modify the definition of the function by adding
+new cases.
+Without the ability to unfold the substitution function, how can the
+programmer even prove the substitution lemma?
+%
+The problem is compounded by the occasional need to override fields in derived families,
+which also precludes the unfolding of definitions.
+
+%Common to family-polymorphism mechanisms in the OO realm is the ability
+%for a derived family to override fields defined in the base family.
+%As we show later, this expressiveness is also useful for metatheory
+%mechanization.
+%However, it is in conflict with dependent typing, wherein type checking
+%often involves unfolding definitions.
+%For example, in an STLC mechanization, the substitution lemma is checked
+%against the definition of the substitution function.
+%If a derived family were allowed to arbitrarily override the
+%substitution function, then the proof of the substitution lemma, when
+%inherited, would be ill-formed (even in the absence of any inductive-type extensions).
+%A language design should only allow those overridings that are safe.
+
+\noindentparagraph{%
+\headinglabel{C3}{chg:self-v-consistency}.\,
 Self reference vs.\ logical consistency.%
 }
 
@@ -54,34 +92,16 @@ thus offer extensibility.
 However, self reference could easily lead to divergence.
 Divergence is not a concern for the design of ordinary OO or
 functional languages, but it would mean logical inconsistency---and
-hence unsoundness---for a language aimed at logical reasoning!
+hence unsoundness!---for a language aimed at logical reasoning.
 A family-polymorphism design must tame self reference to guarantee consistency.
-
-\noindentparagraph{%
-\headinglabel{C3}{chg:override-v-dependent}.\,
-Overriding vs.\ dependent typing.%
-}
-
-Common to many family-polymorphism mechanisms is the ability for a
-derived family to override fields defined in the base family.
-As we show later, this expressiveness is also useful for metatheory
-mechanization.
-However, it is in conflict with dependent typing, wherein type checking
-often involves unfolding definitions.
-For example, in an STLC mechanization, the substitution lemma is checked
-against the definition of the substitution function.
-If a derived family were allowed to arbitrarily override the
-substitution function, then the proof of the substitution lemma, when
-inherited, would be ill-formed (even in the absence of any inductive-type extensions).
-A language design should only allow those overridings that are safe.
 
 \noindentparagraph{%
 \headinglabel{C4}{chg:tooling}.\,
 User experience and tooling.%
 }
 
-Interactive theorem proving and tactic programming are
-part of the idiomatic programming experience in a proof assistant.
+Interactive theorem proving and tactic programming are central to
+the idiomatic programming experience in a proof assistant.
 A language design integrating family polymorphism should be compatible
 with these programming styles.
 In particular, it should be possible in our tool to
