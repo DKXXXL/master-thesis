@@ -23,8 +23,10 @@ Field env : Type := id -> option ty.
 Field empty : env := \lambda _, None.
 
 FInductive hasty : env -> tm -> ty -> Prop :=
-| ht_unit : [@\dadada@]  | ht_var : [@\dadada@][@\hfill\codecomment{Typing rules}@]
-| ht_abs  : [@\dadada@]  | ht_app : [@\dadada@].
+| ht_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
+| ht_unit : \forall G, hasty G tm_unit ty_unit
+| ht_abs  : [@\dadada@]
+| ht_app  : [@\dadada@].
 
 FInductive value : tm -> Prop :=[@\hfill\codecomment{Value forms}@]
 | v_unit : value tm_unit
@@ -126,6 +128,15 @@ Case ht_fix. [@\dadada@] Qed.
 End progress.
 
 End STLC_fix.
+\end{lstlisting}
+\medskip
+
+\hrule
+\hrule
+\medskip
+
+\begin{lstlisting}[numbers=left,firstnumber=111]
+Check STLC_fix.typesafe.
 \end{lstlisting}
 
 \end{multicols}
