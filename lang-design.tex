@@ -122,11 +122,13 @@ The Ltac term \lsti{simpl subst} unfolds \lsti{subst} using its definition
 and simplifies \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
 
 However, with \lsti{subst} being late bound, \lsti{subst} can no longer
-be unfolded: the definition of \lsti{subst}, as a recursive function,
-varies across families, yet the proof of the \lsti{ht_unit} case should be
-reusable by a derived family regardless of how that family may add
+be unfolded (challenge~\ref{chg:latebind-v-defeq}):
+the definition of \lsti{subst}, as a recursive function,
+varies across families, yet a derived family should be able to reuse the
+proof of the \lsti{ht_unit} case regardless of how it may add
 new cases to the definition of \lsti{subst}.
-How can the programmer change the goal to \lsti{hasty G tm_unit ty_unit}, then?
+Without the ability to unfold,
+how can the programmer make progress in this proof, then?
 
 A key observation is that although late binding
 prevents \emph{definitional equality} on \lsti{subst}, it does not
@@ -136,9 +138,23 @@ That is, \lsti{subst tm_unit x t' = tm_unit}, as a proposition
 After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
 from a base family to a derived family.
 %
-Hence, our plugin provides a tactic \lsti{fsimpl}
-with which the programmer can rewrite \lsti{subst tm_unit x t'} to
-\lsti{tm_unit}.
+Based on this insight, our plugin automatically generates propositional
+equalities for recursive functions defined using \lsti{FRecursion}.
+It also provides a tactic \lsti{fsimpl} that enables, for instance,
+simplifying \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
+Under the hood, \lsti{fsimpl} works by rewriting using the generated
+propositional equalities.
+
+Note that only within those families that contain "subst" is definitional
+equality on \lsti{subst} unavailable.
+Within those families, the meaning of \lsti{subst} is late bound; it is
+polymorphic to the enclosing family.
+In contrast, outside those families, \lsti{subst} can be referenced only
+by specifying a family that contains it,
+such as \lsti{STLC.subst} or \lsti{STLC_fix.subst}.
+So Coq, by unfolding \lsti{STLC_fix.subst}, is able to consider
+\lsti{STLC_fix.subst tm_unit x t'} and \lsti{tm_unit}
+as definitionally equal.
 
 \newpage
 
