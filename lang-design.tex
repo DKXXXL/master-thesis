@@ -27,7 +27,7 @@ Crucially, the types of the constructors are polymorphic to their enclosing fami
 their meaning is \emph{late bound}.
 For example, although "tm_app" is defined in the base family,
 it can be used to construct applications of fixpoints in the derived family:
-%such as \lstinline[mathescape]{tm_app (tm_fix "f" (tm_abs "x" $\dadada$)) tm_unit},
+%such as \lsti[mathescape]{tm_app (tm_fix "f" (tm_abs "x" $\dadada$)) tm_unit},
 its type \lsti{tm -> tm -> tm} says "tm_app" can be applied to any
 Gallina terms of type "tm",
 which in family "STLC_fix" include those constructed from "tm_fix".
@@ -45,7 +45,7 @@ its eliminator would have the following type:
 
 \begingroup
 \newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
-\begin{lstlisting}[basicstyle=\fontsize{8}{9}\ttfamily]
+\begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
 \forall (P : tm -> Type), [@\hlcase{tm-recursor-case-var}@](\forall x, P (tm_var x))[@\tikzmarkend{tm-recursor-case-var}@] -> [@\hlcase{tm-recursor-case-unit}@]P tm_unit[@\tikzmarkend{tm-recursor-case-unit}@] -> [@\hlcase{tm-recursor-case-abs}@](\forall x t, P t -> P (tm_abs x t))[@\tikzmarkend{tm-recursor-case-abs}@] ->
   [@\hlcase{tm-recursor-case-app}@](\forall t1 t2, P t1 -> P t2 -> P (tm_app t1 t2))[@\tikzmarkend{tm-recursor-case-app}@] -> \forall t, P t
 \end{lstlisting}
@@ -72,7 +72,7 @@ The \lsti{on} clause specifies that recursion is over "tm".
 The \lsti{motive} clause suggests that the recursive function being
 defined has type \lsti{tm -> id -> tm -> tm}.
 %
-The "subst" function in "STLC_fix" further binds that in "STLC":
+The "subst" function in "STLC" is further bound by the "subst" in "STLC_fix":
 the four cases from "STLC" are automatically inherited and reused,
 with "STLC_fix" retroactively adding a fifth case to form the new "subst" function.
 %
@@ -81,14 +81,14 @@ further bind "subst" and define this fifth case.
 The type system does this check by examining if the inductive type "tm",
 over which "subst" is recursively defined, is further bound in the same family.
 
-Like every other field of the family, the meaning of "subst" is late bound.
+Like all references to the fields of a family, the meaning of "subst" is late bound.
 For example, the type of "st_beta" (modeling the $\beta$-reduction rule)
 in family "STLC" refers to "subst".
 When "st_beta" is inherited into family "STLC_fix", it has a type that now
-refers to the "subst" function in the same family, where "subst" is defined
+refers to the "subst" function in "STLC_fix", where "subst" is defined
 by handling all the five cases known to that family.
 
-The \lstinline{FInduction} command is similar to \lstinline{FRecursion} but
+The \lsti{FInduction} command is similar to \lsti{FRecursion} but
 allows cases to be defined in proof mode.
 For example, "weakenlem" is proven by induction on the typing relation
 "hasty".
@@ -101,10 +101,49 @@ Upon entering case "ht_abs", for instance, Coq enters proof mode with the goal
 \end{lstlisting}
 
 \noindent
-The programmer can discharge the goal using tactic programming.
-The idiomatic programming experience with Coq is largely preserved.
+The programmer can use tactic programming to discharge the goal.
+%The idiomatic programming experience with Coq is largely preserved.
+
+
+\noindentparagraph{Equality on late bound definitions.}
+
+Consider proving the "ht_unit" case of the substitution lemma, "substlem".
+The goal is seemingly trivial: the programmer is asked to prove
+
+\begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
+\forall G' G x t' T', G' = extend G x T' -> hasty empty t' T' -> hasty G (subst tm_unit x t') ty_unit.
+\end{lstlisting}
+
+\noindent
+If "subst" were an ordinary Coq function, then the programmer could
+discharge the goal with
+\lsti{intros; simpl subst; apply ht_unit.}
+The Ltac term \lsti{simpl subst} unfolds \lsti{subst} using its definition
+and simplifies \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
+
+However, with \lsti{subst} being late bound, \lsti{subst} can no longer
+be unfolded: the definition of \lsti{subst}, as a recursive function,
+varies across families, yet the proof of the \lsti{ht_unit} case should be
+reusable by a derived family regardless of how that family may add
+new cases to the definition of \lsti{subst}.
+How can the programmer change the goal to \lsti{hasty G tm_unit ty_unit}, then?
+
+A key observation is that although late binding
+prevents \emph{definitional equality} on \lsti{subst}, it does not
+affect \emph{propositional equality}.
+That is, \lsti{subst tm_unit x t' = tm_unit}, as a proposition
+(\lsti{Prop}), can still be proved.
+After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
+from a base family to a derived family.
+%
+Hence, our plugin provides a tactic \lsti{fsimpl}
+with which the programmer can rewrite \lsti{subst tm_unit x t'} to
+\lsti{tm_unit}.
 
 \newpage
+
+
+
 
 Inspired by the above challenges and Family Polymorphism, we propose
 the following extension to Coq's Vernacular Commands, and the corresponding STLC example.

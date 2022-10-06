@@ -46,3 +46,5 @@ tm
 ty
 Exhaustivity
 subst
+Ltac
+simpl
