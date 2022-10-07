@@ -48,3 +48,4 @@ Exhaustivity
 subst
 Ltac
 simpl
+nonoverridable
