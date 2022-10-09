@@ -285,14 +285,14 @@ research effort}
 %              (self_neg_handler: tt_23 self_B).
 % Definition ff : self_B.b := self_B.tt. End ff_24.
 %   (* Intermediate Module solely for type checking *)
-% Module v_33_34 (self_B: neg_handler_26).
+% Module do_tc (self_B: neg_handler_26).
 % Include b_rec_12 self_B.
 % Parameter (recursor_for_type_checking : __recursor_type_b_rec).
 % Definition term_for_type_checking :=
 %   recursor_for_type_checking (fun _ : self_B.b => self_B.b)
 %     self_B.neg_handler.tt
 %     self_B.neg_handler.ff.  
-% End v_33_34.
+% End do_tc.
 % \end{minted}
 %   \end{minipage}
 % \caption{Example Code for Inductive Type}\label{fig:plugin-example2}
@@ -303,7 +303,11 @@ research effort}
   \begin{minipage}[t]{0.32\linewidth}
 \begin{lstlisting}[language=Coq,  escapeinside={@}{@}]
 Family STLC.
-(* ... *)
+  FInductive tm : Set := ... 
+  FScheme tm_prec PRecT about self__STLC.tm.
+  FScheme Comp about self__STLC.tm_prec.
+  (* Generate Partial Recursor 
+  and the computational axiom *)
   Family subst_internal. 
   Final Field tm_var : ...
 := fun s x t => 
@@ -323,16 +327,13 @@ Family STLC.
     motive (fun _ => id → tm → tm)
     using subst_internal
     by _rec.
-(*
-Field test := (subst (tm_var 0) 0 (tm_var 0)).@\YZ{Why is "test" commented out?}\EDJreply{Because I want to show I can do it but I don't really want to d -- if I really do it the compilation result shown later will need to have this information.}@
-*)
+(* Field test := (subst (tm_var 0) 0 (tm_var 0)).@\YZ{Why is "test" commented out?}\EDJreply{Because I want to show I can do it but I don't really want to d -- if I really do it the compilation result shown later will need to have this information.}@ *)
 (* ... *)
 EndFamily.
 Family STLC_bool extends STLC.
 (* ... *)
 Extend FInductive tm : Set :=
   | tm_true : tm ...
-
 Extend Family subst_internal.
 Final Field tm_true : ...
   := fun x t => tm_true.
@@ -345,43 +346,77 @@ EndFamily.
   \end{minipage}
   \begin{minipage}[t]{0.65\linewidth}
 \begin{minted}[fontsize=\footnotesize,escapeinside=@@]{Coq}
-
-Module Type STLC_409.
+Module Type STLC_Interface.
   Parameter (tm : Set).
   Parameter (tm_var : id → tm).
   Parameter (tm_abs : id → tm → tm).
   (* ... and all the fields defined before
   and the abstraction for inductive type ...*)
-End STLC_409.
+End STLC_Interface.
 (* Collect eliminator to Set for tm *)
-Module tm_rec_425 (STLC: STLC_409).
+Module tm_rec_type (STLC: STLC_Interface).
   Definition __recursor_type_tm_rec :=
     forall P : STLC.tm -> Set,
     (forall n : id, P (STLC.tm_var n)) ->
     (forall (n : id) (i : STLC.tm),
     P i -> P (STLC.tm_abs n i)) ->
     ... -> forall i : STLC.tm, P i.
-End tm_rec_425.
+End tm_rec_type.
 (* Compiled Field STLC.subst_internal.tm_var *)
-Module tm_var_411 (STLC: STLC_409)
-  (subst_internal: EmptySig).
-  Definition tm_var :
-    forall (s : id) (x : id) (t : STLC.tm), STLC.tm :=
-    fun s x t ⇒ if eqb x s then t else STLC.var s.
-End tm_var_411. (* ... and more *)
-(* Aggregate into one subst_internal*)
-Module subst_internal_410 (STLC: STLC_409). 
-  Include tm_var_411 STLC. (* And other cases ... *)
+Module tm_var_handle (self__STLC: STLC_Interface)
+  (self__subst_internal: EmptySig_84).
+Definition tm_var :
+  forall (s : ident) (x : ident) (t : self__STLC.tm), self__STLC.tm :=
+  fun s x t => if eqb x s then t else self__STLC.tm_var s.
+End tm_var_handle. (* ... and more *)
+(* Assembling STLC.subst_internal when compilation *)
+Module subst_internal_410 (STLC: STLC_Interface). 
+  Module subst_internal.
+  Include tm_var_handle STLC. Include tm_abs_handle STLC.
+  Include tm_app_handle STLC. Include tm_unit_handle STLC.
+  End subst_internal.
 End subst_internal_410.
-Module v_33_34 (STLC: STLC_409).
+Module do_tc (STLC: STLC_Interface).
 (* Intermediate Module solely for type checking *)
-  Include tm_rec_425 STLC.
+  Include tm_rec_type STLC.
   Parameter (recursor_for_type_checking : __recursor_type_tm_rec).
   Definition term_for_type_checking :=
     recursor_for_type_checking (fun _  ⇒ id → STLC.tm → STLC.tm)
       subst_internal_410.tm_var
       subst_internal_410.tm_abs ... .
-End v_33_34.@\YZ{It'd be useful to (1) show how the parts of the STLC family are assembled and recursor inserted, and (2) show the code compiled for STLC\_bool and how code from STLC is shared with STLC\_bool.}@
+End do_tc.
+(* Ctx that expose concrete inductive type *)
+Module Type ctx_subst_113.
+Inductive __internal_tm : Set := ... 
+Include subst_internal_410. (* ... and more inclusion *)
+End ctx_subst_113.
+(* Compilation of recursor, not reusable
+    when inductive type extended due to the ctx *)
+Module subst_128 (self__STLC: ctx_subst_113).
+Include __motive_of_subst_107 self__STLC.
+Definition subst :=
+  self__STLC.__internal_tm_rec __motiveTsubst
+	self__STLC.subst_internal.tm_var self__STLC.subst_internal.tm_abs
+    self__STLC.subst_internal.tm_app self__STLC.subst_internal.tm_unit.
+End subst_128.
+(* Assembling the whole STLC *)
+Module STLC.
+Include tm_5. Include tm_prec_72. Include tm_prectm_81.
+Include subst_internal_410. Include subst_128.
+End v_129.
+(* Assembling STLC_bool.subst_internal via reusing 
+    most of the former compilation results *)
+Module subst_internal_248 (STLC_bool: STLC_Interface).
+Include tm_true_197 STLC_bool.
+Include tm_false_200 STLC_bool.
+Include tm_if_203 STLC_bool.
+(* The Reused Compilation result *)
+Include tm_var_handle STLC_bool.
+Include tm_abs_handle STLC_bool.
+Include tm_app_handle STLC_bool.
+Include tm_unit_handle STLC_bool.
+End v_248.
+@\YZ{It'd be useful to (1) show how the parts of the STLC family are assembled and recursor inserted, and (2) show the code compiled for STLC\_bool and how code from STLC is shared with STLC\_bool.}@
 \end{minted}
   \end{minipage}
 \caption{Exemplar STLC Code, especially about Inductive Type}\label{fig:plugin-example2}
@@ -403,12 +438,12 @@ Let's look at the exemplar \cref{fig:plugin-example2}, the example of
 the following fields (e.g., "subst_internal.tm_var") can only know "tm"
 is a type (of "Set") and there are at least two constructors for it,
 just like what we declare in ``the abstracted interface''---the compiled
-module type "STLC_409". We cannot export
+module type "STLC_Interface". We cannot export
 %\YZ{export or put?}\EDJreply{Ok.
 %I just figure out how my wording is confusing. put is absolutely correct
 %but by put I want to mean ``export''. I think I use ``export'' in
 %several places...}
-the eliminator of the inductive type "tm" to "STLC_409".
+the eliminator of the inductive type "tm" to "STLC_Interface".
 Otherwise all the subsequent fields (e.g. "subst_internal.tm_var" and
 the corresponding "tm_var_411") would not be able to be inherited to the
 context where "tm" is extended with a third constructor, \textbf{since
@@ -419,9 +454,9 @@ However, we later still need the concrete eliminator on "tm" for doing
 exhaustiveness checking (as in \ref{chg:extensible-inductive-type}),
 thus we will store the corresponding info somewhere.  Here we show one
 exemplar extraction of the eliminator to \mintinline{Coq}{Set} as module
-"tm_rec_425". This concrete eliminator will be used by our "FRecursor".
+"tm_rec_type". This concrete eliminator will be used by our "FRecursor".
 For example, in \cref{fig:plugin-example2}, "FRecursor" command will
-feed Coq a module "v_33_34" for doing type-checking with specified
+feed Coq a module "do_tc" for doing type-checking with specified
 handlers (e.g. "neg_handler") during compilation---what it does is
 basically
 assert the existence of the recursor and apply to see if handlers can
@@ -462,7 +497,7 @@ doesn't need to be rechecked---look at "STLC_bool.neg_handler", there
 are only  new handlers for "tm_true" and the handlers (mundane fields)
 from the parent "B.subst_internal.tm_var" have already been type-checked
 and inherited (since they only rely on ``the abstracted interface''
-module "STLC_409"). 
+module "STLC_Interface"). 
 Thanks to family inheritance, their corresponding compiled module from the parents---for example, 
 the module "tm_var_411"---doesn't require another type-check and is
 re-used during the type-checking and compilation of "STLC_bool.subst".
@@ -763,7 +798,16 @@ We can support partial dependent eliminator as well, but partial dependent elimi
 \end{minted}
 To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. Please refer to the supplementary material and appendix for a formalization of the left inverse in the context of indexed inductive type. 
 
-Though partial recursor is provable by simply using "FRecursor", for convenience, we support using "FScheme" to automatic generate it. At the meantime, we implement a tactic "prec_discriminate" that when fed with the appropriate partial recursor, it can discriminate an absurd equation between two different constructors of extensible inductive type.
+Though partial recursor is provable by simply using "FRecursor", for convenience, we support using "FScheme" to automatic generate it. At the meantime, we implement a tactic "prec_discriminate" that when fed with the appropriate partial recursor (with computational axiom generated), it can discriminate an absurd equation between two different constructors of extensible inductive type.
+\begin{minted}{Coq}
+  FInductive tm : Set := tunit : tm | tvar : ident -> tm | ..
+  FScheme tm_prec PRecT about self__STLC.tm.
+  FScheme Rec2D about self__STLC.tm_prec.
+  (* ... *)
+  Goal ∀ i, tvar i = tunit -> False.
+  intros i H. prec_discriminate self__STLC.tm_prec H. Qed.
+\end{minted}
+
 
 Finally, we should point out that, the mere postulation of partial recursor is \textit{conservative}. In other word, generally speaking, using "FRecursor" to prove theorems is not necessarily a ``\textit{conservative extension}''---the proved theorems might hinder future extensions of the inductive type. For example, for \cref{fig:STLC-example}, once we proved \mintinline{Coq}{var_not_value : ∀ i, ~ value (tm_var i)}\footnote{Achieved by three steps: first proving partial recursor using "FRecursor", then use partial recursor to prove "tm_var i $\neq$ tm_lam v body" and finally using "FRecursor" prove "var_not_value" by induction on "value"} in the "Family STLC" either using "FRecursor", then any children family of "STLC" cannot extend a new constructor \mintinline{Coq}{vvar: ∀ i, value (tm_var i)}. But the postulation of partial recursor will not cause this problem.
 
