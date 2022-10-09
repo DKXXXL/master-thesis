@@ -40,6 +40,29 @@
 \usepackage{microtype}
 \usepackage{textpos}
 \usepackage{stackengine}
+\usepackage{tikz}
+  \usetikzlibrary{calc}
+  \tikzstyle{every lst line}=[line width=2pt, gray]
+  % command for setting a TikZ anchor
+  \newcommand{\tanc}[1]{%
+      \begin{tikzpicture}[remember picture]
+          \coordinate (#1) at (0,0);
+%           \fill circle (0.5pt);% this line is for testing only
+      \end{tikzpicture}%
+  }
+  % some parameters
+  \def\DeltaX{39pt}
+  \def\DeltaYi{6pt}
+  \def\DeltaYii{-2pt}
+  % command for drawing the lines
+  \NewDocumentCommand{\makeline}{O{0pt} m m O{}}{%
+      \begin{tikzpicture}[remember picture, overlay, transform canvas={xshift=#1}]
+          \draw [every lst line,#4] %
+              let\p1=(#2), \p2=(#3), \p3=(current page.west) in%
+              (\x3+\DeltaX,\y1+\DeltaYi) -- (\x3+\DeltaX,\y2+\DeltaYii);
+          ;
+      \end{tikzpicture}%
+  }
 \usepackage[customcolors,shade]{hf-tikz}
 \usetikzlibrary {arrows.meta}
 \usepackage{wrapfig}
@@ -189,12 +212,12 @@
       Strict, Prenex, Implicits, Inductive, CoInductive, Record,
       Structure, Canonical, Coercion, Context, Class, Global, Instance,
       Program, Infix, Theorem, Lemma, Corollary, Proposition, Fact,
-      Remark, Example, Proof, Goal, Save, Qed, Defined, Hint, Resolve,
+      Remark, Example, Proof, Goal, Save, Qed, Defined, Admitted, Hint, Resolve,
       Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
       Projections, inside, outside, Def,
       % For Family Poly
-      Family, extends, Extend, Field, EndFamily, SealFamily, FInductive,
-      FRecursion, FInduction, Case, MetaData, EndMetaData, Closing, Final, Inherit,
+      Family, extends, FInductive, FRecursion, FInduction,
+      Case, FTheorem, FLemma, FDefinition, MetaData, EndMetaData, Closing, Final, Inherit,
       },
   % Gallina
   morekeywords=[2]{forall, exists, exists2, fun, fix, cofix, struct,
@@ -266,6 +289,7 @@
   {\\forall}{{\color{violet}{$\forall$}}}1
   {\\exists}{{\color{violet}{$\exists$}}}1
   {\\lambda}{{\color{violet}{$\lambda$}}}1
+  {\\alpha}{{\color{black}{$\alpha$}}}1
   {:=}{{\color{blue}$\coloneqq$}}1
   {+=}{{\color{blue}$\mathrel{{+}{=}}$}}1
   {<-}{{$\leftarrow$}}1

@@ -1,0 +1,84 @@
+\begin{figure}
+\lstset{
+    basicstyle=\fontsize{8}{8.5}\ttfamily,
+% numbers=left,
+}
+
+\begin{minipage}{\textwidth}
+\begin{multicols}{2}
+
+\definecolor{codecomment-color}{HTML}{FF007F}
+
+\begin{lstlisting}
+Family STLC_isorec extends STLC.[@\tanc{STLCisorec-start}@]
+[@\hfill\codecomment{STLC extended with iso-recursive types}@]
+FInductive ty : Set +=
+| ty_var : id -> ty | ty_rec : id -> ty -> ty.
+
+FInductive tm : Set +=
+| tm_fold : tm -> tm | tm_unfold : tm -> tm.
+
+FRecursion tysubst on ty[@\hfill\codecomment{Type-level substitution}@]
+motive \lambda(_ : ty), id -> ty -> ty.
+Case ty_unit  := [@\dadada@].   Case ty_arrow := [@\dadada@].
+Case ty_var   := [@\dadada@].   Case ty_rec   := [@\dadada@].
+End tysubst.
+
+FInductive hasty : env -> tm -> ty -> Prop +=
+| ht_fold : \forall G t \alpha T,
+    hasty G t (tysubst T \alpha (ty_rec \alpha T)) ->
+    hasty G (tm_fold t) (ty_rec \alpha T)
+| ht_unfold : [@\dadada@].
+
+[@\dadada@]
+
+End STLC_isorec.[@\tanc{STLCisorec-end}@]
+\end{lstlisting}
+
+\makeline[0pt]{STLCisorec-start}{STLCisorec-end}[codecomment-color!50]
+
+\columnbreak
+
+\definecolor{codecomment-color}{HTML}{0DA3FF}
+
+\begin{lstlisting}
+Family STLC_prod extends STLC.[@\tanc{STLCprod-start}@]
+[@\hfill\codecomment{STLC extended with products}@]
+FInductive ty : Set +=
+| ty_prod : ty -> ty -> ty.
+
+FInductive tm : Set +=
+| tm_pair : tm -> tm -> tm
+| tm_fst : tm -> tm | tm_snd : tm -> tm.
+
+[@\dadada@]
+
+End STLC_prod.[@\tanc{STLCprod-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{STLCprod-start}{STLCprod-end}[codecomment-color!50]
+
+\vspace{-5pt}
+
+\definecolor{codecomment-color}{HTML}{E8A20C}
+
+\begin{lstlisting}
+Family STLC_isorec_prod extends STLC[@\tanc{STLCisorecprod-start}@]
+using STLC_prod, STLC_isorec.
+[@\hfill\ \ \codecomment{STLC extended with iso-recursive types and products}@]
+FRecursion tysubst on ty
+motive \lambda(_ : ty), id -> ty -> ty.
+Case ty_prod := [@\dadada@].[@\hfill\codecomment{Substitution on product types}@]
+End tysubst.
+
+End STLC_isorec_prod.[@\tanc{STLCisorecprod-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{STLCisorecprod-start}{STLCisorecprod-end}[codecomment-color!50]
+
+\end{multicols}
+\end{minipage}
+
+\caption{Composing extensions of STLC.}
+\label{fig:stlc-isorec-prod}
+\end{figure}

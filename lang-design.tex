@@ -181,7 +181,7 @@ simplifying \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
 Under the hood, \lsti{fsimpl} works by rewriting using the generated
 propositional equalities.
 
-Note that definitional equality on \lsti{subst} is available
+Note that the definitional equality on \lsti{subst} is available
 outside those families that contain "subst".
 Within those families, the meaning of \lsti{subst} is late bound.
 In contrast, outside those families, \lsti{subst} can be referenced only
@@ -198,8 +198,10 @@ In an OO language, a subclass can override methods of a superclass.
 Similar expressiveness is useful for metatheory mechanization, too.
 %
 For example, in a derived family, the programmer may want to override
-a lemma that was proved by induction in the base family,
-by a new proof that uses a different proof strategy.
+the proof of a lemma with a different proof strategy than it was proved
+in the base family.
+%
+Overriding is potentially in conflict with having equalities on late bound names.
 
 Coq distinguishes \emph{opaque} definitions from \emph{transparent} ones.
 Our plugin supports the overriding of opaque definitions, which
@@ -208,24 +210,72 @@ It is safe to override opaque definitions, because Coq will never attempt to unf
 For transparent definitions, the common case is that the programmer does
 not want to override them.
 In \cref{fig:stlc-mechanized}, "env", "empty", "subst", and "steps" are
-transparent---that is, they are not defined with \lsti{Qed}---and thus
-the plugin treats them as non-overridable by default.
-As a result, the definitional equalities on "env", "empty", and "steps",
+transparent---that is, they are not defined with \lsti{Qed}.
+Our plugin treats transparent definitions as non-overridable by default.
+Thus, the definitional equalities on "env", "empty", and "steps",
 as well as the propositional equality on "subst", are available to the
 type checker for type-checking the families.
 
 Our plugin does allow the overriding of transparent definitions that are
 explicitly marked as \lsti{Overridable} by the programmer.
 Overriding is made safe by requiring that when an overridable field is
-overridden, code whose type checking requires unfolding that definition
+overridden, code whose type checking requires unfolding that field
 should be overridden too.
 We give an example in a supplemental appendix.
 
 
-\noindentparagraph{Ensuring consistency.}
+\noindentparagraph{Sound logical reasoning.}
 
-Example of a circular proof
+In \cref{fig:stlc-mechanized}, just because the "typesafe" theorem in
+"STLC" is inherited and reused by "STLC_fix", it does not follow that
+in "STLC_fix" the programmer can use "typesafe" to prove "progress".
+If the programmer did, then they would be committing the logical fallacy
+of circular reasoning: the proof of "progress" would depend on "typesafe",
+yet the proof of "typesafe" depends on "progress".
+%
+Such circularity would easily lead to logical inconsistency:
 
+\begin{centered}
+\begin{minipage}{36ex}
+\begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
+Family A.
+FLemma f : False. Proof. Admitted.
+FLemma g : False. Proof. apply f. Qed.
+End A.
+\end{lstlisting}
+\end{minipage}
+\hspace{3.5em}
+\begin{minipage}{36ex}
+\begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
+Family B extends A.
+FLemma f : False. Proof. apply g. Qed.
+End A.
+[@~@]
+\end{lstlisting}
+\end{minipage}
+\end{centered}
+
+\noindent
+In the program above, family~"B" extends~"A", overriding lemma~"f" by
+proving it using lemma~"g".
+Lemma~"g" is in turn inherited from family "A", where it is proven using
+a late bound reference to lemma~"f".
+Circularity between "f" and "g" allows proving \lsti{False}!
+
+To ensure the soundness of logical reasoning, the type system requires
+that in a derived family, the context in which a field is defined be
+preserved from the base family.
+In "STLC", "progress" is in the context of "typesafe".
+Per the requirement, this relationship must be preserved into
+"STLC_fix", which prevents the proof of "progress" from depending on
+"typesafe" in "STLC_fix".
+
+Note that the requirement still allows a derived family to introduce
+new dependencies into the context of a field.
+For example, consider an extension of STLC with iso-recursive types
+(left column of \cref{fig:stlc-isorec-prod}).
+Family "STLC_isorec" introduces "tysubst" into the context of "hasty".
+\input{stlc-isorec-prod.tex}
 
 \noindentparagraph{Composing families.}
 

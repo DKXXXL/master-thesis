@@ -85,10 +85,11 @@ which also precludes the unfolding of definitions.
 Self reference vs.\ logical consistency.%
 }
 
-Inheritance and family polymorphism are mechanisms for
-incrementally modifying self-referential definitions~\cite{cook1990inheritance}:
-the implicit self parameterization is how they achieve late binding and
-thus offer extensibility.
+The language-theoretic essence of late binding is self reference;
+inheritance and family polymorphism are mechanisms for
+incrementally modifying self-referential definitions~\cite{cook1990inheritance}.
+%the implicit self parameterization is how they achieve late binding and
+%thus offer extensibility.
 However, self reference could easily lead to divergence.
 Divergence is not a concern for the design of ordinary OO or
 functional languages, but it would mean logical inconsistency---and

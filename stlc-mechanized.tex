@@ -4,10 +4,13 @@
 
 \lstset{
   basicstyle=\fontsize{8}{8.5}\ttfamily,
+% numbers=left,
 }
 
-\begin{lstlisting}[numbers=left]
-Family STLC.
+\colorlet{codecomment-color}{dkgreen}
+
+\begin{lstlisting}
+Family STLC.[@\hfill\codecomment{The base STLC}@][@\tanc{STLC-start}@]
 
 FInductive ty : Set :=[@\hfill\codecomment{Types}@]
 | ty_unit  : ty
@@ -19,8 +22,8 @@ FInductive tm : Set :=[@\hfill\codecomment{Terms}@]
 | tm_abs  : id -> tm -> tm
 | tm_app  : tm -> tm -> tm.[@\label{line:tm-app}@]
 
-Field env : Type := id -> option ty.
-Field empty : env := \lambda _, None.
+FDefinition env : Type := id -> option ty.
+FDefinition empty : env := \lambda _, None.
 
 FInductive hasty : env -> tm -> ty -> Prop :=
 | ht_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
@@ -49,7 +52,7 @@ FInductive step : tm -> tm -> Prop :=
 | st_beta : \forall x t v, value v ->
   step (tm_app (tm_abs x t) v) (subst t x v).
 
-Field steps := clos_refl_trans step.
+FDefinition steps := clos_refl_trans step.
 
 FInduction weakenlem on hasty[@\hfill\codecomment{Weaken.\ lemma}@]
 motive \lambda G t T (_ : hasty G t T),
@@ -64,9 +67,8 @@ motive \lambda G' t T (_ : hasty G' t T),
   hasty empty t' T' -> hasty G (subst t x t') T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
-End substlem.
-
-FInduction preserve on hasty[@\hfill\codecomment{Preserv.\ theorem}@]
+End substlem.[@\tanc{STLC-fstcol-end}\columnbreak@]
+FInduction preserve on hasty[@\hfill\codecomment{Preserv.\ theorem}@][@\tanc{STLC-sndcol-start}@]
 motive \lambda G t T (_ : hasty G t T),
   G = empty -> \forall t', step t t' -> hasty empty t' T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
@@ -80,22 +82,24 @@ Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End progress.
 
-Field typesafe :[@\hfill\codecomment{Type-safety theorem}@]
+FTheorem typesafe :[@\hfill\codecomment{Type-safety theorem}@]
   \forall t t' T, steps t t' -> hasty empty t T ->
   value t' \/ \exists t'', step t' t''.
 Proof. [@\dadada@] Qed.
 
-End STLC.
+End STLC.[@\tanc{STLC-end}@]
 \end{lstlisting}
-\medskip
 
-\hrule
-\hrule
-\medskip
+\makeline[0pt]{STLC-start}{STLC-fstcol-end}[codecomment-color!50]
+\makeline[.5\textwidth+9pt]{STLC-sndcol-start}{STLC-end}[codecomment-color!50]
 
-\begin{lstlisting}[numbers=left,firstnumber=77]
-Family STLC_fix extends STLC.
+\vspace{-8pt}
 
+\colorlet{codecomment-color}{orange}
+
+\begin{lstlisting}[firstnumber=77]
+Family STLC_fix extends STLC.[@\tanc{STLCfix-start}@]
+[@\hfill\codecomment{STLC extended with fixpoints}@]
 FInductive tm : Set +=
 | tm_fix : id -> tm -> tm.
 
@@ -127,17 +131,20 @@ FInduction progress on hasty motive [@\dadada@].
 Case ht_fix. [@\dadada@] Qed.
 End progress.
 
-End STLC_fix.
+End STLC_fix.[@\tanc{STLCfix-end}@]
 \end{lstlisting}
-\medskip
 
-\hrule
-\hrule
-\medskip
+\makeline[.5\textwidth+9pt]{STLCfix-start}{STLCfix-end}[codecomment-color!50]
 
-\begin{lstlisting}[numbers=left,firstnumber=111]
-Check STLC_fix.typesafe.
+\vspace{-8pt}
+
+\colorlet{codecomment-color}{black}
+
+\begin{lstlisting}[firstnumber=111]
+Check STLC_fix.typesafe.[@\tanc{Check-STLCfix-typesafe}@]
 \end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{Check-STLCfix-typesafe}{Check-STLCfix-typesafe}[codecomment-color!35]
 
 \end{multicols}
 \end{minipage}
@@ -213,8 +220,9 @@ Family STLC_bool extends STLC.
 (* ... and more extension *)
 EndFamily.
 \end{lstlisting}
-  \end{minipage}
-  \caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
+\end{minipage}
+
+\caption{Example STLC and its extension, in designed syntax}\label{fig:STLC-example2}
 \end{figure}
 
 \fi
