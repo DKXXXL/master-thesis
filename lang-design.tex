@@ -271,13 +271,37 @@ Per the requirement, this relationship must be preserved into
 "typesafe" in "STLC_fix".
 
 Note that the requirement still allows a derived family to introduce
-new dependencies into the context of a field.
-For example, consider an extension of STLC with iso-recursive types
-(left column of \cref{fig:stlc-isorec-prod}).
-Family "STLC_isorec" introduces "tysubst" into the context of "hasty".
+new declarations into the context of a field.
+For example, the left column of \cref{fig:stlc-isorec-prod} shows an
+extension of STLC with iso-recursive types, where "tysubst" is
+introduced into the context of "hasty".
+
 \input{stlc-isorec-prod.tex}
 
 \noindentparagraph{Composing families.}
+
+Families can be readily reused to construct larger extensions that
+\emph{mix in}~\cite{mixin-1990} the functionalities of the individual
+families.
+In \cref{fig:stlc-isorec-prod}, family "STLC_fix_isorec" is declared as
+an "STLC" extension that mixes in "STLC_fix" and "STLC_isorec".
+As a result, \lsti{STLC_fix_isorec.typesafe} readily gives the
+type-safety theorem of STLC equipped with fixpoints and iso-recursive types.
+
+Mixin composition is a form of multiple inheritance, which may lead to
+name conflicts in general.
+Our plugin requires the programmer to resolve conflicts by
+explicitly overriding conflicted fields.
+
+In the presence of extensible inductive types, mixin composition may
+also create an obligation to retrofit the mixins with new case handlers.
+In \cref{fig:stlc-isorec-prod}, family "STLC_prod_isorec" is composed
+of two mixins: "STLC_prod", which extends the inductive type "ty" with a
+new constructor "ty_prod", and "STLC_isorec", which introduces a
+function "tysubst" recursively defined on "ty".
+Hence, for exhaustivity, it is required that a composition of
+"STLC_prod" and "STLC_isorec" should additionally handle the "ty_prod"
+case in "tysubst".
 
 \noindentparagraph{Tactics for eliminating inductive types.}
 

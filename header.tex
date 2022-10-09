@@ -363,6 +363,15 @@
 \newcommand\codecomment[1]{%
   {\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1\;\textls[-50]{\texttt{*)}}}%
 }
+\newcommand\codecommentstart[1]{%
+  {\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1}%
+}
+\newcommand\codecommentend[1]{%
+  {\color{codecomment-color}\rmfamily\itshape#1\;\textls[-50]{\texttt{*)}}}%
+}
+\newcommand\codecommentmid[1]{%
+  {\color{codecomment-color}\rmfamily\itshape#1}%
+}
 \newcommand\codestring[1]{%
   \color{dark-gray}%
   \textquotedbl#1\textquotedbl

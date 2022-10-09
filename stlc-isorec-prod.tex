@@ -7,7 +7,7 @@
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
-\definecolor{codecomment-color}{HTML}{FF007F}
+\definecolor{codecomment-color}{HTML}{DD033F}
 
 \begin{lstlisting}
 Family STLC_isorec extends STLC.[@\tanc{STLCisorec-start}@]
@@ -30,12 +30,24 @@ FInductive hasty : env -> tm -> ty -> Prop +=
     hasty G (tm_fold t) (ty_rec \alpha T)
 | ht_unfold : [@\dadada@].
 
-[@\dadada@]
-
+[@\dadada@][@\hfill\codecomment{Other adjustments}@]
 End STLC_isorec.[@\tanc{STLCisorec-end}@]
 \end{lstlisting}
 
 \makeline[0pt]{STLCisorec-start}{STLCisorec-end}[codecomment-color!50]
+
+\vspace{-12pt}
+
+\definecolor{codecomment-color}{HTML}{008B8B}
+
+\begin{lstlisting}
+Family STLC_fix_isorec extends STLC[@\tanc{STLCisorecfix-start}@]
+using STLC_fix, STLC_isorec.
+[@\hfill\ \ \codecomment{STLC extended with fixpoints and iso-recursive types}@]
+End STLC_fix_isorec.[@\tanc{STLCisorecfix-end}@]
+\end{lstlisting}
+
+\makeline[0pt]{STLCisorecfix-start}{STLCisorecfix-end}[codecomment-color!50]
 
 \columnbreak
 
@@ -51,30 +63,42 @@ FInductive tm : Set +=
 | tm_pair : tm -> tm -> tm
 | tm_fst : tm -> tm | tm_snd : tm -> tm.
 
-[@\dadada@]
-
+[@\dadada@][@\hfill\codecomment{Other adjustments}@]
 End STLC_prod.[@\tanc{STLCprod-end}@]
 \end{lstlisting}
 
 \makeline[.5\textwidth+9pt]{STLCprod-start}{STLCprod-end}[codecomment-color!50]
 
-\vspace{-5pt}
+\vspace{-10pt}
 
 \definecolor{codecomment-color}{HTML}{E8A20C}
 
 \begin{lstlisting}
-Family STLC_isorec_prod extends STLC[@\tanc{STLCisorecprod-start}@]
+Family STLC_prod_isorec extends STLC[@\tanc{STLCisorecprod-start}@]
 using STLC_prod, STLC_isorec.
-[@\hfill\ \ \codecomment{STLC extended with iso-recursive types and products}@]
+[@\hfill\ \ \codecomment{STLC extended with products and iso-recursive types}@]
 FRecursion tysubst on ty
 motive \lambda(_ : ty), id -> ty -> ty.
 Case ty_prod := [@\dadada@].[@\hfill\codecomment{Substitution on product types}@]
 End tysubst.
 
-End STLC_isorec_prod.[@\tanc{STLCisorecprod-end}@]
+End STLC_prod_isorec.[@\tanc{STLCisorecprod-end}@]
 \end{lstlisting}
 
 \makeline[.5\textwidth+9pt]{STLCisorecprod-start}{STLCisorecprod-end}[codecomment-color!50]
+
+\vspace{-10pt}
+
+\definecolor{codecomment-color}{HTML}{708090}
+
+\begin{lstlisting}
+Family STLC_fix_prod_isorec extends STLC[@\tanc{STLCisorecfixprod-start}@]
+using STLC_fix, STLC_prod_isorec.[@\hfill\codecommentstart{STLC extended}@]
+[@\hfill\codecommentend{with fixpoints, products, and iso-recursive types}@]
+End STLC_fix_isorec.[@\tanc{STLCisorecfixprod-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{STLCisorecfixprod-start}{STLCisorecfixprod-end}[codecomment-color!50]
 
 \end{multicols}
 \end{minipage}
