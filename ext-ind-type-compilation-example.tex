@@ -19,10 +19,10 @@ Family STLC.[@\tanc{Ext-Ind-Cmp-start}@]
     and the computational axiom for tm *)
  FRecursion subst on tm 
  motive (fun _ => id → tm → tm). 
-  Case tm_var := fun s x t => 
-    if (eqb x s) then t else (tm_var s).
+  Case tm_var := fun s x t => [@\dadada@].
   (* [@\dadada@] other cases *)
  End subst.
+ FScheme Comp about self__STLC.subst.
 (* Field test := (subst (tm_var 0) 0 (tm_var 0)). *)
 (* [@\dadada@] other things in STLC *)
 EndFamily.
@@ -36,8 +36,7 @@ Family STLC_bool extends STLC.
  End subst. 
  Inherits subst.
 (* [@\dadada@] other things in STLC_Bool *)
-EndFamily.
-[@\tanc{Ext-Ind-Cmp-end}@]
+EndFamily.[@\tanc{Ext-Ind-Cmp-end}@]
 \end{lstlisting}
 
 \makeline[0pt]{Ext-Ind-Cmp-start}{Ext-Ind-Cmp-end}[codecomment-color!50]
