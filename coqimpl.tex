@@ -551,7 +551,9 @@ applicable on (extensible) inductive type.
 
 
 
-\textit{Generating Scheme for Propositional Computation Axiom for FRecursor}. Thus we support "FScheme" to remedy problem (1): our plugin can automatically generate(postulate) the computational ``axiom'' for the specified  into the family and prove them during compilation into modules. However, it is only introducing computational information \textbf{propositionally} but not judgementally, and we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. 
+\textit{Generating Scheme for Propositional Computation Axiom for FRecursor}. Thus we support "FScheme" to remedy problem (1): our plugin can automatically generate(postulate) the computational ``axiom'' for the specified  into the family and prove them during compilation into modules. For example, "FScheme Comp about subst" in \cref{fig:plugin-example2} will compile into "Module Type substtm_139", filled with all the computational axiom for "subst". There module type when included in the context can be used to reduce "subst"; they will also be proved after compilation.
+
+However, it is only introducing computational information \textbf{propositionally} but not judgementally, and we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. 
 
 % However, this method, though remedies problem (1) to some extent, is only introducing computational information \textbf{propositionally} but not judgementally. Thus, for example, during theorem proving, we might need the help of rewriting tactic on these computational ``axiom'' to justify the computation. And in the full dependent type theory, propositional equality is sometimes not enough and bringing a lot of coding challenges\footnote{For example, for "u : F a"， "v : F b", "u = v" is not even well-typed when "a = b" only propositionally hold. Transport is required during reasoning.}.
 
@@ -770,7 +772,7 @@ We can support partial dependent eliminator as well, but partial dependent elimi
 \end{minted}
 To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. Please refer to the supplementary material and appendix for a formalization of the left inverse in the context of indexed inductive type. 
 
-Though partial recursor is provable by simply using "FRecursor", for convenience, we support using "FScheme" to automatic generate it. At the meantime, we implement a tactic "prec_discriminate" that when fed with the appropriate partial recursor (with computational axiom generated), it can discriminate an absurd equation between two different constructors of extensible inductive type.
+Though partial recursor is provable by simply using "FRecursor", for convenience, we support using "FScheme" to automatic generate it. For example, "FScheme tm_prec PRecT" in \cref{fig:plugin-example2} can lead to compilation of "Module tm_prec_72". At the meantime, we implement a tactic "prec_discriminate" that when fed with the appropriate partial recursor (with computational axiom generated), it can discriminate an absurd equation between two different constructors of extensible inductive type.
 \begin{minted}{Coq}
   FInductive tm : Set := tunit : tm | tvar : ident -> tm | ..
   FScheme tm_prec PRecT about self__STLC.tm.
