@@ -1,0 +1,414 @@
+\judgebox{\goodCtx{\Gamma}{i}}
+$$ 
+\Rule[name=Empty Context]{}{\goodCtx{\cdot}{0}} 
+\quad
+\Rule[name=Context Extension]
+{\goodCtx{\Gamma}{i} \quad \goodType{\Gamma}{A}{j}}
+{\goodCtx{\Gamma, A}{i \cup j}}  
+$$
+
+
+\judgebox{ \goodType{\Gamma}{T}{i} }
+$$
+\Rule[name=Type Universe]
+{}
+{\goodType{\Gamma}{\cU}{j + 1}}
+\quad 
+\Rule[name=Boolean]
+{}
+{\goodType{\Gamma}{\cB}{0}}
+\quad 
+\Rule[name=Bottom]
+{}
+{\goodType{\Gamma}{\bot}{0}}
+\quad 
+\Rule[name=Function]
+{\goodType{\Gamma}{A}{j} 
+  \quad \goodType{\Gamma, A}{B}{k}}
+{\goodType{\Gamma}{\Pi A B}{j \cup k}}
+$$
+
+$$
+\quad 
+\Rule[name=Func/DPair Subst]
+{\goodSub{\Gamma}{\gamma}{\Delta}
+\quad \goodType{\Delta}{A}{} 
+\quad \goodType{\Delta, A}{B}{}
+}
+{
+  \goodType{\Gamma}{(\Pi A B)[\gamma] \equiv \Pi A[\gamma] B[\gamma^\uparrow] }{j \cup k}
+  \quad 
+  \goodType{\Gamma}{(\Sigma A B)[\gamma] \equiv \Sigma A[\gamma] B[\gamma^\uparrow] }{j \cup k}
+}
+$$
+
+$$
+\Rule[name=Type Subst]
+{\goodType{\Delta}{T}{j} 
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodType{\Gamma}{T[\gamma]}{j}}
+\quad
+\Rule[name=Base Type Subst]
+{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodType{\Gamma}{\cU[\gamma] \equiv \cU }{j + 1} \quad
+  \goodType{\Gamma}{\cB[\gamma] \equiv \cB}{0} \quad 
+  \goodType{\Gamma}{\bot[\gamma] \equiv \bot}{0}
+}
+$$
+\judgebox{ \goodTerm{\Gamma}{t}{T} }
+$$
+\Rule[name=Code/Get Type]
+{\goodType{\Gamma}{T}{j}}
+{\goodTerm{\Gamma}{"c" \ T}{\cU}
+}\quad
+\Rule[]
+{\goodTerm{\Gamma}{T}{\cU}}
+{\goodType{\Gamma}{El \ T}{j}}
+\quad 
+\Rule[name=Term Subst]
+{\goodTerm{\Delta}{t}{T}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodTerm{\Gamma}{t[\gamma]}{T[\gamma]}}
+$$
+$$
+\Rule[]
+{\goodTerm{\Gamma, A}{t}{B}}
+{\goodTerm{\Gamma}{\lambda t}{\Pi A B}}
+\quad 
+\Rule[]
+{\goodTerm{\Gamma}{t}{\Pi A B}}
+{\goodTerm{\Gamma, A}{"app"~t}{B}}
+\quad 
+\Rule[]
+{\goodTerm{\Gamma}{u}{A} 
+\quad \goodTerm{\Gamma}{v}{B[(id, u)]}}
+{\goodTerm{\Gamma}{(u,v)}{\Sigma A B}}
+\quad 
+\Rule[name=Sigma Elim]
+{\goodTerm{\Gamma}{t}{\Sigma A B}}
+{\goodTerm{\Gamma}{"pjl" \ t}{A}
+\\\\ \goodTerm{\Gamma}{"pjr" \  t}{B[(id, "pjl" \  t)]}
+}
+$$
+$$
+\Rule
+{}
+{\goodTerm{\Gamma}{(\lambda t)[\gamma] \equiv \lambda (t[\gamma^\uparrow])}{\Pi A B}
+\quad \goodTerm{\Gamma}{(u,v)[\gamma] \equiv (u[\gamma],v[\gamma])}{\Sigma A B}
+\quad \goodType{\Gamma}{El \ (T[\gamma]) \equiv (El \ T) [\gamma]}{}
+}
+$$
+
+$$
+\Rule[name=Bool]
+{}
+{\goodTerm{\Gamma}{"tt", "ff"}{\cB}}
+\quad
+\Rule[]
+{\goodSub{\Gamma}{\gamma}{\Delta}}
+{\goodType{\Gamma}{(El \ T)[\gamma] \equiv El \ (T[\gamma]) }{j} \quad
+ \goodTerm{\Gamma}{"tt"[\gamma] \equiv "tt"}{\cB} \quad 
+ \goodTerm{\Gamma}{"ff"[\gamma] \equiv "ff"}{\cB} 
+}
+$$
+\judgebox{\goodSub{\Gamma}{\sigma}{\Delta}}
+$$
+\Rule[name=Ept Subst]
+{}{\goodSub{\Gamma}{\epsilon}{\cdot}}
+\quad
+\Rule[]
+{}{\goodSub{\Gamma}{"id"}{\Gamma}}
+\quad
+\Rule[name=Sub Comp]{
+  \goodSub{\Delta}{\delta}{\Theta}
+  \quad \goodSub{\Gamma}{\gamma}{\Delta} 
+}{\goodSub{\Gamma}{\delta \circ \gamma}{\Theta}}
+\Rule[name=Sub Extend]
+{\goodSub{\Gamma}{\gamma}{\Delta} \quad \goodTerm{\Gamma}{t}{A[\gamma]}}
+{\goodSub{\Gamma}{(\gamma, t)}{(\Delta, A)}}
+$$
+
+$$
+\Rule[name=Proj Subst-1]
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_1 \gamma}{\Delta}}
+\quad
+\Rule[name=Proj Subst-2]
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_2 \gamma}{A[\pi_1 \gamma]}}
+\quad
+\Rule[name=Proj-Ext]
+{}
+{\goodSub{\Gamma}{(\pi_1 \gamma, \pi_2 \gamma) \equiv \gamma}{\Delta}}
+$$
+
+
+
+\judgebox{\goodWSig{\Gamma}{\tau}{n}}
+$$
+\Rule[name=Emp-WSig]
+{}
+{\goodWSig{\Gamma}{w\cdot}{0}}
+\quad
+\Rule[name=WSig-Add]
+{\goodWSig{\Gamma}{\tau}{n}
+  \quad \goodType{\Gamma}{A}{i}
+  \quad \goodType{\Gamma, A}{B}{i}}
+{\goodWSig{\Gamma}{w^+ \  \tau \  A \  B}{n+1}}
+\quad
+\Rule[name=Ind-Univ]
+{\goodWSig{\Gamma}{\tau}{n}}
+{\goodType{\Gamma}{\bW \tau}{i}
+}
+$$
+%\YZ{Is there an introduction rule for terms of type 'bW sigma'?}
+%\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation below.}
+
+$$
+\Rule[name=WSig-Proj]
+{\goodWSig{\Gamma}{\tau}{n} \quad j < n}
+{\goodType{\Gamma}{\pi^j_1 \tau}{i} \quad \goodType{\Gamma, \pi^j_1 \tau}{\pi^j_2  \tau}{i}}
+\quad
+\Rule[name=Ind-Sig]
+{\goodWSig{\Delta}{\tau}{n}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodWSig{\Gamma}{\tau[\gamma]}{n}
+  \quad \goodType{\Gamma}{W (\tau[\gamma]) \equiv (W \tau)[\gamma]}{i}}
+$$
+
+$$
+\Rule[name=Ind-Type]
+{\goodTerm{\Gamma}{T}{\bW \tau}}
+{\goodTerm{\Gamma}{"W" \ T}{\cU}
+}
+\quad 
+\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}
+\quad
+\Rule[name=Ind-Term]
+{\goodTerm{\Gamma}{T}{\bW \tau}
+  \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
+  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)}}
+{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
+$$
+
+
+\judgebox{\goodSig{\Gamma}{\sigma}{n} }
+$$
+\Rule[name=Lnkg Type/Compile]
+{\goodSig{\Gamma}{\sigma}{n}}
+{\goodType{\Gamma}{\cL \sigma}{i}
+\quad \goodType{\Gamma}{\cC \sigma}{}}
+\quad
+\Rule[name=Sig/Lnkg Subst]
+{\goodSig{\Delta}{\sigma}{n}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodSig{\Gamma}{\sigma[\gamma]}{n}
+  \quad \goodType{\Gamma}{\cL (\sigma[\gamma]) \equiv (\cL \sigma)[\gamma]}{i}}
+$$
+
+$$
+\Rule[name=Ept Sig]
+{}
+{\goodSig{\Gamma}{\nu\cdot}{0}}
+\quad
+\Rule[name=Sig Add]
+{\goodSig{\Gamma}{\sigma}{n} 
+ \quad \goodType{\Gamma}{A}{}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}
+ \quad \goodType{\Gamma, A}{T}{i}}
+{\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
+$$
+
+$$ 
+\Rule[name=Sig Proj]
+{\goodSig{\Gamma}{\sigma}{n+1}}
+{\goodSig{\Gamma}{p_1\nu \ \sigma}{n}
+\\ \goodType{\Gamma}{p_1\nu' \ \sigma}{}
+\\ \goodSeal{\Gamma}{p_f\nu \  \sigma}{p_1\nu \  \sigma}{p_1\nu' \sigma}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ \sigma}{}
+}
+$$
+
+$$ 
+\Rule[name=Sig Proj Beta]
+{\goodSig{\Gamma}{\sigma}{n} 
+\quad \goodType{\Gamma}{A}{}
+\quad \goodSeal{\Gamma}{f}{\sigma}{A}
+\quad \goodType{\Gamma, A}{T}{i}}
+{\goodSig{\Gamma}{p_1\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv \sigma}{n}
+\\ \goodType{\Gamma}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
+\\ \goodSeal{\Gamma}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
+\\ \goodType{\Gamma, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
+}
+$$
+
+$$
+\Rule[name=Ept Lnkg]
+{}
+{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot}}
+\quad
+\Rule[name=Lnkg Add]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad \goodType{\Gamma}{A}{}
+\quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
+ \quad \goodTerm{\Gamma, A}{t}{T}
+}
+{\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+$$
+
+$$
+\Rule[name=Lnkg Proj]
+{\goodTerm{\Gamma}{o}{\cL\sigma}}
+{\goodTerm{\Gamma}{p_1\mu \ o}{\cL (p_1\nu \ \sigma)}
+\\ \goodTerm{\Gamma, p_1\nu' \ \sigma}{p_2\mu \ o}{p_2\nu \ \sigma}
+}
+\quad 
+\Rule[name=Lnkg Compile]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+}
+{
+  \goodTerm{\Gamma}{\cCt o}{\cC \sigma}
+}
+$$
+$$ 
+\Rule[name=Lnkg Proj Beta]
+{\goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad \goodType{\Gamma}{A}{}
+\quad  \goodSeal{\Gamma}{f}{\sigma}{A} 
+ \quad \goodTerm{\Gamma, A}{t}{T}}
+{\goodTerm{\Gamma}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \sigma}
+\\ \goodTerm{\Gamma, A}{p_2\mu \  (\mu^+ \ o \ \{f\} \ t) \equiv t}{T}
+}
+$$
+$$
+\Rule[name=Compile]
+{}
+{\goodType{\Gamma}{\cC \nu\cdot \equiv \top}{} 
+\\
+\goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
+    \Sigma (\cC \sigma) T["sf" \ f]}{}
+\\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cC \nu\cdot}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}\EDJreply{There should be something but the space is not enough.}
+}
+$$
+
+
+\begin{figure}[H]
+
+  \judgebox{[\goodSeal{\Gamma}{s}{\sigma}{A}] 
+  = [\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}] }
+  $$
+  \Rule[name=Seal Subst]
+  {\goodSeal{\Delta}{s}{\sigma}{A}
+    \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+  {\goodSeal{\Gamma}{s[\gamma]}{\sigma[\gamma]}{A[\gamma]}}
+  =
+  \frac
+  {\goodTerm{\Delta, \cC\sigma}{s}{A[\pi_1]}
+    \quad  \goodSub{\Gamma}{\gamma}{\Delta}  }
+  {\goodTerm{\Gamma,\cC\sigma[\gamma]}{s[\gamma^\uparrow]}{A[\pi_1][\gamma^\uparrow]\equiv A[\gamma][\pi_1]}}
+  $$
+  $$
+  \Rule[name=Seal-Id]
+  {}
+  {\goodSeal{\Gamma}{id_s}{\sigma}{\cC \sigma}}
+  = \goodTerm{\Gamma, \cC\sigma}{\pi_2}{\cC\sigma[\pi_1]}
+  $$
+
+\medskip
+
+\end{figure}
+
+$$
+\Rule[name=Hdler]
+{\goodType{\Gamma}{A}{}
+\quad \goodType{\Gamma, A}{B}{}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
+\quad 
+\Rule[name=Hdlers]
+{\goodWSig{\Gamma}{\tau}{n}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodSig{\Gamma}{"RecSig"~\tau~R}{n}}
+$$
+$$
+\Rule[name=Hdler-Proj]
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\tau~R)}
+\quad j < N
+}
+{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)[\pi_1]}}
+$$
+$$
+\Rule[name=Rec-Constr]
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{T}{\bW \tau}
+\quad \goodType{\Gamma}{R}{}
+\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
+\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
+}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
+(1) Use \tau for inductive types and \sigma for linkage signatures.
+(2) Try using the same metavariables (j and n) as in the rules on W-types.
+(3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
+(4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
+}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}\EDJreply{Done. Please Check.}
+$$
+
+
+\judgebox{\goodInh{\Gamma}{h}{\sigma}{\tau}}
+
+$$
+\Rule[name=Inh-Id]
+{}
+{\goodInh{\Gamma}{"inhid"}{\sigma}{\sigma}}
+\quad
+\Rule[name=Inh-Override]
+{
+\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}  
+\quad \goodType{\Gamma, A_1}{T_1}{}
+\quad \goodType{\Gamma, A_2}{T_2}{}
+  \quad \goodTerm{\Gamma, A_2}{t}{T_2}}
+{\goodInh{\Gamma}{"inhov" \ h \ t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}}
+$$
+
+$$
+\Rule[name=Inh-Ext]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+  \quad \goodTerm{\Gamma, A_2}{t}{T}}
+{\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
+\quad
+\Rule[name=Inh-Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodType{\Gamma, A_1}{T}{}
+\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
+}
+{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}
+$$
+$$
+\Rule[name=Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodTerm{\Gamma}{l}{\cL \sigma_1}
+}
+{\goodTerm{\Gamma}{("inh" \ h \ l)}{\cL \sigma_2}} 
+\quad
+\Rule[name=Inh+Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
+\\\\
+\goodInh{\Gamma, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+{\goodInh{\Gamma}{"inhnest" \ h \ i}{(\nu^+ \  \sigma_1\  \cL\tau_1)}{(\nu^+ \  \sigma_2\  \cL\tau_2)}}
+\quad
+$$
+
+$$
+\Rule[name=Inh-Inh-beta]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+  \quad \goodTerm{\Gamma}{m}{\cL \sigma_1}
+  \quad \goodTerm{\Gamma, A_1}{t}{T}
+  \quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
+}
+{\goodTerm{\Gamma}{"inh" ("inhinh" \ h) (\mu^+ \ m \  \{f_1\} \ t) \newline  \equiv \mu^+ \ ("inh" \ h \ m) \  \{f_2\} \ t[(\pi_1, \uparrow^s)]}{...}} 
+$$
