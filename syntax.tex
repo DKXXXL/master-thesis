@@ -839,7 +839,7 @@ mentioned in \ref{chg:consistency} in metatheory.
 
 In summary, with the help of both sealing and $\cC$, we can shift the context from $\cL(\{a~:~\bW \sigma; ..\})$ to $\Sigma a : \cU,..$ and thus achieve code reuse. However, this is just allow \textit{possible} {code reuse}, we still need to solve the mutated tension in \ref{chg:extensible-inductive-type}. To make things concrete, we need to introduce the rules for recursors.
 
-Finally, we make a note here on how sealing can easily express the overidability in our implementation. To expose the definition in our metatheory, we model that by adding equality reflection into our metatheory (and thus change our setting into extensional type theory). Then we can consider exposing the concrete definition as the existence of an identity type in the context. The key insight of the sealing in our metatheory, is that it gives the user the ability to manually specify which former fields expose its definition and which  former fields only expose their types---for those only expose their types, the corresponding identity type will be relaxed into a unit type. Now look back at the overridability mechanism in our implementation, it is a much restricted version: each overridable field can only see the concrete definition of the former non-overridable(default) fields and depending overridable fields; for each non-overridable(default) field, only the concrete definition of former non-overrdiable(default) fields are exposed.  
+Finally, we make a note here on how sealing can easily express the overidability in our implementation. To expose the definition in our metatheory, we model that by adding equality reflection into our metatheory (and thus change our setting into extensional type theory). Then we can consider exposing the concrete definition as the existence of an identity type in the context. The key insight of the sealing in our metatheory, is that it gives the user the ability to manually specify which former fields expose its definition and which  former fields only expose their types---for those only expose their types, the corresponding identity type will be relaxed into a unit type. Now look back at the overridability mechanism in our implementation, it is a much restricted version: each overridable field can only see the concrete definition of the former non-overridable(default) fields and depending overridable fields; for each non-overridable(default) field, only the concrete definition of former non-overrdiable(default) fields are exposed.
 
 % Since our recursor handlers are closely related to linkages, we can finally talk about the rules of recursor now. 
 
@@ -882,7 +882,7 @@ $$
 $$
 
 In our metatheory, for simplicity we only formulate non-dependent eliminators, i.e.,
-\textit{recursors}.
+\textit{recursors}.\YZ{Metatheory should mention how computational axioms about case handlers, partial recursors, and axioms over partial recursors are dealt with in the metatheory.}  
 %\YZ{Do dependent eliminators pose technical difficulties, or do you avoid them solely because they require more verbiage?}\EDJreply{I don't think there is technical difficulties to do that. The formulation of course will be much more horrifying if use dependent eliminator here. } 
 Like our plugin implementation, each recursor is constructed by a
 linkage containing handlers dealing with each constructor, and code
