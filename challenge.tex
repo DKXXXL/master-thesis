@@ -51,8 +51,8 @@ Late binding vs.\ definitional equality.%
 
 Family polymorphism enables modular reuse via late binding:
 code of a base family can be reused by a derived family,
-because what fields referenced by that code unfold to is polymorphic to
-the enclosing family.
+because fields referenced by that code have meanings polymorphic to the
+enclosing family.
 
 This flexibility, however, prevents \emph{definitional equality}
 that one takes for granted when programming in a proof assistant.
@@ -64,8 +64,8 @@ new cases.
 Without the ability to unfold the substitution function, how can the
 programmer even prove the substitution lemma?
 %
-The problem is compounded by the occasional need to override fields in derived families,
-which also precludes the unfolding of definitions.
+The problem is compounded by the occasional need in derived families to override fields,
+which is potentially at odds with being able to use equalities over the fields.
 
 %Common to family-polymorphism mechanisms in the OO realm is the ability
 %for a derived family to override fields defined in the base family.
@@ -109,7 +109,7 @@ In particular, it should be possible in our tool to
 incrementally navigate through vernacular commands and, moreover, construct proofs
 with common tactics while getting instant feedback on the proof state,
 even in the middle of a family definition.
-In addition, it should remain possible to perform computation in the extended Gallina language.
+In addition, it should remain possible to normalize terms that mention families.
 
 \ifShowOldWriting
 

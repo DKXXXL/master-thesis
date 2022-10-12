@@ -214,9 +214,9 @@
       Program, Infix, Theorem, Lemma, Corollary, Proposition, Fact,
       Remark, Example, Proof, Goal, Save, Qed, Defined, Admitted, Hint, Resolve,
       Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
-      Projections, inside, outside, Def,
+      Projections, inside, outside, Def, Include, Type, Prop, Set,
       % For Family Poly
-      Family, extends, FInductive, FRecursion, FInduction,
+      Family, extends, using, FInductive, FRecursion, FInduction,
       Case, FTheorem, FLemma, FDefinition, MetaData, EndMetaData, Closing, Final, Inherit,
       },
   % Gallina
@@ -227,20 +227,20 @@
   % Gallina: Family Poly
   morekeywords=[3]{on, motive, Overridable},
   % Sorts
-  morekeywords=[4]{Type, Prop, Set, true, false, option},
+  morekeywords=[4]{true, false, option},
   % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
   morekeywords=[5]{pose, set, move, case, elim, apply, clear, hnf,
       intro, intros, generalize, rename, pattern, after, destruct,
-      induction, using, refine, inversion, injection, rewrite, congr,
+      induction, refine, inversion, injection, discriminate, rewrite, congr,
       unlock, compute, ring, field, fourier, replace, fold, unfold,
       change, cutrewrite, simpl, have, suff, wlog, suffices, without,
       loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
       symmetry, transitivity, auto, split, left, right, autorewrite,
       % Family Poly
-      fsimpl},
+      fsimpl, fdiscriminate, finjection},
   % Terminators
   morekeywords=[6]{by, done, exact, reflexivity, tauto, romega, omega,
-      assumption, solve, contradiction, discriminate},
+      assumption, solve, contradiction},
   % Control
   morekeywords=[7]{do, last, first, try, idtac, repeat},
   % Comments delimiters, we do turn this off for the manual
@@ -281,7 +281,7 @@
   %Style for iterators
   %keywordstyle=[6]{\ttfamily\color{dkpink}},
   % Style for strings
-  stringstyle=\ttfamily,
+  stringstyle=\ttfamily\color{string-color},
   % Style for comments
   commentstyle={\rmfamily\itshape\color{codecomment-color}},
   %moredelim=**[is][\ttfamily\color{red}]{/&}{&/},
@@ -290,6 +290,7 @@
   {\\exists}{{\color{violet}{$\exists$}}}1
   {\\lambda}{{\color{violet}{$\lambda$}}}1
   {\\alpha}{{\color{black}{$\alpha$}}}1
+  {\\nat}{{\color{black}{$\mathbb{N}$}}}1
   {:=}{{\color{blue}$\coloneqq$}}1
   {+=}{{\color{blue}$\mathrel{{+}{=}}$}}1
   {<-}{{$\leftarrow$}}1
