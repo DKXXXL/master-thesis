@@ -13,6 +13,7 @@
 
 \begin{lstlisting}
 (* Type Checking of Inductive Type *) [@\tanc{Tyck-IndTy-start}@]
+(* Tyck happens during interactively creating families*)
 Module Type STLC_Ctx1. 
 (* The Context including Inductive Type *)
   Parameter (tm : Set).
@@ -99,22 +100,22 @@ End substtm_139. [@\tanc{Tyck-Recty-cont-end}@]
 \definecolor{codecomment-color}{HTML}{5D030F}
 
 \begin{lstlisting}
-(* Compilation, only when closing a top-level family *) [@\tanc{Cmp-Result-start}@]
+(* Compilation, happens when closing a top-level family *) [@\tanc{Cmp-Result-start}@]
 (* Ctx that expose concrete inductive type *)
-Module Type STLC_CCtx1.
+Module Type STLC_CCtx.
 Inductive __internal_tm : Set := [@\dadada@] 
 Include subst_internal_410. (* [@\dadada@] and more inclusion *)
 End STLC_CCtx.
-(* The compilation of recursor and[@\dadada@] *)
-Module subst_128 (self: STLC_CCtx1).
+(* Both the compilation of recursor and[@\dadada@] *)
+Module subst_128 (self: STLC_CCtx).
 Include __motive_of_subst_107 self.
 Definition subst :=
   self.__internal_tm_rec __motiveTsubst
 	self.subst_internal.tm_var [@\dadada@] .
 End subst_128.
-(* [@\dadada@] the compilation of partial recursor, 
-both require concrete inductive type in the ctx *)
-Module tm_prec_72 (self: STLC_CCtx1).
+(* [@\dadada@]the compilation of partial recursor 
+require concrete inductive type exposed in the ctx *)
+Module tm_prec_72 (self: STLC_CCtx[@\dadada@]).
 Definition tm_prec :
   ∀ t, ∀ P : self.tm -> Type,
   (∀ n, option (P (self.tm_var n))) ->
@@ -122,15 +123,18 @@ Definition tm_prec :
 End tm_prec_72. 
 Module STLC. (* Assembling/Compiling the whole STLC *)
 Include tm_5. Include tm_prec_72. 
-Include tm_prectm_81. (* Justification for comp axiom *)
+Include tm_prectm_81. (*Justify comp axiom, mostly eq_refl*)
 Include subst_internal_410. Include subst_128.
 End v_129.
 (* Assembling STLC_bool.subst_internal via reusing 
     most of the former compilation results *)
-Module subst_internal_248 (STLC_bool: STLC_Ctx1).
-Include tm_true_197 STLC_bool. Include [@\dadada@]
+(* Notice how handlers don't require explicitly
+   exposing the inductive type *)
+Module subst_internal_248 (self: STLC_Ctx1).
+(* The New Handlers *)
+Include tm_true_197 self. Include [@\dadada@]
 (* The Reused Compilation result *)
-Include tm_var_handle STLC_bool. Include [@\dadada@]
+Include tm_var_handle self. Include [@\dadada@]
 End v_248. 
 (* Regenerated FRecursion Compilation *)
 Module subst_242 (self: [@\dadada@]).
