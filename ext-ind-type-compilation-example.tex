@@ -7,74 +7,68 @@
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
-\definecolor{codecomment-color}{HTML}{FF007F}
-
-\begin{lstlisting}
-Family STLC.[@\tanc{Ext-Ind-Cmp-start}@]
- FInductive tm : Set := tm_var : [@\dadada@]
- (* [@\dadada@] other constructors *) 
- FScheme tm_prec PRecT about self__STLC.tm.
- FScheme Comp about self__STLC.tm_prec.
- (* Generate Partial Recursor 
-    and the computational axiom for tm *)
- FRecursion subst on tm 
- motive (fun _ => id → tm → tm). 
-  Case tm_var := fun s x t => [@\dadada@].
-  (* [@\dadada@] other cases *)
- End subst.
- FScheme Comp about self__STLC.subst.
-(* Field test := (subst (tm_var 0) 0 (tm_var 0)). *)
-(* [@\dadada@] other things in STLC *)
-EndFamily.
-Family STLC_bool extends STLC.
- Extend FInductive tm : Set :=
-  | tm_true : tm [@\dadada@]
-  (* [@\dadada@] other new constructors *)
- FRecursion subst.
-  Case tm_true := fun x t => tm_true.
-  (* [@\dadada@] other extended cases *)
- End subst. 
- Inherits subst.
-(* [@\dadada@] other things in STLC_Bool *)
-EndFamily.[@\tanc{Ext-Ind-Cmp-end}@]
-\end{lstlisting}
-
-\makeline[0pt]{Ext-Ind-Cmp-start}{Ext-Ind-Cmp-end}[codecomment-color!50]
-% \vspace{-3pt}
 
 
 \definecolor{codecomment-color}{HTML}{0DA3FF}
 
 \begin{lstlisting}
-(* Compilation Of the above *) [@\tanc{Cmp-Result0-start}@]
-Module Type STLC_Interface. 
+(* **Type Checking of Inductive Type** *) [@\tanc{Cmp-Result0-start}@]
+Module Type STLC_Ctx1. 
+(* The Context including Inductive Type *)
   Parameter (tm : Set).
   Parameter (tm_var : id → tm).
   Parameter (tm_abs : id → tm → tm).
   (* [@\dadada@] and all the fields for inductive type [@\dadada@] *)
-End STLC_Interface.
-(* Collect eliminator to Set for tm *)
-Module tm_rec_type (STLC: STLC_Interface).
-  Definition __recursor_type_tm_rec :=
-    forall P : STLC.tm -> Set,
-    (forall n : id, P (STLC.tm_var n)) ->
-    (forall (n : id) (i : STLC.tm),
-    P i -> P (STLC.tm_abs n i)) ->
-    [@\dadada@] -> forall i : STLC.tm, P i.
-End tm_rec_type.  
-Module tm_prec_72 (self__STLC: STLC_Interface).
-Definition tm_prec :
-  forall i : tm, forall P : tm -> Type,
-  (forall n, option (P (tm_var n))) ->
-  [@\dadada@], option (P __i) :=
-End tm_prec_72. 
-Module Type substtm_139 (self__STLC: [@\dadada@]).
+End STLC_Ctx1.
+Module Type tm_prec_64 (self: tm_6). (* Type for partial recursor *)
 Parameter
-  (subst_on_tm_unit :
-	 eq (self__STLC.subst (self__STLC.tm_unit))
-       self__STLC.subst_internal.tm_unit).
-(* [@\dadada@] subst equality on other constructors *)
-End substtm_139. 
+  (tm_prec :
+  forall i : self.tm, forall P : self.tm -> Type,
+  (forall n, option (P (self.tm_var n))) ->
+  [@\dadada@], option (P i)).
+End tm_prec_64.
+Module Type STLC_Ctx2. (* The Context including partial recursor *) 
+  Include STLC_Ctx1.
+  Include tm_prec_64.
+End STLC_Ctx2.
+(* [@\dadada@] etc, for every context, (everytime a new field is added) we will construct a new context as module type *)
+(* Collect eliminator TYPE for later type-check *)
+Module tm_rec_type (self: STLC_Ctx1).
+  Definition __recursor_type_tm_rec :=
+    forall P : self.tm -> Set,
+    (forall n : id, P (self.tm_var n)) ->
+    (forall (n : id) (i : self.tm),
+    P i -> P (self.tm_abs n i)) ->
+    [@\dadada@] -> forall i : self.tm, P i.
+End tm_rec_type.  
+(* **Type checking of Recursion** *)
+(* Typecheck each handler, here STLC.subst.tm_var *)
+(* Also an example of fields in nested family, thus with two contexts *) 
+Module tm_var_handle (self__STLC: STLC_Ctx1)
+    (self__subst_internal: EmptySig_84).
+  Definition tm_var :
+    forall (s : ident) (x : ident) 
+    (t : self__STLC.tm), self__STLC.tm :=
+    fun s x t => if eqb x s
+       then t else self__STLC.tm_var s.
+End tm_var_handle. (* [@\dadada@] and more *)
+(* Assembling tycked handlers in STLC.subst during compilation *)
+Module subst_internal_410 (STLC: STLC_Ctx1). 
+ Module subst_internal.
+ Include tm_var_handle STLC. Include tm_abs_handle STLC.
+ Include tm_app_handle STLC. Include tm_unit_handle STLC.
+ End subst_internal.
+End subst_internal_410.
+(* Intermediate Module solely for exhausitivity checking *) 
+Module do_tc (self: STLC_Ctx[@\dadada@]).
+  Include tm_rec_type self.
+  Parameter (recursor_for_type_checking 
+    : __recursor_type_tm_rec).
+  Definition term_for_type_checking :=
+    recursor_for_type_checking 
+      (fun _  ⇒ id → self.tm → self.tm)
+      subst_internal_410.tm_var [@\dadada@] .
+End do_tc.
 [@\tanc{Cmp-Result0-end}@]
 \end{lstlisting}
 
@@ -86,53 +80,45 @@ End substtm_139.
 \definecolor{codecomment-color}{HTML}{0DA3FF}
 
 \begin{lstlisting}
-(* Compiled Field STLC.subst_internal.tm_var *) [@\tanc{Cmp-Result-start}@]
-Module tm_var_handle (self__STLC: STLC_Interface)
-    (self__subst_internal: EmptySig_84).
-  Definition tm_var :
-    forall (s : ident) (x : ident) 
-    (t : self__STLC.tm), self__STLC.tm :=
-    fun s x t => if eqb x s
-       then t else self__STLC.tm_var s.
-End tm_var_handle. (* [@\dadada@] and more *)
-(* Assembling STLC.subst_internal when compilation *)
-Module subst_internal_410 (STLC: STLC_Interface). 
- Module subst_internal.
- Include tm_var_handle STLC. Include tm_abs_handle STLC.
- Include tm_app_handle STLC. Include tm_unit_handle STLC.
- End subst_internal.
-End subst_internal_410.
-(* Intermediate Module solely for type checking *)
-Module do_tc (STLC: STLC_Interface).
-  Include tm_rec_type STLC.
-  Parameter (recursor_for_type_checking 
-    : __recursor_type_tm_rec).
-  Definition term_for_type_checking :=
-    recursor_for_type_checking 
-      (fun _  ⇒ id → STLC.tm → STLC.tm)
-      subst_internal_410.tm_var [@\dadada@] .
-End do_tc.
+[@\tanc{Cmp-Result-start}@]
+(* Exposing Computational Axiom into Ctx *)
+Module Type substtm_139 (self: STLC_Ctx[@\dadada@]).
+Parameter
+  (subst_on_tm_unit :
+	 (self.subst (self.tm_unit)) = 
+      self.subst_internal.tm_unit).
+(* [@\dadada@] subst equality on other constructors *)
+End substtm_139. 
+
+(* Compilation, only when closing a top-level family *)
 (* Ctx that expose concrete inductive type *)
 Module Type ctx_subst_113.
 Inductive __internal_tm : Set := [@\dadada@] 
 Include subst_internal_410. (* [@\dadada@] and more inclusion *)
 End ctx_subst_113.
-(* Compilation of recursor, not reusable
-    when inductive type extended due to the ctx *)
-Module subst_128 (self__STLC: ctx_subst_113).
-Include __motive_of_subst_107 self__STLC.
+(* Compilation of recursor, 
+  require concrete inductive type in the ctx *)
+Module subst_128 (self: ctx_subst_113).
+Include __motive_of_subst_107 self.
 Definition subst :=
-  self__STLC.__internal_tm_rec __motiveTsubst
-	self__STLC.subst_internal.tm_var [@\dadada@] .
+  self.__internal_tm_rec __motiveTsubst
+	self.subst_internal.tm_var [@\dadada@] .
 End subst_128.
-(* Assembling the whole STLC *)
+(* Compilation of Partial Recursor *)
+Module tm_prec_72 (self: STLC_Ctx1).
+Definition tm_prec :
+  forall i : self.tm, forall P : self.tm -> Type,
+  (forall n, option (P (self.tm_var n))) ->
+  [@\dadada@], option (P i) :=
+End tm_prec_72. 
+(* Assembling/Compiling the whole STLC *)
 Module STLC.
 Include tm_5. Include tm_prec_72. Include tm_prectm_81.
 Include subst_internal_410. Include subst_128.
 End v_129.
 (* Assembling STLC_bool.subst_internal via reusing 
     most of the former compilation results *)
-Module subst_internal_248 (STLC_bool: STLC_Interface).
+Module subst_internal_248 (STLC_bool: STLC_Ctx1).
 Include tm_true_197 STLC_bool. Include [@\dadada@]
 (* The Reused Compilation result *)
 Include tm_var_handle STLC_bool. Include [@\dadada@]
