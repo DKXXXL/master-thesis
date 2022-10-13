@@ -2,17 +2,151 @@ To formalize our metatheory, we follow the formulation of~\citet{altkap2016}, wh
 using \textbf{Quotient Inductive Inductive Type}(QIIT)\footnote{Inductive Inductive Type(IIT) is a generalization of mutual inductive type where (indexed-)types \mintinline{Coq}{A : Type, B : A -> Type} can be defined mutually. QIIT further enhances IIT by allowing equality constructor (i.e. mathematical quotient).}, \textbf{explicit substitution} and \textbf{debruijn indices} as the main tool. 
 Generally speaking, we \textbf{use each QIIT type to represent each kind of judgements, and thus a term will represent a derivation of a judgement}. The classical formulation of dependent type theory requires a lot of \textit{presupposition} and quotient afterwards, causing a lot of duplicacy. Both issues can be concisely solved by using QIIT expressing intrinsically typed syntax instead. What's more, working \textbf{in a type-theoretical setting} using QIIT makes checking of the pen-and-paper proof easier. However, we will follow conventional notation and thus the reader might not notice the usage of QIIT explicitly.\EDJ{We might be able to remove QIIT in the main text totally. Let's try to do it later.}
 
+$$
+\Rule[name=Tm Subst]
+{\goodType{\Delta}{T}{j} 
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodType{\Gamma}{T[\gamma]}{j}},
+\Rule[]
+{\goodTerm{\Delta}{t}{T}
+  \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
+{\goodTerm{\Gamma}{t[\gamma]}{T[\gamma]}}
+\quad
+\Rule[name=Dbj Indices]
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_1 \gamma}{\Delta}},
+\Rule[]
+{\goodSub{\Gamma}{\gamma}{(\Delta, A)}}
+{\goodSub{\Gamma}{\pi_2 \gamma}{A[\pi_1 \gamma]}}
+$$
 
 % Explicit substitution
-Instead of meta-level substitution, we use explicit substitution, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own typing judgement.
+Instead of meta-level substitution, we use \textit{explicit substitution}, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own judgement $\goodSub{\Gamma}{\gamma}{\Delta}$. We can apply substitution to type and terms in MLTT. We also have an identity substitution $\goodSub{\Gamma}{"id"}{\Gamma}$.
 % Debruijn Indices
-Contrary to named variables, debruijn indices use number to indicate the variable in the context. For example, \mintinline{Agda}{}
+Contrary to named variables, \textit{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
 
 
-Now, we will mainly focus on the new typing rules that we introduced. We refer the those curious about the complete formulation to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is in an extensional setting. 
+Now, we will mainly focus on the new typing rules that we introduced. For those curious about the complete formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is in an extensional setting. 
 
 % linkage, signature and compilation and seal
+$$
+\Rule[name=Ept Sig]
+{}
+{\goodSig{\Gamma}{\nu\cdot}{0}}\quad
+\Rule[name=Lnkg Type/Compile]
+{\goodSig{\Gamma}{\sigma}{n}}
+{\goodType{\Gamma}{\cL \sigma}{i}
+\quad \goodType{\Gamma}{\cC \sigma}{}}
+\quad
+\Rule[name=Lnkg Compile]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+}
+{
+  \goodTerm{\Gamma}{\cCt o}{\cC \sigma}
+}
+$$
+$$
+\Rule[name=Sig Add]
+{\goodSig{\Gamma}{\sigma}{n} 
+ \quad \goodType{\Gamma}{A}{}
+ \quad \goodSeal{\Gamma}{f}{\sigma}{A}
+ \quad \goodType{\Gamma, A}{T}{i}}
+{\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
+\quad
+\Biggl( \boxed{\goodSeal{\Gamma}{s}{\sigma}{A}} 
+:= \boxed{\goodTerm{\Gamma, \cC\sigma}{s}{A[\pi_1]}} \Biggr)
+$$
+$$
+\Rule[name=Ept Lnkg]
+{}
+{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot}}
+\quad
+\Rule[name=Lnkg Add]
+{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+\quad \goodType{\Gamma}{A}{}
+\quad  {\goodSeal{\Gamma}{f}{\sigma}{A}}
+ \quad \boxed{\goodTerm{\Gamma, A}{t}{T}}
+}
+{\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+$$
+We start with signature (with a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is basically a list of types used to indicate the type of \textit{linkages}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript. Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement and will be explained later.  
+
+Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited the linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC $
+
+
+The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
+
+The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.
+
+We also show one example illustrating the importance of the compilation type.
+
 
 % Inductive type and recursor and handlers
+
+$$
+\Rule[]
+{}
+{\goodWSig{\Gamma}{w\cdot}{0}}
+\quad
+\Rule[name=WSig-Add]
+{\goodWSig{\Gamma}{\tau}{n}
+  \quad \goodType{\Gamma}{A}{i}
+  \quad \goodType{\Gamma, A}{B}{i}}
+{\goodWSig{\Gamma}{w^+ \  \tau \  A \  B}{n+1}}
+\quad
+\Rule[name=Ind-Univ]
+{\goodWSig{\Gamma}{\tau}{n}}
+{\goodType{\Gamma}{\bW \tau}{i}
+}
+$$
+$$
+\Rule[name=Ind-Term]
+{\goodTerm{\Gamma}{T}{\bW \tau}
+  \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
+  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)}}
+{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
+$$
+$$
+\Rule[name=Hdler]
+{\goodType{\Gamma}{A}{}
+\quad \goodType{\Gamma, A}{B}{}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv (\Pi A (\Pi (\Pi B (R[\pi_1\circ\pi_1])) R[\pi_1\circ\pi_1]) )}{}}
+\quad 
+\Rule[name=Hdlers]
+{\goodWSig{\Gamma}{\tau}{n}
+\quad \goodType{\Gamma}{R}{}
+}
+{\goodSig{\Gamma}{"RecSig"~\tau~R}{n}}
+$$
+$$
+\Rule[name=Hdler-Proj]
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\tau~R)}
+\quad j < N
+}
+{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)[\pi_1]}}
+$$
+$$
+\Rule[name=Rec-Constr]
+{ \goodWSig{\Gamma}{\tau}{N}
+\quad \goodTerm{\Gamma}{T}{\bW \tau}
+\quad \goodType{\Gamma}{R}{}
+\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
+\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
+}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
+(1) Use \tau for inductive types and \sigma for linkage signatures.
+(2) Try using the same metavariables (j and n) as in the rules on W-types.
+(3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
+(4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
+}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}\EDJreply{Done. Please Check.}
+$$
+
+
+Our formulation of (extensible) inductive type is close to Wtype (\ruleref{WSig-Add} requires a pair $A \vdash B$ as well), but with mulitple constructors. Thus we have the signature of inductive type collecting each constructors, with a brand new judgement ${\goodWSig{\Gamma}{\tau}{n}}$. Unconventionally, a signature can induce a "universe" of types $\bW$: in other words, $T : \bW$ will be the inductive type instead of $\bW$ itself. "Wsup" is used to construct a specific term of an given inductive type.
+
+Similar to plugin implementation, we delegate handlers for recursion using linkages. We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers. Specifying the handler family using "Wrec" on target inductive term $w$ leads to elimination.   
 
 % Inhertance judgement
