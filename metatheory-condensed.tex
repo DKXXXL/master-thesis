@@ -21,9 +21,9 @@ $$
 $$
 
 % Explicit substitution
-Instead of meta-level substitution, we use \textit{explicit substitution}, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own judgement $\goodSub{\Gamma}{\gamma}{\Delta}$. We can apply substitution to type and terms in MLTT. We also have an identity substitution $\goodSub{\Gamma}{"id"}{\Gamma}$.
+Instead of meta-level substitution, we use \textbf{explicit substitution}, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own judgement $\goodSub{\Gamma}{\gamma}{\Delta}$. We can apply substitution to type and terms in MLTT. We also have an identity substitution $\goodSub{\Gamma}{"id"}{\Gamma}$.
 % Debruijn Indices
-Contrary to named variables, \textit{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
+Contrary to named variables, \textbf{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
 
 
 Now, we will mainly focus on the new typing rules that we introduced. For those curious about the complete formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is in an extensional setting. 
@@ -80,6 +80,8 @@ The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ 
 
 We also show one example illustrating the importance of the compilation type.
 
+
+Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
 % Inductive type and recursor and handlers
 
@@ -150,3 +152,17 @@ Our formulation of (extensible) inductive type is close to Wtype (\ruleref{WSig-
 Similar to plugin implementation, we delegate handlers for recursion using linkages. We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers. Specifying the handler family using "Wrec" on target inductive term $w$ leads to elimination.   
 
 % Inhertance judgement
+In the plugin implementation, "Family"s are second class objects like Coq's "Module". What's more, a "Family", with or without "extends" argument can be considered as a standalone piece of code trying to \textit{inherit} an existent (but maybe empty) family. Thus we model them using \textit{inheritance judgement} instead of considering them as first class terms. 
+
+
+
+
+In this way, we will consider the program in our metatheory similar to those vanilla MLTT program, except there are meta variables denoting inheirtance judgement, of which the only usage is to apply to linkages. We don't yet consider non-trivial equality between inheritance judgements.
+
+
+\subsection{Syntactic Translation that removes Linkages}
+To further provide the intuition why our core calculus is sound, we provide a syntactic translation from our core calculus to the subpart where linkages are absent. This can justify the \textit{consistency} and \textit{canonicity} modulo the quirky (but apparent) formulation of our inductive type. To be complete, we also provide a consistency and canonicity proof for our complete core calculus in the appendix.
+
+Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. 
+
+\subsection{Relation to Plugin Implementation}
