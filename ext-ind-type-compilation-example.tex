@@ -21,7 +21,7 @@ Module Type STLC_Ctx1.
   Parameter (tm_abs : id → tm → tm).
   (* [@\dadada@] and all the fields for inductive type [@\dadada@] *)
 End STLC_Ctx1.
-Module Type tm_prec_64 (self: tm_6). 
+Module Type tm_prec_64 (self: tm_6).[@\YZ{tm_6? Do you mean STLC_Ctx1 instead?}@]
 Parameter (* Type for partial recursor *)
 (tm_prec : ∀ t, ∀ P : self.tm -> Type,
   (∀ n, option (P (self.tm_var n))) -> 
@@ -52,8 +52,8 @@ End tm_rec_type.  [@\tanc{Tyck-IndTy-end}@]
 (* Type checking of Recursion *) [@\tanc{Tyck-RecTy-start}@]
 (* Typecheck each handler, here STLC.subst.tm_var *)
 (* Also an example of fields in nested family [@\dadada@]*) 
-Module tm_var_handle (STLC: STLC_Ctx1)
-    (self: EmptySig). (* [@\dadada@] thus with two contexts *) 
+Module tm_var_handle (STLC: STLC_Ctx1)[@\YZ{(1) Why doesn't the module name contain "subst"? (2) Should it be STLC_Ctx2 instead of STLC_Ctx1?}@]
+    (self: EmptySig). (* [@\dadada@] thus with two contexts *)[@\YZ{(3) Are nested families really needed?}@]
   Definition tm_var s x t := 
     if eqb x s then t else STLC.tm_var s.
 End tm_var_handle. (* [@\dadada@] other handlers are alike *)
@@ -83,10 +83,10 @@ End do_tc.[@\tanc{Tyck-RecTy-end}@]
 
 \begin{lstlisting}
 (* Exposing Computational Axiom into Ctx *) [@\tanc{Tyck-Recty-cont-start}@]
-Module Type substtm_139 (self: STLC_Ctx[@\dadada@]).
+Module Type substtm_139 (self: STLC_Ctx[@\dadada@]).[@\YZ{What is "..."?}@]
 Parameter
   (subst_on_tm_unit :
-	 (self.subst (self.tm_unit)) = 
+	 (self.subst (self.tm_unit)) =[@\YZ{Where is this "subst" added to the context?}@]
       self.subst_internal.tm_unit).
 (* [@\dadada@] subst equality on other constructors *)
 End substtm_139. [@\tanc{Tyck-Recty-cont-end}@]
