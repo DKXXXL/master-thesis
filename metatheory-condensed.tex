@@ -21,7 +21,7 @@ $$
 $$
 
 % Explicit substitution
-Instead of meta-level substitution, we use \textbf{explicit substitution}, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own judgement $\goodSub{\Gamma}{\gamma}{\Delta}$. We can apply substitution to types\footnote{The type judgement is the form $\goodType{\Gamma}{T}{}$} and terms\footnote{The term judgement is the form $\goodTerm{\Gamma}{t}{T}$} in MLTT via \ruleref{Subst}. We also have an identity substitution $\goodSub{\Gamma}{"id"}{\Gamma}$.
+Instead of meta-level substitution, we use \textbf{explicit substitution}, i.e., substitution itself is a expression in the program and will be done in the runtime. Thus substitution has its own judgement $\goodSub{\Gamma}{\gamma}{\Delta}$. We can apply substitution to types and terms\footnote{The type judgement is the form $\goodType{\Gamma}{T}{}$. The term judgement is the form $\goodTerm{\Gamma}{t}{T}$} in MLTT via \ruleref{Subst}. We also have an identity substitution $\goodSub{\Gamma}{"id"}{\Gamma}$.
 % Debruijn Indices
 Contrary to named variables, \textbf{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
 
@@ -81,7 +81,7 @@ The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ 
 We also show one example illustrating the importance of the compilation type.
 
 
-Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
+% Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
 % Inductive type and recursor and handlers
 
@@ -181,7 +181,7 @@ To further provide the intuition why our core calculus is sound, we provide a sy
 \newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
 \newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
-Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related.
+Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related. We omit most of the inheritance translation.
 
 
 
@@ -217,7 +217,21 @@ Thanks to QIIT formulation, syntactic translation becomes a function between QII
   \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}} &= \mu^+~(h[(\pi_1,\pi_1\mu~\pi_2)])\\ &\quad \quad \{f_2[\pi_1]\}~(p_2\mu'~\pi_2)[(\pi_1, \uparrow^s[\pi_1^{\uparrow}])] \\
 \end{align*}
 
-We omit most of the inheritance translation.
+
 
 
 \subsection{Relation to Plugin Implementation}
+Our core calculus can model most of plugin implementation. 
+
+% Extending Inductive Type
+We extend inductive type by overriding the inductive type with a enriched one. Thanks to sealing, most stuff from the parent family can be inherited to the children because enriched inductive type can export strictly stronger interface when abstracting.
+
+% Partial Recursor + Computational Axiom
+The partial recursors and the computational axioms are no different from recursors and normal fields. We can prove partial recursor using current recursing mechanism and proving computational axiom on the trivial abstraction. After that, we can use sealing to abstract partial recursor and computational axiom again for the later fields.
+
+% Extending Recursion Handler
+The extension of recursion handlers is delegated by the inheritance of families. Adding new handlers for a new constructors is exactly extending families with new fields of certain types.  
+
+% Overriding + Pins
+Finally, we pointed out how overridable and pins is modeled if we admit equality reflection. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
+This above elaborated "hiding" syntax directly corresponding to the semantic of sealing---when definition is exposed, we expose propositional equality into the context, which will be a judgemental equality with the help of equality reflection; otherwise we only expose the type and no extra information.
