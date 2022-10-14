@@ -21,7 +21,7 @@ Module Type STLC_Ctx1.
   Parameter (tm_abs : id → tm → tm).
   (* [@\dadada@] and all the fields for inductive type [@\dadada@] *)
 End STLC_Ctx1.
-Module Type tm_prec_64 (self: STLC_Ctx1).[@\YZ{tm_6? Do you mean STLC_Ctx1 instead?}\EDJreply{Yes Thanks.}@]
+Module Type tm_prec_64 (self: STLC_Ctx1).
 Parameter (* Type for partial recursor *)
 (tm_prec : ∀ t, ∀ P : self.tm -> Type,
   (∀ n, option (P (self.tm_var n))) -> 
@@ -53,7 +53,6 @@ End tm_rec_type.  [@\tanc{Tyck-IndTy-end}@]
 (* Typecheck each handler, here STLC.subst.tm_var *)
 (* Also an example of fields in nested family [@\dadada@]*) 
 Module tm_var_handle (STLC: STLC_Ctx1).[@\YZ{(1) Why doesn't the module name contain "subst"? (2) Should it be STLC_Ctx2 instead of STLC_Ctx1?}\EDJreply{I rename to ctx so that I think it is easier to understand. Feel Free to change to the way you want. I think name them all into "_Ctx" suffix is easier to emphasize the fact they are the result of compilation of the context. (2) The fact is, no, it also will need to include tm_prec's computational axiom and ty, which I also forgot to mention. Also ty has its prec and computational axiom. So at least 6. Do you want me to write doesn STLC_Ctx(1,2,3,4,5,6)? It is unnecessary complication and the space is not enough. I proposed to move this part of information into the figure 5 toy example in the slack, what do you think? }@]
-[@\YZ{(3) Are nested families really needed?}\EDJreply{Not really but if consider handlers as one family, it is nested family. What's more, the audience needs to know how nested family is compiled at some point.}@]
   Definition tm_var s x t := 
     if eqb x s then t else STLC.tm_var s.
 End tm_var_handle. (* [@\dadada@] other handlers are alike *)
@@ -83,10 +82,10 @@ End do_tc.[@\tanc{Tyck-RecTy-end}@]
 
 \begin{lstlisting}
 (* Exposing Computational Axiom into Ctx *) [@\tanc{Tyck-Recty-cont-start}@]
-Module Type substtm_139 (self: STLC_Ctx[@\dadada@]).[@\YZ{What is "..."?}\EDJreply{My intension is STLC_Ctx_n for some n where at this point the audience should able to see what the context of that STLC_Ctx is. Apparently I failed.}@]
+Module Type substtm_139 (self: STLC_Ctx[@\dadada@]).
 Parameter
   (subst_on_tm_unit :
-	 (self.subst (self.tm_unit)) =[@\YZ{Where is this "subst" added to the context?}\EDJreply{The reason is above. Currently the space is already not enough.}@]
+	 (self.subst (self.tm_unit)) =
       self.subst_internal.tm_unit).
 (* [@\dadada@] subst equality on other constructors *)
 End substtm_139. [@\tanc{Tyck-Recty-cont-end}@]
@@ -101,7 +100,7 @@ End substtm_139. [@\tanc{Tyck-Recty-cont-end}@]
 
 \begin{lstlisting}
 (* Compilation, happens when closing a top-level family *) [@\tanc{Cmp-Result-start}@]
-(* Ctx that expose concrete inductive type *)
+(* Ctx that exposes concrete inductive type *)
 Module Type STLC_CCtx.
 Inductive __internal_tm : Set := [@\dadada@] 
 Include subst_internal_410. (* [@\dadada@] and more inclusion *)

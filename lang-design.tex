@@ -176,8 +176,8 @@ how can the programmer make progress in this proof, then?
 A key observation is that although late binding
 prevents \emph{definitional equality} on \lsti{subst}, it does not
 affect \emph{propositional equality}.
-That is, \lsti{subst tm_unit x t' = tm_unit}, as a proposition
-(\lsti{Prop}), should still hold.
+That is, \lsti{\forall x t, subst tm_unit x t = tm_unit},
+as a proposition (\lsti{Prop}), should still hold.
 After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
 from a base family to a derived family.
 %
@@ -366,7 +366,7 @@ For example, within family "STLC", the partial recursor for
 \begin{minipage}{.96\textwidth}
 \newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
-STLC_tm_prec : \forall (P : tm -> Set), [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] -> [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] ->
+tm_prec_STLC : \forall (P : tm -> Set), [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] -> [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] ->
                [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
                [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] ->
                \forall t, option (P t)
@@ -375,66 +375,76 @@ STLC_tm_prec : \forall (P : tm -> Set), [@\hlcase{tm-partialrec-case-var}@](\for
 \end{centered}
 
 \noindent
-As expected, "STLC_tm_prec" is axiomatized along with
+As expected, "tm_prec_STLC" is axiomatized along with
 four (propositional) equalities, one for each constructor of "tm".
-For instance, the equality for the "tm_abs" constructor is as follows:
+For instance, the equality for constructor "tm_abs" is as follows:
 
+\begin{centered}
+\begin{minipage}{.99\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
-\forall x t P H1 H2 H3 H4,
-STLC_tm_prec P H1 H2 H3 H4 (tm_abs x t) = H3 x t (STLC_tm_prec P H1 H2 H3 H4 t)
+tm_abs_eq_STLC: \forall x t P H1 H2 H3 H4,
+                tm_prec_STLC P H1 H2 H3 H4 (tm_abs x t) = H3 x t (tm_prec_STLC P H1 H2 H3 H4 t)
 \end{lstlisting}
+\end{minipage}
+\end{centered}
 
 %\noindent
 Importantly, unlike the standard "tm_rec" recursor, the partial recursor
-"STLC_tm_prec" is compatible with the late binding of "tm" in its type.
-When "STLC_tm_prec" is inherited into family "STLCFix", all the previous four equalities
+"tm_prec_STLC" is compatible with the late binding of "tm" in its type.
+When "tm_prec_STLC" is inherited into family "STLCFix", all the previous four equalities
 still hold, and a trivial, fifth equality is made available:
 
+\begin{centered}
+\begin{minipage}{.88\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
-\forall x t P H1 H2 H3 H4, STLC_tm_prec P H1 H2 H3 H4 (tm_fix x t) = None
+tm_fix_eq_STLC : \forall x t P H1 H2 H3 H4, tm_prec_STLC P H1 H2 H3 H4 (tm_fix x t) = None
 \end{lstlisting}
+\end{minipage}
+\end{centered}
 
-Although partial recursors appear weaker than ordinary recursors,
-there is power in restraint.
+Partial recursors appear weaker than ordinary recursors,
+but there is power in restraint.
 Partial recursors offer a principled, uniform way to derive injectivity and disjointness of
-constructors, while allowing extensibility:
-they enable injective mappings from values of a late bound inductive
-type, like "tm", to values of an ordinary inductive type, like \lsti{\nat},
+constructors, while allowing for extensibility:
+they enable injective mappings from a late bound inductive
+type, like "tm", to an ordinary inductive type, like \lsti{\nat},
 the injectivity and disjointness of whose constructors are readily
 available.
 %
 For example, in a proof state with the assumption \lsti{H : tm_var "x" = tm_abs "y" t},
-running \lsti{fdiscriminate H} first uses \lsti{H} to obtain the equality
+running \lsti{fdiscriminate H} first applies the injective mapping to
+both sides of~\lsti{H}, obtaining
 
 \begin{centered}
-\begin{minipage}{\textwidth}
+\begin{minipage}{.96\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
-STLC_tm_prec (\lambda[@\,@]_, \nat) (\lambda[@\,@]_, Some 1) (Some 2) (\lambda[@\,@]_[@\,@]_[@\,@]_, Some 3) (\lambda[@\,@]_[@\,@]_[@\,@]_[@\,@]_, Some 4) (tm_var "x") =
-STLC_tm_prec (\lambda[@\,@]_, \nat) (\lambda[@\,@]_, Some 1) (Some 2) (\lambda[@\,@]_[@\,@]_[@\,@]_, Some 3) (\lambda[@\,@]_[@\,@]_[@\,@]_[@\,@]_, Some 4) (tm_abs "y" t)
+tm_prec_STLC (\lambda[@\,@]_, \nat) (\lambda[@\,@]_, Some 1) (Some 2) (\lambda[@\,@]_[@\,@]_[@\,@]_, Some 3) (\lambda[@\,@]_[@\,@]_[@\,@]_[@\,@]_, Some 4) (tm_var "x") =
+tm_prec_STLC (\lambda[@\,@]_, \nat) (\lambda[@\,@]_, Some 1) (Some 2) (\lambda[@\,@]_[@\,@]_[@\,@]_, Some 3) (\lambda[@\,@]_[@\,@]_[@\,@]_[@\,@]_, Some 4) (tm_abs "y" t)
 \end{lstlisting}
 \end{minipage}
 \end{centered}
 
 \noindent
-and then uses the axiomatized equalities about "STLC_tm_prec" to
-rewrite the equality above, obtaining \lsti{Some 1 = Some 4},
+and then rewrites the above equality using two of the axiomatized
+equalities about "tm_prec_STLC",
+%(namely "tm_var_eq_STLC" and "tm_abs_eq_STLC"),
+obtaining \lsti{Some 1 = Some 4},
 from which \lsti{False} easily follows.
 
-Note that the proof term generated by \lsti{fdiscriminate H} in family "STLC"
+Note that the proof term generated by \lsti{fdiscriminate H} in "STLC"
 is reusable by family "STLCFix", because the partial recursor and its
 equalities are compatible with the late binding of "tm".
 Also note that within family "STLCFix", a second partial recursor
-(called "STLCFix_tm_prec") on "tm" is available;
-it can be used to derive properties about "tm_fix",
-such as \lsti{tm_var "x" = tm_fix "y" t -> False}.
+(called "tm_prec_STLCFix") and its equalities are available,
+allowing properties about "tm_fix",
+such as \lsti{\neg(tm_var "x" = tm_fix "y" t)}, to be proved.
+
+%\noindentparagraph{Limitations.}
 
 
-\noindentparagraph{Limitations.}
+\ifShowOldWriting
 
 \newpage
-
-
-
 
 Inspired by the above challenges and Family Polymorphism, we propose
 the following extension to Coq's Vernacular Commands, and the corresponding STLC example.
@@ -683,3 +693,5 @@ We will explain the usage of "Closing Fact" and "MetaData" later---they are \tex
 % Explain Mixin
 
 Finally, \textbf{Mixin.} For two children family with the same parent family, we support mixin the two using "Family ... extends ... using ... using ...". (In this case, it is better to consider the children family itself as \textit{an inheritance object}.) However, the candidates for mixin cannot have any overriding term (i.e. only allow inheritance and extension).  
+
+\fi

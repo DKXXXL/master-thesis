@@ -225,7 +225,7 @@
       nosimpl, when,
       },
   % Gallina: Family Poly
-  morekeywords=[3]{on, motive, Overridable},
+  morekeywords=[3]{on, motive, Overridable, self},
   % Sorts
   morekeywords=[4]{true, false, option},
   % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
@@ -288,9 +288,11 @@
   literate=
   {\\forall}{{\color{violet}{$\forall$}}}1
   {\\exists}{{\color{violet}{$\exists$}}}1
+  {\\neg}{{\color{violet}{$\neg$}}}1
   {\\lambda}{{\color{violet}{$\lambda$}}}1
   {\\alpha}{{\color{black}{$\alpha$}}}1
   {\\nat}{{\color{black}{$\mathbb{N}$}}}1
+  {\\_}{{\color{black}{$°$}}}1
   {:=}{{\color{blue}$\coloneqq$}}1
   {+=}{{\color{blue}$\mathrel{{+}{=}}$}}1
   {<-}{{$\leftarrow$}}1

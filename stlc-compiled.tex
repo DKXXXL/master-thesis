@@ -1,0 +1,133 @@
+\begin{figure}
+\begin{minipage}{\textwidth}
+\begin{multicols}{2}
+
+\lstset{
+  basicstyle=\fontsize{8}{8.5}\ttfamily,
+% numbers=left,
+}
+
+\colorlet{codecomment-color}{dkgreen}
+
+\newcommand{\innersep}{\vspace{5pt}}
+
+\begin{lstlisting}
+Module Type STLC\_ty\_Ctx.[@\tanc{c-STLC-ty-start}@]
+End STLC\_ty\_Ctx.[@\innersep@]
+Module Type STLC\_ty (self : STLC\_ty\_Ctx).
+Parameter ty : Set.
+Parameter ty_unit : ty.
+Parameter ty_arrow : ty -> ty -> ty.
+Parameter ty_prec_STLC : [@\dadada@].[@\hfill\codecomment{partial recursor}@]
+Parameter ty_unit_eq_STLC : [@\dadada@].[@\hfill\codecomment{eq.\ on recursor}@]
+Parameter ty_arrow_eq_STLC : [@\dadada@].[@\codecomment{eq.\ on recursor}@]
+End STLC\_ty.[@\tanc{c-STLC-ty-end}@]
+
+Module Type STLC\_tm\_Ctx.[@\tanc{c-STLC-tm-start}@]
+Include STLC\_ty\_Ctx.  Include STLC\_ty.
+End STLC\_tm\_Ctx.[@\innersep@]
+Module Type STLC\_tm (self : STLC\_tm\_Ctx).
+Parameter tm : Set.
+[@\dadada@][@\hfill\codecommentstart{axiomatized \texttt{tm} constructors, partial recursor}@]
+[@\hfill\codecommentend{\texttt{tm\_prec\_STLC}, and its four equalities}@]
+End STLC\_tm.[@\tanc{c-STLC-tm-end}@]
+
+Module Type STLC\_env\_Ctx.[@\tanc{c-STLC-env-start}@]
+Include STLC\_tm\_Ctx.  Include STLC\_tm.
+End STLC\_env\_Ctx.[@\innersep@]
+Module STLC\_env (self : STLC\_env\_Ctx).
+Definition env : Type := id -> option self.ty.
+End STLC\_env.[@\tanc{c-STLC-env-end}@]
+
+Module Type STLC\_empty\_Ctx.[@\tanc{c-STLC-empty-start}@]
+Include STLC\_env\_Ctx.  Include STLC\_env.
+End STLC\_empty\_Ctx.[@\innersep@]
+Module STLC\_empty (self : STLC\_empty\_Ctx).
+Definition empty : self.env := \lambda _, None.
+End STLC\_empty.[@\tanc{c-STLC-empty-end}@]
+
+[@\dadada@][@\hfill\codecomment{compilation of \texttt{hasty}, \texttt{value}}@]
+
+Module Type STLC\_subst\_Ctx.[@\tanc{c-STLC-subst-start}@]
+Include STLC\_value\_Ctx.  Include STLC\_value.
+End STLC\_subst\_Ctx.[@\innersep@]
+Module STLC\_subst\_Cases (self : STLC\_subst\_Ctx).
+Definition STLC\_subst\_tm_unit :=
+  \lambda (x : id) (t : self.tm), self.tm_unit.
+Definition STLC\_subst\_tm_var := [@\dadada@].
+Definition STLC\_subst\_tm_abs := [@\dadada@].
+Definition STLC\_subst\_tm_app := [@\dadada@].
+End STLC\_subst\_Cases.[@\innersep@]
+Module Type STLC\_subst (self : STLC\_subst\_Ctx).
+Parameter subst : self.tm[@\,@]->[@\,@]id[@\,@]->[@\,@]self.tm[@\,@]->[@\,@]self.tm.
+Parameter subst_tm_unit_eq : \forall x t,
+  self.subst (self.tm_unit) x t = self.tm_unit.
+Parameter subst_tm_var_eq : [@\dadada@].
+Parameter subst_tm_abs_eq : [@\dadada@].
+Parameter subst_tm_app_eq : [@\dadada@].
+End STLC\_subst.[@\tanc{c-STLC-subst-end}@]
+
+[@\dadada@][@\hfill\codecomment{compilation of rest of family \texttt{STLC}}@][@\columnbreak@]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[@~@]
+\end{lstlisting}
+
+\makeline[0pt]{c-STLC-ty-start}{c-STLC-ty-end}[codecomment-color!50]
+\makeline[0pt]{c-STLC-tm-start}{c-STLC-tm-end}[codecomment-color!50]
+\makeline[0pt]{c-STLC-env-start}{c-STLC-env-end}[codecomment-color!50]
+\makeline[0pt]{c-STLC-empty-start}{c-STLC-empty-end}[codecomment-color!50]
+\makeline[0pt]{c-STLC-subst-start}{c-STLC-subst-end}[codecomment-color!50]
+
+\end{multicols}
+\end{minipage}
+\caption{Compilation of the STLC mechanizations in \cref{fig:stlc-mechanized} to parameterized Coq modules.}
+\label{fig:stlc-compiled}
+\end{figure}
