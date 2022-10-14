@@ -147,7 +147,7 @@ $$
 $$
 
 
-Our formulation of (extensible) inductive type is close to Wtype (\ruleref{WSig-Add} requires a pair $A \vdash B$ as well), but with mulitple constructors. Thus we have the signature of inductive type collecting each constructors, with a brand new judgement ${\goodWSig{\Gamma}{\tau}{n}}$. Unconventionally, a signature can induce a "universe" of types $\bW\tau$---in other words, $T : \bW\tau$ will be the inductive type instead of $\bW\tau$ itself. "Wsup" is used to construct a specific term of a given inductive type.
+Our formulation of (extensible) inductive type is close to Wtype (\ruleref{WSig-Add} requires a pair of types $A \vdash B$ as well), but with mulitple constructors. Thus we have the signature of inductive type collecting each constructors, with a brand new judgement ${\goodWSig{\Gamma}{\tau}{n}}$. Unconventionally, a signature can induce a "universe" of types $\bW\tau$---in other words, $T : \bW\tau$ will be the inductive type instead of $\bW\tau$ itself. "Wsup" is used to construct a specific term of a given inductive type.
 
 Similar to plugin implementation, we delegate handlers for recursion to linkages. We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers. Specifying the handler family using "Wrec" on target inductive term $w$ leads to elimination.   
 
@@ -178,8 +178,46 @@ In this way, we will consider the program in our metatheory similar to those van
 \subsection{Syntactic Translation that removes Linkages}
 To further provide the intuition why our core calculus is sound, we provide a syntactic translation from our core calculus to the subpart where linkages are absent. This can justify the \textit{consistency} and \textit{canonicity} modulo the quirky (but apparent) formulation of our inductive type. To be complete, we also provide a consistency and canonicity proof for our complete core calculus in the appendix.
 
-Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. 
+\newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
+\newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
+Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related.
+
+
+
+\begin{align*}
+  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
+  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\cC} \text{ are mutually recursive, } \\
+  & \text{defined by induction on the signature length} \\  
+  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
+  {\Sigr{\Gamma}{(n+1)}} &= 
+    \Sigma~(\Sigr{\Gamma}{n})
+          ~(\Sigma~\cU
+                  ~(\Sigma~(\Pi(\cC (\pi_2[\pi_1]))(El~\pi_2[\pi_1]))~\cU)) \\
+  \Sigr{\Gamma}{0} &= \top \\
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}}, \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &\text{ defines upon } \denotesT{\sigma} 
+  \text{ and inductively on the signature length} \\
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= \denotesT{\goodType{\Gamma}{\cL\sigma}{}} = \top \quad
+      \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
+  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= 
+    \Sigma~\denotesT{\cC ("pjl"~\sigma)}~(El \ ("app"~("pjr"^3~\sigma))[(\pi_1, "app"~("pjl"~("pjr"^2~t)))]) \\
+      &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
+  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &=
+  \denotesT{\cL("pjl"~\sigma)} \times \Pi(El~("pjl"~("pjr"~\sigma)))(El~("app"~("pjr"^3~\sigma))) \\
+  \denotesT{\goodSig{\Gamma}{\nu^+~\sigma~f~T}{n+1}} &= (\sigma, "c"~A, "lam"~f, "lam"~("c"~T)) \\ 
+  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\cL(\nu^+~\sigma~T)}} &= (m, "lam"~t) \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} &= 
+  (\denotesT{\cCt o}, t["sf"~f][("id", \denotesT{\cCt o})]) \\
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = "pjl"~m, t = "app"~("pjr"~m), f = p_f\nu~\sigma \\ 
+  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC \sigma}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
+\end{align*}
+\begin{align*}
+  \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \cL\sigma_1}{\_}{\cL\sigma_2[\pi_1]} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \cL\sigma_1}{h}{\cL\sigma_2[\pi_1]} \\
+  \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}} &= \mu^+~(h[(\pi_1,\pi_1\mu~\pi_2)])\\ &\quad \quad \{f_2[\pi_1]\}~(p_2\mu'~\pi_2)[(\pi_1, \uparrow^s[\pi_1^{\uparrow}])] \\
+\end{align*}
+
+We omit most of the inheritance translation.
 
 
 \subsection{Relation to Plugin Implementation}
