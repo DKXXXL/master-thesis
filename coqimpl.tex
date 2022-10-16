@@ -1,13 +1,17 @@
 \input{stlc-compiled.tex}
 
-
+\begin{itemize}
+\item Parameterized by enclosing family "self": explicit extensibility hooks
+\item "self" includes only those fields in the context
+\item Extensible inductive type $\Rightarrow$ axiomatize
+\item Further-bindable \lsti{FRecursion} $\Rightarrow$ axiomatize
+\item Non-overridable definitions $\Rightarrow$ expose definitional equality
+\item Instantiate inductive types, partial recursors, and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}
+\item Instantiate recursion/induction and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}\\
+      Code reuse
+\end{itemize}
 
 \newpage
-
-% \subsection{Language Design}
-
-
-% \subsection{Plugin Implementation}
 
 In this section, we describe how we can implement the proposed Vernacular commands.
 
