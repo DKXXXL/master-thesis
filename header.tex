@@ -42,7 +42,7 @@
 \usepackage{stackengine}
 \usepackage{tikz}
   \usetikzlibrary{calc}
-  \tikzstyle{every lst line}=[line width=2pt, gray]
+  \tikzstyle{every lst line}=[line width=1pt, gray]
   % command for setting a TikZ anchor
   \newcommand{\tanc}[1]{%
       \begin{tikzpicture}[remember picture]
@@ -55,9 +55,9 @@
   \def\DeltaYi{6pt}
   \def\DeltaYii{-2pt}
   % command for drawing the lines
-  \NewDocumentCommand{\makeline}{O{0pt} m m O{}}{%
+  \NewDocumentCommand{\makeline}{O{0pt} m m O{} O{2pt}}{%
       \begin{tikzpicture}[remember picture, overlay, transform canvas={xshift=#1}]
-          \draw [every lst line,#4] %
+          \draw [every lst line, line width=#5, #4] %
               let\p1=(#2), \p2=(#3), \p3=(current page.west) in%
               (\x3+\DeltaX,\y1+\DeltaYi) -- (\x3+\DeltaX,\y2+\DeltaYii);
           ;
@@ -236,11 +236,12 @@
       change, cutrewrite, simpl, have, suff, wlog, suffices, without,
       loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
       symmetry, transitivity, auto, split, left, right, autorewrite,
+      by, done, exact, reflexivity, tauto, romega, omega,
+      % Terminators
+      assumption, solve, contradiction,
       % Family Poly
       fsimpl, fdiscriminate, finjection},
-  % Terminators
-  morekeywords=[6]{by, done, exact, reflexivity, tauto, romega, omega,
-      assumption, solve, contradiction},
+  morekeywords=[6]{},
   % Control
   morekeywords=[7]{do, last, first, try, idtac, repeat},
   % Comments delimiters, we do turn this off for the manual
@@ -292,7 +293,7 @@
   {\\lambda}{{\color{violet}{$\lambda$}}}1
   {\\alpha}{{\color{black}{$\alpha$}}}1
   {\\nat}{{\color{black}{$\mathbb{N}$}}}1
-  {\\_}{{\color{black}{$°$}}}1
+  {\\_}{{\color{black}{°}}}1
   {:=}{{\color{blue}$\coloneqq$}}1
   {+=}{{\color{blue}$\mathrel{{+}{=}}$}}1
   {<-}{{$\leftarrow$}}1
@@ -364,7 +365,7 @@
 \makeatother
 
 \newcommand\codecomment[1]{%
-  {\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1\;\textls[-50]{\texttt{*)}}}%
+  \mbox{\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1\;\textls[-50]{\texttt{*)}}}%
 }
 \newcommand\codecommentstart[1]{%
   {\color{codecomment-color}\textls[-50]{\texttt{(*}}\rmfamily\itshape\;#1}%

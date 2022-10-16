@@ -4,6 +4,8 @@
 % numbers=left,
 }
 
+\newcommand{\innersep}{\vspace{5pt}}
+
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
@@ -12,25 +14,22 @@
 \begin{lstlisting}
 Family STLCIsorec extends STLC.[@\tanc{STLCIsorec-start}@]
 [@\hfill\codecomment{STLC extended with iso-recursive types}@]
-FInductive ty : Set +=
-| ty_var : id -> ty | ty_rec : id -> ty -> ty.
-
 FInductive tm : Set +=
-| tm_fold : tm -> tm | tm_unfold : tm -> tm.
-
+| tm_fold : tm -> tm | tm_unfold : tm -> tm.[@\innersep@]
+FRecursion subst on tm motive [@\dadada@]. [@\dadada@] End subst.[@\innersep@]
+FInductive ty : Set +=
+| ty_var : id -> ty | ty_rec : id -> ty -> ty.[@\innersep@]
 FRecursion tysubst on ty[@\hfill\codecomment{Type-level substitution}@]
-motive \lambda(_ : ty), id -> ty -> ty.
+  motive \lambda(_ : ty), id -> ty -> ty.
 Case ty_unit  := [@\dadada@].   Case ty_arrow := [@\dadada@].
 Case ty_var   := [@\dadada@].   Case ty_rec   := [@\dadada@].
-End tysubst.
-
+End tysubst.[@\innersep@]
 FInductive hasty : env -> tm -> ty -> Prop +=
 | ht_fold : \forall G t \alpha T,
     hasty G t (tysubst T \alpha (ty_rec \alpha T)) ->
     hasty G (tm_fold t) (ty_rec \alpha T)
-| ht_unfold : [@\dadada@].
-
-[@\dadada@][@\hfill\codecomment{Other adjustments}@]
+| ht_unfold : [@\dadada@].[@\innersep@]
+[@\dadada@][@\hfill\codecomment{Other adjustments}@][@\innersep@]
 End STLCIsorec.[@\tanc{STLCIsorec-end}@]
 \end{lstlisting}
 
@@ -42,8 +41,8 @@ End STLCIsorec.[@\tanc{STLCIsorec-end}@]
 
 \begin{lstlisting}
 Family STLCFixIsorec extends STLC[@\tanc{STLCIsorecfix-start}@]
-using STLCFix, STLCIsorec.
-[@\hfill\ \ \codecomment{STLC extended with fixpoints and iso-recursive types}@]
+using STLCFix, STLCIsorec.[@\hfill\codecomment{STLC extended}@]
+[@\hfill\codecommentend{with fixpoints and iso-recursive types}@]
 End STLCFixIsorec.[@\tanc{STLCIsorecfix-end}@]
 \end{lstlisting}
 
@@ -56,38 +55,36 @@ End STLCFixIsorec.[@\tanc{STLCIsorecfix-end}@]
 \begin{lstlisting}
 Family STLCProd extends STLC.[@\tanc{STLCProd-start}@]
 [@\hfill\codecomment{STLC extended with products}@]
-FInductive ty : Set +=
-| ty_prod : ty -> ty -> ty.
-
 FInductive tm : Set +=
 | tm_pair : tm -> tm -> tm
-| tm_fst : tm -> tm | tm_snd : tm -> tm.
-
-[@\dadada@][@\hfill\codecomment{Other adjustments}@]
+| tm_fst : tm -> tm | tm_snd : tm -> tm.[@\innersep@]
+FRecursion subst on tm motive [@\dadada@]. [@\dadada@] End subst.[@\innersep@]
+FInductive ty : Set +=
+| ty_prod : ty -> ty -> ty.[@\innersep@]
+[@\dadada@][@\hfill\codecomment{Other adjustments}@][@\innersep@]
 End STLCProd.[@\tanc{STLCProd-end}@]
 \end{lstlisting}
 
 \makeline[.5\textwidth+9pt]{STLCProd-start}{STLCProd-end}[codecomment-color!50]
 
-\vspace{-10pt}
+\vspace{-12pt}
 
 \definecolor{codecomment-color}{HTML}{E8A20C}
 
 \begin{lstlisting}
 Family STLCProdIsorec extends STLC[@\tanc{STLCIsorecProd-start}@]
-using STLCProd, STLCIsorec.
-[@\hfill\ \ \codecomment{STLC extended with products and iso-recursive types}@]
+using STLCProd, STLCIsorec.[@\hfill\codecommentstart{STLC extended}@]
+[@\hfill\codecommentend{with products and iso-recursive types}@]
 FRecursion tysubst on ty
-motive \lambda(_ : ty), id -> ty -> ty.
+  motive \lambda(_ : ty), id -> ty -> ty.
 Case ty_prod := [@\dadada@].[@\hfill\codecomment{Substitution on product types}@]
-End tysubst.
-
+End tysubst.[@\innersep@]
 End STLCProdIsorec.[@\tanc{STLCIsorecProd-end}@]
 \end{lstlisting}
 
 \makeline[.5\textwidth+9pt]{STLCIsorecProd-start}{STLCIsorecProd-end}[codecomment-color!50]
 
-\vspace{-10pt}
+\vspace{-12pt}
 
 \definecolor{codecomment-color}{HTML}{708090}
 

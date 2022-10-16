@@ -3,131 +3,176 @@
 \begin{multicols}{2}
 
 \lstset{
-  basicstyle=\fontsize{8}{8.5}\ttfamily,
+  basicstyle=\fontsize{8}{7.8}\ttfamily,
 % numbers=left,
 }
 
 \colorlet{codecomment-color}{dkgreen}
 
-\newcommand{\innersep}{\vspace{5pt}}
+\newcommand{\innersep}{\vspace{4pt}}
+\newcommand{\outersep}{\vspace{4pt}}
+\newcommand{\outdent}{\!\!\!}
 
 \begin{lstlisting}
-Module Type STLC\_ty\_Ctx.[@\tanc{c-STLC-ty-start}@]
-End STLC\_ty\_Ctx.[@\innersep@]
-Module Type STLC\_ty (self : STLC\_ty\_Ctx).
-Parameter ty : Set.
-Parameter ty_unit : ty.
-Parameter ty_arrow : ty -> ty -> ty.
-Parameter ty_prec_STLC : [@\dadada@].[@\hfill\codecomment{partial recursor}@]
-Parameter ty_unit_eq_STLC : [@\dadada@].[@\hfill\codecomment{eq.\ on recursor}@]
-Parameter ty_arrow_eq_STLC : [@\dadada@].[@\codecomment{eq.\ on recursor}@]
-End STLC\_ty.[@\tanc{c-STLC-ty-end}@]
-
-Module Type STLC\_tm\_Ctx.[@\tanc{c-STLC-tm-start}@]
-Include STLC\_ty\_Ctx.  Include STLC\_ty.
-End STLC\_tm\_Ctx.[@\innersep@]
-Module Type STLC\_tm (self : STLC\_tm\_Ctx).
-Parameter tm : Set.
-[@\dadada@][@\hfill\codecommentstart{axiomatized \texttt{tm} constructors, partial recursor}@]
-[@\hfill\codecommentend{\texttt{tm\_prec\_STLC}, and its four equalities}@]
-End STLC\_tm.[@\tanc{c-STLC-tm-end}@]
-
-Module Type STLC\_env\_Ctx.[@\tanc{c-STLC-env-start}@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{tm} in family \texttt{STLC}}@][@\tanc{c-STLC-tm-start}@]
+[@\outdent@]Module Type STLC\_tm\_Ctx.
+[@\outdent@]End STLC\_tm\_Ctx.[@\innersep@]
+[@\outdent@]Module Type STLC\_tm (self : STLC\_tm\_Ctx).
+Axiom tm : Set.
+Axiom tm_unit : tm.[@\hfill@]Axiom tm_var : id -> tm.
+Axiom tm_abs : id -> tm -> tm.
+Axiom tm_app : tm -> tm -> tm.
+Axiom tm_prect_STLC : [@\dadada@].
+Axiom [@\textls[-30]{tm\_unit\_eq\_STLC}@][@\;:\;@][@\dadada@]. Axiom [@\textls[-30]{tm\_abs\_eq\_STLC}@][@\;:\;@][@\dadada@].
+Axiom [@\textls[-30]{tm\_abs\_eq\_STLC}@][@\;:\;@][@\dadada@].  Axiom [@\textls[-30]{tm\_app\_eq\_STLC}@][@\;:\;@][@\dadada@].
+[@\outdent@]End STLC\_tm.[@\tanc{c-STLC-tm-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{subst} in family \texttt{STLC}}@][@\tanc{c-STLC-subst-start}@]
+[@\outdent@]Module Type STLC\_subst\_Ctx.
 Include STLC\_tm\_Ctx.  Include STLC\_tm.
-End STLC\_env\_Ctx.[@\innersep@]
-Module STLC\_env (self : STLC\_env\_Ctx).
-Definition env : Type := id -> option self.ty.
-End STLC\_env.[@\tanc{c-STLC-env-end}@]
-
-Module Type STLC\_empty\_Ctx.[@\tanc{c-STLC-empty-start}@]
-Include STLC\_env\_Ctx.  Include STLC\_env.
-End STLC\_empty\_Ctx.[@\innersep@]
-Module STLC\_empty (self : STLC\_empty\_Ctx).
-Definition empty : self.env := \lambda _, None.
-End STLC\_empty.[@\tanc{c-STLC-empty-end}@]
-
-[@\dadada@][@\hfill\codecomment{compilation of \texttt{hasty}, \texttt{value}}@]
-
-Module Type STLC\_subst\_Ctx.[@\tanc{c-STLC-subst-start}@]
-Include STLC\_value\_Ctx.  Include STLC\_value.
-End STLC\_subst\_Ctx.[@\innersep@]
-Module STLC\_subst\_Cases (self : STLC\_subst\_Ctx).
-Definition STLC\_subst\_tm_unit :=
+[@\outdent@]End STLC\_subst\_Ctx.[@\innersep@]
+[@\outdent@]Module STLC\_subst\_Cases (self : STLC\_subst\_Ctx).
+Def subst\_tm_unit :=
   \lambda (x : id) (t : self.tm), self.tm_unit.
-Definition STLC\_subst\_tm_var := [@\dadada@].
-Definition STLC\_subst\_tm_abs := [@\dadada@].
-Definition STLC\_subst\_tm_app := [@\dadada@].
-End STLC\_subst\_Cases.[@\innersep@]
-Module Type STLC\_subst (self : STLC\_subst\_Ctx).
-Parameter subst : self.tm[@\,@]->[@\,@]id[@\,@]->[@\,@]self.tm[@\,@]->[@\,@]self.tm.
-Parameter subst_tm_unit_eq : \forall x t,
+Def subst\_tm_var := [@\dadada@].
+Def subst\_tm_abs := [@\dadada@].  Def subst\_tm_app := [@\dadada@].
+[@\outdent@]End STLC\_subst\_Cases.[@\innersep@]
+[@\outdent@]Module Type STLC\_subst (self : STLC\_subst\_Ctx).
+Axiom subst : self.tm[@\,@]->[@\,@]id[@\,@]->[@\,@]self.tm[@\,@]->[@\,@]self.tm.
+Axiom subst_tm_unit_eq : \forall x t,
   self.subst (self.tm_unit) x t = self.tm_unit.
-Parameter subst_tm_var_eq : [@\dadada@].
-Parameter subst_tm_abs_eq : [@\dadada@].
-Parameter subst_tm_app_eq : [@\dadada@].
-End STLC\_subst.[@\tanc{c-STLC-subst-end}@]
-
-[@\dadada@][@\hfill\codecomment{compilation of rest of family \texttt{STLC}}@][@\columnbreak@]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[@~@]
+Axiom subst_tm_var_eq : [@\dadada@].
+Axiom subst_tm_abs_eq : [@\dadada@].
+Axiom subst_tm_app_eq : [@\dadada@].
+[@\outdent@]End STLC\_subst.[@\tanc{c-STLC-subst-end}@][@\outersep@]
+[@\outdent@][@\dadada@][@\hfill\codecomment{Code emitted upon definition of \texttt{ty} in family \texttt{STLC}}@][@\tanc{c-STLC-ty-start}@][@\tanc{c-STLC-ty-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{env} in family \texttt{STLC}}@][@\tanc{c-STLC-env-start}@]
+[@\outdent@]Module Type STLC\_env\_Ctx.
+Include STLC\_ty\_Ctx.  Include STLC\_ty.
+[@\outdent@]End STLC\_env\_Ctx.[@\innersep@]
+[@\outdent@]Module STLC\_env (self : STLC\_env\_Ctx).
+Def env : Type := id -> option self.ty.
+[@\outdent@]End STLC\_env.[@\tanc{c-STLC-env-end}@][@\outersep@]
+[@\outdent@][@\dadada@][@\hfill\codecomment{Code emitted for other fields defined in family \texttt{STLC}}@][@\tanc{c-STLC-rest}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon completion of family \texttt{STLC}}@][@\tanc{c-STLC-start}@]
+[@\outdent@]Module STLC.[@\innersep@]
+Inductive tm\_ : Set :=[@\tanc{c-STLC-d-tm-start}@]
+| tm_unit\_ : tm\_    | tm_var\_ : id -> tm\_
+| tm_abs\_  : id -> tm\_ -> tm\_
+| tm_app\_  : tm\_ -> tm\_ -> tm\_.
+Def tm := tm\_.[@\hfill\codecomment{Instantiate \texttt{tm} \& its constructors}@]
+Def tm_unit := tm_unit\_. Def tm_var := tm_var\_.
+Def tm_abs  := tm_abs\_.  Def tm_app := tm_app\_.
+[@\hfill\codecomment{Instantiate \texttt{tm} partial recursor \& equalities}@]
+Def tm_prect_STLC P H1 H2 H3 H4 : \forall t, P t :=
+  fix F t := match t with
+  | tm_unit\_ => H1  | tm_var\_ x => H2 x
+  | tm_abs\_ x t => H3 x t (F t)
+  | tm_app\_ t1 t2 => H4 t1 (F t1) t2 (F t2) end.
+Fact[@\;@][@\textls[-35]{tm\_unit\_eq\_STLC}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLC-d-tm-end}@][@\innersep@]
+Include STLC\_subst\_Cases.[@\tanc{c-STLC-d-subst-start}@]
+[@\hfill\codecomment{Instantiate \texttt{subst} \& equalities}@]
+Def subst[@\,@]:[@\,@]tm[@\,@]->[@\,@]id[@\,@]->[@\,@]tm[@\,@]->[@\,@]tm :=[@\tanc{c-STLC-firstcol-end}\columnbreak@]
+  tm\__rect _ subst\_tm_unit subst\_tm_var[@\tanc{c-STLC-sndcol-start}@]
+             subst\_tm_abs  subst\_tm_app.
+Fact[@\;@][@\textls[-40]{subst\_tm\_unit\_eq}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLC-d-subst-end}@][@\innersep@]
+[@\dadada@][@\hfill\codecomment{Instantiate \texttt{ty}, its constructors, partial recusor \& eq.}@][@\tanc{c-STLC-d-ty}@][@\innersep@]
+Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLC-d-env}@][@\innersep@]
+[@\dadada@][@\hfill\codecomment{Include/Instantiate other fields of family \texttt{STLC}}@][@\tanc{c-STLC-d-rest}@][@\innersep@]
+[@\outdent@]End STLC.[@\tanc{c-STLC-end}@]
 \end{lstlisting}
 
-\makeline[0pt]{c-STLC-ty-start}{c-STLC-ty-end}[codecomment-color!50]
-\makeline[0pt]{c-STLC-tm-start}{c-STLC-tm-end}[codecomment-color!50]
-\makeline[0pt]{c-STLC-env-start}{c-STLC-env-end}[codecomment-color!50]
-\makeline[0pt]{c-STLC-empty-start}{c-STLC-empty-end}[codecomment-color!50]
-\makeline[0pt]{c-STLC-subst-start}{c-STLC-subst-end}[codecomment-color!50]
+\makeline[0pt]{c-STLC-subst-start}{c-STLC-subst-end}[codecomment-color!50][1.25pt]
+\makeline[0pt]{c-STLC-tm-start}{c-STLC-tm-end}[codecomment-color!50][1.25pt]
+\makeline[0pt]{c-STLC-ty-start}{c-STLC-ty-end}[codecomment-color!50][1.25pt]
+\makeline[0pt]{c-STLC-env-start}{c-STLC-env-end}[codecomment-color!50][1.25pt]
+\makeline[0pt]{c-STLC-rest}{c-STLC-rest}[codecomment-color!50][1.25pt]
+\makeline[0pt]{c-STLC-start}{c-STLC-firstcol-end}[codecomment-color!50][1.25pt]
+\makeline[4pt]{c-STLC-d-tm-start}{c-STLC-d-tm-end}[codecomment-color!25][1.25pt]
+\makeline[4pt]{c-STLC-d-subst-start}{c-STLC-firstcol-end}[codecomment-color!20][1.25pt]
+\makeline[.5\textwidth+9pt]{c-STLC-sndcol-start}{c-STLC-end}[codecomment-color!50][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLC-sndcol-start}{c-STLC-d-subst-end}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLC-d-ty}{c-STLC-d-ty}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLC-d-env}{c-STLC-d-env}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLC-d-rest}{c-STLC-d-rest}[codecomment-color!25][1.25pt]
+
+\vspace{-15pt}
+
+\colorlet{codecomment-color}{orange}
+
+\begin{lstlisting}
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{tm} in family \texttt{STLCFix}}@][@\tanc{c-STLCFix-tm-start}@]
+[@\outdent@]Module Type STLCFix\_tm\_Ctx.
+[@\outdent@]End STLCFix\_tm\_Ctx.[@\innersep@]
+[@\outdent@]Module Type STLCFix\_tm (self : STLCFix\_tm\_Ctx).
+Include STLC\_tm(self).
+Axiom tm_fix : id -> tm -> tm.
+Axiom tm_fix_eq_STLC : \forall[@\,@][@\dadada@],[@\,@]tm_prect_STLC [@\dadada@][@\;@]=[@\;@]None.
+Axiom tm_prect_STLCFix : [@\dadada@].
+Axiom tm_fix_eq_STLCFix : [@\dadada@].
+[@\outdent@]End STLCFix\_tm.[@\tanc{c-STLCFix-tm-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{subst} in family \texttt{STLCFix}}@][@\tanc{c-STLCFix-subst-start}@]
+[@\outdent@]Module Type STLCFix\_subst\_Ctx.
+Include STLCFix\_tm\_Ctx. Include STLCFix\_tm.
+[@\outdent@]End STLCFix\_subst\_Ctx.[@\innersep@]
+[@\outdent@]Module STLCFix\_subst\_Cases (self[@\,@]:[@\,@]STLCFix\_subst\_Ctx).
+Include STLC\_subst\_Cases(self).
+Def subst\_tm_fix := [@\dadada@].
+[@\outdent@]End STLCFix\_subst\_Cases.[@\innersep@]
+[@\outdent@]Module Type STLCFix\_subst (self[@\,@]:[@\,@]STLCFix\_subst\_Ctx).
+Include STLC\_subst(self).
+Axiom subst_tm_fix_eq : [@\dadada@].
+[@\outdent@]End STLCFix\_subst.[@\tanc{c-STLCFix-subst-end}@][@\outersep@]
+[@\outdent@][@\dadada@] [@\codecomment{Code emitted for other fields defined in family \texttt{STLCFix}}@][@\tanc{c-STLCFix-rest}@][@\outersep@]
+[@\outdent\codecomment{Code emitted upon completion of family \texttt{STLCFix}}@][@\tanc{c-STLCFix-start}@]
+[@\outdent@]Module STLCFix.[@\innersep@]
+Inductive tm\_ : Set :=[@\tanc{c-STLCFix-d-tm-start}@]
+| tm_unit\_ : tm\_    | tm_var\_ : id -> tm\_
+| tm_abs\_  : id -> tm\_ -> tm\_
+| tm_app\_  : tm\_ -> tm\_ -> tm\_
+| tm_fix\_  : id -> tm\_ -> tm\_.
+Def tm := tm\_.[@\hfill\codecomment{Instantiate \texttt{tm} \& its constructors}@]
+Def tm_unit := tm_unit\_. Def tm_var := tm_var\_.
+Def tm_abs  := tm_abs\_.  Def tm_app := tm_app\_.
+Def tm_fix  := tm_fix\_.
+[@\dadada@][@\hfill\codecomment{Instantiate \texttt{tm} partial recursors \& equalities}@][@\tanc{c-STLCFix-d-tm-end}@][@\innersep@]
+Include STLCFix\_subst\_Cases. [@\tanc{c-STLCFix-d-subst-start}@]
+[@\hfill\codecomment{Instantiate \texttt{subst} \& equalities}@]
+Def subst[@\,@]:[@\,@]tm[@\,@]->[@\,@]id[@\,@]->[@\,@]tm[@\,@]->[@\,@]tm :=
+  tm\__rect _ subst\_tm_unit subst\_tm_var
+             subst\_tm_abs  subst\_tm_app subst\_tm_fix.
+Fact[@\;@][@\textls[-40]{subst\_tm\_unit\_eq}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLCFix-d-subst-end}@][@\innersep@]
+[@\dadada@][@\hfill\codecomment{\textls[-10]{Instantiate \texttt{ty}, its constructors, partial recursor \& eq.}}@][@\tanc{c-STLCFix-d-ty}@][@\innersep@]
+Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLCFix-d-env}@][@\innersep@]
+[@\dadada@][@\hfill\codecomment{Include/Instantiate other fields of family \texttt{STLCFix}}@][@\tanc{c-STLCFix-d-rest}@][@\innersep@]
+[@\outdent@]End STLCFix.[@\tanc{c-STLCFix-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{c-STLCFix-tm-start}{c-STLCFix-tm-end}[codecomment-color!50][1.25pt]
+\makeline[.5\textwidth+9pt]{c-STLCFix-subst-start}{c-STLCFix-subst-end}[codecomment-color!50][1.25pt]
+\makeline[.5\textwidth+9pt]{c-STLCFix-rest}{c-STLCFix-rest}[codecomment-color!50][1.25pt]
+\makeline[.5\textwidth+9pt]{c-STLCFix-start}{c-STLCFix-end}[codecomment-color!50][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLCFix-d-tm-start}{c-STLCFix-d-tm-end}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLCFix-d-subst-start}{c-STLCFix-d-subst-end}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLCFix-d-ty}{c-STLCFix-d-ty}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLCFix-d-env}{c-STLCFix-d-env}[codecomment-color!25][1.25pt]
+\makeline[.5\textwidth+13pt]{c-STLCFix-d-rest}{c-STLCFix-d-rest}[codecomment-color!25][1.25pt]
+
+\vspace{-15pt}
+
+\definecolor{codecomment-color}{HTML}{000080}
+
+\begin{lstlisting}
+[@\outdent@][@\codecomment{Code emitted upon command \texttt{Check} \dadada}@][@\tanc{c-Check-STLCFix-typesafe-start}@]
+[@\outdent@]Check STLCFix.typesafe.[@\tanc{c-Check-STLCFix-typesafe-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+9pt]{c-Check-STLCFix-typesafe-start}{c-Check-STLCFix-typesafe-end}[codecomment-color!35][1.25pt]
 
 \end{multicols}
 \end{minipage}
-\caption{Compilation of the STLC mechanizations in \cref{fig:stlc-mechanized} to parameterized Coq modules.}
+
+\vspace{-8pt}
+
+\caption{Compilation of the mechanization of the STLCs in \cref{fig:stlc-mechanized} to parameterized Coq modules.}
 \label{fig:stlc-compiled}
 \end{figure}

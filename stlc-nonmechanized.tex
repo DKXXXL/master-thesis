@@ -13,12 +13,23 @@
 \begin{minipage}{0.42\textwidth}
 
 \noindent%
-\headerfont{Types} \hspace{1.0em}
-$ T \ \Coloneqq\ \mathbb{1} \bnf  T_1 \to T_2 $
-\medskip
-
 \headerfont{Terms} \hspace{0.85em}
 $ t \ \Coloneqq\ () \bnf x \bnf \lambda x.\,t \bnf t_1~t_2 $
+\medskip
+
+\headerfont{Substitution function}
+\begin{mathpar}
+  \subst{()}{t}{x} \defeq ()
+
+  \subst{y}{t}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
+
+  \subst{(\lambda y.\,t')}{t}{x} \defeq \begin{cases} \lambda y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \lambda y.\,t', & \text{if } x = y \end{cases}
+
+  \subst{(t_1~t_2)}{t}{x} \defeq \subst{t_1}{t}{x}~\subst{t_2}{t}{x}
+\end{mathpar}
+
+\headerfont{Types} \hspace{1.0em}
+$ T \ \Coloneqq\ \mathbb{1} \bnf  T_1 \to T_2 $
 \medskip
 
 \headerfont{Typing rules}
@@ -44,17 +55,6 @@ $ t \ \Coloneqq\ () \bnf x \bnf \lambda x.\,t \bnf t_1~t_2 $
 \Rule{}{\textit{Val}(())}
 
 \Rule{}{\textit{Val}(\lambda x.\,t)}
-\end{mathpar}
-
-\headerfont{Substitution function}
-\begin{mathpar}
-  \subst{()}{t}{x} \defeq ()
-
-  \subst{y}{t}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
-
-  \subst{(\lambda y.\,t')}{t}{x} \defeq \begin{cases} \lambda y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \lambda y.\,t', & \text{if } x = y \end{cases}
-
-  \subst{(t_1~t_2)}{t}{x} \defeq \subst{t_1}{t}{x}~\subst{t_2}{t}{x}
 \end{mathpar}
 
 \headerfont{Reduction rules}
@@ -86,12 +86,20 @@ $ t \ \Coloneqq\ () \bnf x \bnf \lambda x.\,t \bnf t_1~t_2 $
 \begin{minipage}{0.39\textwidth}
 
 \noindent%
-\headerfont{Types} \hspace{1.0em}
-$ T \ \Coloneqq\ \cdots $ \textit{(no change)}
-\medskip
-
 \headerfont{Terms} \hspace{0.85em}
 $ t \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,t $
+\medskip
+
+\headerfont{Substitution function}
+\begin{mathpar}
+{\raisebox{-8pt}{$\cdots$}}\medskip
+
+\subst{(\mathrm{fix}\,y.\,t')}{t}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,t', & \text{if } x = y \end{cases}
+
+\end{mathpar}
+
+\headerfont{Types} \hspace{1.0em}
+$ T \ \Coloneqq\ \cdots $ \textit{(no change)}
 \medskip
 
 \headerfont{Typing rules}
@@ -109,14 +117,6 @@ $ t \ \Coloneqq\ \cdots \bnf \mathrm{fix}\,x.\,t $
 \headerfont{Value forms}
 \begin{mathpar}
 \cdots \textit{ (no change)}
-
-\end{mathpar}
-
-\headerfont{Substitution function}
-\begin{mathpar}
-{\raisebox{-8pt}{$\cdots$}}\medskip
-
-\subst{(\mathrm{fix}\,y.\,t')}{t}{x} \defeq \begin{cases} \mathrm{fix}\,y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \mathrm{fix}\,y.\,t', & \text{if } x = y \end{cases}
 
 \end{mathpar}
 

@@ -12,15 +12,26 @@
 \begin{lstlisting}
 Family STLC.[@\hfill\codecomment{The base STLC}@][@\tanc{STLC-start}@]
 
-FInductive ty : Set :=[@\hfill\codecomment{Types}@]
-| ty_unit  : ty
-| ty_arrow : ty -> ty -> ty.
-
 FInductive tm : Set :=[@\hfill\codecomment{Terms}@]
 | tm_unit : tm
 | tm_var  : id -> tm
 | tm_abs  : id -> tm -> tm
 | tm_app  : tm -> tm -> tm.[@\label{line:tm-app}@]
+
+FRecursion subst on tm[@\hfill\codecomment{Substitution function}@] 
+  motive \lambda(_ : tm), id -> tm -> tm.
+Case tm_unit := \lambda x t, tm_unit.
+Case tm_var := \lambda y x t,
+  if (eqb x y) then t else (tm_var y).
+Case tm_abs := \lambda y t' IHt' x t,
+  tm_abs y (if (eqb x y) then t' else IHt' x t).
+Case tm_app := \lambda t1 IHt1 t2 IHt2 x t,
+  tm_app (IHt1 x t) (IHt2 x t).
+End subst.
+
+FInductive ty : Set :=[@\hfill\codecomment{Types}@]
+| ty_unit  : ty
+| ty_arrow : ty -> ty -> ty.
 
 FDefinition env : Type := id -> option ty.
 FDefinition empty : env := \lambda _, None.
@@ -35,17 +46,6 @@ FInductive value : tm -> Prop :=[@\hfill\codecomment{Value forms}@]
 | v_unit : value tm_unit
 | v_abs  : \forall x t, value (tm_abs x t).
 
-FRecursion subst on tm[@\hfill\codecomment{Substitution function}@] 
-motive \lambda(_ : tm), id -> tm -> tm.
-Case tm_unit := \lambda x t, tm_unit.
-Case tm_var := \lambda y x t,
-  if (eqb x y) then t else (tm_var y).
-Case tm_abs := \lambda y t' IHt' x t,
-  tm_abs y (if (eqb x y) then t' else IHt' x t).
-Case tm_app := \lambda t1 IHt1 t2 IHt2 x t,
-  tm_app (IHt1 x t) (IHt2 x t).
-End subst.
-
 FInductive step : tm -> tm -> Prop :=
 | st_app1 : [@\dadada@][@\hfill\codecomment{Reduction rules}@]
 | st_app2 : [@\dadada@]
@@ -55,28 +55,28 @@ FInductive step : tm -> tm -> Prop :=
 FDefinition steps := clos_refl_trans step.
 
 FInduction weakenlem on hasty[@\hfill\codecomment{Weaken.\ lemma}@]
-motive \lambda G t T (_ : hasty G t T),
+  motive \lambda G t T (_ : hasty G t T),
   \forall G', includedin G G' -> hasty G' t T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End weakenlem.
 
 FInduction substlem on hasty[@\hfill\codecomment{Subst.\ lemma}@]
-motive \lambda G' t T (_ : hasty G' t T),
+  motive \lambda G' t T (_ : hasty G' t T),
   \forall G x t' T', G' = extend G x T' ->
   hasty empty t' T' -> hasty G (subst t x t') T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End substlem.[@\tanc{STLC-fstcol-end}\columnbreak@]
 FInduction preserve on hasty[@\hfill\codecomment{Preserv.\ theorem}@][@\tanc{STLC-sndcol-start}@]
-motive \lambda G t T (_ : hasty G t T),
+  motive \lambda G t T (_ : hasty G t T),
   G = empty -> \forall t', step t t' -> hasty empty t' T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End preserve.
 
 FInduction progress on hasty[@\hfill\codecomment{Progress theorem}@]
-motive \lambda G t T (_ : hasty G t T),
+  motive \lambda G t T (_ : hasty G t T),
   G = empty -> value t \/ \exists t', step t t'.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
@@ -103,13 +103,13 @@ Family STLCFix extends STLC.[@\tanc{STLCFix-start}@]
 FInductive tm : Set +=
 | tm_fix : id -> tm -> tm.
 
-FInductive hasty : env -> tm -> ty -> Prop +=
-| ht_fix : \forall G x t T, hasty (extend G x T) t T ->
-  hasty G (tm_fix x t) T.
-
 FRecursion subst on tm motive \lambda _, id -> tm -> tm.
 Case tm_fix := \lambda y t' IHt' x t, [@\dadada@].
 End subst.
+
+FInductive hasty : env -> tm -> ty -> Prop +=
+| ht_fix : \forall G x t T, hasty (extend G x T) t T ->
+  hasty G (tm_fix x t) T.
 
 FInductive step : tm -> tm -> Prop +=
 | st_fix : \forall x t,
