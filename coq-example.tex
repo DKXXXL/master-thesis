@@ -153,7 +153,51 @@ computability in the presence of family.\YZ{Mention the alternative approach of 
 \subsection{An Extensible Decision Procedure for Parsing}
 The third example is a decision procedure for parsing. The basic idea is that we can use Cop's Inductive Facility to encode CFG rules. Then extensible inductive family corresponds to extensible CFG rules. For example, indexed type \mintinline{Coq}{is_prog : strs → Type} indicate a token list is a syntacitcally well-formed program.
 
-To prove \mintinline{Coq}{forall s, (is_prog s) + (is_prog s -> False)}, we use strong induction on the length and the non-trivial part is at the inductive step, i.e. we need to show \mintinline{Coq}{(forall e, len e < len s -> (is_prog e) + (is_prog e -> False)) -> (is_prog s) + (is_prog s -> False)}. 
+\begin{figure}[!htb]
+  \lstset{
+      basicstyle=\fontsize{8}{8.5}\ttfamily,
+  % numbers=left,
+  }
+  
+  \begin{minipage}{\textwidth}
+  \begin{multicols}{2}
+  
+
+  \definecolor{codecomment-color}{HTML}{0DA3FF}
+  
+  \begin{lstlisting}
+  FInductive is_prog : strs -> Type := 
+  | ip_seq : forall a b, is_prog a -> is_prog b 
+      -> is_prog (a ++ [";"] ++ b) 
+  | ip_assign : forall i e, is_atom i -> is_exp e 
+      -> is_prog ([i; "="] ++ e).  
+  \end{lstlisting}
+  
+  % \makeline[0pt]{Parser-exmp-before-start}{Parser-exmp-before-end}[codecomment-color!50]
+  
+  \columnbreak
+  \definecolor{codecomment-color}{HTML}{5D030F}
+  
+  \begin{lstlisting}
+  FInductive is_prog : strs -> Type += 
+  | ip_if : forall a b, is_exp a -> is_prog b 
+      -> is_prog (["if"] ++ a ++ ["then"] ++ b). 
+  \end{lstlisting}
+  
+  
+  
+  % \makeline[.5\textwidth+9pt]{Parser-exmp-after-start}{Parser-exmp-after-end}[codecomment-color!50]
+  
+  \end{multicols}
+  \end{minipage}
+  \caption{"is_prog" and its extension}
+  \end{figure}
+
+To prove \mintinline{Coq}{forall s, (is_prog s) + (is_prog s -> False)}, we use strong induction on the length and the non-trivial part is  the inductive step, i.e. we need to show
+\begin{minted}[fontsize=\footnotesize]{Coq}
+  (forall e, len e < len s -> (is_prog e) + (is_prog e -> False)) -> (is_prog s) + (is_prog s -> False)
+\end{minted}
+
 
 Then we provide an overridable predicate \mintinline{Coq}{alg_is_prog : strs -> Type}, decidable provided the inductive hypothesis and sound \& complete w.r.t. to the specification \mintinline{Coq}{alg_is_prog e  <-> is_prog e}. We require extension to take care of the soundness \& completeness and the conditional decidablity.
 
