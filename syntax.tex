@@ -94,7 +94,7 @@ using, there is always equality among these data but only those equalities betwe
 % Example : how judgemental equality is used for the universe
 We review the concept of ``universe'' and at the same time showing how equality is representing semantic. In dependent type setting, function now can return type, of which the type is ``type of type'', i.e., \textit{the universe} $\cU$. We follow the style of \textit{type universe à la Tarski}~\cite{hofmann1997syntax} and
 distinguish types from their \textit{codes or names} as showin in \ruleref{Code/Get Type}: given a \textit{code} (term) $\goodTerm{\Gamma}{T}{\cU}$ we can retrieve the corresponding type
-$\goodType{\Gamma}{El~T}{}$, and vice-versa.
+$\goodType{\Gamma}{El~T}{}$, and vice-versa.\YZ{Why is it wanted to distinguish types from their codes?}
 
 In other words, (1) a universe $\cU$ is a type inhabited by the \textit{codes or names} of types.
 (2) a code (term) $\goodTerm{\Gamma}{T}{\cU}$ cannot be used at type position
@@ -458,7 +458,7 @@ $$
 {\goodTerm{\Gamma}{"W" \ T}{\cU}
 }
 \quad 
-\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}
+\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}\YZ{What is star? Is it just tau?}
 \quad
 \Rule[name=Ind-Term]
 {\goodTerm{\Gamma}{T}{\bW \tau}
