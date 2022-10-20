@@ -73,7 +73,11 @@ We start with signature (in a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$)
 
 Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Intuitively, sealing can abstract any given type by indicating a morphism to the interface. Sealing is a convenient device when programming using meta-theory, \textit{to indicate whether each field is overridable, non-overridable (thus definitionally exposed) or extensible}. For example, if a field is overridable, we abstract that to its type; if a field has exposed its definition, we abstract it into the singleton type containing it instead. 
 
-However, there is subtle difference compared to the plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has a right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" will decide how the current defining field is percived by the following fields.
+However, there is subtle difference compared to the plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by the following fields.
+
+We can now point out how "Overridable" and "pins" is modeled. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \\ \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
+This above elaborated "hiding" syntax directly corresponding to the $f$ in $(\mu^+ ~o~\{f\}~t)$, where each fields decides the abstraction of the prior.
+
 
 Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited the linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
 
@@ -87,6 +91,8 @@ The importance of the compilation type lies in its difference from the linkage t
 But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
 
 However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensible.
+
+
 
 % Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
@@ -159,7 +165,7 @@ Our formulation of (extensible) inductive type is close to W-type (\ruleref{WSig
 
 When programming via meta-theory, we usually seal the inductive type, only expose its constructors (as a mundane function member) and hide the eliminator by abstracting $T : \bW\tau$ into $"W"~T : \cU$. Then the later fields---those only rely on this interface with $\cU$---can be inherited to other contexts (e.g. using enriched inductive type), as long as the targeting contexts can be abstracted into this {interface} again. 
 
-Similar to plugin implementation, we delegate handlers (and their inheritance structure) for recursion to linkages. We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers for all constructors. \ruleref{Rec-Constr} uses "RecSig" to achieve exhaustiveness checking on elimination. The partial recursors and the computational axioms are treated as normal fields as expected, since we know they are provable in the plugin implementation.
+Similar to plugin implementation, we delegate handlers (and their reuse) for recursion to linkages (and their inheritance). We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers for all constructors. \ruleref{Rec-Constr} uses "RecSig" to achieve exhaustiveness checking on elimination. The partial recursors and the computational axioms are treated as normal fields as expected, since we know they are provable in the plugin implementation.
 
 $$
 \Rule[name=Inh]
@@ -229,21 +235,3 @@ Thanks to QIIT formulation, syntactic translation becomes a function between QII
 
 
 
-
-\subsection{Relation to Plugin Implementation}
-Our core calculus can model most of plugin implementation. 
-
-% Extending Inductive Type
-
-
-% Focus on FRecursion and FInduction 
-
-% Partial Recursor + Computational Axiom
-The partial recursors and the computational axioms are no different from recursors and normal fields. We can prove partial recursor using current recursing mechanism and proving computational axiom on the trivial abstraction. After that, we can use sealing to abstract partial recursor and computational axiom again for the later fields.
-
-% Extending Recursion Handler
-The extension of recursion handlers is delegated by the inheritance of families. Adding new handlers for a new constructors is exactly extending families with new fields of certain types.  
-
-% Overriding + Pins
-Finally, we pointed out how overridable and pins is modeled.. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \\ \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
-This above elaborated "hiding" syntax directly corresponding to the semantic of sealing---when definition is exposed, we expose a term by using singleton type, which will provide us a judgemental equality to the definition.
