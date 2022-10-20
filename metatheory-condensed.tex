@@ -26,7 +26,7 @@ Instead of meta-level substitution, we use \textbf{explicit substitution}, i.e.,
 Contrary to named variables, \textbf{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
 
 
-Now, we will mainly focus on the new typing rules that we introduced. For those curious about the complete formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is in an extensional setting.\YZ{
+Now, we will mainly focus on the newly introduced typing rules, and illustrate their connection to the plugin implementation. For those curious about the complete meta-theory formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is in an extensional setting.\YZ{
     Is extensionality in conflict with the claim in §3 that "subst tm_unit x t" and "tm_unit" are
     not definitionally equal but propositionally equal in family STLC?
 }
@@ -72,21 +72,30 @@ $$
 }
 {\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
 $$
-We start with signature (with a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is basically a list of types used to indicate the type of \textit{linkages}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript. Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement and will be explained later.  We will use $\{a : T_1, b : T_2, ..\}$ as a shorthand for signature with type $T_1, T_2, ..$ for readability.
+We start with signature (in a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is a list of types contained by a \textit{linkage}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript.   We will use $\{a : T_1, b : T_2, ..\}$ as a shorthand for signature with type $T_1, T_2, ..$ for readability. 
+
+Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Intuitively, when programming using meta-theory, sealing is a convenient device \textit{to indicate whether each field is overridable(extensible) or non-overridable (thus definitionally exposed)}. For example, if a field is overridable, we abstract that to its type; if a field has exposed its definition, we abstract it into the singleton type containing it instead.  Sealing $\goodSeal{\Gamma}{f}{\sigma}{A}$ is useful when the surrounding interface is $\sigma$ and we want to construct the new field based on $A$.\YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}
+
+However, there is subtle difference compared to the plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by the following fields.
+
+We can now point out how "Overridable" and "pins" is modeled. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \\ \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
+This above elaborated "hiding" syntax directly corresponding to the $f$ in $(\mu^+ ~o~\{f\}~t)$, where each fields decides the abstraction of the prior.
+
 
 Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
 
 
 The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
 
-The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$ for a type $\goodType{\Gamma}{A}{}$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.\YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}
+% The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$ for a type $\goodType{\Gamma}{A}{}$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.
 
-We now sketch out the importance of the compilation type. First we assume a singleton type (universe)\footnote{Something like this singleton type universe will appear later in inductive type formulation.} $A : S(T) \iff A \equiv T$, i.e. a type of one single type.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
+The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
 
-But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited\YZ{How is this type inhabited? Through an identity seal?}
-and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$.
+But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited\YZ{How is this type inhabited? Through an identity seal?} and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
 
 However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensible.
+
+
 
 % Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
@@ -149,9 +158,12 @@ $$
 $$
 
 
-Our formulation of (extensible) inductive type is close to Wtype (\ruleref{WSig-Add} requires a pair of types $A \vdash B$ as well), but with mulitple constructors. Thus we have the signature of inductive type collecting each constructors, with a brand new judgement ${\goodWSig{\Gamma}{\tau}{n}}$. Unconventionally, a signature can induce a "universe" of types $\bW\tau$---in other words, $T : \bW\tau$ will be the inductive type instead of $\bW\tau$ itself. "Wsup" is used to construct a specific term of a given inductive type.
+Our formulation of (extensible) inductive type is close to W-type (\ruleref{WSig-Add} requires a pair of types $A \vdash B$ as well), but with mulitple constructors. Thus we have a brand new judgement ${\goodWSig{\Gamma}{\tau}{n}}$ indicating signature of inductive type by its constructors. Unconventionally, a signature can induce a "universe" of types $\bW\tau$---in other words, $T : \bW\tau$ will be the inductive type instead of $\bW\tau$ itself. "Wsup" is used to construct a specific term of a given inductive type.
 
-Similar to plugin implementation, we delegate handlers for recursion to linkages. We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers. Specifying the handler family using "Wrec" on target inductive term $w$ leads to elimination.   
+
+When programming via meta-theory, we usually seal the inductive type, only expose its constructors (as a mundane function member) and hide the eliminator by abstracting $T : \bW\tau$ into $"W"~T : \cU$. Then the later fields---those only rely on this interface with $\cU$---can be inherited to other contexts (e.g. using enriched inductive type), as long as the targeting contexts can be abstracted into this {interface} again. 
+
+Similar to plugin implementation, we delegate handlers (and their reuse) for recursion to linkages (and their inheritance). We use "RecSig1" to compute the type of a single handler and "RecSig" for the complete family of handlers for all constructors. \ruleref{Rec-Constr} uses "RecSig" to achieve exhaustiveness checking on elimination. The partial recursors and the computational axioms are treated as normal fields as expected, since we know they are provable in the plugin implementation.
 
 $$
 \Rule[name=Inh]
@@ -169,12 +181,10 @@ $$
 $$
 
 % Inhertance judgement
-In the plugin implementation, "Family"s are second class objects like Coq's "Module". What's more, a "Family" (with or without "extends" clause) can be considered as a standalone piece of code trying to \textit{inherit} an existent (but maybe empty) family. Thus we model them using \textit{inheritance judgement} $\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}$ instead of considering them as first class terms. The only way to use $h$ is by \ruleref{Inh} and transforming a linkage of signature $\sigma_1$ to another linkage of $\sigma_2$. 
-
-Inheritance judgement can be further enriched with inheriting operation, overriding operation, extending operation and etc. These operations correspond to inherit, override and extend command inside "Family" during plugin implementation.
+In the plugin implementation, "Family"s are second class objects like Coq's "Module". What's more, a "Family" (with or without "extends" clause) can be considered as a standalone piece of code trying to \textit{inherit} an existent (but maybe empty) family. Thus we model them using \textit{inheritance judgement} $\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}$ instead of considering them as first class terms. The only way to use $h$ is by \ruleref{Inh} and transforming a linkage of signature $\sigma_1$ to another linkage of $\sigma_2$. Inheritance judgement can be inductively constructed via inheriting operations, overriding operations, extending operations and etc, corresponding to "Inherit", "Override" and "Extend" command  in our plugin implementation.
 
 
-In this way, we will consider the program in our metatheory similar to those vanilla MLTT program, except there are meta variables denoting inheirtance judgement (i.e. "Family"), of which the only usage is to apply \ruleref{Inh}. We don't yet consider non-trivial equality between inheritance judgements.
+In this way, we will consider the program in our metatheory similar to those vanilla MLTT program, except there are meta variables denoting inheirtance judgement (i.e. "Family"), of which the only usage is to apply \ruleref{Inh}. We don't yet consider non-trivial equality between derivations of inheritance judgements.
 
 
 \subsection{Syntactic Translation that removes Linkages}
@@ -221,19 +231,3 @@ Thanks to QIIT formulation, syntactic translation becomes a function between QII
 
 
 
-
-\subsection{Relation to Plugin Implementation}
-Our core calculus can model most of plugin implementation. 
-
-% Extending Inductive Type
-We extend inductive type by overriding the inductive type with a enriched one. Thanks to sealing, most stuff from the parent family can be inherited to the children because enriched inductive type can export strictly stronger interface when abstracting.
-
-% Partial Recursor + Computational Axiom
-The partial recursors and the computational axioms are no different from recursors and normal fields. We can prove partial recursor using current recursing mechanism and proving computational axiom on the trivial abstraction. After that, we can use sealing to abstract partial recursor and computational axiom again for the later fields.
-
-% Extending Recursion Handler
-The extension of recursion handlers is delegated by the inheritance of families. Adding new handlers for a new constructors is exactly extending families with new fields of certain types.  
-
-% Overriding + Pins
-Finally, we pointed out how overridable and pins is modeled if we admit equality reflection. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \\ \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
-This above elaborated "hiding" syntax directly corresponding to the semantic of sealing---when definition is exposed, we expose propositional equality into the context, which will be a judgemental equality with the help of equality reflection; otherwise we only expose the type and no extra information.
