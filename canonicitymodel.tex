@@ -6,7 +6,18 @@ We follow the reducibility argument from~\citet{coquand2018canonicity,sterling20
 
 Canonicity is one of the basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
 We can even argue that, if this theorem is proven in a constructive meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
-then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.\YZ{Can we say something about strong/weak normalization?}
+then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.\YZ{Can we say something about strong/weak normalization?}\EDJreply{
+  No. \\
+  1. In the declarative system, we cannot talk about strong/weak normalization (because we don't have operational semantic, if you recall the definition of strong/weak normalization, it based on ). So any review says strong normalization to you please stop them. \\ 
+  2. In declarative system, we only say ``normalization'' directly, which means, we construct a function that \\
+      for arbitrary class of (judgemental-equivalent) terms, it will return one syntax representation (called normal-form) for each class \\
+    (apparently most people will make the syntax representation  without beta redex, however, interestingly, they may do eta expansion instead of eta reduction) \\ 
+  3. So translation won't work because it compiles away the normal form of linkage (the $\mu^+$). This part requires direct proof \\
+  4. Of course we can conjecture we have that normalization function \\
+  5. Also we do have close term normalization, which is canonicity. Or more operationally speaking, we have termination (a runnable interpreter) for close term (since QIIT is runnable, the canoncity model ), \\
+  but we don't have termination (a runnable interpreter) for open terms.  \\ 
+  So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
+}
 
 Now we sketch out the big picture of the proof. The canonicity model $"Tm"^C~\Gamma^C~"T"^C$ will map each syntax piece $("t : Tm Γ T") \mapsto "(t, tₚ) :" "Tm"^C~\Gamma^C~"T"^C = \sum~("t : Tm Γ T")."Tm"_p~\Gamma^C~"T"^C~"t"$ to a dependent pair\footnote{This $"Tm"_p$ is usually called dependent model.}, of which the first part will be the same as the input syntax. Using this mapping on closed boolean term $"t : Tm ⋅ "\mathbb{B}$ will give us $"Tm"_p~\cdot^C~\mathbb{B}^C~"t"$, which will unfolds to our final goal $"t" \equiv "tt" + "t" \equiv "ff"$. Roughly, this can read as ``every closed boolean term is reducible''.  Thus once we can ``propagate'' $(\cdot)^C$ into every syntactic piece, and construct this model, we are done. In our (pseudo) Agda formulation, we use $(\cdot)_2$ to replace the notation of $(\cdot)^C$ because we consider most parts of this model are actually a dependent pair.
 
