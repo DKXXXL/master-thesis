@@ -199,7 +199,16 @@ To prove \mintinline{Coq}{forall s, (is_prog s) + (is_prog s -> False)}, we use 
 \end{minted}
 
 
-Then we provide an overridable predicate \mintinline{Coq}{alg_is_prog : strs -> Type}, decidable provided the inductive hypothesis and sound \& complete w.r.t. to the specification \mintinline{Coq}{alg_is_prog e  <-> is_prog e}. We require extension to take care of the soundness \& completeness and the conditional decidablity.
+Then we provide an overridable predicate \mintinline{Coq}{alg_is_prog : strs -> Type},\YZ{Why does it need to be overridden?}
+decidable provided the inductive hypothesis and sound \& complete w.r.t. to the specification \mintinline{Coq}{alg_is_prog e  <-> is_prog e}. We require extension to take care of the soundness \& completeness and the conditional decidablity.
 
-Among them, completeness \mintinline{Coq}{is_prog e -> alg_is_prog e} is the most challenging part. This is proved by recursion on the predicate "is_prog e", but most of the handler on "is_prog" will not be reused because \mintinline{Coq}{alg_is_prog e} is overriden during inheritance. Unlike completeness, other parts of the construction, including soundness and and conditional decidability can be reused easily.
-
+Among them, completeness \mintinline{Coq}{is_prog e -> alg_is_prog e} is
+the most challenging part. This is proved by recursion on the predicate
+"is_prog e", but most of the handler on "is_prog" will not be reused
+because \mintinline{Coq}{alg_is_prog e} is overriden during
+inheritance.\YZ{
+    If alg_is_prog e is overridden, then how can ANY handler be reused?
+}
+Unlike completeness, other parts of the construction, including
+soundness and and conditional decidability can be reused easily.
+\YZ{But is the reusability achieved through a derived family's reusing handlers in the base family? Doesn't sound like it because the induction seems to be on strs.}
