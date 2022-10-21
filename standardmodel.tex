@@ -99,7 +99,7 @@ The verification of validity of this model is largely omitted here and we refer 
 
 Since all the compatibility lemmas hold (by simply changing $\vdash$ into $\models$ in the syntactic rules then we would have all the compatibility lemmas\footnote{Apparently, in our (pseudo) Agda formulation, we don't need this extra step.}), we have constructed a model.
 Finally, notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have $\cdot \models_S t : \bot$ which exactly means $\denotesS{t}(\star) \in \denotesS{\bot}(\star) = \emptyset$ 
-and that is a contradiction.
+and that is a contradiction.\YZ{Explicitly state the theorem.}
 
 The full model formulated in (pseudo) Agda syntax can be found in the appendix.
 
