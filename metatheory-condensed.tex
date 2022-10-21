@@ -135,8 +135,8 @@ $$
 \Rule[name=Ind-Term]
 {\goodTerm{\Gamma}{T}{\bW \tau}
   \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
-  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)}}
-{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
+  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)[\pi_1]}}
+{\goodTerm{\Gamma}{"Wsup"~j~T~a~b}{El~("W"~T)} }
 $$
 $$
 \Rule[name=Hdler]
@@ -193,6 +193,14 @@ $$
 %}\YZreply{I'd add typeset this beta rule}\EDJreply{I just realize you use the words normalize. I will say currently this system cannot ``reduce'' any open term. But can only ``reduce'' close term. \\ 
 %When the programmer program on this meta-theory, they don't need canonicity or normalization at all (they write out a chain of  judgemental equality by themselves). If they program on a proof assistant, then our proof assistant will need normalization to do type checking.
 %
+$$
+$$
+\Rule[name=Rec-Beta]
+{\goodTerm{\Gamma}{h}{\cL("RecSig"~\tau~R)} 
+\\ \goodTerm{\Gamma}{T}{\bW\tau}}
+{\goodTerm{\Gamma}{"Wrec"~h~("Wsup"~j~T~a~b) \equiv 
+("app"~(("app"~("prjR"~j~h))[("id", a)]))[("id", "lam" ("Wrec"~h[\pi_1]~b))]
+}{R}}
 $$
 
 
