@@ -26,14 +26,15 @@ Instead of meta-level substitution, we use \textbf{explicit substitution}, i.e.,
 Contrary to named variables, \textbf{debruijn indices} refer to the variable in the context like operating a stack. For example, we can get the very first variable in the context $\Gamma, x : T \vdash x : T$ by $\goodTerm{\Gamma, T}{\pi_2 "id"}{T[\pi_1"id"]}$. Similarly, to get the second and above variables, we only need to apply a sequence of $\pi_1$s. 
 
 
-Now, we will mainly focus on the newly introduced typing rules, and illustrate their connection to the plugin implementation. For those curious about the complete meta-theory formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is formulated using QIIT in an extensional setting.\YZ{
-    Is extensionality in conflict with the claim in §3 that "subst tm_unit x t" and "tm_unit" are
-    not definitionally equal but propositionally equal in family STLC?
-}\EDJreply{No, TLDR: it is a different level. \\ 
-There are two type theories, one is Agda-like (= Latex = Conventional math), the other is the one formulated in QIIT. This sentence is saying that the Agda-like one is extensional MLTT (i.e. we have function extensionality and etc here in Latex writing directly). \\ But the one you are asking about is in the metatheory in QIIT: if we have an identity type $Id x y$ (propositionally equal) can we have a judgemetnal equality for the two terms in QIIT $x \equiv y$. \\
-Apparently, we don't setup our QIIT formulation in this way (I thought we need, but now I don't think we need it. Our QIIT formulation is purely in intensional MLTT now).\\ 
-But even if we do setup like that, I will not say a conflict is happening (because it is to our advantage if we have judgemental equal in metatheory). I will say it is a bit off as to how Coq is formulated (Coq is closer to an intensional MLTT, so no judgemental equal only propositional one). 
-}
+Now, we will mainly focus on the newly introduced typing rules, and illustrate their connection to the plugin implementation. For those curious about the complete meta-theory formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is formulated using QIIT in an extensional setting.
+%\YZ{
+%    Is extensionality in conflict with the claim in §3 that "subst tm_unit x t" and "tm_unit" are
+%    not definitionally equal but propositionally equal in family STLC?
+%}\EDJreply{No, TLDR: it is a different level. \\ 
+%There are two type theories, one is Agda-like (= Latex = Conventional math), the other is the one formulated in QIIT. This sentence is saying that the Agda-like one is extensional MLTT (i.e. we have function extensionality and etc here in Latex writing directly). \\ But the one you are asking about is in the metatheory in QIIT: if we have an identity type $Id x y$ (propositionally equal) can we have a judgemetnal equality for the two terms in QIIT $x \equiv y$. \\
+%Apparently, we don't setup our QIIT formulation in this way (I thought we need, but now I don't think we need it. Our QIIT formulation is purely in intensional MLTT now).\\ 
+%But even if we do setup like that, I will not say a conflict is happening (because it is to our advantage if we have judgemental equal in metatheory). I will say it is a bit off as to how Coq is formulated (Coq is closer to an intensional MLTT, so no judgemental equal only propositional one). 
+%}
 
 % linkage, signature and compilation and seal
 $$
@@ -78,8 +79,10 @@ $$
 $$
 We start with signature (in a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is a list of types contained by a \textit{linkage}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript.   We will use $\{a : T_1, b : T_2, ..\}$ as a shorthand for signature with type $T_1, T_2, ..$ for readability. 
 
-Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Sealing is used as a convenient device \textit{to indicate whether each field is overridable(extensible) or non-overridable (thus definitionally exposed)}. \YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}\EDJreply{All late-bound are achieved by ``selective-abstraction'' imposed by sealing. For example, recursion will be consequently abstracted because of the abstraction of the inductive type it recurse on. 
-}\EDJreply{Sorry, I see what you mean. Yes. the box part is important for late-binding. But the functionality of sealing is always there. They are both required to achieve overriding. A illustrative example is , if the type is $S(\bot)$, then even with the boxed premise, it is still not overridable because the type itself restricts all the possibilities.}
+Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Sealing is used as a convenient device \textit{to indicate whether each field is overridable(extensible) or non-overridable (thus definitionally exposed)}.\YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}\EDJreply{All late-bound are achieved by ``selective-abstraction'' imposed by sealing. For example, recursion will be consequently abstracted because of the abstraction of the inductive type it recurse on. 
+}\EDJreply{Sorry, I see what you mean. Yes. the box part is important for late-binding. But the functionality of sealing is always there. They are both required to achieve overriding. A illustrative example is, if the type is $S(\bot)$, then even with the boxed premise, it is still not overridable because the type itself restricts all the possibilities.}\YZreply{
+  By "selective abstraction", do you mean in the metatheory the programmer chooses what and how to abstract?
+}
 
 % For example, if a field is overridable, we abstract that to its type; if a field has exposed its definition, we abstract it into the singleton type containing it instead.  Sealing $\goodSeal{\Gamma}{f}{\sigma}{A}$ is useful when the surrounding interface is $\sigma$ and we want to construct the new field based on $A$.
 
@@ -102,11 +105,10 @@ The difference between compilation type and linkage types lies in their introduc
 
 The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
 
-But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited\YZ{How is this type inhabited? Through an identity seal?}\EDJreply{Yes. a = $\bot$, b is identity. $S(\bot)$ is a singleton type with only bottom type as element inside} and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
+But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited
+and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
 
-However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensible.
-
-
+However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensable.
 
 % Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
@@ -155,7 +157,7 @@ $$
 \quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\tau~R)}
 \quad j < N
 }
-{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)}}\YZ{Why is this pi_1 substitution needed?}\EDJreply{You are right, I think it is a typo.}
+{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)}}
 $$
 $$
 \Rule[name=Rec-Constr]
@@ -163,10 +165,13 @@ $$
 \quad \goodTerm{\Gamma}{T}{\bW \tau}
 \quad \goodType{\Gamma}{R}{}
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
-\quad \goodTerm{\Gamma}{w}{El~("W"~T)}\YZ{Is the 1st premise implied by the 2nd, and the 3rd implied by the 4th?}\EDJreply{Yes.}
+\quad \goodTerm{\Gamma}{w}{El~("W"~T)}\YZ{Is the 1st premise implied by the 2nd, and the 3rd implied by the 4th?}\EDJreply{Yes.}\YZreply{Should the redundant premises be removed?}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}\EDJreply{ 1. Yes. But not include w will cause $"Wrec"~r$ be a function type. we are not supposed to add a new intro-rule for function type(or for any other type), this is bad meta-theory design. \\
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+\YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}\EDJreply{ 1. Yes. But not include w will cause $"Wrec"~r$ be a function type. we are not supposed to add a new intro-rule for function type(or for any other type), this is bad meta-theory design. \\
   2. It is actually the other way around -- if things are abstracted, then no beta rule can apply. More concretely, $T : \bW\tau$ is abstracted into $T' : \cU$, then this later one we cannot use $"Wrec"$ on it for sure. But once we have $\{T : \bW\tau, "rec" : \cL(RecSig~\tau)\}$ we are okay, and this, after wrap "rec" with an lambda abstraction, we will have $\cC\{T : \bW\tau, "rec" : \cL(RecSig~\tau~R), "recf" : T -> R\}$ as compilation type. Then with sealing abstraction, we will have $\Sigma(T : U, \Sigma ("rec" : ?, \Sigma("ref" : T -> R)))$ 
+}\YZreply{
+  So there IS a beta rule for recursor (but you don't show it), right?
 }
 $$
 
