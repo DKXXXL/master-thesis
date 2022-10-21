@@ -6,7 +6,10 @@ We provide one example in its surface syntax as pseudocode, and their
 meta-theory encoding. This example is computing the predecessor of a
 mundane natural number, but we split the inductive definition into two
 parts and making "O" and "S" standing alone.
-"pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$, and thus a predecessor.
+"pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$, and thus a predecessor.\YZ{
+  Using family polymorphism for adding  a successor constructor is unnatural.
+  I suggest simply renaming the constructors and not mentioning the correspondence to natural numbers.
+}
 
 
 
@@ -56,7 +59,7 @@ Family A₂ extends A.
  (* inh₆ *)
 EndFamily.
     \end{minted}
-  \end{minipage}
+  \end{minipage}\YZ{This figure needs updating; it should use the same syntax as in §3.}\YZreply{Also, this figure should contain an example of accessing a field outside its family.}
   \caption{Demonstrating Pseudo-Code}
 \end{figure}
 
