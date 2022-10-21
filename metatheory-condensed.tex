@@ -178,6 +178,10 @@ $$
   useful if the inductive type is extended there, because rec is
   applicable only to the inductive type defined in the base family.
   Orthogonally, can you add the beta rule?
+}\EDJreply{
+  You are right. Since "rec" has type "\cL(RecSig~\tau~R)", after inheritance, it is basically the same type "rec : \cL(RecSig~\tau[k]~R[k])" for some "k" stands for the upcasting. but the most important $\tau[k]$ has an  unchanged shape (like the number of constructors) so it is still a recursor for inductive type of signature $\tau$. Once the parent inductive type $\bW\tau$ is extended $\bW\tau_2$ in the children family, with enriched signature $\tau_2$, then because of the signature inconsistency with $\tau[k]$, this old recursor is not useful for this new inductive type.    \\
+  In other words, this recursor linkage "rec" can be used for any inductive type with signature $\tau$.\\
+  Yes I will add beta rule. I see the last comment.
 }
 %\YZreply{
 %  So there IS a beta rule for recursor (but you don't show it), right?
