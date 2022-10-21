@@ -206,9 +206,7 @@ Among them, completeness \mintinline{Coq}{is_prog e -> alg_is_prog e} is
 the most challenging part. This is proved by recursion on the predicate
 "is_prog e", but none of the handler on "is_prog" will be reused
 because \mintinline{Coq}{alg_is_prog e} is overriden during
-inheritance.\YZ{
-    If alg_is_prog e is overridden, then how can ANY handler be reused?
-}\EDJreply{You are right. I rephrase into ``none of the handlers''.}
+inheritance.
 Unlike completeness, other parts of the construction, including
 soundness and and conditional decidability can be reused easily.
 \YZ{But is the reusability achieved through a derived family's reusing handlers in the base family? Doesn't sound like it because the induction seems to be on strs.}\EDJreply{to prove something like alg_is_prog e -> is_prog e is not doing induction on string. It is just unfolding definition. \\ 

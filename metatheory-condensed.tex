@@ -173,15 +173,22 @@ $$
 \YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}\EDJreply{ 1. Yes. But not include w will cause $"Wrec"~r$ be a function type. we are not supposed to add a new intro-rule for function type(or for any other type), this is bad meta-theory design. \\
   2. It is actually the other way around -- if things are abstracted, then no beta rule can apply. More concretely, $T : \bW\tau$ is abstracted into $T' : \cU$, then this later one we cannot use $"Wrec"$ on it for sure. But once we have $\{T : \bW\tau, "rec" : \cL(RecSig~\tau)\}$ we are okay, and this, after wrap "rec" with an lambda abstraction, we will have $\cC\{T : \bW\tau, "rec" : \cL(RecSig~\tau~R), "recf" : T -> R\}$ as compilation type. Then with sealing abstraction, we will have $\Sigma(T : U, \Sigma ("rec" : ?, \Sigma("ref" : T -> R)))$ 
 }\YZreply{
-  So there IS a beta rule for recursor (but you don't show it), right?
-}\EDJreply{
-  Yes. 
-  % https://github.com/DKXXXL/Redstone/blob/46c2420982e1fac50138924cdd7e152786cd38c8/Sketch/Extensible-Module-1/Syntax.agda#L589 \\ 
-  The only reference is here, but I commented out this url. The reduction applies to $"Wrec" \_ \_ ("Wcstr")$. \\
-  We also have canonicity (i.e. a closed term of boolean reduces to true or false), so there is definitely a beta rule for inductive type.
-}\YZreply{I'd add typeset this beta rule}\EDJreply{I just realize you use the words normalize. I will say currently this system cannot ``reduce'' any open term. But can only ``reduce'' close term. \\ 
-When the programmer program on this meta-theory, they don't need canonicity or normalization at all (they write out a chain of  judgemental equality by themselves). If they program on a proof assistant, then our proof assistant will need normalization to do type checking.
+  What happens if the programmer forgets to seal "rec"? I suppose rec
+  could still be inherited into a derived family. But it would not be
+  useful if the inductive type is extended there, because rec is
+  applicable only to the inductive type defined in the base family.
+  Orthogonally, can you add the beta rule?
 }
+%\YZreply{
+%  So there IS a beta rule for recursor (but you don't show it), right?
+%}\EDJreply{
+%  Yes. 
+%  % https://github.com/DKXXXL/Redstone/blob/46c2420982e1fac50138924cdd7e152786cd38c8/Sketch/Extensible-Module-1/Syntax.agda#L589 \\ 
+%  The only reference is here, but I commented out this url. The reduction applies to $"Wrec" \_ \_ ("Wcstr")$. \\
+%  We also have canonicity (i.e. a closed term of boolean reduces to true or false), so there is definitely a beta rule for inductive type.
+%}\YZreply{I'd add typeset this beta rule}\EDJreply{I just realize you use the words normalize. I will say currently this system cannot ``reduce'' any open term. But can only ``reduce'' close term. \\ 
+%When the programmer program on this meta-theory, they don't need canonicity or normalization at all (they write out a chain of  judgemental equality by themselves). If they program on a proof assistant, then our proof assistant will need normalization to do type checking.
+%
 $$
 
 
