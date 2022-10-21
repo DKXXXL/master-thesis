@@ -161,8 +161,6 @@ $$
 {\goodType{\Gamma}{\bW \tau}{i}
 }
 $$
-%\YZ{Is there an introduction rule for terms of type 'bW sigma'?}
-%\EDJreply{Yes there is. I omit it because it is a singleton type, please see my newly added explanation below.}
 
 $$
 \Rule[name=WSig-Proj]
@@ -288,7 +286,7 @@ $$
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
 \\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cC \nu\cdot}
-\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}\EDJreply{There should be something but the space is not enough.}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
 }
 $$
 
@@ -349,12 +347,7 @@ $$
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
-(1) Use \tau for inductive types and \sigma for linkage signatures.
-(2) Try using the same metavariables (j and n) as in the rules on W-types.
-(3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
-(4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
-}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}\EDJreply{Done. Please Check.}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
 $$
 
 

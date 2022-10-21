@@ -154,7 +154,7 @@ $$
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}\YZ{Is the 1st premise implied by the 2nd, and the 3rd implied by the 4th?}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}
 $$
 
 

@@ -592,7 +592,7 @@ $$
 \goodType{\Gamma}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
     \Sigma (\cC \sigma) T["sf" \ f]}{}
 \\\\ \goodTerm{\Gamma}{ \cCt \mu\cdot \equiv ()}{\cC \nu\cdot}
-\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}\YZ{nothing after colon?}\EDJreply{There should be something but the space is not enough.}
+\\ \goodTerm{\Gamma}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
 }
 $$
 % $$
@@ -744,14 +744,14 @@ derivable using $\gamma^\uparrow$.
 % consider that the seal $\goodSeal{\Gamma}{s}{\sigma}{A}$ as a term
 % $\goodTerm{\Gamma, \cC \sigma}{sf'~s}{A[\pi_1]}$.
 
-\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}\YZreply{
-  I'm still confused about the difference among s, sf s and sf' s.
-  I thought s and sf' s were technically the same; they are both terms of type A[pi1] in a context that contains cC sigma.
-  I thought sf s was different because it is a substitution.
-}\EDJreply{You are absolutely right. s and sf' s are techincally the same. sf s is a substitution.
-  About s and sf' s, I can say that, I don't allow something like $\goodSeal{\Gamma}{sf'~s}{\sigma}{A}$. The reason I don't allow it is only notational consideration. 
-  I mean technically we can consider them the same. I can just remove all the appearances of sf' if you want and find it less confusing.
-}\YZreply{Yes, sf' is confusing to me.}\EDJreply{sf' notation removed. Please check.}
+%\YZ{sf' seems unnecessary, since sf' s ad s are the same?}\EDJreply{Yes. Technically it is pretty unnecessary. It is just a bit weird to have $\goodTerm{\Gamma, \cC \sigma}{s}{A[\pi_1]}$ and $\goodSeal{\Gamma}{s}{\sigma}{A}$ at the same time because it is one derivation but turns out to be two judgements, for intrinsically typed. I can also remove ``sf'' if you don't find it weird. I initially having ``sf'' to just *emphasize* ``sf s'' should be considered as a term  and ``s'' a sealing}\YZreply{
+%  I'm still confused about the difference among s, sf s and sf' s.
+%  I thought s and sf' s were technically the same; they are both terms of type A[pi1] in a context that contains cC sigma.
+%  I thought sf s was different because it is a substitution.
+%}\EDJreply{You are absolutely right. s and sf' s are techincally the same. sf s is a substitution.
+%  About s and sf' s, I can say that, I don't allow something like $\goodSeal{\Gamma}{sf'~s}{\sigma}{A}$. The reason I don't allow it is only notational consideration. 
+%  I mean technically we can consider them the same. I can just remove all the appearances of sf' if you want and find it less confusing.
+%}\YZreply{Yes, sf' is confusing to me.}\EDJreply{sf' notation removed. Please check.}
 Note that, given $\goodSeal{\Gamma}{s}{\sigma}{A} = \goodTerm{\Gamma, \cC\sigma}{s}{A}$, notation "sf"
 (used in \ruleref{Compile}) is defined as the substitution $\goodSub{\Gamma,
 \cC \sigma}{(sf~s) \coloneqq (\pi_1, s)}{\Gamma, A}$.
@@ -801,13 +801,14 @@ abstractions on $\Sigma$-types.
 Now, together with sealing, we can read \ruleref{Sig Add} and
 \ruleref{Lnkg Add} out clearly: given a constructed linkage $o : \cL\sigma$
 of signature $\sigma$, the next added field $t : T$ will have
-to be in the context of the abstraction $A$\YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}, which by definition is requesting (Sigma (a : \bW sigma ; ..)) to (Sigma (a : \cU ; ..)). \\
-This is something doable in vanilla MLTT, with the help of transforming \bW sigma to \cU, by rule `Ind-Type'. And this function's type should be directly the sealing type.}\YZreply{
-  My confusion is this: it seems that in Lnkg Add and Sig Add, A could well be the top type and f a value of the top type. In this sense, A seems unspecified.
-  Or maybe in the metatheory, it is the programmer's responsibility to find this A?
-}\EDJreply{You are absolutely right. In metatheory it is programmer's responsibility to specify the A they want. If they set A to top, they can do that but it will be hard for them to achieve meaningful program. \\
-Also the `f' is specified together with `A' by the user as well. \\
-A bit off-topic : this is not the only place that such specification is postponed to the user (in metatheory) another place is in inheritance when specifying upcasting function.}
+to be in the context of the abstraction $A$
+% \YZ{Why do Lnkg Add and Sig Add leave A unspecified? I thought this A corresponds to 'self'.}\EDJreply{You are asking where is the function \cC \{a : \bW sigma ; ..\} to \cC\{a : \cU ; ..\}, which by definition is requesting (Sigma (a : \bW sigma ; ..)) to (Sigma (a : \cU ; ..)). \\
+% This is something doable in vanilla MLTT, with the help of transforming \bW sigma to \cU, by rule `Ind-Type'. And this function's type should be directly the sealing type.}\YZreply{
+%   My confusion is this: it seems that in Lnkg Add and Sig Add, A could well be the top type and f a value of the top type. In this sense, A seems unspecified.
+%   Or maybe in the metatheory, it is the programmer's responsibility to find this A?
+% }\EDJreply{You are absolutely right. In metatheory it is programmer's responsibility to specify the A they want. If they set A to top, they can do that but it will be hard for them to achieve meaningful program. \\
+% Also the `f' is specified together with `A' by the user as well. \\
+% A bit off-topic : this is not the only place that such specification is postponed to the user (in metatheory) another place is in inheritance when specifying upcasting function.}
 of the compilation $\cC\sigma$ (witnessed by the seal $f$).
 The ``concatenation'' of the
 $o$ and $t$ leads to a new linkage, of which the signature is the
@@ -873,12 +874,7 @@ $$
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{
-(1) Use \tau for inductive types and \sigma for linkage signatures.
-(2) Try using the same metavariables (j and n) as in the rules on W-types.
-(3) In Rec-Constr, no checking of \Gamma \vdash T : \bW \tau?
-(4) Why are RecSig1, RecSig, Wrec, prjR not listed in the syntax figure?
-}\EDJreply{Thx. Working on it. I seem to forgot to add inheritance as well.}\EDJreply{Done. Please Check.}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
 $$
 
 In our metatheory, for simplicity we only formulate non-dependent eliminators, i.e.,
@@ -973,7 +969,7 @@ $$
 \quad \goodType{\Gamma, A_1}{T}{}
 \quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
 }
-{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}
+{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}\YZ{Should the term be 'inhinh h t' instead of 'inhinh h', where t is the field being inherited?}
 $$
 $$
 \Rule[name=Inh]
