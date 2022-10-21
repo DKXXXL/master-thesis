@@ -148,7 +148,7 @@ to act as a type-analyzer and constant-propagator respectively. It takes about 2
 
 
 And at the end, the compiled module for "LangTyping" and "LangCP" is put into tests over simple queries. These "LangTyping" and "LangCP" also illustrates that we still have
-computability in the presence of family.\YZ{Mention the alternative approach of using parameterized modules.}
+computability in the presence of family.\YZ{Mention the alternative approach of using parameterized modules.}\EDJreply{What. I don't have that version. My earlier version without family is not extensible, just a POC to see if the proof idea itself is correct.}
 
 \subsection{An Extensible Decision Procedure for Parsing}
 The third example is a decision procedure for parsing. The basic idea is that we can use Cop's Inductive Facility to encode CFG rules. Then extensible inductive family corresponds to extensible CFG rules. For example, indexed type \mintinline{Coq}{is_prog : strs → Type} indicate a token list is a syntacitcally well-formed program.
@@ -199,16 +199,18 @@ To prove \mintinline{Coq}{forall s, (is_prog s) + (is_prog s -> False)}, we use 
 \end{minted}
 
 
-Then we provide an overridable predicate \mintinline{Coq}{alg_is_prog : strs -> Type},\YZ{Why does it need to be overridden?}
-decidable provided the inductive hypothesis and sound \& complete w.r.t. to the specification \mintinline{Coq}{alg_is_prog e  <-> is_prog e}. We require extension to take care of the soundness \& completeness and the conditional decidablity.
+Then we provide an overridable predicate \mintinline{Coq}{alg_is_prog : strs -> Type},\YZ{Why does it need to be overridden?}\EDJreply{Basically alg_is_prog is a big disjunction list, corresponding to each of the constructor of }
+decidable provided the inductive hypothesis and sound \& complete w.r.t. to the specification \mintinline{Coq}{alg_is_prog e  <-> is_prog e}.  "alg_is_prog e" will be a big disjunction, of which each disjunct $P_i$ corresponds to the argument of one constructor of "is_prog" (each CFG rule). Thus once "is_prog" is extended, we need to disjunct "alg_is_prog" with more condition, thus overridable.  We require extension to take care of the disjuncts, their soundness \& completeness and the conditional decidablity.
 
 Among them, completeness \mintinline{Coq}{is_prog e -> alg_is_prog e} is
 the most challenging part. This is proved by recursion on the predicate
-"is_prog e", but most of the handler on "is_prog" will not be reused
+"is_prog e", but none of the handler on "is_prog" will be reused
 because \mintinline{Coq}{alg_is_prog e} is overriden during
 inheritance.\YZ{
     If alg_is_prog e is overridden, then how can ANY handler be reused?
-}
+}\EDJreply{You are right. I rephrase into ``none of the handlers''.}
 Unlike completeness, other parts of the construction, including
 soundness and and conditional decidability can be reused easily.
-\YZ{But is the reusability achieved through a derived family's reusing handlers in the base family? Doesn't sound like it because the induction seems to be on strs.}
+\YZ{But is the reusability achieved through a derived family's reusing handlers in the base family? Doesn't sound like it because the induction seems to be on strs.}\EDJreply{to prove something like alg_is_prog e -> is_prog e is not doing induction on string. It is just unfolding definition. \\ 
+alg_is_prog is a big disjunction, alg_is_prog e = p1 e \/ p2 e\/ ..., and during overriding this disunction list is increasing. \\
+So we organize the program by proving ``p1 e -> is_prog e'', ``p2 e -> is_prog e''. Everytime this disjunction list is increasing during overriding, the old proof ``p1 e -> is_prog e'' is reused in the new .}
