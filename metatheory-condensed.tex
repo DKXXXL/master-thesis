@@ -159,7 +159,9 @@ $$
 \quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
 \quad \goodTerm{\Gamma}{w}{El~("W"~T)}\YZ{Is the 1st premise implied by the 2nd, and the 3rd implied by the 4th?}\EDJreply{Yes.}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}
+{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}\YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}\EDJreply{ 1. Yes. But not include w will cause $"Wrec"~r$ be a function type. we are not supposed to add a new intro-rule for function type(or for any other type), this is bad meta-theory design. \\
+  2. It is actually the other way around -- if things are abstracted, then no beta rule can apply. More concretely, $T : \bW\tau$ is abstracted into $T' : \cU$, then this later one we cannot use $"Wrec"$ on it for sure. But once we have $\{T : \bW\tau, "rec" : \cL(RecSig~\tau)\}$ we are okay, and this, after wrap "rec" with an lambda abstraction, we will have $\cC\{T : \bW\tau, "rec" : \cL(RecSig~\tau~R), "recf" : T -> R\}$ as compilation type. Then with sealing abstraction, we will have $\Sigma(T : U, \Sigma ("rec" : ?, \Sigma("ref" : T -> R)))$ 
+}
 $$
 
 
