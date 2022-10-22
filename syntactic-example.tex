@@ -9,60 +9,75 @@ parts and making "O" and "S" standing alone.
 "pred" will map $S~n \mapsto (n, S~n)$ and $O \mapsto (O, O)$, and thus a predecessor.\YZ{
   Using family polymorphism for adding  a successor constructor is unnatural.
   I suggest simply renaming the constructors and not mentioning the correspondence to natural numbers.
-}
+}\EDJreply{I don't have a good idea for the renaming. What about you?}
 
+\begin{figure}[!htb]\label{fig:example-pseudocode}
+  \lstset{
+      basicstyle=\fontsize{8}{8.5}\ttfamily,
+  % numbers=left,
+  }
+  
+  \begin{minipage}{\textwidth}
+  \begin{multicols}{2}
+  
+  
+  
+  \definecolor{codecomment-color}{HTML}{0DA3FF}
+  
+  \begin{lstlisting} 
+  Family A. [@\tanc{Coq-Example1-start}@]
+  FInductive N := O : N. 
+  (* [@ \tiny{Osig, sig₁, obj₁, sig₂,
+     O₁, obj₂, sig₂', sl₁} @] *)
 
+  FRecursion pred on N
+    motive (fun _ => N × N).
+  Case O := (O, O). 
+  End pred. (* [@ \tiny{pN₁, handler₁, sig₃} @] *)
+  (* pred : self[A].N → self[A].N × self[A].N *)
+   (* [@ \tiny{predT, pred₁, sig₄, sig₄', sl₄} @] *) 
+  k := pred O 
+  (* [@ \tiny{pN₂, sig₅} @] *)  
+  End A.[@\tanc{Coq-Example1-end}@]
+  \end{lstlisting}
+  
+  \makeline[0pt]{Coq-Example1-start}{Coq-Example1-end}[codecomment-color!50]
+  
+  
+  \columnbreak
+  
+  
+  
+  \definecolor{codecomment-color}{HTML}{5D030F}
+  
+  \begin{lstlisting}
+  Family [@ \tiny{"A"$_2$} @] extends A. [@\tanc{Coq-Example2-start}@]
+  FInductive N += S : N → N.
+  (* [@ \tiny{Nsig, sig₁₁, inh₁, O₂, sig₂₁, inh₂, 
+      sig₂₂, sig₂₁', sig₂₂', sl₂₂, inh₃} @] *)
+  FRecursion pred.
+  Inherit O. (* [@ \tiny{inhᵢₙ₀, pN₃} @] *)
+  Case S := fun (x,y) => (y, S y).
+  EndFamily. (* [@ \tiny{inhᵢₙ, sig₃₁, inh₄} @] *)
+  Inherit pred.
+    (* [@ \tiny{sig₄₁, inh₅, sl₄₁} @] *)
+  Inherits k. 
+  (* inh₆ *)
+  End [@\tiny{"A"$_2$}@][@\tanc{Coq-Example2-end}@]
+  \end{lstlisting}
+  
+  
+  
+  \makeline[.5\textwidth+9pt]{Coq-Example2-start}{Coq-Example2-end}[codecomment-color!50]
+  
 
-
-\begin{figure}[H]\label{fig:example-pseudocode}
-\begin{minipage}[t]{0.5\linewidth}
-\begin{minted}[escapeinside=@@]{Coq}
-Family A.
- FInductive N := O : N. 
- (* Osig, sig₁, obj₁, sig₂,
-    O₁, obj₂, sig₂', sl₁ *)
- Family handler.
-   O :self[A].N × self[A].N 
-     := (self[A].O, self[A].O). 
-
-
- EndFamily. (* pN₁, handler₁, sig₃ *)
- FRecursor pred about self[A].N 
-  motive (fun _ => self[A].N × self[A].N)
-  using handler.
- (* pred
-  : self[A].N → self[A].N × self[A].N *)
-  (* predT, pred₁, sig₄, sig₄', sl₄ *) 
- k := self[A].pred self[A].O 
-(* pN₂, sig₅ *)
-EndFamily.
-\end{minted}
+  \end{multicols}
   \end{minipage}
-  \begin{minipage}[t]{0.45\linewidth}
-\begin{minted}[escapeinside=@@]{Coq}
-Family A₂ extends A.
- Extend FInductive N := S : N → N.
- (* Nsig, sig₁₁, inh₁, O₂, sig₂₁, inh₂, 
-    sig₂₂, sig₂₁', sig₂₂', sl₂₂, inh₃ *)
- Extend Family handler.
-   Inherit O. (* inhᵢₙ₀, pN₃ *)
-   S : self[A].N × self[A].N
-       → self[A].N × self[A].N 
-     := fun (x,y) => (y, self[A₂].S y).
- EndFamily. (* inhᵢₙ, sig₃₁, inh₄*)
- Inherit pred.
- 
+  
+  \caption{Exemplar Compilation about Inductive Type, for STLC example}\label{fig:plugin-example2}
+  \end{figure}
 
-
-  (* sig₄₁, inh₅, sl₄₁ *)
- Inherits k. 
- (* inh₆ *)
-EndFamily.
-    \end{minted}
-  \end{minipage}\YZ{This figure needs updating; it should use the same syntax as in §3.}\YZreply{Also, this figure should contain an example of accessing a field outside its family.}
-  \caption{Demonstrating Pseudo-Code}
-\end{figure}
-
+\YZreply{Also, this figure should contain an example of accessing a field outside its family.}
 \begin{figure}
   \begin{minipage}{\linewidth}
     \begin{minted}{Coq}
