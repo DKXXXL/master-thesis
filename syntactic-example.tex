@@ -29,7 +29,6 @@ parts and making "O" and "S" standing alone.
   FInductive N := O : N. 
   (* [@ \tiny{Osig, sig₁, obj₁, sig₂,
      O₁, obj₂, sig₂', sl₁} @] *)
-
   FRecursion pred on N
     motive (fun _ => N × N).
   Case O := (O, O). 
@@ -63,7 +62,8 @@ parts and making "O" and "S" standing alone.
     (* [@ \tiny{sig₄₁, inh₅, sl₄₁} @] *)
   Inherits k. 
   (* inh₆ *)
-  End [@\tiny{"A"$_2$}@][@\tanc{Coq-Example2-end}@]
+  End [@\tiny{"A"$_2$}@]
+  Check [@\tiny{"A"$_2$}@].k. [@\tanc{Coq-Example2-end}@]
   \end{lstlisting}
   
   
