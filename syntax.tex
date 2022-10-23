@@ -355,6 +355,7 @@ We also have identity type as part of our core syntax from the original MLTT. bu
     \text{Terms, including Seal}   \quad & t, t_1, t_2, f    &&= ...~|~"W"~T~|~"Wsup"~T~t_1~t_2~|~\mu\cdot~|~\mu^+~t~\{f\}~T~|~p_1\mu~t~|~p_2\mu~t~|~\cCt~t~|\\ & &&"prjR"~j~o~|~"Wrec"~t_1~t_2~|~"inh"~h~t\\
     \text{Inheritance Structure} \quad & h, h' &&= "inhid"~|~"inhov"~h~t~|~"inhext"~h~t~|~"inhinh"~h~|~"inh"~h~|~"inhnest"~h~h'
   \end{alignat*}\YZ{ What is 'W T'? Do you mean 'c T'?  }\YZreply{Why is Seal not merged into Terms?}\EDJreply{You can see \ruleref{Ind-Type}. For $T : \bW\tau$, $W~T : \cU$, for $\goodType{\Gamma}{T}{}$, $c~T : \cU$ }\EDJreply{Seal can easily mergedd into terms. But seal has a new judgement. Do you want to merge them? }
+  \YZ{The grammar suggests linkages are first-class terms. But aren't linkages second-class citizens?}
 \caption{Overview of Instrinsically-typed Syntax for extended MLTT}
 \end{figure}
 \begin{figure}[!htb]
