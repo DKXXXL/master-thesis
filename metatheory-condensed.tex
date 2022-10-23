@@ -1,3 +1,29 @@
+We contribute \TT, a core type theory that incorporates the core elements
+of family polymorphism into
+\citeauthor{martin1982constructive} dependent type theory~\cite{martin1982constructive},
+while maintaining consistency and canonicity.
+
+Most notably, \TT extends MLTT with what we call \emph{linkages}
+(a namesake of the construct through which \citet{zm2017} model family
+polymorphism in an OO setting).
+Linkages model families, so they are like tuples, but with a twist: they
+support late binding.
+
+\TT is intended as a foundational model. So unlike our user-facing plugin,
+typing is structural rather than nominal, and
+it supports family polymorphism by providing MLTT-style judgments that
+can be used to encode core aspects of the language supported by our
+plugin, rather than building them in directly.
+%
+For example, \TT supports the extension of inductive types through
+judgments that enable the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
+Also unlike our plugin, \TT does not feature automations such as
+the generation of propositional equalities and partial recursors,
+but it is expressive enough to encode their definitions.
+
+
+\newpage
+
 To formalize our metatheory, we follow the formulation of~\citet{altkap2016}, which provides a declarative and intrinsic style of the predicative \textit{Martin-Lof Type Theory} (MLTT)~\cite{martin1982constructive},
 using \textbf{Quotient Inductive Inductive Type}(QIIT)\footnote{Inductive Inductive Type(IIT) is a generalization of mutual inductive type where (indexed-)types \mintinline{Coq}{A : Type, B : A -> Type} can be defined mutually. QIIT further enhances IIT by allowing equality constructor (i.e. mathematical quotient).}, \textbf{explicit substitution} and \textbf{debruijn indices} as the main tool. 
 Generally speaking, we \textbf{use each QIIT type to represent each kind of judgements, and thus a term will represent a derivation of a judgement}. The classical formulation of dependent type theory requires a lot of \textit{presupposition} and quotient afterwards, causing a lot of duplicacy. Both issues can be concisely solved by using QIIT expressing intrinsically typed syntax instead. What's more, working \textbf{in a type-theoretical setting} using QIIT makes checking of the pen-and-paper proof easier. However, we will follow conventional notation and thus the reader might not notice the usage of QIIT explicitly.\EDJ{We might be able to remove QIIT in the main text totally. Let's try to do it later.}
@@ -177,11 +203,9 @@ $$
   could still be inherited into a derived family. But it would not be
   useful if the inductive type is extended there, because rec is
   applicable only to the inductive type defined in the base family.
-  Orthogonally, can you add the beta rule?
 }\EDJreply{
   You are right. Since "rec" has type "\cL(RecSig~\tau~R)", after inheritance, it is basically the same type "rec : \cL(RecSig~\tau[k]~R[k])" for some "k" stands for the upcasting. but the most important $\tau[k]$ has an  unchanged shape (like the number of constructors) so it is still a recursor for inductive type of signature $\tau$. Once the parent inductive type $\bW\tau$ is extended $\bW\tau_2$ in the children family, with enriched signature $\tau_2$, then because of the signature inconsistency with $\tau[k]$, this old recursor is not useful for this new inductive type.    \\
-  In other words, this recursor linkage "rec" can be used for any inductive type with signature $\tau$.\\
-  Yes I will add beta rule. I see the last comment.
+  In other words, this recursor linkage "rec" can be used for any inductive type with signature $\tau$.
 }
 %\YZreply{
 %  So there IS a beta rule for recursor (but you don't show it), right?
