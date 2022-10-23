@@ -6,21 +6,24 @@ while maintaining consistency and canonicity.
 Most notably, \TT extends MLTT with what we call \emph{linkages}
 (a namesake of the construct through which \citet{zm2017} model family
 polymorphism in an OO setting).
-Linkages model families, so they are like tuples, but with a twist: they
+Linkages model families, so they are like tuples but with a twist: they
 support late binding.
 
-\TT is intended as a foundational model. So unlike our user-facing plugin,
+\TT is intended as a foundational model. So unlike our programmer-facing plugin,
 typing is structural rather than nominal, and
-it supports family polymorphism by providing MLTT-style judgments that
+it supports family polymorphism by providing MLTT-style typing rules that
 can be used to encode core aspects of the language supported by our
 plugin, rather than building them in directly.
 %
 For example, \TT supports the extension of inductive types through
-judgments that enable the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
+formation rules that enable the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
 Also unlike our plugin, \TT does not feature automations such as
 the generation of propositional equalities and partial recursors,
 but it is expressive enough to encode their definitions.
 
+%\input{selected-typing.tex}
+
+\noindentparagraph{Syntax.}
 
 \newpage
 
