@@ -27,7 +27,7 @@ to its closedness to categorical semantic and easir to handle in mechanization. 
   \begin{align*}
     &\Gamma~:~"Con"&&\mathboxtext{\goodCtx{\Gamma}{}} &&T~:~"Ty"~\Gamma&&\mathboxtext{\goodType{\Gamma}{T}{}}  &&\gamma~:~"Tms"~\Gamma~\Delta&&\mathboxtext{\goodSub{\Gamma}{\gamma}{\Delta}}  && t~:~"Tm"~\Gamma~T&&\mathboxtext{\goodTerm{\Gamma}{t}{T}} 
   \end{align*}
-\caption{Judgement forms, as Agda types and as presented in this section.}\label{fig:vanillaMLTTjudgeQIIT}
+\caption{Judgements, as Agda types and as presented in this section.}\label{fig:vanillaMLTTjudgeQIIT}
 \end{figure}
 \begin{figure}[!htb]
   \begin{minipage}[b]{0.3\linewidth}
@@ -55,7 +55,7 @@ to its closedness to categorical semantic and easir to handle in mechanization. 
 \end{figure}
 \underline{\textit{\textbf{Judgements and Universe.}}}
 % Judgements in QIIT
-We formalize our language as a deep embedding in a type theory using QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all judgement derivations are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms from (vanilla) MLTT,
+We formalize our language as a deep embedding in a type theory using QIIT types. Every judgement is a (dependent) QIIT \textit{type} and all derivations of judgement  are well-typed QIIT terms. (Otherwise how can they be encoded in Agda?) There are four standard judgement forms from (vanilla) MLTT,
 well-typed contexts $\goodCtx{\Gamma}{l}$, well-typed types
 $\goodType{\Gamma}{T}{l}$, well-typed terms $\goodTerm{\Gamma}{t}{T}$, and
 well-typed substitutions $\goodSub{\Gamma}{\gamma}{\Delta}$. The QIITs corresponding of these four judgements are
@@ -63,10 +63,10 @@ mutually recursively defined together, and declared in \cref{fig:vanillaMLTTjudg
 follows the style of~\citet{kaposi2019gluing} and thus a predicative MLTT, but for readability we
 omit the universe levels.
 %\YZ{What's the distinction of judgments vs. sequents?}.\EDJreply{I am not sure about the correct terminology here. Here I want to say "even underivable judgement has to be well-typed". That's the main reason I spell out the (pseudo) Agda code there. I actually want the reader to have intrinsic-typed syntax in mind all the time (like read conventional math but acknowledge we are manipulating Agda)}\EDJreply{I rephrase that so there won't be confusion for the future readers. Please check}
-Latex-wise, in \cref{fig:vanillaMLTTjudgewellformed}, we spell out these \textit{well-formedness rules} of type
-judgements and their (pseudo-)Agda counterparts to make things more accessible. In (pseudo-)Agda, well-formedness rules are just well-typedness of (indexed) QIIT family---(the judgement)"Tm~$\Gamma$~$T$" is well-typed (well-formed) only when $\Gamma$ and $T$ are both well-typed (well-formed). We omitted a bunch for latex version. Of
+Latex-wise, in \cref{fig:vanillaMLTTjudgewellformed}, we spell out these \textit{well-formedness rules} of each
+judgement and their (pseudo-)Agda counterparts to make things more accessible. In (pseudo-)Agda, well-formedness rules are just well-typedness of (indexed) QIIT family---(the judgement)"Tm~$\Gamma$~$T$" is well-typed (well-formed) only when $\Gamma$ and $T$ are both well-typed (well-formed). We omitted a bunch for latex version. Of
 course, a well-formed judgement is not necessarily derivable, just as
-a well-formed QIIT type is not necessarily inhabited. 
+a well-typed QIIT type is not necessarily inhabited. 
 These well-formedness rules are direct translations of the \textit{well-typedness} of QIIT. 
 
 % omitting presupposition
@@ -88,7 +88,7 @@ representation.
 Quotient is used to represent definitional equality (aka judgemental
 equality) between QIIT types concisely.
 This way, for all four kinds of judgements we are
-using, there is always equality among these data but only those equalities between terms and types are emphasized due to their non-triviality.
+using, there is always equality among the derivations but only those equalities between terms and types are emphasized due to their non-triviality.
 
 
 % Example : how judgemental equality is used for the universe
@@ -361,7 +361,7 @@ We also have identity type as part of our core syntax from the original MLTT. bu
   \begin{align*}
 &\sigma~:~"Sig"~\Gamma~n&&\mathboxtext{\goodSig{\Gamma}{\sigma}{n}}  &&\tau~:~"WSig"~\Gamma~n&&\mathboxtext{\goodWSig{\Gamma}{\tau}{n}} \\ &h~:~"Inh"~\Gamma~\sigma_1~\sigma_2&&\mathboxtext{\goodInh{\Gamma}{h}{\sigma}{\tau}} && f~:~"Seal"~\Gamma~\sigma~T&&\mathboxtext{\goodSeal{\Gamma}{f}{\sigma}{A}}
   \end{align*}
-\caption{Extended Judgement forms, as Agda types}
+\caption{Extended Judgements, as Agda types}
 \end{figure}
 \begin{figure}[!htb]
   \begin{minipage}[b]{0.3\linewidth}
@@ -375,7 +375,7 @@ We also have identity type as part of our core syntax from the original MLTT. bu
       {\goodCtx{\Gamma}{i} \quad \goodSig{\Gamma}{\sigma}{n} 
       \quad \goodType{\Gamma}{A}{} }
       {\goodSeal{\Gamma}{\_}{\sigma}{A} \text{ is well-formed}}
-      $$\YZ{Doesn't the left column show well-formedness rules for ONLY TWO of the four new judgments? Besides, are these rules used anywhere in the following? Seems a bit unusual to have well-formedness rules for judgments per se.}\EDJreply{Yes. Right column show all the well-formedness rule for all the judgement. That is unusual because it is a direct translation from QIIT. }
+      $$\YZ{Doesn't the left column show well-formedness rules for ONLY TWO of the four new judgments? Besides, are these rules used anywhere in the following? Seems a bit unusual to have well-formedness rules for judgments per se.}\EDJreply{Yes. Right column show all the well-formedness rule for all the judgements. That is unusual because it is a direct translation from QIIT. }
   \end{minipage}
   \begin{minipage}[b]{0.6\linewidth}
     \begin{minted}[]{agda}
@@ -390,7 +390,7 @@ We also have identity type as part of our core syntax from the original MLTT. bu
 \end{figure}
 
 
-The core language builds on MLTT and adds four new judgement forms.
+The core language builds on MLTT and adds four new kinds of judgements.
 % Among them, sealing judgement $\goodSeal{\Gamma}{\_}{\sigma}{A}$ is just a
 % shorthand for term judgement
 % $\goodTerm{\Gamma , \cC \sigma}{\_}{A[\pi_1]}$ where $A$ is a type.
@@ -728,7 +728,7 @@ idₛ : Seal Γ σ @$\mathcal{C}$@σ
 idₛ = π₁
 \end{minted}
 
-\caption{Seal Judgement, and its Agda Representation (or What do we mean when we say one judgement is a shorthand for the other)}
+\caption{Sealing Judgement, and its Agda Representation (or What do we mean when we say one judgement is a shorthand for the other)}
 
 \end{figure}
 
@@ -938,7 +938,7 @@ Next we talk about inheritance judgements. Note that, there will be a lot
 of $\sigma_1, A_1$ and $\sigma_2, A_2$, and in these cases, $A_1$ is the
 result of the sealing of $\sigma_1$, i.e. we assume we have a term
 $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$,
-$\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the premises of judgements
+$\goodSeal{\Gamma}{f_2}{\sigma_2}{A_2}$ in the premises of rule
 when needed.
 
 
@@ -1006,7 +1006,7 @@ ordering of fields in its base family:
 in an inheritance judgment, an overriding term is checked in a context
 that contains those fields preceding it in the base family.
 
-The syntax of the inheritance judgement is very close to how Family is
+The deduction rules of the inheritance judgement is very close to how Family is
 defined in the surface syntax---a Family with no parent is an
 inheritance with empty input; an extended Family can be considered as an
 inheritance.
@@ -1045,7 +1045,7 @@ Note that, "inhov" is also responsible for ``extending'' inductive
 types---an extended inductive type directly overrides the old one when
 using metatheory to program, just like how plugin implementation works.
 
-Next, we introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need ``upcasting'' again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement to derive children family and how the beta rule is defined. We omit most of the other substitution laws here.
+Next, we introduce nested inheritance "inhnest" for dealing with nested families. The rule is mostly direct and we need ``upcasting'' again when dealing with nested family in different but inheriting context.  We also show how to use an inheritance judgement and their derivation to construct children family and how the beta rule is defined. We omit most of the other substitution laws here.
 
 Finally, we show \ruleref{Inh-Inh-beta} to again emphasize the importance of sealing and its interaction with inheritance. $\goodTerm{\Gamma, A_1}{t}{T}$ is again well-typed in the new abstract context $\goodCtx{\Gamma, A_2}{}$, with the help of upcasting $\uparrow^s$ which is showing compatibility between abstraction. To make sure we have the full information of $t$ including the context $\Gamma, A_1$, we need to have a good sealing $\goodSeal{\Gamma}{f_1}{\sigma_1}{A_1}$.
 
