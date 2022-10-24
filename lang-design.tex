@@ -179,7 +179,8 @@ affect \emph{propositional equality}.
 That is, \lsti{\forall x t, subst tm_unit x t = tm_unit},
 as a proposition (\lsti{Prop}), should still hold.
 After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
-from a base family to a derived family.
+from a base family to a derived family.\EDJ{I think the reviewer might ask : what if the subst late-bound tm_unit case/why the subst cases cannot be late-bound? it not necessary return tm_unit in those case. 
+\\ What the plugin generates is actually subst tm_unit x t = subst.tm_unit. In other words, it points back to the handler instead of the concrete constructor. That is one of the advantage of looking FRecursion as a family.}
 %
 Based on this insight, our plugin automatically generates
 propositional equalities for each recursive function defined with \lsti{FRecursion},
@@ -194,7 +195,7 @@ outside those families that contain "subst".
 Within those families, the meaning of \lsti{subst} is late bound, so only
 propositional equality is available.
 In contrast, outside those families, \lsti{subst} is always referenced
-by specifying a family that contains it,
+by specifying a family that contains it, \EDJ{I think the reviewer without background of Family Polymorphism will be confused at this paragraph. i.e. Why inside family it is late-bound but not outside? }
 such as \lsti{STLC.subst} or \lsti{STLCFix.subst}.
 As far as the type checker is concerned, \lsti{tm_unit} and
 \lsti{STLCFix.subst tm_unit x t'} are the same thing---the type checker
