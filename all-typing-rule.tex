@@ -192,22 +192,28 @@ $$
 
 \judgebox{\goodSig{\Gm}{\lsig}{n} }
 $$
-\Rule[name=Lnkg Type/Compile]
+\Rule[name=Lnkg Type+Compile]
 {\goodSig{\Gm}{\lsig}{n}}
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
-\quad \goodType{\Gm}{\TyTkg{\lsig}}{}}
+\\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
-\Rule[name=Sig/Lnkg Subst]
+\Rule[name=Sig/Lnkg/Compile Subst]
 {\goodSig{\Delta}{\lsig}{n}
-  \quad {\goodSub{\Gm}{\gm}{\Delta}}}
+  \\ {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
-  \quad \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}}
+  \\ \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}
+  \\ \goodType{\Gm}{\TyTkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyTkg{\lsig})}{\gm}}{i}
+  }
 $$
 
 $$
 \Rule[name=Ept Sig]
 {}
 {\goodSig{\Gm}{\LSigEmp}{0}}
+\quad 
+\Rule[name=Ept Sig Eta]
+{\goodSig{\Gm}{\lsig}{0}}
+{\goodSig{\Gm}{\lsig \equiv \LSigEmp}{0}}
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gm}{\lsig}{n} 
@@ -218,12 +224,14 @@ $$
 $$
 
 $$ 
-\Rule[name=Sig Proj]
+\Rule[name=Sig Proj and Eta]
 {\goodSig{\Gm}{\lsig}{n+1}}
 {\goodSig{\Gm}{\lsigproj{1} {\lsig}}{n}
 \\ \goodType{\Gm}{\lsigprojT {\lsig}}{}
 \\ \goodSeal{\Gm}{\lsigproj{s}{\lsig}}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
-\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{} 
+\\ 
+\goodSig{\Gm}{\LSigAdd{\lsigproj{1} {\lsig}}{\lsigproj{s}{\lsig}}{\lsigproj{2}{\lsig}} \equiv \lsig }{n+1}
 }
 $$
 
@@ -236,14 +244,29 @@ $$
 {\goodSig{\Gm}{\lsigproj{1} {(\LSigAdd  {\lsig}  {\seal}  {T})} \equiv \lsig}{n}
 \\ \goodType{\Gm}{\lsigprojT {(\LSigAdd  {\lsig} {\seal} {T})} \equiv A}{}
 \\ \goodSeal{\Gm}{\lsigproj{s}{(\LSigAdd{\lsig} {\seal} {T})} \equiv \seal}{\lsig}{A}
-\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{(\LSigAdd {\lsig} {\seal}  {T})} \equiv T}{}
+\\ \goodType{\Gm, A}{\lsigproj{2}{(\LSigAdd {\lsig} {\seal}  {T})} \equiv T}{}
 }
 $$
+
+$$ 
+\Rule[name=Sig Proj Subst]
+{\goodSig{\Gm}{\lsig}{n+1}}
+{\goodSig{\Gm}{ \sub{\lsigproj{1}{\lsig}}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
+\\ \goodType{\Gm}{\sub{\lsigprojT {\lsig}}{\gm} \equiv \lsigprojT {\sub{\lsig}{\gm}}}{}
+\\ \goodSeal{\Gm}{\sub{\lsigproj{s}{\lsig}}{\gm} \equiv {\lsigproj{s}{\sub{\lsig}{\gm}}} }{\lsig}{A}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{ \sub{\lsigproj{2}{\lsig}}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
+}
+$$
+
 
 $$
 \Rule[name=Ept Lnkg]
 {}
 {\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}}
+\quad 
+\Rule[name=Ept Lnkg Eta]
+{\goodTerm{\Gm}{o}{\TyLkg {\LSigEmp}}}
+{\goodTerm{\Gm}{o \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
 \quad
 \Rule[name=Lnkg Add]
 { \goodTerm{\Gm}{o}{\cL \lsig} 
