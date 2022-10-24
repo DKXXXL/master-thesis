@@ -133,6 +133,16 @@
     \goodTerm{\Gm}{\Wrec{\lkg}{t}}{T}
 }
 
+\Rule[name=lsig/add]{
+    \goodSig{\Gm}{\lsig}{n} 
+    \\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
+    \\
+    \goodType{\Gm, A}{T}{}
+}{
+    \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
+}
+
 \end{mathpar}
 
 \caption{Selected syntax and typing rules of \TT}
