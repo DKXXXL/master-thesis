@@ -111,7 +111,7 @@ $$
  \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
 }
 $$
-\judgebox{\goodSub{\Gm}{\sigma}{\Delta}}
+\judgebox{\goodSub{\Gm}{\gm}{\Delta}}
 $$
 \Rule[name=Ept Subst]
 {}{\goodSub{\Gm}{\epsilon}{\cdot}}
@@ -122,7 +122,7 @@ $$
 \Rule[name=Sub Comp]{
   \goodSub{\Delta}{\delta}{\Theta}
   \quad \goodSub{\Gm}{\gm}{\Delta} 
-}{\goodSub{\Gm}{\delta \circ \gm}{\Theta}}
+}{\goodSub{\Gm}{ \SubstComp{\delta}{\gm}}{\Theta}}
 \Rule[name=Sub Extend]
 {\goodSub{\Gm}{\gm}{\Delta} \quad \goodTerm{\Gm}{t}{ \sub{A}{\gm}}}
 {\goodSub{\Gm}{(\gm, t)}{(\Delta, A)}}
@@ -158,7 +158,7 @@ $$
 \quad
 \Rule[name=Ind-Univ]
 {\goodWSig{\Gm}{\wsig}{n}}
-{\goodType{\Gm}{\bW \wsig}{i}
+{\goodType{\Gm}{\TyWSingle {\wsig}}{i}
 }
 $$
 
@@ -180,7 +180,7 @@ $$
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 \quad 
-\Rule[]{}{\goodTerm{\Gm}{\star_\wsig}{\bW \wsig}}
+\Rule[]{}{\goodTerm{\Gm}{\star_\wsig}{\TyWSingle{\wsig}}}
 \quad
 \Rule[name=Ind-Term]
 {{\goodWSig{\Gm}{\wsig}{n}}
@@ -190,18 +190,18 @@ $$
 $$
 
 
-\judgebox{\goodSig{\Gm}{\sigma}{n} }
+\judgebox{\goodSig{\Gm}{\lsig}{n} }
 $$
 \Rule[name=Lnkg Type/Compile]
-{\goodSig{\Gm}{\sigma}{n}}
-{\goodType{\Gm}{\TyLkg{\sigma}}{i}
-\quad \goodType{\Gm}{\cC \sigma}{}}
+{\goodSig{\Gm}{\lsig}{n}}
+{\goodType{\Gm}{\TyLkg{\lsig}}{i}
+\quad \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
 \Rule[name=Sig/Lnkg Subst]
-{\goodSig{\Delta}{\sigma}{n}
+{\goodSig{\Delta}{\lsig}{n}
   \quad {\goodSub{\Gm}{\gm}{\Delta}}}
-{\goodSig{\Gm}{ \sub {\sigma}{\gm}}{n}
-  \quad \goodType{\Gm}{\TyLkg{ \sub{\sigma}{\gm}} \equiv \sub{(\TyLkg{\sigma})}{\gm}}{i}}
+{\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
+  \quad \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}}
 $$
 
 $$
@@ -210,82 +210,82 @@ $$
 {\goodSig{\Gm}{\nu\cdot}{0}}
 \quad
 \Rule[name=Sig Add]
-{\goodSig{\Gm}{\sigma}{n} 
+{\goodSig{\Gm}{\lsig}{n} 
  \quad \goodType{\Gm}{A}{}
- \quad \goodSeal{\Gm}{f}{\sigma}{A}
+ \quad \goodSeal{\Gm}{f}{\lsig}{A}
  \quad \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
+{\goodSig{\Gm}{(\nu^+ \ \lsig \ \{f\} \ T)}{n+1}}
 $$
 
 $$ 
 \Rule[name=Sig Proj]
-{\goodSig{\Gm}{\sigma}{n+1}}
-{\goodSig{\Gm}{p_1\nu \ \sigma}{n}
-\\ \goodType{\Gm}{p_1\nu' \ \sigma}{}
-\\ \goodSeal{\Gm}{p_f\nu \  \sigma}{p_1\nu \  \sigma}{p_1\nu' \sigma}
-\\ \goodType{\Gm, p_1\nu' \ \sigma}{p_2\nu \ \sigma}{}
+{\goodSig{\Gm}{\lsig}{n+1}}
+{\goodSig{\Gm}{\lsigproj{1} {\lsig}}{n}
+\\ \goodType{\Gm}{\lsigprojT {\lsig}}{}
+\\ \goodSeal{\Gm}{p_f\nu \  \lsig}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{}
 }
 $$
 
 $$ 
 \Rule[name=Sig Proj Beta]
-{\goodSig{\Gm}{\sigma}{n} 
+{\goodSig{\Gm}{\lsig}{n} 
 \quad \goodType{\Gm}{A}{}
-\quad \goodSeal{\Gm}{f}{\sigma}{A}
+\quad \goodSeal{\Gm}{f}{\lsig}{A}
 \quad \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{p_1\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv \sigma}{n}
-\\ \goodType{\Gm}{p_1\nu' \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv A}{}
-\\ \goodSeal{\Gm}{p_f\nu \  (\nu^+ \ \sigma \ \{f\} \ T) \equiv f}{\sigma}{A}
-\\ \goodType{\Gm, p_1\nu' \ \sigma}{p_2\nu \ (\nu^+ \ \sigma \ \{f\} \ T) \equiv T}{}
+{\goodSig{\Gm}{\lsigproj{1} {(\nu^+ \ \lsig \ \{f\} \ T)} \equiv \lsig}{n}
+\\ \goodType{\Gm}{\lsigprojT {(\nu^+ \ \lsig \ \{f\} \ T)} \equiv A}{}
+\\ \goodSeal{\Gm}{p_f\nu \  (\nu^+ \ \lsig \ \{f\} \ T) \equiv f}{\lsig}{A}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{(\nu^+ \ \lsig \ \{f\} \ T)} \equiv T}{}
 }
 $$
 
 $$
 \Rule[name=Ept Lnkg]
 {}
-{\goodTerm{\Gm}{\mu\cdot}{\cL \nu\cdot}}
+{\goodTerm{\Gm}{\mu\cdot}{\TyLkg {\nu\cdot}}}
 \quad
 \Rule[name=Lnkg Add]
-{ \goodTerm{\Gm}{o}{\cL \sigma} 
+{ \goodTerm{\Gm}{o}{\cL \lsig} 
 \quad \goodType{\Gm}{A}{}
-\quad  \goodSeal{\Gm}{f}{\sigma}{A} 
+\quad  \goodSeal{\Gm}{f}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}
 }
-{\goodTerm{\Gm}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+{\goodTerm{\Gm}{(\mu^+ \ o \ \{f\} \ t)}{\TyLkg{\nu^+ \ \lsig \ \{f\} \ T}}}
 $$
 
 $$
 \Rule[name=Lnkg Proj]
-{\goodTerm{\Gm}{o}{\cL\sigma}}
-{\goodTerm{\Gm}{p_1\mu \ o}{\cL (p_1\nu \ \sigma)}
-\\ \goodTerm{\Gm, p_1\nu' \ \sigma}{p_2\mu \ o}{p_2\nu \ \sigma}
+{\goodTerm{\Gm}{o}{\cL\lsig}}
+{\goodTerm{\Gm}{p_1\mu \ o}{\cL (\lsigproj{1} {\lsig})}
+\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{p_2\mu \ o}{\lsigproj{2}{\lsig}}
 }
 \quad 
 \Rule[name=Lnkg Compile]
-{ \goodTerm{\Gm}{o}{\cL \sigma} 
+{ \goodTerm{\Gm}{o}{\cL \lsig} 
 }
 {
-  \goodTerm{\Gm}{\cCt o}{\cC \sigma}
+  \goodTerm{\Gm}{\cCt o}{\TyTkg{\lsig}}
 }
 $$
 $$ 
 \Rule[name=Lnkg Proj Beta]
-{\goodTerm{\Gm}{o}{\cL \sigma} 
+{\goodTerm{\Gm}{o}{\cL \lsig} 
 \quad \goodType{\Gm}{A}{}
-\quad  \goodSeal{\Gm}{f}{\sigma}{A} 
+\quad  \goodSeal{\Gm}{f}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}}
-{\goodTerm{\Gm}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \sigma}
+{\goodTerm{\Gm}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \lsig}
 \\ \goodTerm{\Gm, A}{p_2\mu \  (\mu^+ \ o \ \{f\} \ t) \equiv t}{T}
 }
 $$
 $$
 \Rule[name=Compile]
 {}
-{\goodType{\Gm}{\cC \nu\cdot \equiv \top}{} 
+{\goodType{\Gm}{\TyTkg{\nu\cdot} \equiv \top}{} 
 \\
-\goodType{\Gm}{\cC (\nu^+ \ \sigma \ \{f\} \ T) \equiv 
-    \Sigma (\cC \sigma) T["sf" \ f]}{}
-\\\\ \goodTerm{\Gm}{ \cCt \mu\cdot \equiv ()}{\cC \nu\cdot}
+\goodType{\Gm}{\TyTkg {\nu^+ \ \lsig \ \{f\} \ T} \equiv 
+    \Sigma (\TyTkg {\lsig}) T["sf" \ f]}{}
+\\\\ \goodTerm{\Gm}{ \cCt \mu\cdot \equiv ()}{\TyTkg{\nu\cdot}}
 \\ \goodTerm{\Gm}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
 }
 $$
@@ -293,24 +293,24 @@ $$
 
 \begin{figure}[H]
 
-  \judgebox{[\goodSeal{\Gm}{s}{\sigma}{A}] 
-  = [\goodTerm{\Gm, \cC\sigma}{s}{A[\pi_1]}] }
+  \judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
+  = [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
   $$
   \Rule[name=Seal Subst]
-  {\goodSeal{\Delta}{s}{\sigma}{A}
+  {\goodSeal{\Delta}{s}{\lsig}{A}
     \quad {\goodSub{\Gm}{\gm}{\Delta}}}
-  {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\sigma}{\gm}}{ \sub{A}{\gm}}}
+  {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
   =
   \frac
-  {\goodTerm{\Delta, \cC\sigma}{s}{ \sub{A}{\pi_1}}
+  {\goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
     \quad  \goodSub{\Gm}{\gm}{\Delta}  }
-  {\goodTerm{\Gm,\cC\sub{\sigma}{\gm}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}
+  {\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}
   $$
   $$
   \Rule[name=Seal-Id]
   {}
-  {\goodSeal{\Gm}{id_s}{\sigma}{\cC \sigma}}
-  = \goodTerm{\Gm, \cC\sigma}{\pi_2}{\cC\sub{\sigma}{\pi_1}}
+  {\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
+  = \goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}
   $$
 
 \medskip
@@ -323,7 +323,7 @@ $$
 \quad \goodType{\Gm, A}{B}{}
 \quad \goodType{\Gm}{R}{}
 }
-{\goodType{\Gm}{"RecSig1"~A~B~R \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{\pi_1\circ\pi_1})})} {\sub{R}{\pi_1\circ\pi_1}})} )}{}}
+{\goodType{\Gm}{\CaseSig{A}{B}{R} \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{ \SubstComp {\pi_1}{\pi_1}})})} {\sub{R}{\SubstComp{\pi_1}{\pi_1}}})} )}{}}
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gm}{\wsig}{n}
@@ -337,7 +337,7 @@ $$
 \quad \goodTerm{\Gm}{o}{\cL("RecSig"~\wsig~R)}
 \quad j < N
 }
-{\goodTerm{\Gm}{"prjR"~j~o}{\sub{("RecSig1"~(\pi_1^j \wsig)~(\pi_2^j \wsig)~R)}{\pi_1}}}
+{\goodTerm{\Gm}{"prjR"~j~o}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 $$
 $$
 \Rule[name=Rec-Constr]
@@ -355,7 +355,7 @@ $$
 $$
 \Rule[name=Inh-Id]
 {}
-{\goodInh{\Gm}{"inhid"}{\sigma}{\sigma}}
+{\goodInh{\Gm}{"inhid"}{\lsig}{\lsig}}
 \quad
 \Rule[name=Inh-Override]
 {
