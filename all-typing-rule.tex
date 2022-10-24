@@ -59,7 +59,7 @@ $$
 $$
 \Rule[name=Code/Get Type]
 {\goodType{\Gm}{T}{j}}
-{\goodTerm{\Gm}{"c" \ T}{\cU}
+{\goodTerm{\Gm}{\codety{T}}{\cU}
 }\quad
 \Rule[]
 {\goodTerm{\Gm}{T}{\cU}}
@@ -73,11 +73,11 @@ $$
 $$
 \Rule[]
 {\goodTerm{\Gm, A}{t}{B}}
-{\goodTerm{\Gm}{\lambda t}{\TyPi {A} {B}}}
+{\goodTerm{\Gm}{\lam{t}}{\TyPi {A} {B}}}
 \quad 
 \Rule[]
 {\goodTerm{\Gm}{t}{\TyPi {A} {B}}}
-{\goodTerm{\Gm, A}{"app"~t}{B}}
+{\goodTerm{\Gm, A}{\app{t}}{B}}
 \quad 
 \Rule[]
 {\goodTerm{\Gm}{u}{A} 
@@ -86,14 +86,14 @@ $$
 \quad 
 \Rule[name=Sigma Elim]
 {\goodTerm{\Gm}{t}{\Sigma A B}}
-{\goodTerm{\Gm}{"pjl" \ t}{A}
-\\\\ \goodTerm{\Gm}{"pjr" \  t}{B[(id, "pjl" \  t)]}
+{\goodTerm{\Gm}{\fst{t}}{A}
+\\\\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
 }
 $$
 $$
 \Rule
 {}
-{\goodTerm{\Gm}{ \sub{(\lambda t)}{\gm} \equiv \lambda (\sub{t}{\gm^\uparrow})}{\TyPi {A} {B}}
+{\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{(\sub{t}{\gm^\uparrow})}}{\TyPi {A} {B}}
 \quad \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\Sigma A B}
 \quad \goodType{\Gm}{\El{(\sub{T}{\gm})} \equiv \sub{(\El{T})}{\gm}}{}
 }
@@ -180,13 +180,13 @@ $$
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 \quad 
-\Rule[]{}{\goodTerm{\Gm}{\star_\wsig}{\TyWSingle{\wsig}}}
+\Rule[]{}{\goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}}
 \quad
 \Rule[name=Ind-Term]
 {{\goodWSig{\Gm}{\wsig}{n}}
   \quad \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \quad \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
-{\goodTerm{\Gm}{"Wsup"~T~a~b}{\El{(\wcode{\wsig})}} }
+{\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
 $$
 
 
@@ -243,7 +243,7 @@ $$
 $$
 \Rule[name=Ept Lnkg]
 {}
-{\goodTerm{\Gm}{\mu\cdot}{\TyLkg {\nu\cdot}}}
+{\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\nu\cdot}}}
 \quad
 \Rule[name=Lnkg Add]
 { \goodTerm{\Gm}{o}{\cL \lsig} 
@@ -251,7 +251,7 @@ $$
 \quad  \goodSeal{\Gm}{f}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}
 }
-{\goodTerm{\Gm}{(\mu^+ \ o \ \{f\} \ t)}{\TyLkg{\nu^+ \ \lsig \ \{f\} \ T}}}
+{\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\nu^+ \ \lsig \ \{f\} \ T}}}
 $$
 
 $$
@@ -274,8 +274,8 @@ $$
 \quad \goodType{\Gm}{A}{}
 \quad  \goodSeal{\Gm}{f}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}}
-{\goodTerm{\Gm}{p_1\mu \ (\mu^+ \ o \ \{f\} \ t) \equiv o}{\cL \lsig}
-\\ \goodTerm{\Gm, A}{p_2\mu \  (\mu^+ \ o \ \{f\} \ t) \equiv t}{T}
+{\goodTerm{\Gm}{p_1\mu \ (\LkgAdd {o} {t}) \equiv o}{\cL \lsig}
+\\ \goodTerm{\Gm, A}{p_2\mu \  (\LkgAdd {o}{t}) \equiv t}{T}
 }
 $$
 $$
@@ -285,8 +285,8 @@ $$
 \\
 \goodType{\Gm}{\TyTkg {\nu^+ \ \lsig \ \{f\} \ T} \equiv 
     \Sigma (\TyTkg {\lsig}) T["sf" \ f]}{}
-\\\\ \goodTerm{\Gm}{ \cCt \mu\cdot \equiv ()}{\TyTkg{\nu\cdot}}
-\\ \goodTerm{\Gm}{\cCt \ (\mu^+ \ o \ \{f\}\ t) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
+\\\\ \goodTerm{\Gm}{ \cCt \LkgEmp \equiv ()}{\TyTkg{\nu\cdot}}
+\\ \goodTerm{\Gm}{\cCt \ (\LkgAdd {o} {t}) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
 }
 $$
 
@@ -384,7 +384,7 @@ $$
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodTerm{\Gm}{l}{\cL \sigma_1}
 }
-{\goodTerm{\Gm}{("inh" \ h \ l)}{\cL \sigma_2}} 
+{\goodTerm{\Gm}{(\inh {h} {l})}{\cL \sigma_2}} 
 \quad
 \Rule[name=Inh+Inh]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
@@ -402,5 +402,5 @@ $$
   \quad \goodTerm{\Gm, A_1}{t}{T}
   \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
-{\goodTerm{\Gm}{"inh" ("inhinh" \ h) (\mu^+ \ m \  \{f_1\} \ t) \newline  \equiv \mu^+ \ ("inh" \ h \ m) \  \{f_2\} \ t[(\pi_1, \uparrow^s)]}{...}} 
+{\goodTerm{\Gm}{\inh {("inhinh" \ h)} {(\LkgAdd{m}{t})} \newline  \equiv \LkgAdd{(\inh {h} {m})}  {t[(\pi_1, \uparrow^s)]}}{...}} 
 $$
