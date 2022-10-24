@@ -148,13 +148,13 @@ $$
 $$
 \Rule[name=Emp-WSig]
 {}
-{\goodWSig{\Gm}{w\cdot}{0}}
+{\goodWSig{\Gm}{\WSigEmp}{0}}
 \quad
 \Rule[name=WSig-Add]
 {\goodWSig{\Gm}{\wsig}{n}
   \quad \goodType{\Gm}{A}{i}
   \quad \goodType{\Gm, A}{B}{i}}
-{\goodWSig{\Gm}{w^+ \  \wsig \  A \  B}{n+1}}
+{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
 \quad
 \Rule[name=Ind-Univ]
 {\goodWSig{\Gm}{\wsig}{n}}
@@ -207,14 +207,14 @@ $$
 $$
 \Rule[name=Ept Sig]
 {}
-{\goodSig{\Gm}{\nu\cdot}{0}}
+{\goodSig{\Gm}{\LSigEmp}{0}}
 \quad
 \Rule[name=Sig Add]
 {\goodSig{\Gm}{\lsig}{n} 
  \quad \goodType{\Gm}{A}{}
- \quad \goodSeal{\Gm}{f}{\lsig}{A}
+ \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
  \quad \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{(\nu^+ \ \lsig \ \{f\} \ T)}{n+1}}
+{\goodSig{\Gm}{(\LSigAdd {\lsig}{\seal}{T})}{n+1}}
 $$
 
 $$ 
@@ -222,7 +222,7 @@ $$
 {\goodSig{\Gm}{\lsig}{n+1}}
 {\goodSig{\Gm}{\lsigproj{1} {\lsig}}{n}
 \\ \goodType{\Gm}{\lsigprojT {\lsig}}{}
-\\ \goodSeal{\Gm}{p_f\nu \  \lsig}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
+\\ \goodSeal{\Gm}{\lsigproj{s}{\lsig}}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
 \\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{}
 }
 $$
@@ -231,41 +231,41 @@ $$
 \Rule[name=Sig Proj Beta]
 {\goodSig{\Gm}{\lsig}{n} 
 \quad \goodType{\Gm}{A}{}
-\quad \goodSeal{\Gm}{f}{\lsig}{A}
+\quad \goodSeal{\Gm}{\seal}{\lsig}{A}
 \quad \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{\lsigproj{1} {(\nu^+ \ \lsig \ \{f\} \ T)} \equiv \lsig}{n}
-\\ \goodType{\Gm}{\lsigprojT {(\nu^+ \ \lsig \ \{f\} \ T)} \equiv A}{}
-\\ \goodSeal{\Gm}{p_f\nu \  (\nu^+ \ \lsig \ \{f\} \ T) \equiv f}{\lsig}{A}
-\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{(\nu^+ \ \lsig \ \{f\} \ T)} \equiv T}{}
+{\goodSig{\Gm}{\lsigproj{1} {(\LSigAdd  {\lsig}  {\seal}  {T})} \equiv \lsig}{n}
+\\ \goodType{\Gm}{\lsigprojT {(\LSigAdd  {\lsig} {\seal} {T})} \equiv A}{}
+\\ \goodSeal{\Gm}{\lsigproj{s}{(\LSigAdd{\lsig} {\seal} {T})} \equiv \seal}{\lsig}{A}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{(\LSigAdd {\lsig} {\seal}  {T})} \equiv T}{}
 }
 $$
 
 $$
 \Rule[name=Ept Lnkg]
 {}
-{\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\nu\cdot}}}
+{\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}}
 \quad
 \Rule[name=Lnkg Add]
 { \goodTerm{\Gm}{o}{\cL \lsig} 
 \quad \goodType{\Gm}{A}{}
-\quad  \goodSeal{\Gm}{f}{\lsig}{A} 
+\quad  \goodSeal{\Gm}{\seal}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}
 }
-{\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\nu^+ \ \lsig \ \{f\} \ T}}}
+{\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}}
 $$
 
 $$
 \Rule[name=Lnkg Proj]
 {\goodTerm{\Gm}{o}{\cL\lsig}}
-{\goodTerm{\Gm}{p_1\mu \ o}{\cL (\lsigproj{1} {\lsig})}
-\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{p_2\mu \ o}{\lsigproj{2}{\lsig}}
+{\goodTerm{\Gm}{\lkgproj{1} {o}}{\cL (\lsigproj{1} {\lsig})}
+\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{o}}{\lsigproj{2}{\lsig}}
 }
 \quad 
 \Rule[name=Lnkg Compile]
 { \goodTerm{\Gm}{o}{\cL \lsig} 
 }
 {
-  \goodTerm{\Gm}{\cCt o}{\TyTkg{\lsig}}
+  \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
 }
 $$
 $$ 
@@ -274,19 +274,19 @@ $$
 \quad \goodType{\Gm}{A}{}
 \quad  \goodSeal{\Gm}{f}{\lsig}{A} 
  \quad \goodTerm{\Gm, A}{t}{T}}
-{\goodTerm{\Gm}{p_1\mu \ (\LkgAdd {o} {t}) \equiv o}{\cL \lsig}
-\\ \goodTerm{\Gm, A}{p_2\mu \  (\LkgAdd {o}{t}) \equiv t}{T}
+{\goodTerm{\Gm}{\lkgproj{1} {(\LkgAdd {o} {t})} \equiv o}{\cL \lsig}
+\\ \goodTerm{\Gm, A}{\lkgproj{2}{(\LkgAdd {o}{t})} \equiv t}{T}
 }
 $$
 $$
 \Rule[name=Compile]
 {}
-{\goodType{\Gm}{\TyTkg{\nu\cdot} \equiv \top}{} 
+{\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
 \\
-\goodType{\Gm}{\TyTkg {\nu^+ \ \lsig \ \{f\} \ T} \equiv 
+\goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {f} {T}} \equiv 
     \Sigma (\TyTkg {\lsig}) T["sf" \ f]}{}
-\\\\ \goodTerm{\Gm}{ \cCt \LkgEmp \equiv ()}{\TyTkg{\nu\cdot}}
-\\ \goodTerm{\Gm}{\cCt \ (\LkgAdd {o} {t}) \equiv ((\cCt \ o), t["sf" \ f][(id, \cCt \ o)]) }{}
+\\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
+\\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {o} {t})} \equiv ((\Tkg {o}), t["sf" \ f][(id, \Tkg {o})]) }{}
 }
 $$
 
@@ -329,24 +329,24 @@ $$
 {\goodWSig{\Gm}{\wsig}{n}
 \quad \goodType{\Gm}{R}{}
 }
-{\goodSig{\Gm}{"RecSig"~\wsig~R}{n}}
+{\goodSig{\Gm}{\RecSig{\wsig}{R}}{n}}
 $$
 $$
 \Rule[name=Hdler-Proj]
 { \goodWSig{\Gm}{\wsig}{N}
-\quad \goodTerm{\Gm}{o}{\cL("RecSig"~\wsig~R)}
+\quad \goodTerm{\Gm}{o}{\cL(\RecSig{\wsig}{R})}
 \quad j < N
 }
-{\goodTerm{\Gm}{"prjR"~j~o}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
+{\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 $$
 $$
 \Rule[name=Rec-Constr]
 { \goodWSig{\Gm}{\wsig}{N}
 \quad \goodType{\Gm}{R}{}
-\quad \goodTerm{\Gm}{r}{\cL("RecSig"~\wsig~R)}
+\quad \goodTerm{\Gm}{r}{\cL(\RecSig{\wsig}{R})}
 \quad \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
 }
-{\goodTerm{\Gm}{"Wrec"~r~w}{R}}
+{\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
 $$
 
 
@@ -355,7 +355,7 @@ $$
 $$
 \Rule[name=Inh-Id]
 {}
-{\goodInh{\Gm}{"inhid"}{\lsig}{\lsig}}
+{\goodInh{\Gm}{\InhId}{\lsig}{\lsig}}
 \quad
 \Rule[name=Inh-Override]
 {
@@ -363,21 +363,21 @@ $$
 \quad \goodType{\Gm, A_1}{T_1}{}
 \quad \goodType{\Gm, A_2}{T_2}{}
   \quad \goodTerm{\Gm, A_2}{t}{T_2}}
-{\goodInh{\Gm}{"inhov" \ h \ t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}}
+{\goodInh{\Gm}{\InhOv{h}{t}}{(\LSigAdd  {\sigma_1 } {\seal_1} {T_1})}{(\LSigAdd   {\sigma_2} {\seal_2} {T_2})}}
 $$
 
 $$
 \Rule[name=Inh-Ext]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \quad \goodTerm{\Gm, A_2}{t}{T}}
-{\goodInh{\Gm}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
+{\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}}
 \quad
 \Rule[name=Inh-Inh]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodType{\Gm, A_1}{T}{}
 \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
-{\goodInh{\Gm}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}
+{\goodInh{\Gm}{\InhInh{h}}{(\LSigAdd {\sigma_1} {\seal_1}  {T})}{(\LSigAdd   {\sigma_2} {\seal_2} {T[(\pi_1, \uparrow^s)]})}}
 $$
 $$
 \Rule[name=Inh]
@@ -391,7 +391,7 @@ $$
 \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\\\
 \goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
-{\goodInh{\Gm}{"inhnest" \ h \ i}{(\nu^+ \  \sigma_1\  \cL\tau_1)}{(\nu^+ \  \sigma_2\  \cL\tau_2)}}
+{\goodInh{\Gm}{\InhNest{h}{i}}{(\LSigAdd {\sigma_1} {\seal_1}  {\cL\tau_1})}{(\LSigAdd   {\sigma_2} {\seal_2} {\cL\tau_2)}}}
 \quad
 $$
 
@@ -402,5 +402,5 @@ $$
   \quad \goodTerm{\Gm, A_1}{t}{T}
   \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
-{\goodTerm{\Gm}{\inh {("inhinh" \ h)} {(\LkgAdd{m}{t})} \newline  \equiv \LkgAdd{(\inh {h} {m})}  {t[(\pi_1, \uparrow^s)]}}{...}} 
+{\goodTerm{\Gm}{\inh {(\InhInh{h})} {(\LkgAdd{m}{t})} \newline  \equiv \LkgAdd{(\inh {h} {m})}  {t[(\pi_1, \uparrow^s)]}}{...}} 
 $$
