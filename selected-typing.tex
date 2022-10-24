@@ -3,59 +3,6 @@
 
 \renewcommand*{\arraystretch}{1.25}
 
-\newcommand{\Gm}{\ensuremath{\Gamma}}
-\newcommand{\Dl}{\ensuremath{\Delta}}
-\newcommand{\gm}{\ensuremath{\gamma}}
-\newcommand{\El}[1]{\ensuremath{\texttt{El}({#1})}}
-\newcommand{\codety}[1]{\ensuremath{\texttt{c}({#1})}}% code of a type
-\newcommand{\TyPi}[2]{\ensuremath{\Pi({#1},{#2})}}
-\newcommand{\TySigma}[2]{\ensuremath{\Pi({#1},{#2})}}
-\newcommand{\TyWSingle}[1]{\ensuremath{\bW{#1}}}
-\newcommand{\lam}[1]{\ensuremath{\lambda\,{#1}}}
-\newcommand{\app}[1]{\ensuremath{\texttt{app}~{#1}}}
-\newcommand{\pair}[2]{\ensuremath{({#1},{#2})}}
-\newcommand{\fst}[1]{\ensuremath{\texttt{fst}({#1})}}
-\newcommand{\snd}[1]{\ensuremath{\texttt{snd}({#1})}}
-\newcommand{\true}{\ensuremath{\texttt{tt}}}
-\newcommand{\false}{\ensuremath{\texttt{ff}}}
-\newcommand{\var}[1]{\ensuremath{\texttt{var}_{#1}}}
-\newcommand{\sub}[2]{\ensuremath{{#1}[{#2}]}}
-\newcommand{\SubstEmp}{\ensuremath{\epsilon}}
-\newcommand{\SubstId}{\ensuremath{\texttt{id}}}
-\newcommand{\SubstComp}[2]{\ensuremath{{#1}\circ{#2}}}
-\newcommand{\SubstExt}[2]{\ensuremath{{#1},{#2}}}
-\newcommand{\SubstWeak}[1]{\ensuremath{\texttt{p}^{#1}}}
-\newcommand{\wsingle}[1]{\ensuremath{\star_{#1}}}
-\newcommand{\wcode}[1]{\ensuremath{\texttt{W}({#1})}}
-\newcommand{\wsup}[3]{\ensuremath{\texttt{Wsup}({#1},{#2},{#3})}}
-\newcommand{\wsig}{\ensuremath{\tau}}% metavariable for W-type signatures
-\newcommand{\WSigEmp}{\ensuremath{\texttt{w}^\bullet}}
-\newcommand{\WSigAdd}[3]{\ensuremath{\texttt{w}^+({#1},{#2},{#3})}}
-\newcommand{\lsig}{\ensuremath{\sigma}}% metavariable for linkage signatures
-\newcommand{\LSigEmp}{\ensuremath{\nu^\bullet}}
-\newcommand{\LSigAdd}[3]{\ensuremath{\nu^+({#1},{#2},{#3})}}
-\newcommand{\lkg}{\ensuremath{\ell}}% metavariable for linkages
-\newcommand{\LkgEmp}{\ensuremath{\mu^\bullet}}
-\newcommand{\LkgAdd}[2]{\ensuremath{\mu^+({#1},{#2})}}
-\newcommand{\seal}{\ensuremath{s}}% metavariable for seals
-\newcommand{\wsigproj}[3]{\ensuremath{\texttt{w}\pi^{#1}_{\texttt{#2}}({#3})}}
-\newcommand{\lkgproj}[2]{\ensuremath{\mu\pi_{\texttt{#1}}({#2})}}
-\newcommand{\lsigproj}[2]{\ensuremath{\nu\pi_{\texttt{#1}}({#2})}}
-\newcommand{\lsigprojT}[1]{\ensuremath{\nu\pi'_{\texttt{1}}({#1})}}
-\newcommand{\TyLkg}[1]{\ensuremath{\cL({#1})}}
-\newcommand{\TyTkg}[1]{\ensuremath{\cT({#1})}}
-\newcommand{\Tkg}[1]{\ensuremath{\cT({#1})}}
-\newcommand{\RecSig}[2]{\ensuremath{\texttt{RecSig}({#1},{#2})}}
-\newcommand{\Wrec}[2]{\ensuremath{\texttt{Wrec}({#1},{#2})}}
-\newcommand{\CaseSig}[3]{\ensuremath{\texttt{CaseSig}({#1},{#2},{#3})}}
-\newcommand{\Recproj}[2]{\ensuremath{\texttt{R}\pi^{#1}({#2})}}
-\newcommand{\inh}[2]{\ensuremath{\texttt{inh}({#1},{#2})}}
-\newcommand{\InhId}{\ensuremath{\texttt{Identity}}}
-\newcommand{\InhExt}[2]{\ensuremath{\texttt{Extend}({#1},{#2})}}
-\newcommand{\InhOv}[2]{\ensuremath{\texttt{Override}({#1},{#2})}}
-\newcommand{\InhInh}[1]{\ensuremath{\texttt{Inherit}({#1})}}
-\newcommand{\InhNest}[2]{\ensuremath{\texttt{Nest}({#1},{#2})}}
-
 \definecolor{new}{HTML}{F5EFE6}
 
 \begin{gather*}
@@ -64,21 +11,13 @@
     \cdot \mid \Gm, A
     \\ 
 \text{Substitutions} & \gm &\Coloneqq &
-    \SubstEmp \mid \SubstId \mid \SubstComp{\gm_1}{\gm_2} \mid \SubstExt{\gm}{t} \mid \SubstWeak{n}
-    \\
-\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.15,0.30)
-\text{W-type signatures} & \wsig & \Coloneqq &
-    \WSigEmp \mid \WSigAdd{\wsig}{A}{B} \mid \sub{\wsig}{\gm}
-    \\
-\text{Linkage signatures} & \lsig & \Coloneqq &
-    \LSigEmp \mid \LSigAdd{\lsig}{\seal}{T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} \mid \sub{\lsig}{\gm}
-\tikzmarkend{New1}
+    \SubstEmp \mid \SubstWeak{n} \mid \SubstComp{\gm_1}{\gm_2} \mid \SubstExt{\gm}{t}
     \\
 \text{Types} & A, B, T  &\Coloneqq &
     \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \El{t} \mid \sub{T}{\gm} \mid
     \\
     &&&
-\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.15,0.30)
+\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
     \TyWSingle{\wsig} \mid \wsigproj{j}{1}{\wsig} \mid \wsigproj{j}{2}{\wsig} \mid
     \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid \lsigprojT{\lsig} \mid \lsigproj{2}{\lsig} \mid \CaseSig{A}{B}{T}
 \tikzmarkend{New2}
@@ -87,7 +26,7 @@
     \var{n} \mid \true \mid \false \mid \codety{T} \mid \sub{t}{\gm} \mid \lam{t} \mid \app{t} \mid \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid
     \\
     &&&
-\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.15,0.30)
+\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
     \wsingle{\wsig} \mid \wcode{\wsig} \mid \wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
     \\
     &&&
@@ -95,12 +34,106 @@
     \Recproj{j}{\lkg} \mid \Wrec{\lkg}{t}
 \tikzmarkend{New3}
     \\
-\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.15,0.30)
+\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
+\text{W-type signatures} & \wsig & \Coloneqq &
+    \WSigEmp \mid \WSigAdd{\wsig}{A}{B} \mid \sub{\wsig}{\gm}
+\tikzmarkend{New1}
+    \\
+\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New5}(0.05,-0.15)(-0.10,0.30)
+\text{Linkage signatures} & \lsig & \Coloneqq &
+    \LSigEmp \mid \LSigAdd{\lsig}{\seal}{T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} \mid \sub{\lsig}{\gm}
+\tikzmarkend{New5}
+    \\
+\tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
 \text{Linkage transformers} & h & \Coloneqq &
     \InhId \mid \InhExt{h}{t} \mid \InhOv{h}{t} \mid \InhInh{h} \mid \InhNest{h}{h'}
 \tikzmarkend{New4}
 \end{array}
 \end{gather*}
+
+\begin{mathpar}
+\judgebox{\goodCtx{\Gm}{i}}
+
+\judgebox{\goodSub{\Gm}{\gm}{\Dl}}
+
+\judgebox{\goodType{\Gm}{T}{}}
+
+\judgebox{\goodTerm{\Gm}{t}{T}}
+
+\judgebox{\goodWSig{\Gm}{\wsig}{n}}
+
+\judgebox{\goodSig{\Gm}{\lsig}{n} }
+
+\judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
+\\
+
+\Rule[name=sub/id]{
+    \goodCtx{\Gm}{i}
+}{
+    \goodSub{\Gm}{\SubstWeak{0}}{\Gm}
+}
+
+\Rule[name=sub/weaken]{
+    \goodSub{\Gm}{\SubstWeak{n}}{\Dl}
+    \\
+    \goodType{\Gm}{A}{}
+}{
+    \goodSub{\Gm, A}{\SubstWeak{n+1}}{\Dl}
+}
+
+\Rule[name=sub/ext]{
+    \goodSub{\Gm}{\gm}{\Dl}
+    \\
+    \goodTerm{\Gm}{t}{\sub{A}{\gm}}
+    \\
+    \goodType{\Dl}{A}{}
+}{
+    \goodSub{\Gm}{\SubstExt{\gm}{t}}{\Dl,A}
+}
+
+\Rule[name=ty/sub]{
+    \goodType{\Dl}{T}{j}
+    \\
+    \goodSub{\Gm}{\gm}{\Dl}
+}{
+    \goodType{\Gm}{T[\gm]}{j}
+}
+
+\Rule[name=tm/sub]{
+    \goodTerm{\Dl}{t}{T}
+    \\
+    \goodSub{\Gm}{\gm}{\Dl}
+}{
+    \goodTerm{\Gm}{\sub{t}{\gm}}{\sub{T}{\gm}}
+}
+
+\Rule[name=tm/var]{
+    \goodCtx{\Gm, A_n, ..., A_1, A_0}{}
+}{
+    \goodSub{\Gm, A_n, ..., A_1, A_0}{\var{n}}{\sub{A_n}{\SubstWeak{n+1}}}
+}
+
+\Rule[name=tm/singleton]{
+    \goodWSig{\Gm}{\wsig}{n}
+}{
+    \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
+}
+
+\Rule[name=tm/w]{
+    \goodWSig{\Gm}{\wsig}{n}
+}{
+    \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
+}
+
+\Rule[name=tm/wrec]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
+    \\
+    \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
+}{
+    \goodTerm{\Gm}{\Wrec{\lkg}{t}}{T}
+}
+
+\end{mathpar}
 
 \caption{Selected syntax and typing rules of \TT}
 \label{fig:typing-selected}
