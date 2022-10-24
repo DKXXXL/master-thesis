@@ -176,17 +176,17 @@ $$
 
 $$
 \Rule[name=Ind-Type]
-{\goodTerm{\Gamma}{T}{\bW \tau}}
-{\goodTerm{\Gamma}{"W" \ T}{\cU}
+{\goodWSig{\Gamma}{\tau}{n}}
+{\goodTerm{\Gamma}{"W" \ \tau}{\cU}
 }
 \quad 
-\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}
+\Rule[]{}{\goodTerm{\Gamma}{\star_\tau}{\bW \tau}}
 \quad
 \Rule[name=Ind-Term]
-{\goodTerm{\Gamma}{T}{\bW \tau}
+{{\goodWSig{\Gamma}{\tau}{n}}
   \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
-  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)}}
-{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~T)} }
+  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~\tau)}}
+{\goodTerm{\Gamma}{"Wsup"~T~a~b}{El~("W"~\tau)} }
 $$
 
 

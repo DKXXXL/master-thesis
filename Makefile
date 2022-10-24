@@ -11,6 +11,7 @@ TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
 	ext-ind-type-compilation-example.tex all-typing-rule.tex metatheory-condensed.tex\
 	stlc-nonmechanized.tex stlc-mechanized.tex stlc-isorec-prod.tex	\
 	stlc-compiled.tex	\
+	selected-typing.tex	\
 	stlc-intro.pdf
 
 # Included figures (usually .pdf files)

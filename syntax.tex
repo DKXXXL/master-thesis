@@ -459,7 +459,7 @@ $$
 {\goodTerm{\Gamma}{"W" \ T}{\cU}
 }
 \quad 
-\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}\YZ{What is star? Is it just tau??}\EDJreply{star is a convention indicating this $\bW\tau$ is a singleton type, in other words, there is an eta(uniqueness) rule for arbitrary $a : \bW$,$a = \star$. But here I just want to show the constructor instead of the uniqueness rule. TBH I don't know what other good name (other than $\star$) can be used in  constructor/intro rule }
+\Rule[]{}{\goodTerm{\Gamma}{\star}{\bW \tau}}
 \quad
 \Rule[name=Ind-Term]
 {\goodTerm{\Gamma}{T}{\bW \tau}
@@ -970,7 +970,7 @@ $$
 \quad \goodType{\Gamma, A_1}{T}{}
 \quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
 }
-{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}\YZ{Should the term be 'inhinh h t' instead of 'inhinh h', where t is the field being inherited??}\EDJreply{$t$ is here the term in the field, not field name(we don't have name in metatheory) or type (type is T, it can be included). So no. Because the point of 'inhinh' in inheritance judgement is that when writing down inheritance, the children family doesn't have to include the original term. }
+{\goodInh{\Gamma}{"inhinh" \ h}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}}%\YZ{Should the term be 'inhinh h t' instead of 'inhinh h', where t is the field being inherited??}\EDJreply{$t$ is here the term in the field, not field name(we don't have name in metatheory) or type (type is T, it can be included). So no. Because the point of 'inhinh' in inheritance judgement is that when writing down inheritance, the children family doesn't have to include the original term. }
 $$
 $$
 \Rule[name=Inh]
@@ -981,7 +981,7 @@ $$
 \quad
 \Rule[name=Inh+Inh]
 {\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}
+\quad \goodTerm{\Gamma, A_2}{\uparrow^s}{A_1[\pi_1]}\YZ{This rule has a mysterious name.}
 \\\\
 \goodInh{\Gamma, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
 {\goodInh{\Gamma}{"inhnest" \ h \ i}{(\nu^+ \  \sigma_1\  \cL\tau_1)}{(\nu^+ \  \sigma_2\  \cL\tau_2)}}
