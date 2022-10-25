@@ -197,6 +197,10 @@ $$
 $$
 
 $$
+\Rule[name=WSig Sub]
+{\goodWSig{\Gm}{\wsig}{n+1}}
+{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
+\quad
 \Rule[name=WSig Add/Proj Subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {\goodWSig{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
@@ -206,6 +210,8 @@ $$
 }
 \quad 
 $$
+
+
 
 $$
 \Rule[name=Ind-Type/Universe]
@@ -218,6 +224,28 @@ $$
   \quad \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \quad \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
 {\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
+$$
+
+$$
+\Rule[name=WSig Sub Beta]{
+  \goodWSig{\Gm}{\wsig}{n}
+  \quad \goodType{\Gm}{A}{i}
+  \quad \goodType{\Gm, A}{B}{i}
+}{
+  \goodWSig{\Gm}{\sub{\WSigSub{\WSigAdd{\wsig}{A}{B}}}{\gm} \equiv \wsig}{n}
+}
+$$
+
+$$
+\Rule[name=WSig Sub Subst]{
+  \goodSub{\Gm}{\gm}{\Theta}
+}{
+  \goodWSig{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
+}
+\quad
+\Rule[name=Ind-Term Subst]
+{\goodSub{\Gm}{\gm}{\Theta}}
+{\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 $$
 
 
@@ -414,14 +442,24 @@ $$
 \quad \goodType{\Gm}{R}{}
 }
 {\goodType{\Gm}{\CaseSig{A}{B}{R} \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{ \SubstComp {\pi_1}{\pi_1}})})} {\sub{R}{\SubstComp{\pi_1}{\pi_1}}})} )}{}}
-\quad 
-\Rule[name=Hdlers]
-{\goodWSig{\Gm}{\wsig}{n}
-\quad \goodType{\Gm}{R}{}
+$$
+
+$$
+\Rule[name=Hdlers-DefN]
+{\goodWSig{\Gm}{\wsig}{n+1}
 }
-{\goodSig{\Gm}{\RecSig{\wsig}{R}}{n}}
+{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv 
+        \LSigAdd{\RecSig{\WSigSub{\wsig}}{R}}
+        {\pi_2}
+        {\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R}} }{n+1}}
 $$
+
 $$
+\Rule[name=Hdlers-Def0]
+{\goodWSig{\Gm}{\wsig}{0}
+}
+{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
+\quad
 \Rule[name=Hdler-Proj]
 { \goodWSig{\Gm}{\wsig}{N}
 \quad \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
@@ -438,6 +476,35 @@ $$
 }
 {\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
 $$
+
+$$
+\Rule[name=Rec Proj]{
+  \goodWSig{\Gm}{\wsig}{N}
+  \\ j < N
+  \\ \goodTerm{\Gm}{o}{\TyLkg{\RecSig{\wsig}{R}}}
+}{
+  \goodTerm{\Gm}{\Recproj{j}{o}}{
+    \CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R}}
+}
+$$
+
+$$
+\Rule[name=Rec Proj DefN]{}{
+  \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{}
+}
+\quad 
+\Rule[name=Rec Proj Def0]{}{
+  \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{}
+}
+$$
+
+$$
+\Rule[name=Rec-Beta]
+{\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
+\\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
+{\goodTerm{\Gamma}{\Wrec{h}{(\wsup{\wsig}{a}{b})} \equiv 
+(\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{h[\pi_1]}{b})})]
+}{R}}$$
 
 
 \judgebox{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}}
