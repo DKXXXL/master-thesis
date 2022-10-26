@@ -147,21 +147,21 @@ $$
 
 \judgebox{\goodWSig{\Gm}{\wsig}{n}}
 $$
-\Rule[name=Emp-WSig]
+\Rule[name=wsig/ept]
 {}
 {\goodWSig{\Gm}{\WSigEmp}{0}}
 \quad 
-\Rule[name=Emp-WSig-Eta]
+\Rule[name=wsigeq/ept/eta]
 {\goodWSig{\Gm}{\wsig}{0}}
 {\goodWSig{\Gm}{\wsig \equiv \WSigEmp}{0}}
 \quad
-\Rule[name=WSig-Add]
+\Rule[name=wsig/add]
 {\goodWSig{\Gm}{\wsig}{n}
   \quad \goodType{\Gm}{A}{i}
   \quad \goodType{\Gm, A}{B}{i}}
 {\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
 \quad
-\Rule[name=Ind-Univ]
+\Rule[name=wsig/universe]
 {\goodWSig{\Gm}{\wsig}{n}}
 {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
 \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
@@ -171,12 +171,12 @@ $$
 
 
 $$
-\Rule[name=WSig-Proj + Eta]
+\Rule[name=wsigeq/proj/eta]
 {\goodWSig{\Gm}{\wsig}{n} \quad j < n}
 {\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
 }
 \quad
-\Rule[name=Ind-Sig Subst]
+\Rule[name=wsigeq/subst]
 {\goodWSig{\Delta}{\wsig}{n}
   \quad {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodWSig{\Gm}{ \sub{\wsig}{\gm}}{n}
@@ -186,7 +186,7 @@ $$
 $$
 
 $$
-\Rule[name=WSig-Proj Beta]{
+\Rule[name=ty/wsig/proj]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
   \goodType{\Gm}{\wsigproj{j+1}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv \wsigproj{j}{1}{\wsig} }{i} 
@@ -198,11 +198,11 @@ $$
 $$
 
 $$
-\Rule[name=WSig Sub]
+\Rule[name=wsig/sub]
 {\goodWSig{\Gm}{\wsig}{n+1}}
 {\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
 \quad
-\Rule[name=WSig Add/Proj Subst]
+\Rule[name=wsigeq/add/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {\goodWSig{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
 \\ \goodWSig{\Gm}{\sub{\WSigAdd{\wsig}{A}{B}}{\gm} \equiv \WSigAdd{\sub{\wsig}{\gm}}{\sub{A}{\gm}}{\sub{B}{\gm^\uparrow}} }{n+1}
@@ -215,36 +215,36 @@ $$
 
 
 $$
-\Rule[name=Ind-Type/Universe]
+\Rule[name=tm/wcode]
 {\goodWSig{\Gm}{\wsig}{n}}
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 \quad
-\Rule[name=Ind-Term]
+\Rule[name=ind/cstr]
 {{\goodWSig{\Gm}{\wsig}{n}}
-  \quad \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
-  \quad \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
+  \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
+  \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
 {\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
 $$
 
 $$
-\Rule[name=WSig Sub Beta]{
+\Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
-  \quad \goodType{\Gm}{A}{i}
-  \quad \goodType{\Gm, A}{B}{i}
+  \\ \goodType{\Gm}{A}{i}
+  \\ \goodType{\Gm, A}{B}{i}
 }{
   \goodWSig{\Gm}{\sub{\WSigSub{\WSigAdd{\wsig}{A}{B}}}{\gm} \equiv \wsig}{n}
 }
 $$
 
 $$
-\Rule[name=WSig Sub Subst]{
+\Rule[name=wsigeq/sub/subst]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
   \goodWSig{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
 }
 \quad
-\Rule[name=Ind-Term Subst]
+\Rule[name=ind/cstr/subst ]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 $$
@@ -252,12 +252,12 @@ $$
 
 \judgebox{\goodSig{\Gm}{\lsig}{n} }
 $$
-\Rule[name=Lnkg Type+Compile]
+\Rule[name=ty/lkg]
 {\goodSig{\Gm}{\lsig}{n}}
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
 \\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
-\Rule[name=Sig/Lnkg/Compile Subst]
+\Rule[name=ty/lkg/subst]
 {\goodSig{\Delta}{\lsig}{n}
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
@@ -267,15 +267,15 @@ $$
 $$
 
 $$
-\Rule[name=Ept Sig]
-{}
+\Rule[name=lsig/ept]
+{""}
 {\goodSig{\Gm}{\LSigEmp}{0}}
 \quad 
-\Rule[name=Ept Sig Eta]
+\Rule[name=lsigeq/ept/eta]
 {\goodSig{\Gm}{\lsig}{0}}
 {\goodSig{\Gm}{\lsig \equiv \LSigEmp}{0}}
 \quad
-\Rule[name=Sig Add]
+\Rule[name=lsig/add]
 {\goodSig{\Gm}{\lsig}{n} 
  \quad \goodType{\Gm}{A}{}
  \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
@@ -284,7 +284,7 @@ $$
 $$
 
 $$ 
-\Rule[name=Sig Proj and Eta]
+\Rule[name=lsig/proj]
 {\goodSig{\Theta}{\lsig}{n+1} 
 \\ \goodSub{\Gm}{\gm}{\Theta}
 }
@@ -298,7 +298,7 @@ $$
 $$
 
 $$ 
-\Rule[name=Sig Proj Beta]
+\Rule[name=lsigeq/proj/beta]
 {\goodSig{\Gm}{\lsig}{n} 
 \quad \goodType{\Gm}{A}{}
 \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
@@ -311,7 +311,7 @@ $$
 $$
 
 $$ 
-\Rule[name=Sig Add/Proj Subst]
+\Rule[name=lsig/add+proj/subst]
 {\goodSig{\Gm}{\gm}{\Theta}}
 {
 \goodSig{\Gm}{\sub{\LSigEmp}{\gm} \equiv \LSigEmp}{n}
@@ -327,23 +327,23 @@ $$
 
 
 $$
-\Rule[name=Ept Lnkg]
-{}
+\Rule[name=lnkg/ept]
+{""}
 {\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}  
 }
 \quad 
-\Rule[name=Ept Lnkg Eta]
+\Rule[name=lnkg/ept/eta]
 {\goodTerm{\Gm}{o}{\TyLkg {\LSigEmp}}}
 {\goodTerm{\Gm}{o \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
 \quad 
-\Rule[name=Lnkg Compile]
+\Rule[name=lnkg/pkg]
 { \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 }
 {
   \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
 }
 \quad
-\Rule[name=Lnkg Compile Subst]
+\Rule[name=lkg/pkg/subst]
 { \goodSub{\Gm}{\gm}{\Theta}
 }
 {
@@ -352,7 +352,7 @@ $$
 $$
 
 $$
-\Rule[name=Lnkg Add]
+\Rule[name=lkg/add]
 { \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 \\ \goodType{\Gm}{A}{}
 \\  \goodSeal{\Gm}{\seal}{\lsig}{A} 
@@ -361,14 +361,14 @@ $$
 {\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}
 }
 \quad
-\Rule[name=Lnkg Add Eta]
+\Rule[name=lkgeq/add/eta]
 {\goodTerm{\Gm}{o}{\TyLkg \lsig}}
 {\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{o}}{\lkgproj{2}{o}}{\TyLkg{\lsig}} \equiv o }{\TyLkg{\lsig}}}
 $$
 
 
 $$
-\Rule[name=Lnkg Proj]
+\Rule[name=lkg/proj]
 {\goodTerm{\Gm}{o}{\TyLkg{\lsig}}}
 {\goodTerm{\Gm}{\lkgproj{1} {o}}{\TyLkg {(\lsigproj{1} {\lsig})}}
 \\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{o}}{\lsigproj{2}{\lsig}}
@@ -376,7 +376,7 @@ $$
 $$
 
 $$ 
-\Rule[name=Lnkg Proj Beta]
+\Rule[name=lkgeq/proj/beta]
 {\goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 \quad \goodType{\Gm}{A}{}
 \quad  \goodSeal{\Gm}{f}{\lsig}{A} 
@@ -386,7 +386,7 @@ $$
 }
 $$
 $$
-\Rule[name=Lnkg Add/Proj Subst]
+\Rule[name=lkgeq/add+proj/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {
 \goodTerm{\Gm}{\sub{\LkgEmp}{\gm} \equiv \LkgEmp}{\TyLkg {\LSigEmp}}
@@ -398,7 +398,7 @@ $$
 
 
 $$
-\Rule[name=Compile]
+\Rule[name=pkg/def]
 {}
 {\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
 \\
@@ -415,21 +415,21 @@ $$
   \judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
   = [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
   $$
-  \Rule[name=Seal Subst]
-  {\goodSeal{\Delta}{s}{\lsig}{A}
+  \Rule[name=seal/subst]
+  { \goodSeal{\Delta}{s}{\lsig}{A}
     \quad {\goodSub{\Gm}{\gm}{\Delta}}}
   {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
-  =
+  \coloneq
   \frac
-  {\goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
+  { \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
     \quad  \goodSub{\Gm}{\gm}{\Delta}  }
   {\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}
   $$
   $$
-  \Rule[name=Seal-Id]
+  \Rule[name=seal/id]
   {}
   {\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
-  = \goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}
+  \coloneq \goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}
   $$
 
 \medskip
@@ -437,7 +437,7 @@ $$
 \end{figure}
 
 $$
-\Rule[name=Hdler]
+\Rule[name=ty/casesig]
 {\goodType{\Gm}{A}{}
 \quad \goodType{\Gm, A}{B}{}
 \quad \goodType{\Gm}{R}{}
@@ -446,7 +446,7 @@ $$
 $$
 
 $$
-\Rule[name=Hdlers-DefN]
+\Rule[name=reclkg/defN]
 {\goodWSig{\Gm}{\wsig}{n+1}
 }
 {\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv 
@@ -456,30 +456,30 @@ $$
 $$
 
 $$
-\Rule[name=Hdlers-Def0]
+\Rule[name=reclkg/def0]
 {\goodWSig{\Gm}{\wsig}{0}
 }
 {\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
 \quad
-\Rule[name=Hdler-Proj]
+\Rule[name=reclkg/proj]
 { \goodWSig{\Gm}{\wsig}{N}
-\quad \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
-\quad j < N
+\\ \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ j < N
 }
 {\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 $$
 $$
-\Rule[name=Rec-Constr]
+\Rule[name=tm/rec/cstr]
 { \goodWSig{\Gm}{\wsig}{N}
-\quad \goodType{\Gm}{R}{}
-\quad \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}
-\quad \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
+\\ \goodType{\Gm}{R}{}
+\\ \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
 }
 {\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
 $$
 
 $$
-\Rule[name=Rec Proj]{
+\Rule[name=reclkg/proj/beta]{
   \goodWSig{\Gm}{\wsig}{N}
   \\ j < N
   \\ \goodTerm{\Gm}{o}{\TyLkg{\RecSig{\wsig}{R}}}
@@ -490,17 +490,17 @@ $$
 $$
 
 $$
-\Rule[name=Rec Proj DefN]{}{
-  \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{}
+\Rule[name=reclkg/proj/defN]{}{
+  \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{...}
 }
 \quad 
-\Rule[name=Rec Proj Def0]{}{
-  \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{}
+\Rule[name=reclkg/proj/def0]{}{
+  \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{...}
 }
 $$
 
 $$
-\Rule[name=Rec-Beta]
+\Rule[name=tmeq/rec/beta]
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
 \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
 {\goodTerm{\Gamma}{\Wrec{h}{(\wsup{\wsig}{a}{b})} \equiv 
@@ -511,11 +511,11 @@ $$
 \judgebox{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}}
 
 $$
-\Rule[name=Inh-Id]
+\Rule[name=inh/id]
 {""}
 {\goodInh{\Gm}{\InhId}{\lsig}{\lsig}}
 \quad
-\Rule[name=Inh-Override]
+\Rule[name=inh/ov]
 {
 \goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
 \\ \goodType{\Gm, A_1}{T_1}{}
@@ -525,12 +525,12 @@ $$
 $$
 
 $$
-\Rule[name=Inh-Ext]
+\Rule[name=inh/ext]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}}
 {\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}}
 \quad
-\Rule[name=Inh-Inh]
+\Rule[name=inh/inh]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodType{\Gm, A_1}{T}{}
 \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
@@ -538,13 +538,13 @@ $$
 {\goodInh{\Gm}{\InhInh{h}}{(\LSigAdd {\sigma_1} {\seal_1}  {T})}{(\LSigAdd   {\sigma_2} {\seal_2} {T[(\pi_1, \uparrow^s)]})}}
 $$
 $$
-\Rule[name=Inh]
+\Rule[name=tm/inh]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodTerm{\Gm}{l}{\TyLkg{\sigma_1}}
 }
 {\goodTerm{\Gm}{(\inh {h} {l})}{\TyLkg{\sigma_2}}} 
 \quad
-\Rule[name=Inh+Inh]
+\Rule[name=inh/nest]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\\\
@@ -554,11 +554,11 @@ $$
 $$
 
 $$
-\Rule[name=Inh-Id-beta]
+\Rule[name=inh/id/beta]
 { \goodTerm{\Gm}{o}{\TyLkg{\sigma} }}
 {\goodTerm{\Gm}{\inh {(\InhId)} {o} \equiv o}{...}}
 \quad
-\Rule[name=Inh-Ext-beta]
+\Rule[name=inh/ext/beta]
 {
   \goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}
@@ -570,7 +570,7 @@ $$
 $$
 
 $$
-\Rule[name=Inh-Inh-beta]
+\Rule[name=inh/inh/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \quad \goodTerm{\Gm}{m}{\TyLkg {\sigma_1}}
   \quad \goodTerm{\Gm, A_1}{t}{T}
@@ -580,7 +580,7 @@ $$
 $$
 
 $$
-\Rule[name=Inh-Override]
+\Rule[name=inh/ov/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
 \\ \goodType{\Gm, A_1}{T_1}{}
 \\ \goodType{\Gm, A_2}{T_2}{}
@@ -596,7 +596,7 @@ $$
 $$
 
 $$
-\Rule[name=Inh+Inh-Beta]
+\Rule[name=inh/nest/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\
