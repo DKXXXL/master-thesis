@@ -29,50 +29,41 @@ $\denotesT{T}$ means the same as $\denotesT{\goodType{\Gamma}{T}{}}$
 derivation of any judgement will track its ``context''. This will be
 clearer in the (pseudo-)Agda formalization.
 
+
 \begin{align*}
-  \text{We will define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{} \text{ when } \goodCtx{\Gamma}{} \text{ and } n \in \mathbb{N} \\
-  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\cC} \text{ are mutually recursive, } \\
+  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
+  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ are mutually recursive, } \\
   & \text{defined by induction on the signature length} \\  
-  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \iff \goodTerm{\Gamma}{\sigma}{\Sigr{\Gamma}{n}} \\ 
+  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
+  &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
   {\Sigr{\Gamma}{(n+1)}} &= 
     \Sigma~(\Sigr{\Gamma}{n})
           ~(\Sigma~\cU
-                  ~(\Sigma~(\Pi(\cC (\pi_2[\pi_1]))(El~\pi_2[\pi_1]))~\cU)) \\
+                  ~(\Sigma~(\Pi(\TyTkg {("var"_0[p^1])})(El~"var"_0[p^1]))~\cU)) \\
   \Sigr{\Gamma}{0} &= \top \\
-  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &\text{ defines upon } \denotesT{\sigma} \\
-  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= 
-    \Sigma~\denotesT{\cC ("pjl"~\sigma)}~(El \ ("app"~("pjr"^3~\sigma))[(\pi_1, "app"~("pjl"~("pjr"^2~t)))]) \\
-      &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
-  \denotesT{\goodType{\Gamma}{\cC \sigma}{}} &= \top \quad
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
+  \text{ and inductively on the signature length} \\
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
       \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
-  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} & \text{ is defined upon } \denotesT{\sigma} \\
-  & \text{ and inductively on the signature length} \\ 
-  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &=
-  \denotesT{\cL("pjl"~\sigma)} \times \Pi(El~("pjl"~("pjr"~\sigma)))(El~("app"~("pjr"^3~\sigma))) \\
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
+    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(El \ (\app{("pjr"^3~\denotesT{\sigma})})[(p^1, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]) \\
+  \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
+  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(El~(\fst{(\snd{\denotesT{\sigma}})}))(El~(\app{("pjr"^3~\denotesT{\sigma})} )) \\
   &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
-  \denotesT{\goodType{\Gamma}{\cL\sigma}{}} &= \top \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
-  \denotesT{\goodSig{\Gamma}{\nu^+~\sigma~f~T}{n+1}} &= (\sigma, "c"~A, "lam"~f, "lam"~("c"~T)) \\ 
-  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\cL(\nu^+~\sigma~T)}} &= (m, "lam"~t) \\ 
-  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} & \text{ is defined upon } \denotesT{m}\\
-  & \text{ and inductively on the signature length} \\ 
-  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC\sigma}} &= 
-  (\denotesT{\cCt o}, t["sf"~f][("id", \denotesT{\cCt o})]) \\
-  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = "pjl"~m, t = "app"~("pjr"~m), f = p_f\nu~\sigma \\ 
-  \denotesT{\goodTerm{\Gamma}{\cCt m}{\cC \sigma}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
+  \denotesT{\goodSig{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
+  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{(\LSigAdd{\sigma}{s}{T})}}} &= (\denotesT{m}, \lam{t}) \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
+  (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{(\snd{\denotesT{m}})}, f = p_f\nu~\sigma \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
 \end{align*}
 \begin{align*}
-  &\denotesT{\goodSig{\Gamma}{p_1\nu~\sigma}{n}} = "pjl"~\sigma 
-  &&\denotesT{\goodType{\Gamma}{p_1\nu'~\sigma}{}} = El~("pjl"~("pjr"~\sigma)) \\
-  &\denotesT{\goodSeal{\Gamma}{p_f\nu~\sigma}{p_1\nu~\sigma}{p_1\nu'~\sigma}} = "app"~("pjl"~("pjr"^2~\sigma)) 
-  &&\denotesT{\goodSig{\Gamma}{p_2\nu~\sigma}{n}} = El~("app"~("pjr"^3~\sigma)) \\ 
-  &\denotesT{\goodTerm{\Gamma}{p_1\mu~o}{\cL(p_1\nu\sigma)}} = "pjl"~o 
-  &&\denotesT{\goodTerm{\Gamma, p_1\nu'~\sigma}{p_2\mu'~o}{p_2\nu~\sigma}} = "app"~("pjr"~o)
+  \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\
+  \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\LSigAdd {\sigma_1} {s_1}{T})}{(\LSigAdd {\sigma_2} {s_2} {T[(p^1, \uparrow^s)]})}} &= \mu^+~(h[(p^1,\lkgproj{1}{"var"_0})])\\ &\quad \quad \{f_2[p^1]\}~(\lkgproj{2}{"var"_0})[(p^1, \uparrow^s[{p^1}^{\uparrow}])] \\
 \end{align*}
-\begin{align*}
-  \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \cL\sigma_1}{\_}{\cL\sigma_2[\pi_1]} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \cL\sigma_1}{h}{\cL\sigma_2[\pi_1]} \\
-  \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\nu^+ \  \sigma_1 \  T)}{(\nu^+ \  \sigma_2 \  T[(\pi_1, \uparrow^s)])}} &= \mu^+~(h[(\pi_1,\pi_1\mu~\pi_2)])\\ &\quad \quad \{f_2[\pi_1]\}~(p_2\mu'~\pi_2)[(\pi_1, \uparrow^s[\pi_1^{\uparrow}])] \\
-  \denotesT{\goodInh{\Gamma}{"inhov"~h~t}{(\nu^+ \  \sigma_1 \  T_1)}{(\nu^+ \  \sigma_2\  T_2)}} &= \mu^+ (h[(\pi_1, p_1\mu~\pi_2)])~\{f_2[\pi_1]\}~t[\pi_1^{\uparrow}]
-\end{align*}
+
+
 
 The main idea of this syntactic translation is that, we make sure
 $\goodSig{\Gamma}{\nu^+ \_ }{n+1}$ and $\goodSig{\Gamma}{\mu^+ \_}{n+1}$
