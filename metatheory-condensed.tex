@@ -36,7 +36,7 @@ Variables are represented by de Bruijn indices:
 \var{n} is the variable bound by the $n$-th closest enclosing binder.
 For example, $\lambda x.\,\lambda y.\,x$ is $\lam{(\lam{\var{1}})}$.
 %
-Formation rules for substitutions have the form
+Formation rules for substitutions have\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) } the form 
 $\goodSub{\Gm}{\gm}{\Dl}$, which says that applying~$\gm$ to terms
 valid in the context~$\Dl$ yields terms valid in~$\Gm$.
 %
