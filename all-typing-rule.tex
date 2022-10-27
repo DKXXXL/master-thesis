@@ -148,7 +148,7 @@ $$
 \judgebox{\goodWSig{\Gm}{\wsig}{n}}
 $$
 \Rule[name=wsig/ept]
-{}
+{""}
 {\goodWSig{\Gm}{\WSigEmp}{0}}
 \quad 
 \Rule[name=wsigeq/ept/eta]
@@ -469,7 +469,7 @@ $$
 {\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 $$
 $$
-\Rule[name=tm/rec/cstr]
+\Rule[name=tm/wrec]
 { \goodWSig{\Gm}{\wsig}{N}
 \\ \goodType{\Gm}{R}{}
 \\ \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}

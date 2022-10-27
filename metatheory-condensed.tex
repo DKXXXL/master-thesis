@@ -84,35 +84,40 @@ Contrary to named variables, \textbf{debruijn indices} refer to the variable in 
 Now, we will mainly focus on the newly introduced typing rules, and illustrate their connection to the plugin implementation. For those curious about the complete meta-theory formulation, we refer to our appendices or \citet{altkap2016, kaposi2017type} or maybe those not using QIIT \cite{coquand2018canonicity, sterling2019algebraic}. Our metatheory is formulated using QIIT in an extensional setting.
 
 $$
-\Rule[]
-{}
-{\goodWSig{\Gamma}{w\cdot}{0}}
+\Rule[name=wsig/ept]
+{""}
+{\goodWSig{\Gm}{\WSigEmp}{0}}
+\quad 
+\Rule[name=wsigeq/ept/eta]
+{\goodWSig{\Gm}{\wsig}{0}}
+{\goodWSig{\Gm}{\wsig \equiv \WSigEmp}{0}}
 \quad
-\Rule[name=WSig-Add]
-{\goodWSig{\Gamma}{\tau}{n}
-  \quad \goodType{\Gamma}{A}{i}
-  \quad \goodType{\Gamma, A}{B}{i}}
-{\goodWSig{\Gamma}{w^+ \  \tau \  A \  B}{n+1}}
+\Rule[name=wsig/add]
+{\goodWSig{\Gm}{\wsig}{n}
+  \quad \goodType{\Gm}{A}{i}
+  \quad \goodType{\Gm, A}{B}{i}}
+{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
 \quad
-\Rule[name=Ind-Univ]
-{\goodWSig{\Gamma}{\tau}{n}}
-{\goodType{\Gamma}{\bW \tau}{i}
+\Rule[name=wsig/universe]
+{\goodWSig{\Gm}{\wsig}{n}}
+{\goodType{\Gm}{\TyWSingle {\wsig}}{i}
+\\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
 }
 $$
 $$
-\Rule[name=Ind-Term]
-{\goodTerm{\Gamma}{T}{\bW \tau}
-  \quad \goodTerm{\Gamma}{a}{\pi^j_1\tau}
-  \quad \goodTerm{\Gamma, \pi^j_2\tau[(id, a)]}{b}{El~("W"~T)[p^1]}}
-{\goodTerm{\Gamma}{"Wsup"~j~T~a~b}{El~("W"~T)} }
+\Rule[name=ind/cstr]
+{{\goodWSig{\Gm}{\wsig}{n}}
+  \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
+  \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
+{\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
 $$
 $$
-\Rule[name=Hdler]
-{\goodType{\Gamma}{A}{}
-\quad \goodType{\Gamma, A}{B}{}
-\quad \goodType{\Gamma}{R}{}
+\Rule[name=ty/casesig]
+{\goodType{\Gm}{A}{}
+\quad \goodType{\Gm, A}{B}{}
+\quad \goodType{\Gm}{R}{}
 }
-{\goodType{\Gamma}{"RecSig1"~A~B~R \equiv \Pi A\; \Pi (\Pi B (R[p^2]))\; R[p^2]}{}}
+{\goodType{\Gm}{\CaseSig{A}{B}{R} \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{ \SubstComp {\pi_1}{\pi_1}})})} {\sub{R}{\SubstComp{\pi_1}{\pi_1}}})} )}{}}
 \quad 
 \Rule[name=Hdlers]
 {\goodWSig{\Gamma}{\tau}{n}
@@ -121,23 +126,21 @@ $$
 {\goodSig{\Gamma}{"RecSig"~\tau~R}{n}}
 $$
 $$
-\Rule[name=Hdler-Proj]
-{ \goodWSig{\Gamma}{\tau}{N}
-\quad \goodTerm{\Gamma}{o}{\cL("RecSig"~\tau~R)}
-\quad j < N
+\Rule[name=reclkg/proj]
+{ \goodWSig{\Gm}{\wsig}{N}
+\\ \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ j < N
 }
-{\goodTerm{\Gamma}{"prjR"~j~o}{("RecSig1"~(\pi_1^j \tau)~(\pi_2^j \tau)~R)}}
+{\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 $$
 $$
-\Rule[name=Rec-Constr]
-{ 
-  % \goodWSig{\Gamma}{\tau}{N}
-\quad \goodTerm{\Gamma}{T}{\bW \tau}
-% \quad \goodType{\Gamma}{R}{}
-\quad \goodTerm{\Gamma}{r}{\cL("RecSig"~\tau~R)}
-\quad \goodTerm{\Gamma}{w}{El~("W"~T)}
+\Rule[name=tm/wrec]
+{ \goodWSig{\Gm}{\wsig}{N}
+\\ \goodType{\Gm}{R}{}
+\\ \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
 }
-{\goodTerm{\Gamma}{"Wrec"~r~w}{R}}
+{\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
 \YZ{I suppose Rec-Constr is only for exhaustivity checking? If so, then would it be more intuitive to not include the w in the term? And I suppose the programmer will want to use sealing to hide its type, or otherwise it would fail to normalize for lack of a beta rule?}\EDJreply{ 1. Yes. But not include w will cause $"Wrec"~r$ be a function type. we are not supposed to add a new intro-rule for function type(or for any other type), this is bad meta-theory design. \\
   2. It is actually the other way around -- if things are abstracted, then no beta rule can apply. More concretely, $T : \bW\tau$ is abstracted into $T' : \cU$, then this later one we cannot use $"Wrec"$ on it for sure. But once we have $\{T : \bW\tau, "rec" : \cL(RecSig~\tau)\}$ we are okay, and this, after wrap "rec" with an lambda abstraction, we will have $\cC\{T : \bW\tau, "rec" : \cL(RecSig~\tau~R), "recf" : T -> R\}$ as compilation type. Then with sealing abstraction, we will have $\Sigma(T : U, \Sigma ("rec" : ?, \Sigma("ref" : T -> R)))$ 
 }\YZreply{
@@ -161,11 +164,11 @@ $$
 %
 $$
 $$
-\Rule[name=Rec-Beta]
-{\goodTerm{\Gamma}{h}{\cL("RecSig"~\tau~R)} 
-\\ \goodTerm{\Gamma}{T}{\bW\tau}}
-{\goodTerm{\Gamma}{"Wrec"~h~("Wsup"~j~T~a~b) \equiv 
-("app"~(("app"~("prjR"~j~h))[("id", a)]))[("id", "lam" ("Wrec"~h[p^1]~b))]
+\Rule[name=tmeq/rec/beta]
+{\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
+\\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
+{\goodTerm{\Gamma}{\Wrec{h}{(\wsup{\wsig}{a}{b})} \equiv 
+(\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{h[\pi_1]}{b})})]
 }{R}}\EDJ{"app" and "lam" are lambda application and abstraction}
 $$
 
@@ -200,36 +203,38 @@ $$
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
 \\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
-\Rule[name=Lnkg Compile]
-{ \goodTerm{\Gamma}{o}{\cL \sigma} 
+\Rule[name=lnkg/pkg]
+{ \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 }
 {
-  \goodTerm{\Gamma}{\Tkg {o}}{\cC \sigma}
+  \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
 }
 $$
 $$
-\Rule[name=Sig Add]
-{\goodSig{\Gamma}{\sigma}{n} 
- \quad \goodType{\Gamma}{A}{}
- \quad \goodSeal{\Gamma}{f}{\sigma}{A}
- \quad \goodType{\Gamma, A}{T}{i}}
-{\goodSig{\Gamma}{(\nu^+ \ \sigma \ \{f\} \ T)}{n+1}}
+\Rule[name=lsig/add]
+{\goodSig{\Gm}{\lsig}{n} 
+ \quad \goodType{\Gm}{A}{}
+ \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
+ \quad \goodType{\Gm, A}{T}{i}}
+{\goodSig{\Gm}{(\LSigAdd {\lsig}{\seal}{T})}{n+1}}
 \quad
 \Biggl( \boxed{\goodSeal{\Gamma}{s}{\sigma}{A}} 
 := \boxed{\goodTerm{\Gamma, \cC\sigma}{s}{A[p^1]}} \Biggr)
 $$
 $$
-\Rule[name=Ept Lnkg]
-{}
-{\goodTerm{\Gamma}{\mu\cdot}{\cL \nu\cdot}}
-\quad
-\Rule[name=Lnkg Add]
-{ \goodTerm{\Gamma}{o}{\cL \sigma} 
-\quad \goodType{\Gamma}{A}{}
-\quad  {\goodSeal{\Gamma}{f}{\sigma}{A}}
- \quad \boxed{\goodTerm{\Gamma, A}{t}{T}}
+\Rule[name=lnkg/ept]
+{""}
+{\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}  
 }
-{\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
+\quad
+\Rule[name=lkg/add]
+{ \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
+\\ \goodType{\Gm}{A}{}
+\\  \goodSeal{\Gm}{\seal}{\lsig}{A} 
+\\  \boxed{\goodTerm{\Gm, A}{t}{T}}
+}
+{\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}
+}
 $$
 $$
 \Rule[name=lkg/proj]
