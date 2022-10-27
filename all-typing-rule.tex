@@ -1,15 +1,16 @@
+\begin{mathparpagebreakable}
 \judgebox{\goodCtx{\Gm}{i}}
-$$ 
+\\ 
 \Rule[name=ctx/ept]{ "" }{\goodCtx{\cdot}{0}} 
 \quad
 \Rule[name=ctx/ext]
 {\goodCtx{\Gm}{i} \quad \goodType{\Gm}{A}{j}}
 {\goodCtx{\Gm, A}{i \cup j}}  
-$$
-
-
+\\
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 \judgebox{ \goodType{\Gm}{T}{i} }
-$$
+\\
 \Rule[name=ty/universe]
 { "" }
 {\goodType{\Gm}{\cU}{j + 1}}
@@ -26,9 +27,9 @@ $$
 {\goodType{\Gm}{A}{j} 
   \quad \goodType{\Gm, A}{B}{k}}
 {\goodType{\Gm}{\TyPi{A}{B}}{j \cup k}}
-$$
+\\
 
-$$
+\\
 \quad 
 \Rule[name=func+pair/subst]
 {\goodSub{\Gm}{\gm}{\Delta}
@@ -40,9 +41,9 @@ $$
   \quad 
   \goodType{\Gm}{ \sub{(\Sigma A B)}{\gm} \equiv \Sigma \sub{A}{\gm} \sub{B}{\gm^\uparrow} }{j \cup k}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=type/subst]
 {\goodType{\Delta}{T}{j} 
   \quad {\goodSub{\Gm}{\gm}{\Delta}}}
@@ -54,9 +55,10 @@ $$
   \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \quad 
   \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0}
 }
-$$
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 \judgebox{ \goodTerm{\Gm}{t}{T} }
-$$
+\\
 \Rule[name=tm/code]
 {\goodType{\Gm}{T}{j}}
 {\goodTerm{\Gm}{\codety{T}}{\cU}
@@ -69,8 +71,8 @@ $$
 {\goodTerm{\Delta}{t}{T}
   \quad {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodTerm{\Gm}{ \sub{t}{\gm}}{ \sub{T}{\gm} }}
-$$
-$$
+\\
+\\
 \Rule[name=tm/lam]
 {\goodTerm{\Gm, A}{t}{B}}
 {\goodTerm{\Gm}{\lam{t}}{\TyPi {A} {B}}}
@@ -89,17 +91,17 @@ $$
 {\goodTerm{\Gm}{\fst{t}}{A}
 \\\\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
 }
-$$
-$$
+\\
+\\
 \Rule
 {}
 {\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{(\sub{t}{\gm^\uparrow})}}{\TyPi {A} {B}}
 \quad \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\Sigma A B}
 \quad \goodType{\Gm}{\El{(\sub{T}{\gm})} \equiv \sub{(\El{T})}{\gm}}{}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=tm/bool]
 {""}
 {\goodTerm{\Gm}{\true, \false}{\cB}}
@@ -110,9 +112,10 @@ $$
  \goodTerm{\Gm}{ \sub{\true}{\gm} \equiv \true}{\cB} \quad 
  \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
 }
-$$
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 \judgebox{\goodSub{\Gm}{\gm}{\Delta}}
-$$
+\\
 \Rule[name=subst/ept]
 {""}{\goodSub{\Gm}{\epsilon}{\cdot}}
 \quad
@@ -127,9 +130,9 @@ $$
 \Rule[name=subst/ext]
 {\goodSub{\Gm}{\gm}{\Delta} \quad \goodTerm{\Gm}{t}{ \sub{A}{\gm}}}
 {\goodSub{\Gm}{\SubstExt{\gm}{t}}{(\Delta, A)}}
-$$
+\\
 
-$$
+\\
 \Rule[name=subst/proj-1]
 {\goodSub{\Gm}{\gm}{(\Delta, A)}}
 {\goodSub{\Gm}{\pi_1 \gm}{\Delta}}
@@ -141,12 +144,12 @@ $$
 \Rule[name=substeq/eta]
 {}
 {\goodSub{\Gm}{(\pi_1 \gm, \pi_2 \gm) \equiv \gm}{\Delta}}
-$$
 
 
-
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 \judgebox{\goodWSig{\Gm}{\wsig}{n}}
-$$
+\\
 \Rule[name=wsig/ept]
 {""}
 {\goodWSig{\Gm}{\WSigEmp}{0}}
@@ -166,11 +169,11 @@ $$
 {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
 \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
 }
-$$
+\\
 
 
 
-$$
+\\
 \Rule[name=wsigeq/proj/eta]
 {\goodWSig{\Gm}{\wsig}{n} \quad j < n}
 {\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
@@ -183,9 +186,9 @@ $$
   \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
 \\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
   }
-$$
+\\
 
-$$
+\\
 \Rule[name=ty/wsig/proj]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
@@ -195,9 +198,9 @@ $$
   \goodType{\Gm}{\wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv A }{i} 
   \\ \goodType{\Gm, \wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} }}{\wsigproj{j}{2}{ \WSigAdd{\wsig}{A}{B} } \equiv B}{i}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=wsig/sub]
 {\goodWSig{\Gm}{\wsig}{n+1}}
 {\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
@@ -210,11 +213,11 @@ $$
 \\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
 }
 \quad 
-$$
+\\
 
 
 
-$$
+\\
 \Rule[name=tm/wcode]
 {\goodWSig{\Gm}{\wsig}{n}}
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
@@ -225,9 +228,9 @@ $$
   \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
 {\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
-$$
+\\
 
-$$
+\\
 \Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
   \\ \goodType{\Gm}{A}{i}
@@ -235,9 +238,9 @@ $$
 }{
   \goodWSig{\Gm}{\sub{\WSigSub{\WSigAdd{\wsig}{A}{B}}}{\gm} \equiv \wsig}{n}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=wsigeq/sub/subst]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
@@ -247,11 +250,11 @@ $$
 \Rule[name=ind/cstr/subst ]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
-$$
 
-
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 \judgebox{\goodSig{\Gm}{\lsig}{n} }
-$$
+\\
 \Rule[name=ty/lkg]
 {\goodSig{\Gm}{\lsig}{n}}
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
@@ -264,9 +267,9 @@ $$
   \\ \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}
   \\ \goodType{\Gm}{\TyTkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyTkg{\lsig})}{\gm}}{i}
   }
-$$
+\\
 
-$$
+\\
 \Rule[name=lsig/ept]
 {""}
 {\goodSig{\Gm}{\LSigEmp}{0}}
@@ -281,9 +284,9 @@ $$
  \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
  \quad \goodType{\Gm, A}{T}{i}}
 {\goodSig{\Gm}{(\LSigAdd {\lsig}{\seal}{T})}{n+1}}
-$$
+\\
 
-$$ 
+\\ 
 \Rule[name=lsig/proj]
 {\goodSig{\Theta}{\lsig}{n+1} 
 \\ \goodSub{\Gm}{\gm}{\Theta}
@@ -295,9 +298,9 @@ $$
 \\ 
 \goodSig{\Gm}{\LSigAdd{\lsigproj{1} {\lsig}}{\lsigproj{s}{\lsig}}{\lsigproj{2}{\lsig}} \equiv \lsig }{n+1}
 }
-$$
+\\
 
-$$ 
+\\ 
 \Rule[name=lsigeq/proj/beta]
 {\goodSig{\Gm}{\lsig}{n} 
 \quad \goodType{\Gm}{A}{}
@@ -308,9 +311,9 @@ $$
 \\ \goodSeal{\Gm}{\lsigproj{s}{(\LSigAdd{\lsig} {\seal} {T})} \equiv \seal}{\lsig}{A}
 \\ \goodType{\Gm, A}{\lsigproj{2}{(\LSigAdd {\lsig} {\seal}  {T})} \equiv T}{}
 }
-$$
+\\
 
-$$ 
+\\ 
 \Rule[name=lsig/add+proj/subst]
 {\goodSig{\Gm}{\gm}{\Theta}}
 {
@@ -323,10 +326,10 @@ $$
 \\ \goodSeal{\Gm}{\sub{\lsigproj{s}{\lsig}}{\gm} \equiv {\lsigproj{s}{\sub{\lsig}{\gm}}} }{\lsig}{A}
 \\ \goodType{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{ \sub{\lsigproj{2}{\lsig}}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
 }
-$$
+\\
 
 
-$$
+\\
 \Rule[name=lnkg/ept]
 {""}
 {\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}  
@@ -349,9 +352,9 @@ $$
 {
   \goodTerm{\Gm}{\sub{\Tkg {o}}{\gm} \equiv \Tkg {\sub{o}{\gm}}}{\TyTkg{\lsig}}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=lkg/add]
 { \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 \\ \goodType{\Gm}{A}{}
@@ -364,18 +367,18 @@ $$
 \Rule[name=lkgeq/add/eta]
 {\goodTerm{\Gm}{o}{\TyLkg \lsig}}
 {\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{o}}{\lkgproj{2}{o}}{\TyLkg{\lsig}} \equiv o }{\TyLkg{\lsig}}}
-$$
+\\
 
 
-$$
+\\
 \Rule[name=lkg/proj]
 {\goodTerm{\Gm}{o}{\TyLkg{\lsig}}}
 {\goodTerm{\Gm}{\lkgproj{1} {o}}{\TyLkg {(\lsigproj{1} {\lsig})}}
 \\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{o}}{\lsigproj{2}{\lsig}}
 }
-$$
+\\
 
-$$ 
+\\ 
 \Rule[name=lkgeq/proj/beta]
 {\goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 \quad \goodType{\Gm}{A}{}
@@ -384,8 +387,8 @@ $$
 {\goodTerm{\Gm}{\lkgproj{1} {(\LkgAdd {o} {t})} \equiv o}{\TyLkg \lsig}
 \\ \goodTerm{\Gm, A}{\lkgproj{2}{(\LkgAdd {o}{t})} \equiv t}{T}
 }
-$$
-$$
+\\
+\\
 \Rule[name=lkgeq/add+proj/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
 {
@@ -394,10 +397,10 @@ $$
 \\\\ \goodTerm{\Gm}{ \sub{\lkgproj{1} {o}}{\gm} \equiv \lkgproj{1} {\sub{o}{\gm}} }{\sub{\TyLkg (\lsigproj{1} {\lsig})}{\gm}}
 \\
 \goodTerm{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{\sub{\lkgproj{2}{o}}{\gm^\uparrow} \equiv \lkgproj{2}{\sub{o}{\gm}}}{\lsigproj{2}{\lsig}}}
-$$
+\\
 
 
-$$
+\\
 \Rule[name=pkg/def]
 {}
 {\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
@@ -407,45 +410,43 @@ $$
 \\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
 \\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {o} {t})} \equiv ((\Tkg {o}), t["sf" \ f][(id, \Tkg {o})]) }{}
 }
-$$
 
-
-\begin{figure}[H]
-
-  \judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
-  = [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
-  $$
-  \Rule[name=seal/subst]
-  { \goodSeal{\Delta}{s}{\lsig}{A}
-    \quad {\goodSub{\Gm}{\gm}{\Delta}}}
-  {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
-  \coloneq
-  \frac
-  { \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
-    \quad  \goodSub{\Gm}{\gm}{\Delta}  }
-  {\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}
-  $$
-  $$
-  \Rule[name=seal/id]
-  {}
-  {\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
-  \coloneq \goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}
-  $$
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
+\judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
+= [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
+\\
+\Rule[name=seal/subst]
+{ \goodSeal{\Delta}{s}{\lsig}{A}
+  \quad {\goodSub{\Gm}{\gm}{\Delta}}}
+{\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
+\coloneq
+\boxed{
+\frac
+{ \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
+  \quad  \goodSub{\Gm}{\gm}{\Delta}  }
+{\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}}
+\\
+\\
+\Rule[name=seal/id]
+{}
+{\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
+\coloneq \boxed{\goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}}
+\\
 
 \medskip
 
-\end{figure}
 
-$$
+\\
 \Rule[name=ty/casesig]
 {\goodType{\Gm}{A}{}
 \quad \goodType{\Gm, A}{B}{}
 \quad \goodType{\Gm}{R}{}
 }
 {\goodType{\Gm}{\CaseSig{A}{B}{R} \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{ \SubstComp {\pi_1}{\pi_1}})})} {\sub{R}{\SubstComp{\pi_1}{\pi_1}}})} )}{}}
-$$
+\\
 
-$$
+\\
 \Rule[name=reclkg/defN]
 {\goodWSig{\Gm}{\wsig}{n+1}
 }
@@ -453,9 +454,9 @@ $$
         \LSigAdd{\RecSig{\WSigSub{\wsig}}{R}}
         {\pi_2}
         {\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R}} }{n+1}}
-$$
+\\
 
-$$
+\\
 \Rule[name=reclkg/def0]
 {\goodWSig{\Gm}{\wsig}{0}
 }
@@ -467,8 +468,8 @@ $$
 \\ j < N
 }
 {\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
-$$
-$$
+\\
+\\
 \Rule[name=tm/wrec]
 { \goodWSig{\Gm}{\wsig}{N}
 \\ \goodType{\Gm}{R}{}
@@ -476,9 +477,9 @@ $$
 \\ \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
 }
 {\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
-$$
+\\
 
-$$
+\\
 \Rule[name=reclkg/proj/beta]{
   \goodWSig{\Gm}{\wsig}{N}
   \\ j < N
@@ -487,9 +488,9 @@ $$
   \goodTerm{\Gm}{\Recproj{j}{o}}{
     \CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R}}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=reclkg/proj/defN]{}{
   \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{...}
 }
@@ -497,20 +498,21 @@ $$
 \Rule[name=reclkg/proj/def0]{}{
   \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{...}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=tmeq/rec/beta]
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
 \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
 {\goodTerm{\Gamma}{\Wrec{h}{(\wsup{\wsig}{a}{b})} \equiv 
 (\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{h[\pi_1]}{b})})]
-}{R}}$$
-
+}{R}}
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
 
 \judgebox{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}}
 
-$$
+\\
 \Rule[name=inh/id]
 {""}
 {\goodInh{\Gm}{\InhId}{\lsig}{\lsig}}
@@ -522,9 +524,9 @@ $$
 \\ \goodType{\Gm, A_2}{T_2}{}
   \\ \goodTerm{\Gm, A_2}{t}{T_2}}
 {\goodInh{\Gm}{\InhOv{h}{t}}{(\LSigAdd  {\sigma_1 } {\seal_1} {T_1})}{(\LSigAdd   {\sigma_2} {\seal_2} {T_2})}}
-$$
+\\
 
-$$
+\\
 \Rule[name=inh/ext]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}}
@@ -536,8 +538,8 @@ $$
 \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
 {\goodInh{\Gm}{\InhInh{h}}{(\LSigAdd {\sigma_1} {\seal_1}  {T})}{(\LSigAdd   {\sigma_2} {\seal_2} {T[(\pi_1, \uparrow^s)]})}}
-$$
-$$
+\\
+\\
 \Rule[name=tm/inh]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \quad \goodTerm{\Gm}{l}{\TyLkg{\sigma_1}}
@@ -551,9 +553,9 @@ $$
 \goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
 {\goodInh{\Gm}{\InhNest{h}{i}}{(\LSigAdd {\sigma_1} {\seal_1}  {\TyLkg\tau_1})}{(\LSigAdd   {\sigma_2} {\seal_2} {\TyLkg{\tau_2})}}}
 \quad
-$$
+\\
 
-$$
+\\
 \Rule[name=inh/id/beta]
 { \goodTerm{\Gm}{o}{\TyLkg{\sigma} }}
 {\goodTerm{\Gm}{\inh {(\InhId)} {o} \equiv o}{...}}
@@ -567,9 +569,9 @@ $$
 {\goodTerm{\Gm}{\inh {\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}} {o}
 \equiv \LkgAdd{\inh {h}{o}}{t}
 }{...}}
-$$
+\\
 
-$$
+\\
 \Rule[name=inh/inh/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \quad \goodTerm{\Gm}{m}{\TyLkg {\sigma_1}}
@@ -577,9 +579,9 @@ $$
   \quad \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
 {\goodTerm{\Gm}{\inh {(\InhInh{h})} {(\LkgAdd{m}{t})} \newline  \equiv \LkgAdd{(\inh {h} {m})}  {t[(\pi_1, \uparrow^s)]}}{...}} 
-$$
+\\
 
-$$
+\\
 \Rule[name=inh/ov/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
 \\ \goodType{\Gm, A_1}{T_1}{}
@@ -593,9 +595,9 @@ $$
   \LkgAdd{\inh{h}{o}}{t}}
   {...}
 }
-$$
+\\
 
-$$
+\\
 \Rule[name=inh/nest/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
@@ -609,4 +611,5 @@ $$
 }
 {...}
 }
-$$
+
+\end{mathparpagebreakable}
