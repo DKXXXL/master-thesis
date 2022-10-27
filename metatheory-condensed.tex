@@ -15,7 +15,7 @@ it supports family polymorphism by providing MLTT-style typing rules that
 can be used to \emph{encode} core aspects of the language supported by our
 plugin, rather than building them in directly.
 %
-For example, \TT supports the extension of inductive types through
+For example, \TT supports extending inductive types through
 formation rules that enable the encoding of the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
 Also unlike our plugin, \TT does not feature automations such as
 the generation of propositional equalities and partial recursors,
@@ -23,7 +23,33 @@ but it is expressive enough to encode their definitions.
 
 \input{selected-typing.tex}
 
-\noindentparagraph{Syntax.}
+\noindentparagraph{MLTT.}
+
+\cref{fig:typing-selected} presents the syntax of \TT.
+The new forms (relative to MLTT) are highlighted.
+
+As is standard in MLTT presentations, we use explicit substitutions~\cite{substcalculus,abadi1989subst}:
+substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
+of the syntax rather than meta-operations.
+%
+Variables are represented by de Bruijn indices:
+\var{n} is the variable bound by the $n$-th closest enclosing binder.
+For example, $\lambda x.\,\lambda y.\,x$ is $\lam{(\lam{\var{1}})}$.
+%
+Formation rules for substitutions have the form
+$\goodSub{\Gm}{\gm}{\Dl}$, which says that applying~$\gm$ to terms
+valid in the context~$\Dl$ yields terms valid in~$\Gm$.
+%
+The two main forms of substitutions are weakening and extension:
+\sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
+\sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
+then applies~$\gm$.
+For example, rule \ruleref{tm/proj} states that if $t$ is a dependent pair
+of type $\TySigma{A}{B}$, then $\snd{t}$ has type $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
+
+%Note that we are actually using predicative universe, so we actually have different levels of universes $\cU_i$. 
+%We omit universe levels in our latex presentation for conciseness and readability.
+
 
 \newpage
 

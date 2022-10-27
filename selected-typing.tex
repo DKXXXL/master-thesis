@@ -113,6 +113,48 @@
     \goodSub{\Gm, A_n, ..., A_1, A_0}{\var{n}}{\sub{A_n}{\SubstWeak{n+1}}}
 }
 
+\Rule[name=tm/lam]{
+    \goodType{\Gm}{A}{}
+    \\
+    \goodTerm{\Gm, A}{t}{B}
+}{
+    \goodTerm{\Gm}{\lam{t}}{\TyPi {A} {B}}
+}
+
+\Rule[name=tm/app]{
+    \goodTerm{\Gm}{t}{\TyPi {A} {B}}
+}{
+    \goodTerm{\Gm, A}{\app{t}}{B}
+}
+
+\Rule[name=tm/pair]{
+    \goodTerm{\Gm}{t_1}{A} 
+    \\
+    \goodTerm{\Gm}{t_2}{\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}
+}{
+    \goodTerm{\Gm}{(t_1,t_2)}{\TySigma{A}{B}}
+}
+
+\Rule[name=tm/proj]{
+    \goodTerm{\Gm}{t}{\TySigma A B}
+}{
+    \goodTerm{\Gm}{\fst{t}}{A}
+    \\
+    \goodTerm{\Gm}{\snd{t}}{\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}}
+}
+
+\Rule[name=tm/code]{
+    \goodType{\Gm}{T}{j}
+}{
+    \goodTerm{\Gm}{\codety{T}}{\cU}
+}
+
+\Rule[name=ty/el]{
+    \goodTerm{\Gm}{T}{\cU}
+}{
+    \goodType{\Gm}{\El{T}}{j}
+}
+
 \Rule[name=tm/singleton]{
     \goodWSig{\Gm}{\wsig}{n}
 }{

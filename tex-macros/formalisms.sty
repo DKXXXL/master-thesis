@@ -82,9 +82,11 @@
     }}%
 }
 \newcommand\rulelbl[2][]{%
+  {\color{black!75}%
   \textnormal{(}%
   {\small\textsc{\rulelblfont#2}}%
-  \textnormal{)}
+  \textnormal{)}%
+  }
   \ifthenelse{\isempty{#1}}{
       \label{rule:#2}
   }{
