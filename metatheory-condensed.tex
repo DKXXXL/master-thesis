@@ -38,7 +38,7 @@ For example, $\lambda x.\,\lambda y.\,x$ is $\lam{(\lam{\var{1}})}$.
 %
 Formation rules for substitutions have\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) } the form 
 $\goodSub{\Gm}{\gm}{\Dl}$, which says that applying~$\gm$ to terms
-valid in the context~$\Dl$ yields terms valid in~$\Gm$.
+valid in the context~$\Dl$ yields terms valid in~$\Gm$. 
 %
 The two main forms of substitutions are weakening and extension:
 \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
@@ -133,7 +133,7 @@ $$
 {\goodTerm{\Gamma}{(\mu^+ \ o \ \{f\} \ t)}{\cL(\nu^+ \ \sigma \ \{f\} \ T)}}
 $$
 We start with signature (in a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is a list of types contained by a \textit{linkage}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript.   We will use $\{a : T_1, b : T_2, ..\}$ as a shorthand for signature with type $T_1, T_2, ..$ for readability. 
-
+\newpage 
 Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Sealing is corresponding \textit{to indicating whether each field is overridable(extensible) or non-overridable (thus definitionally exposed) in the Coq Plugin}. 
 Concretely, we encode our STLC example to show the motivation of the sealing.
 %\YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}\EDJreply{All late-bound are achieved by ``selective-abstraction'' imposed by sealing. For example, recursion will be consequently abstracted because of the abstraction of the inductive type it recurse on. 
@@ -147,6 +147,84 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
 % This above elaborated "hiding" syntax directly corresponding to the $f$ in $(\mu^+ ~o~\{f\}~t)$, where each fields decides the abstraction of the prior.
 
 
+\begin{figure}[!htb]
+  \lstset{
+      basicstyle=\fontsize{8}{8.5}\ttfamily,
+  % numbers=left,
+  }
+  
+  \begin{minipage}{\textwidth}
+  \begin{multicols}{3}
+  
+
+  \definecolor{codecomment-color}{HTML}{0DA3FF}
+  
+  \begin{lstlisting}
+  Family STLC. 
+   FInductive ty (* no hiding *)
+
+   FInductive tm (* hiding ty *) 
+   
+   FRecursion subst
+     Case ... (* hiding ty tm *)
+     ...
+   End subst (* hiding ty *) 
+   
+
+   Field t1 := (tvar 0) 
+   (* hiding ty tm subst *) 
+
+
+   Field t2 := (tapp t1 t1)
+   (* hiding ty tm subst *)
+
+  ...
+  \end{lstlisting}
+  
+  % \makeline[0pt]{Parser-exmp-before-start}{Parser-exmp-before-end}[codecomment-color!50]
+  
+  \columnbreak
+  % \definecolor{codecomment-color}{HTML}{5D030F}
+  
+  \begin{lstlisting}
+
+    (* s₁  : {} | {} *)
+    - o₁  = μ+ {} s₁ ⋆ : 𝕃{ty : 𝕎τ₁}
+    (* s₂  : {ty : 𝕎τ₁} | [ty : 𝕌; bool : ty; ...] *) 
+    - o₂  = μ+ o₁ s₂ ⋆ : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂}
+    (* s₃₁  : {ty : 𝕎τ₁; tm : 𝕎τ₂} 
+            | [ty : 𝕌; ... ; tm : 𝕌; tvar : tm; ...] *)
+    - o₃₁  = μ+ o₂ s₃ (μ+ ..) : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂; subst' : 𝕃(RecSig)}
+    (* s₃ : {ty : 𝕎(τ₁); tm : 𝕎τ₂; subst' : 𝕃(RecSig)} 
+          | [ty : 𝕌; ... ; tm : 𝕎τ₂; subst' : 𝕃(RecSig)] *)
+    - o₃ = μ+ o₃₁ s₃ (λ (Wrec ..)) : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
+    
+    (* s₄ : {ty : 𝕎τ₁; ... subst : tm → nat → tm → tm } 
+          | [ty : 𝕌; ... ; tm : 𝕌; subst : tm → nat → tm → tm] *)
+    - o₄ = μ+ o₃ s₄ .. : 𝕃{ty : 𝕎τ₁; ... t₁ : tm}
+  
+    (* s₅ : {ty : 𝕎τ₁; tm : 𝕎τ₂; subst : 𝕃(RecSig); t1 : tm} 
+          | [ty : 𝕌; tm : 𝕌; subst : 𝕃(RecSig); t1 : tm] *)
+    - o₅ = μ+ o₄ s₅ : 𝕃{ ... }
+  \end{lstlisting}
+  
+  \columnbreak
+  
+
+  % \makeline[.5\textwidth+9pt]{Parser-exmp-after-start}{Parser-exmp-after-end}[codecomment-color!50]
+  
+  \end{multicols}
+  \end{minipage}
+  \caption{Sealing and Linkage}\label{fig:sealing+linkage}
+  \end{figure}
+
+In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields. For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm" is not hidden to achieve exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
+
+Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. We use surface syntax for eligibility: curly brackets indiate a signature (omitting sealing at type level for readability) and square bracket indicate a nested sigma type, corresponding to sealing judgement $\goodSeal{}{s}{\sigma}{A}$.
+
+For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added type "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
+
+Basically, the hidden prior fields---inductive type are sealed into arbitrary type with ``constructors only'', where the recursion is constructed without sealing the inductive type.  Generally speaking, each extensible inductive type are hidden for all the other fields except for the recursion on itself. Furthermore, normal fields (e.g. "t1, t2") can expose its definition to all in meta-theory by using singleton type. (e.g.  saying "t1 : S(tvar 0)" instead of the current "t1 : tm"); and then overridable fields are hidden for normal fields (by sealing "t1 : S(tvar 0)" into "t1 : tm"). Generally speaking, anything with explicit "hiding" decoration can be understood as sealing. 
 
 % Intuitively, sealing corresponds to the following surface syntax\\
 % \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
