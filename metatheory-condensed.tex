@@ -134,7 +134,8 @@ $$
 $$
 We start with signature (in a brand new judgement $\goodSig{\Gamma}{\sigma}{n}$). A signature is a list of types contained by a \textit{linkage}\footnote{Following the convention by \citet{zm2017}, we name the meta-theoretical correspondents of \textit{family} as \textit{linkage}.}, tracking the length as superscript.   We will use $\{a : T_1, b : T_2, ..\}$ as a shorthand for signature with type $T_1, T_2, ..$ for readability. 
 
-Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Sealing is used as a convenient device \textit{to indicate whether each field is overridable(extensible) or non-overridable (thus definitionally exposed)}.
+Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing judgement} $\goodSeal{\Gamma}{f}{\sigma}{A}$, which is an alias of a term judgement. Sealing is corresponding \textit{to indicating whether each field is overridable(extensible) or non-overridable (thus definitionally exposed) in the Coq Plugin}. 
+Concretely, we encode our STLC example to show the motivation of the sealing.
 %\YZ{Is sealing used only for late-binding the signatures of inductive types? Do I understand correctly that late binding of other kinds of fields (like subst) is achieved by the boxed premise in rule "LNKG ADD"?}\EDJreply{All late-bound are achieved by ``selective-abstraction'' imposed by sealing. For example, recursion will be consequently abstracted because of the abstraction of the inductive type it recurse on. 
 %}\EDJreply{Sorry, I see what you mean. Yes. the box part is important for late-binding. But the functionality of sealing is always there. They are both required to achieve overriding. A illustrative example is, if the type is $S(\bot)$, then even with the boxed premise, it is still not overridable because the type itself restricts all the possibilities.}\YZreply{
 %  By "selective abstraction", do you mean in the metatheory the programmer chooses what and how to abstract?
@@ -145,11 +146,13 @@ Adding new types into signature \ruleref{Sig Add} requires a \textit{sealing jud
 % We can now point out how "Overridable" and "pins" is modeled. Despite the fact we have a complicated dynamic of invisibility between overridable and normal fields in the plugin, every field can be elaborated into the (pseudo)-syntax form \\ \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...}  where every former field x,y,z,...  hide its definition when type-check t, and remaining former fields have their definition exposed in t.
 % This above elaborated "hiding" syntax directly corresponding to the $f$ in $(\mu^+ ~o~\{f\}~t)$, where each fields decides the abstraction of the prior.
 
-Intuitively, sealing corresponds to the following surface syntax\\
-\mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
 
 
-The reader should feel this subtle difference compared to our current plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by all the following fields.
+% Intuitively, sealing corresponds to the following surface syntax\\
+% \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
+
+
+% The reader should feel this subtle difference compared to our current plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by all the following fields.
 
 
 Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
