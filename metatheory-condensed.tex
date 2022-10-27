@@ -1,5 +1,5 @@
 We contribute \TT, a core type theory that incorporates the core elements
-of \underline{f}amily polymorphism into
+of \underline{f}a\underline{m}i\underline{l}y polymorphism into
 \underline{M}artin-\underline{L}öf dependent \underline{t}ype \underline{t}heory~\cite{martin1982constructive},
 while maintaining consistency and canonicity.
 
@@ -39,8 +39,9 @@ For example, $\lambda x.\,\lambda y.\,x$ is $\lam{(\lam{\var{1}})}$.
 %
 Typing judgments for substitutions have the form 
 %\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) }
-$\goodSub{\Gm}{\gm}{\Dl}$, which says that applying~$\gm$ to terms
-valid in the context~$\Dl$ yields terms valid in~$\Gm$. 
+$\goodSub{\Gm}{\gm}{\Dl}$.
+The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
+yields terms valid in~$\Gm$ (e.g., rule \ruleref{tm/sub}).
 %
 The two main forms of substitutions are weakening and extension:
 \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
@@ -307,24 +308,24 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   
   \begin{lstlisting}
 
-    (* s₁  : {} | {} *)
-    - o₁  = μ+ {} s₁ ⋆ : 𝕃{ty : 𝕎τ₁}
-    (* s₂  : {ty : 𝕎τ₁} | [ty : 𝕌; bool : ty; ...] *) 
-    - o₂  = μ+ o₁ s₂ ⋆ : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂}
-    (* s₃₁  : {ty : 𝕎τ₁; tm : 𝕎τ₂} 
+    (* s[@₁@]  : {} | {} *)
+    - o[@₁@]  = μ+ {} s[@₁@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]}
+    (* s[@₂@]  : {ty : 𝕎τ[@₁@]} | [ty : 𝕌; bool : ty; ...] *) 
+    - o[@₂@]  = μ+ o[@₁@] s[@₂@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]}
+    (* s[@₃@][@₁@]  : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]} 
             | [ty : 𝕌; ... ; tm : 𝕌; tvar : tm; ...] *)
-    - o₃₁  = μ+ o₂ s₃ (μ+ ..) : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂; subst' : 𝕃(RecSig)}
-    (* s₃ : {ty : 𝕎(τ₁); tm : 𝕎τ₂; subst' : 𝕃(RecSig)} 
-          | [ty : 𝕌; ... ; tm : 𝕎τ₂; subst' : 𝕃(RecSig)] *)
-    - o₃ = μ+ o₃₁ s₃ (λ (Wrec ..)) : 𝕃{ty : 𝕎τ₁; tm : 𝕎τ₂; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
+    - o[@₃@][@₁@]  = μ+ o[@₂@] s[@₃@] (μ+ ..) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)}
+    (* s[@₃@] : {ty : 𝕎(τ[@₁@]); tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)} 
+          | [ty : 𝕌; ... ; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)] *)
+    - o[@₃@] = μ+ o[@₃@][@₁@] s[@₃@] (λ (Wrec ..)) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
     
-    (* s₄ : {ty : 𝕎τ₁; ... subst : tm → nat → tm → tm } 
+    (* s[@₄@] : {ty : 𝕎τ[@₁@]; ... subst : tm → nat → tm → tm } 
           | [ty : 𝕌; ... ; tm : 𝕌; subst : tm → nat → tm → tm] *)
-    - o₄ = μ+ o₃ s₄ .. : 𝕃{ty : 𝕎τ₁; ... t₁ : tm}
+    - o[@₄@] = μ+ o[@₃@] s[@₄@] .. : 𝕃{ty : 𝕎τ[@₁@]; ... t[@₁@] : tm}
   
-    (* s₅ : {ty : 𝕎τ₁; tm : 𝕎τ₂; subst : 𝕃(RecSig); t1 : tm} 
+    (* s[@₅@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst : 𝕃(RecSig); t1 : tm} 
           | [ty : 𝕌; tm : 𝕌; subst : 𝕃(RecSig); t1 : tm] *)
-    - o₅ = μ+ o₄ s₅ : 𝕃{ ... }
+    - o[@₅@] = μ+ o[@₄@] s[@₅@] : 𝕃{ ... }
   \end{lstlisting}
   
   \columnbreak
@@ -339,7 +340,7 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
 
 In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
 
-Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For eligibility, curly brackets indiate a signature (omitting sealing at type level for readability) and square bracket indicate a nested sigma type, corresponding to sealing judgement $\goodSeal{}{s}{\sigma}{A}$.
+Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For legibility, curly brackets indicate a signature (omitting sealing at type level for readability) and square bracket indicate a nested sigma type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
 
 For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
 
