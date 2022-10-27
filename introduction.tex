@@ -116,11 +116,11 @@ Specifically, we make the following contributions.
 
 \begin{itemize}[leftmargin=3.5ex]
 
-\item We present the first\EDJ{Are you sure? This claim is so bold.} language design that enables extensible
+\item We present, to our knowledge, the first\EDJ{Are you sure? This claim is so bold.}\YZreply{Is there any previous language designs in this space?} language design that enables extensible
 metatheory mechanization in a higher-order, dependent type theory with
 inductive types (\cref{sec:lang-design}).
 The language design reconciles the expressiveness enabled by
-family polymorphism with the exactness of a proof assistant,
+family polymorphism with the rigor of a proof assistant,
 while retaining an idiomatic programming style.
 
 \item We contribute a prototypical implementation of our language
@@ -131,8 +131,9 @@ extensibility hooks.
 \item We capture the essence of the new language mechanism formally by extending
 Martin–Löf type theory with family polymorphism and extensible inductive
 types (\cref{sec:metatheory}).
-We derive strong meta\-theoretical\EDJ{I will suggest use ``foundational'' instead. Sterling at some places say canonicity is the most basic meta-theoretical property.} results including consistency and
-canonicity.
+We derive foundational meta\-theoretical results including consistency
+and canonicity.
+%\EDJ{I will suggest use ``foundational'' instead. Sterling at some places say canonicity is the most basic meta-theoretical property.}
 We also formalize the translation implemented by the Coq plugin.
 
 \item We present case studies of using our Coq plugin to mechanize
