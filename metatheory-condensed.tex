@@ -93,13 +93,14 @@ Now, we will mainly focus on the newly introduced typing rules, and illustrate t
 
 % linkage, signature and compilation and seal
 $$
-\Rule[name=Ept Sig]
-{}
-{\goodSig{\Gamma}{\nu\cdot}{0}}\quad
-\Rule[name=Lnkg Type/Compile]
-{\goodSig{\Gamma}{\sigma}{n}}
-{\goodType{\Gamma}{\cL \sigma}{i}
-\quad \goodType{\Gamma}{\cC \sigma}{}}
+\Rule[name=lsig/ept]
+{""}
+{\goodSig{\Gm}{\LSigEmp}{0}}
+\quad
+\Rule[name=ty/lkg]
+{\goodSig{\Gm}{\lsig}{n}}
+{\goodType{\Gm}{\TyLkg{\lsig}}{i}
+\\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
 \Rule[name=Lnkg Compile]
 { \goodTerm{\Gamma}{o}{\cL \sigma} 
@@ -233,19 +234,20 @@ Basically, the hidden prior fields---inductive type are sealed into arbitrary ty
 % The reader should feel this subtle difference compared to our current plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by all the following fields.
 
 
-Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
+% Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
 
+Due to the definition of sealing, we can see the importance of compilation type, as the result of a sealing is usually a (nested) sigma type instead of a linkage type. For example, $\TyLkg{\{a : S(\bot), b : a \to \bot\}}$ can only be sealed into $\TyTkg{\{a : \cU, b : a \to \bot\}}$ but never $\TyLkg{\{a : \cU, b : a \to \bot\}}$. Because the later cannot be inhabitted---by projecting the second field of the $ t : \TyLkg{\{a : \cU, b : a \to \bot\}}$, we can get a proof of bottom type.
 
-The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
+% The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
 
 % The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$ for a type $\goodType{\Gamma}{A}{}$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.
 
-The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
+% The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
 
-But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited
-and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
+% But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited
+% and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
 
-However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensable.
+% However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensable.
 
 % Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
 
