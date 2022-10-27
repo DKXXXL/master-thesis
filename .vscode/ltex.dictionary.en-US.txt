@@ -56,3 +56,5 @@ Injectivity
 mechanizations
 rect
 Martin-Löf
+MLTT
+Tarski

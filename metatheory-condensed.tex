@@ -25,7 +25,7 @@ but it is expressive enough to encode their definitions.
 
 \noindentparagraph{MLTT.}
 
-\cref{fig:typing-selected} presents selected syntax and typing rules of \TT.
+\cref{fig:typing-selected} presents the syntax and selected typing rules of \TT.
 The new forms (relative to MLTT) are highlighted.
 We briefly review the base MLTT fragment first.
 
@@ -49,8 +49,11 @@ then applies~$\gm$.
 For example, rule \ruleref{tm/proj} states that if $t$ is a dependent pair
 of type $\TySigma{A}{B}$, then $\snd{t}$ has type $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
 
-%Note that we are actually using predicative universe, so we actually have different levels of universes $\cU_i$. 
-%We omit universe levels in our latex presentation for conciseness and readability.
+We use Tarski-style universes~\cite{hofmann1997syntax}: a universe~$\cU$
+is inhabited by the \emph{codes} of types, with $\El{t}$ decoding~$t$ and
+$\codety{T}$ encoding type~$T$ (rules \ruleref{ty/el} and \ruleref{tm/c}).
+MLTT has an infinite hierarchy of universes;
+we omit universe levels for conciseness.
 
 
 \newpage

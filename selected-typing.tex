@@ -143,16 +143,28 @@
     \goodTerm{\Gm}{\snd{t}}{\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}}
 }
 
-\Rule[name=tm/code]{
+\Rule[name=ty/el]{
+    \goodTerm{\Gm}{t}{\cU}
+}{
+    \goodType{\Gm}{\El{t}}{j}
+}
+
+\Rule[name=tm/c]{
     \goodType{\Gm}{T}{j}
 }{
     \goodTerm{\Gm}{\codety{T}}{\cU}
 }
 
-\Rule[name=ty/el]{
-    \goodTerm{\Gm}{T}{\cU}
+\Rule[name=tm/eq/c]{
+    \goodTerm{\Gm}{t}{\cU}
 }{
-    \goodType{\Gm}{\El{T}}{j}
+    \goodTerm{\Gm}{\codety{\El t} \equiv t}{\cU}
+}
+
+\Rule[name=ty/eq/el]{
+    \goodType{\Gm}{T}{j}
+}{
+    \goodType{\Gm}{\El{\codety T} \equiv T}{}
 }
 
 \Rule[name=tm/singleton]{
@@ -187,6 +199,6 @@
 
 \end{mathpar}
 
-\caption{Selected syntax and typing rules of \TT}
+\caption{Syntax and selected typing rules of \TT}
 \label{fig:typing-selected}
 \end{figure}
