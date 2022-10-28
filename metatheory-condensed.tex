@@ -51,10 +51,24 @@ For example, rule \ruleref{tm/proj} states that if $t$ is a dependent pair
 of type $\TySigma{A}{B}$, then $\snd{t}$ has type $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
 
 We use Tarski-style universes~\cite{hofmann1997syntax}: a universe~$\cU$
-is inhabited by the \emph{codes} of types, with $\El{t}$ decoding~$t$ and
-$\codety{T}$ encoding type~$T$ (rules \ruleref{ty/el} and \ruleref{tm/c}).
+is inhabited by the \emph{codes} of types,
+with $\El{t}$ decoding~$t$ (rule \ruleref{ty/el})
+and $\codety{T}$ encoding type~$T$ (rule \ruleref{tm/c}).
 MLTT has an infinite hierarchy of universes;
-we omit universe levels for conciseness.
+we omit universe levels in the presentation for conciseness.
+
+\noindentparagraph{W-types.}
+
+W-types~\cite{martin1984intuitionistic} are a standard way to model
+inductive types in MLTT.
+A constructor of some inductive type~$T$ is given by a pair of types
+$\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
+given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
+$\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
+it constructs a term of type~$T$ (rule \ruleref{tm/wsup}).
+As the rules suggest, our formulation additionally supports
+\emph{W-type signatures} (judgment form \goodWSig{\Gm}{\wsig}{n})
+composed of $n$ pairs of types, each of which represents a constructor.
 
 
 \newpage
@@ -312,10 +326,10 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
     - o[@₁@]  = μ+ {} s[@₁@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]}
     (* s[@₂@]  : {ty : 𝕎τ[@₁@]} | [ty : 𝕌; bool : ty; ...] *) 
     - o[@₂@]  = μ+ o[@₁@] s[@₂@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]}
-    (* s[@₃@][@₁@]  : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]} 
+    (* s[@₃@][@₁@]  : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]}
             | [ty : 𝕌; ... ; tm : 𝕌; tvar : tm; ...] *)
-    - o[@₃@][@₁@]  = μ+ o[@₂@] s[@₃@] (μ+ ..) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)}
-    (* s[@₃@] : {ty : 𝕎(τ[@₁@]); tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)} 
+    - o[@₃@][@₁@]  = μ+ o[@₂@] s[@₃@] ([@μ@]+ ..) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)}
+    (* s[@₃@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)} 
           | [ty : 𝕌; ... ; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)] *)
     - o[@₃@] = μ+ o[@₃@][@₁@] s[@₃@] (λ (Wrec ..)) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
     
@@ -340,7 +354,7 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
 
 In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
 
-Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For legibility, curly brackets indicate a signature (omitting sealing at type level for readability) and square bracket indicate a nested sigma type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
+Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For legibility, curly brackets indicate a signature (omitting sealing at type level for readability) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
 
 For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
 
@@ -355,7 +369,7 @@ Basically, the hidden prior fields---inductive type are sealed into arbitrary ty
 
 % Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
 
-Due to the definition of sealing, we can see the importance of compilation type, as the result of a sealing is usually a (nested) sigma type instead of a linkage type. For example, $\TyLkg{\{a : S(\bot), b : a \to \bot\}}$ can only be sealed into $\TyTkg{\{a : \cU, b : a \to \bot\}}$ but never $\TyLkg{\{a : \cU, b : a \to \bot\}}$. Because the latter cannot be inhabitted---by projecting the second field of the $ t : \TyLkg{\{a : \cU, b : a \to \bot\}}$, we can get a proof of bottom type. For simplicity, we make sealing a term in the context of compilation type instead of linkage type.
+Due to the definition of sealing, we can see the importance of compilation type, as the result of a sealing is usually a (nested) $\Sigma$-type instead of a linkage type. For example, $\TyLkg{\{a : S(\bot), b : a \to \bot\}}$ can only be sealed into $\TyTkg{\{a : \cU, b : a \to \bot\}}$ but never $\TyLkg{\{a : \cU, b : a \to \bot\}}$. Because the latter cannot be inhabitted---by projecting the second field of the $ t : \TyLkg{\{a : \cU, b : a \to \bot\}}$, we can get a proof of bottom type. For simplicity, we make sealing a term in the context of compilation type instead of linkage type.
 
 % The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
 
