@@ -32,6 +32,12 @@
   \\ \goodType{\Gm, A}{B}{k}}
 {\goodType{\Gm}{\TySigma{A}{B}}{j \cup k}}
 
+\Rule[name=ty/idty]
+{\goodType{\Gm}{A}{j} 
+  \\ \goodTerm{\Gm}{x}{A}
+  \\ \goodTerm{\Gm}{y}{A}}
+{\goodType{\Gm}{\TyId{x}{y}}{j \cup k}}
+
 \Rule[name=type/subst]
 {\goodType{\Delta}{T}{j} 
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
@@ -44,8 +50,15 @@
 \Rule[name=tyeq/subst/comp]
 {""}
 {\goodType{\Gm}{\sub{A}{\gamma_1 \circ \gamma_2} \equiv \sub{A}{\gamma_1}{\gamma_2}}{}}
-\\
-\Rule[name=func+pair/subst]
+
+\Rule[name=base type/subst]
+{\goodSub{\Gm}{\gm}{\Delta}}
+{\goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{j + 1} \\
+  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \\ 
+  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0}
+}
+
+\Rule[name=func+pair+idty/subst]
 {\goodSub{\Gm}{\gm}{\Delta}
 \\ \goodType{\Delta}{A}{} 
 \\ \goodType{\Delta, A}{B}{}
@@ -54,16 +67,12 @@
   \goodType{\Gm}{ \sub{(\TyPi {A} {B})}{\gm} \equiv \TyPi {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
   \\ 
   \goodType{\Gm}{ \sub{(\Sigma A B)}{\gm} \equiv \Sigma \sub{A}{\gm} \sub{B}{\gm^\uparrow} }{j \cup k}
+  \\ 
+  \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{j \cup k}
 }
-\\
 
 
-\Rule[name=base type/subst]
-{\goodSub{\Gm}{\gm}{\Delta}}
-{\goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{j + 1} \\
-  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \\ 
-  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0}
-}
+
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \judgebox{ \goodTerm{\Gm}{t}{T} }
@@ -82,6 +91,10 @@
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodTerm{\Gm}{ \sub{t}{\gm}}{ \sub{T}{\gm} }}
 
+\Rule[name=tmeq/subst/id]
+{""}
+{\goodTerm{\Gm}{ \sub{t}{id} \equiv t}{ T }}
+
 \Rule[name=tm/lam]
 {\goodTerm{\Gm, A}{t}{B}}
 {\goodTerm{\Gm}{\lam{t}}{\TyPi {A} {B}}}
@@ -89,37 +102,82 @@
 \Rule[name=tm/app]
 {\goodTerm{\Gm}{t}{\TyPi {A} {B}}}
 {\goodTerm{\Gm, A}{\app{t}}{B}}
-\\
+
+\Rule[name=tmeq/lam/beta]
+{""}
+{\goodTerm{\Gm, A}{\app{\lam{t}} \equiv t }{B}}
+
+\Rule[name=tmeq/lam/eta]
+{""}
+{\goodTerm{\Gm}{\lam{\app{t}} \equiv t }{\TyPi{A}{B}}}
+
 \Rule[name=tm/pair]
 {\goodTerm{\Gm}{u}{A} 
 \\ \goodTerm{\Gm}{v}{B[(id, u)]}}
 {\goodTerm{\Gm}{(u,v)}{\Sigma A B}}
-\Rule[name=tm/pair/elim]
+
+\Rule[name=tm/pair/proj]
 {\goodTerm{\Gm}{t}{\Sigma A B}}
 {\goodTerm{\Gm}{\fst{t}}{A}
-\\\\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
+\\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
 }
-\\
-\\
-\Rule
+
+\Rule[name=tmeq/pair/proj/beta]
+{""}
+{\goodTerm{\Gm}{\fst{\pair{u}{v}} \equiv u}{A}
+\\ \goodTerm{\Gm}{\snd{\pair{u} {v}} \equiv v}{B[(id, u)]}
+}
+
+\Rule[name=tmeq/pair/proj/eta]
+{""}
+{\goodTerm{\Gm}{\pair{\fst{t}}{\snd{t}} \equiv t}{\TySigma{A}{B}}
+}
+
+
+\Rule[name=tm/bool]
+{""}
+{\goodTerm{\Gm}{\true, \false}{\cB}}
+
+
+\Rule[name=tm/idty]
+{\goodTerm{\Gm}{a}{A}}
+{\goodTerm{\Gm}{\eqrefl{a}}{\TyId{a}{a}}}
+
+\Rule[name=tm/ifb]
+{\goodTerm{\Gm}{c}{\cB} 
+\\ \goodTerm{\Gm}{a}{T}
+\\ \goodTerm{\Gm}{b}{T}}
+{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}
+
+\Rule[name=tm/J/BasePathInduction]
+{\goodTerm{\Gm}{u}{A} 
+ \\ \goodType{\Gm, A, \TyId{\sub{u}{\pi_1}}{\pi_2}}{C}{} 
+  \\  \goodTerm{\Gm}{w}{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}} 
+  \\ \goodTerm{\Gm}{v}{A} 
+  \\ \goodTerm{\Gm}{t}{\TyId{u}{v}}
+  }
+{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{\eqrefl{t}}}}}
+
+\Rule[name=tmeq/ifb/beta]
+{}
+{\goodTerm{\Gm}{\ifb{\true}{a}{b} \equiv a }{T} 
+\\ \goodTerm{\Gm}{\ifb{\false}{a}{b} \equiv b }{T}}
+
+\Rule[name=tmeq/J/beta]
+{}
+{\goodTerm{\Gm}{\Jeq{w}{\eqrefl{u}} \equiv w }{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}}}
+
+\Rule[name=tm/subst]
 {}
 {\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{(\sub{t}{\gm^\uparrow})}}{\TyPi {A} {B}}
 \\ \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\Sigma A B}
 \\ \goodType{\Gm}{\El{(\sub{T}{\gm})} \equiv \sub{(\El{T})}{\gm}}{}
+\\ \goodTerm{\Gm}{ \sub{\true}{\gm} \equiv \true}{\cB} 
+\\  \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
+\\ \goodTerm{\Gm}{\sub{\ifb{c}{a}{b}}{\gm} \equiv \ifb{\sub{c}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm}}}{T}
+\\ \goodTerm{\Gm}{\sub{\Jeq{w}{t}}{\gm} \equiv \Jeq{\sub{w}{\gm}}{\sub{t}{\gm}}}{..}
 }
-\\
 
-\\
-\Rule[name=tm/bool]
-{""}
-{\goodTerm{\Gm}{\true, \false}{\cB}}
-\\
-\Rule[name=tm/bool/subst]
-{\goodSub{\Gm}{\gm}{\Delta}}
-{\goodType{\Gm}{ \sub{(\El{T})}{\gm} \equiv \El{(\sub{T}{\gm})} }{j} \\
- \goodTerm{\Gm}{ \sub{\true}{\gm} \equiv \true}{\cB} \\ 
- \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
-}
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \judgebox{\goodSub{\Gm}{\gm}{\Delta}}
