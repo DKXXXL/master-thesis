@@ -22,6 +22,10 @@
 { "" }
 {\goodType{\Gm}{\bot}{0}}
 
+\Rule[name=ty/top]
+{ "" }
+{\goodType{\Gm}{\top}{0}}
+
 \Rule[name=ty/function]
 {\goodType{\Gm}{A}{j} 
   \\ \goodType{\Gm, A}{B}{k}}
@@ -38,6 +42,11 @@
   \\ \goodTerm{\Gm}{y}{A}}
 {\goodType{\Gm}{\TyId{x}{y}}{j \cup k}}
 
+\Rule[name=ty/singleton]
+{\goodType{\Gm}{A}{j}
+ \\ \goodTerm{\Gm}{a}{A}}
+{\goodType{\Gm}{\TyS{a}}{j \cup k}}
+
 \Rule[name=type/subst]
 {\goodType{\Delta}{T}{j} 
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
@@ -49,26 +58,21 @@
 
 \Rule[name=tyeq/subst/comp]
 {""}
-{\goodType{\Gm}{\sub{A}{\gamma_1 \circ \gamma_2} \equiv \sub{A}{\gamma_1}{\gamma_2}}{}}
+{\goodType{\Gm}{\sub{A}{\gamma_1 \circ \gamma_2} \equiv \sub{\sub{A}{\gamma_1}}{\gamma_2}}{}}
 
-\Rule[name=base type/subst]
-{\goodSub{\Gm}{\gm}{\Delta}}
-{\goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{j + 1} \\
-  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \\ 
-  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0}
-}
-
-\Rule[name=func+pair+idty/subst]
+\Rule[name=tyeq/subst]
 {\goodSub{\Gm}{\gm}{\Delta}
-\\ \goodType{\Delta}{A}{} 
-\\ \goodType{\Delta, A}{B}{}
 }
 {
+  \goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{j + 1} \\
+  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \\ 
+  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0} \\
   \goodType{\Gm}{ \sub{(\TyPi {A} {B})}{\gm} \equiv \TyPi {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
   \\ 
   \goodType{\Gm}{ \sub{(\Sigma A B)}{\gm} \equiv \Sigma \sub{A}{\gm} \sub{B}{\gm^\uparrow} }{j \cup k}
   \\ 
   \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{j \cup k}
+  \\   \goodType{\Gm}{ \sub{\TyS{a}}{\gm} \equiv \TyS{\sub{a}{\gm}} } {j \cup k}
 }
 
 
@@ -85,6 +89,23 @@
 \Rule[name=ty/el]
 {\goodTerm{\Gm}{T}{\cU}}
 {\goodType{\Gm}{\El{T}}{j}}
+
+\Rule[name=tmeq/U/beta]
+{""}
+{\goodType{\Gm}{\El{\codety{T}} \equiv T}{j}}
+
+\Rule[name=tmeq/U/eta]
+{""}
+{\goodTerm{\Gm}{\codety{\El{T}} \equiv T}{\cU}}
+
+\Rule[name=tm/top]
+{""}
+{\goodTerm{\Gm}{\unit}{\top}}
+
+\Rule[name=tm/top/eta]
+{\goodTerm{\Gm}{t}{\top}}
+{\goodTerm{\Gm}{t \equiv \unit}{\top}}
+
 
 \Rule[name=tm/subst]
 {\goodTerm{\Delta}{t}{T}
@@ -123,13 +144,13 @@
 }
 
 \Rule[name=tmeq/pair/proj/beta]
-{""}
+{}
 {\goodTerm{\Gm}{\fst{\pair{u}{v}} \equiv u}{A}
 \\ \goodTerm{\Gm}{\snd{\pair{u} {v}} \equiv v}{B[(id, u)]}
 }
 
 \Rule[name=tmeq/pair/proj/eta]
-{""}
+{}
 {\goodTerm{\Gm}{\pair{\fst{t}}{\snd{t}} \equiv t}{\TySigma{A}{B}}
 }
 
@@ -138,16 +159,15 @@
 {""}
 {\goodTerm{\Gm}{\true, \false}{\cB}}
 
-
-\Rule[name=tm/idty]
-{\goodTerm{\Gm}{a}{A}}
-{\goodTerm{\Gm}{\eqrefl{a}}{\TyId{a}{a}}}
-
 \Rule[name=tm/ifb]
 {\goodTerm{\Gm}{c}{\cB} 
 \\ \goodTerm{\Gm}{a}{T}
 \\ \goodTerm{\Gm}{b}{T}}
 {\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}
+
+\Rule[name=tm/idty]
+{\goodTerm{\Gm}{a}{A}}
+{\goodTerm{\Gm}{\eqrefl{a}}{\TyId{a}{a}}}
 
 \Rule[name=tm/J/BasePathInduction]
 {\goodTerm{\Gm}{u}{A} 
@@ -166,6 +186,15 @@
 \Rule[name=tmeq/J/beta]
 {}
 {\goodTerm{\Gm}{\Jeq{w}{\eqrefl{u}} \equiv w }{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}}}
+
+\Rule[name=tm/singleton]
+{\goodTerm{\Gm}{a}{A}}
+{\goodTerm{\Gm}{a}{\TyS{a}}}
+
+\Rule[name=tmeq/singleton/eta]
+{\goodType{\Gm}{a}{A}  
+\\ \goodTerm{\Gm}{x}{\TyS{a}}}
+{\goodTerm{\Gm}{x \equiv a}{A}}
 
 \Rule[name=tm/subst]
 {}
