@@ -57,18 +57,31 @@ and $\codety{T}$ encoding type~$T$ (rule \ruleref{tm/c}).
 MLTT has an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
 
-\noindentparagraph{W-types.}
+\noindentparagraph{Introducing and eliminating inductive types.}
 
 W-types~\cite{martin1984intuitionistic} are a standard way to model
 inductive types in MLTT.
-A constructor of some inductive type~$T$ is given by a pair of types
-$\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
+A constructor of an inductive type~$T$ is given by a pair of types
+$\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (\ruleref{wsig/add}):
 given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
 $\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
-it constructs a term of type~$T$ (rule \ruleref{tm/wsup}).
+it constructs a term of type~$T$ (\ruleref{tm/wsup}).
 As the rules suggest, our formulation additionally supports
 \emph{W-type signatures} (judgment form \goodWSig{\Gm}{\wsig}{n})
 composed of $n$ pairs of types, each of which represents a constructor.
+
+W-types are eliminated by $\Wrec{\lkg}{t}$, where $t$ is of the W-type
+$\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of case
+handlers for the $n$ constructors in~$\wsig$ (\ruleref{tm/wrec}).
+The type of each case handler has the form $\CaseSig{A}{B}{T}$, where
+$T$ is the motive of the recursion (\ruleref{ty/casety}).
+This collection of case handlers then encodes the \lsti{FRecursion}
+construct supported by our plugin.
+We choose to give it a linkage type $\TyLkg{\RecSig{\wsig}{T}}$,
+but it could be typed as an ordinary $n$-tuple, which is subsumed by
+linkages to be introduced next.
+
+\noindentparagraph{Linkages.}
 
 
 \newpage

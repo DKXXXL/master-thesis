@@ -175,27 +175,21 @@
     \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 
+\Rule[name=wsig/empty]{
+}{
+    \goodWSig{\Gm}{\WSigEmp}{0}
+}
+
 \Rule[name=tm/wsup]{
     \goodWSig{\Gm}{\wsig}{n}
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{j}{1}{\wsig}}
     \\
     \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
+    \\
+    j \in \{1, ..., n\}
 }{
     \goodTerm{\Gm}{\wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
-}
-
-\Rule[name=tm/wrec]{
-    \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
-    \\
-    \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
-}{
-    \goodTerm{\Gm}{\Wrec{\lkg}{t}}{T}
-}
-
-\Rule[name=wsig/empty]{
-}{
-    \goodWSig{\Gm}{\WSigEmp}{0}
 }
 
 \Rule[name=wsig/add]{
@@ -206,6 +200,28 @@
     \goodType{\Gm, A}{B}{i}
 }{
     \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
+}
+
+\Rule[name=tm/wrec]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
+    \\
+    \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
+}{
+    \goodTerm{\Gm}{\Wrec{\lkg}{t}}{T}
+}
+
+\Rule[name=ty/casety]{
+    \goodType{\Gm}{A}{}
+    \\
+    \goodType{\Gm, A}{B}{}
+    \\
+    \goodType{\Gm}{T}{}
+}{
+    \goodType{\Gm}{
+        \CaseSig{A}{B}{R}
+        \equiv
+        \TyPi{A}{\TyPi {\TyPi{B}{\sub{T}{\SubstWeak{2}}}} {\sub{T}{\SubstWeak{2}}}}
+    }{}
 }
 
 \Rule[name=lsig/add]{
