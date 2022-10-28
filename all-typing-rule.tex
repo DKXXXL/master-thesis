@@ -1,3 +1,8 @@
+Note that, in the main text we use $\SubstWeak{n}$ and $\var{n}$ to manipulate variables and context for readability. In our appendices, we use $\pi_1 \gm, \pi_2 \gm$ (for arbitrary substitution $\gm$) instead. These two representations are equivalent as $\SubstWeak{n}$ is just a consecutive application of $\pi_1$, $\var{n}$ is the consecutive application of $\pi_1$ follows by $\pi_2$.
+
+What's more, we use $\pi_1$ and $\pi_2$ (without argument) to represent $\pi_1~"id"$ and $\pi_2~"id"$.
+
+
 \begin{mathparpagebreakable}
 \judgebox{\goodCtx{\Gm}{i}}
 \\ 
@@ -58,7 +63,7 @@
 
 \Rule[name=tyeq/subst/comp]
 {""}
-{\goodType{\Gm}{\sub{A}{\gamma_1 \circ \gamma_2} \equiv \sub{\sub{A}{\gamma_1}}{\gamma_2}}{}}
+{\goodType{\Gm}{\sub{A}{\gm_1 \circ \gm_2} \equiv \sub{\sub{A}{\gm_1}}{\gm_2}}{}}
 
 \Rule[name=tyeq/subst]
 {\goodSub{\Gm}{\gm}{\Delta}
@@ -171,7 +176,7 @@
 
 \Rule[name=tm/J/BasePathInduction]
 {\goodTerm{\Gm}{u}{A} 
- \\ \goodType{\Gm, A, \TyId{\sub{u}{\pi_1}}{\pi_2}}{C}{} 
+ \\ \goodType{\Gm, A, \TyId{\sub{u}{\pi_1}}{\pi_2}}{C}{}
   \\  \goodTerm{\Gm}{w}{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}} 
   \\ \goodTerm{\Gm}{v}{A} 
   \\ \goodTerm{\Gm}{t}{\TyId{u}{v}}
@@ -213,6 +218,8 @@
 \\
 \Rule[name=subst/ept]
 {""}{\goodSub{\Gm}{\epsilon}{\cdot}}
+\Rule[name=substeq/ept/eta]
+{ \goodSub{\Gm}{\gm}{\cdot} }{\goodSub{\Gm}{ \gm \equiv \epsilon}{\cdot}}
 
 \Rule[name=subst/id]
 {""}{\goodSub{\Gm}{"id"}{\Gm}}
@@ -221,13 +228,11 @@
   \goodSub{\Delta}{\delta}{\Theta}
   \\ \goodSub{\Gm}{\gm}{\Delta} 
 }{\goodSub{\Gm}{ \SubstComp{\delta}{\gm}}{\Theta}}
-\\
+
 \Rule[name=subst/ext]
 {\goodSub{\Gm}{\gm}{\Delta} \\ \goodTerm{\Gm}{t}{ \sub{A}{\gm}}}
 {\goodSub{\Gm}{\SubstExt{\gm}{t}}{(\Delta, A)}}
-\\
 
-\\
 \Rule[name=subst/proj-1]
 {\goodSub{\Gm}{\gm}{(\Delta, A)}}
 {\goodSub{\Gm}{\pi_1 \gm}{\Delta}}
@@ -240,7 +245,17 @@
 {""}
 {\goodSub{\Gm}{(\pi_1 \gm, \pi_2 \gm) \equiv \gm}{\Delta}}
 
+\Rule[name=substeq/comp/assoc]
+{}
+{\goodSub{\Gm}{ 
+  \SubstComp{\gm_1}{\SubstComp{\gm_2}{\gm_3}} 
+  \equiv \SubstComp{\SubstComp{\gm_1}{\gm_2}}{\gm_3} 
+  }
+  {\Theta}}
 
+\Rule[name=substeq/comp/id]
+{}
+{\goodSub{\Gm}{ \SubstComp{id}{\gm} \equiv \SubstComp{\gm}{id} \equiv \gm}{\Theta}}
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
@@ -265,11 +280,7 @@
 {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
 \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
 }
-\\
 
-
-
-\\
 \Rule[name=wsigeq/proj/eta]
 {\goodWSig{\Gm}{\wsig}{n} \\ j < n}
 {\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
@@ -282,9 +293,7 @@
   \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
 \\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
   }
-\\
 
-\\
 \Rule[name=ty/wsig/proj]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
@@ -294,9 +303,7 @@
   \goodType{\Gm}{\wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv A }{i} 
   \\ \goodType{\Gm, \wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} }}{\wsigproj{j}{2}{ \WSigAdd{\wsig}{A}{B} } \equiv B}{i}
 }
-\\
 
-\\
 \Rule[name=wsig/sub]
 {\goodWSig{\Gm}{\wsig}{n+1}}
 {\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
@@ -309,11 +316,6 @@
 \\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
 }
  
-\\
-
-
-
-\\
 \Rule[name=tm/wcode]
 {\goodWSig{\Gm}{\wsig}{n}}
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
@@ -324,9 +326,11 @@
   \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
 {\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
-\\
 
-\\
+\Rule[name=ind/cstr/subst ]
+{\goodSub{\Gm}{\gm}{\Theta}}
+{\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
+
 \Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
   \\ \goodType{\Gm}{A}{i}
@@ -334,18 +338,13 @@
 }{
   \goodWSig{\Gm}{\sub{\WSigSub{\WSigAdd{\wsig}{A}{B}}}{\gm} \equiv \wsig}{n}
 }
-\\
 
-\\
 \Rule[name=wsigeq/sub/subst]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
   \goodWSig{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
 }
 
-\Rule[name=ind/cstr/subst ]
-{\goodSub{\Gm}{\gm}{\Theta}}
-{\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
