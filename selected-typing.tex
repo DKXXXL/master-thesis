@@ -14,7 +14,7 @@
     \SubstWeak{n} \mid \SubstExt{\gm}{t} \mid \SubstComp{\gm_1}{\gm_2}
     \\
 \text{Types} & A, B, T  &\Coloneqq &
-    \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{s}{t} \mid \El{t} \mid \sub{T}{\gm} \mid
+    \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{s}{t} \mid \TyS{t} \mid \El{t} \mid \sub{T}{\gm} \mid
     \\
     &&&
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
@@ -23,7 +23,8 @@
 \tikzmarkend{New2}
     \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
-    \var{n} \mid \sub{t}{\gm} \mid \codety{T} \mid \unit \mid \true \mid \false  \mid \lam{t} \mid \app{t} \mid \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid \eqrefl{t} \mid
+    \var{n} \mid \sub{t}{\gm} \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \lam{t} \mid \app{t} \mid 
+    \\ &&& \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid \eqrefl{t} \mid  \Jeq{s}{t} \mid
     \\
     &&&
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
