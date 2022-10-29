@@ -327,11 +327,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {{\goodWSig{\Gm}{\wsig}{n}}
   \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
-{\goodTerm{\Gm}{\wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
+{\goodTerm{\Gm}{\Wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
 
 \Rule[name=ind/cstr/subst ]
 {\goodSub{\Gm}{\gm}{\Theta}}
-{\goodTerm{\Gm}{\sub{\wsup{T}{a}{b}}{\gm} \equiv \wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
+{\goodTerm{\Gm}{\sub{\Wsup{T}{a}{b}}{\gm} \equiv \Wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 
 \Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
@@ -573,7 +573,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}
 \\ \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
 }
-{\goodTerm{\Gm}{\Wrec{w}{r}}{R}}
+{\goodTerm{\Gm}{\Wrec{\wsig}{w}{r}}{R}}
 \\
 
 \\
@@ -601,8 +601,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \Rule[name=tmeq/rec/beta]
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
 \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
-{\goodTerm{\Gamma}{\Wrec{h}{(\wsup{\wsig}{a}{b})} \equiv 
-(\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{h[\pi_1]}{b})})]
+{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{(\Wsup{\wsig}{a}{b})} \equiv 
+(\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{\wsig}{h[\pi_1]}{b})})]
 }{R}}
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}

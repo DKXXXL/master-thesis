@@ -28,11 +28,11 @@
     \\
     &&&
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
-    \wsingle{\wsig} \mid \wcode{\wsig} \mid \wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
+    \wsingle{\wsig} \mid \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
     \\
     &&&
     \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
-    \Recproj{j}{\lkg} \mid \Wrec{\lkg}{t}
+    \Recproj{j}{\lkg} \mid \Wrec{\wsig}{\lkg}{t}
 \tikzmarkend{New3}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
@@ -200,7 +200,7 @@
     \\
     j \in \{1, ..., n\}
 }{
-    \goodTerm{\Gm}{\wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
 }
 
 \Rule[name=tm/wrec]{
@@ -208,7 +208,7 @@
     \\
     \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
 }{
-    \goodTerm{\Gm}{\Wrec{\lkg}{t}}{T}
+    \goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}
 }
 
 \Rule[name=ty/casety]{
