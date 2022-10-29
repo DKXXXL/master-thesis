@@ -347,12 +347,12 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
     - o[@₃@] = μ+ o[@₃@][@₁@] s[@₃@] (λ (Wrec ..)) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
     
     (* s[@₄@] : {ty : 𝕎τ[@₁@]; ... subst : tm → nat → tm → tm } 
-          | [ty : 𝕌; ... ; tm : 𝕌; subst : tm → nat → tm → tm] *)
-    - o[@₄@] = μ+ o[@₃@] s[@₄@] .. : 𝕃{ty : 𝕎τ[@₁@]; ... t[@₁@] : tm}
+          | [.. ; tm : 𝕌; tvar : nat → tm; .. subst : tm → nat → tm → tm] *)
+    - o[@₄@] = μ+ o[@₃@] s[@₄@] [@("tvar"~0)@] : 𝕃{ty : 𝕎τ[@₁@]; ... t[@₁@] : [@\TyS{"tvar"~0}@]}
   
-    (* s[@₅@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst : 𝕃(RecSig); t1 : tm} 
-          | [ty : 𝕌; tm : 𝕌; subst : 𝕃(RecSig); t1 : tm] *)
-    - o[@₅@] = μ+ o[@₄@] s[@₅@] : 𝕃{ ... }
+    (* s[@₅@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst : 𝕃(RecSig); t1 : [@\TyS{"tvar"~0}@]} 
+          | [ty : 𝕌; tm : 𝕌; subst : 𝕃(RecSig); t1 : [@\TyS{"tvar"~0}@]] *)
+    - o[@₅@] = μ+ o[@₄@] s[@₅@] .. : 𝕃{ ... }
   \end{lstlisting}
   
   \columnbreak
@@ -371,7 +371,9 @@ Each hiding comment corresponds to the textual-aligned sealing derivation on RHS
 
 For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
 
-Basically, the hidden prior fields---inductive type are sealed into arbitrary type with ``constructors only'', where the recursion is constructed without sealing the inductive type.  Generally speaking, each extensible inductive type are hidden for all the other fields except for the recursion on itself. Furthermore, normal fields (e.g. "t1, t2") can expose its definition to all other fields in meta-theory by using singleton type. (e.g.  using "t1 : S(tvar 0)" instead of the current "t1 : tm"); and then overridable fields are hidden for normal fields (by sealing "t1 : S(tvar 0)" into "t1 : tm"). Generally speaking, anything with explicit "hiding" decoration can be understood as sealing. 
+Basically, the hidden prior fields---inductive type are sealed into arbitrary type with ``constructors only'', where the recursion is constructed without sealing the inductive type.  Generally speaking, each extensible inductive type are hidden for all the other fields except for the recursion on itself. 
+
+We choose to expose the definition of $t_1$ to all the following fields including $t_2$ by using singleton type $\TyS{-}$. If other fields, say $t_3$, want to hide it, just seal $t_1$ into type "tm"; and then overriding $t_1$ will not disrupt the inheritablity of $t_3$. But such overriding will definitely disrupt the inheritablity of $t_2$ as $s_5$ doesn't hide $t_1$. Generally speaking, any field that has a clear "hiding" semantic on the prior fields can be understood as sealing. All of our plugin commands have clear "hiding" semantics.
 
 % Intuitively, sealing corresponds to the following surface syntax\\
 % \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
