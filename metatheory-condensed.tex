@@ -362,21 +362,21 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   \begin{lstlisting}
 
     (* s[@₁@]  : {} | {} *)
-    - o[@₁@]  = μ+ {} s[@₁@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]}
-    (* s[@₂@]  : {ty : 𝕎τ[@₁@]} | [ty : 𝕌; bool : ty; ...] *) 
-    - o[@₂@]  = μ+ o[@₁@] s[@₂@] ⋆ : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]}
-    (* s[@₃@][@₁@]  : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]}
+    - o[@₁@]  = μ+ {} s[@₁@] [@$W\tau_1$@] : 𝕃{ty : [@$\TyS{W\tau_1}$@]}
+    (* s[@₂@]  : {ty : [@$\TyS{W\tau_1}$@]} | [ty : 𝕌; bool : ty; ...] *) 
+    - o[@₂@]  = μ+ o[@₁@] s[@₂@] [@$W\tau_2$@] : 𝕃{ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]}
+    (* s[@₃@][@₁@]  : {ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]}
             | [ty : 𝕌; ... ; tm : 𝕌; tvar : tm; ...] *)
-    - o[@₃@][@₁@]  = μ+ o[@₂@] s[@₃@] ([@μ@]+ ..) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)}
-    (* s[@₃@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)} 
-          | [ty : 𝕌; ... ; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig)] *)
-    - o[@₃@] = μ+ o[@₃@][@₁@] s[@₃@] (λ (Wrec ..)) : 𝕃{ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
+    - o[@₃@][@₁@]  = μ+ o[@₂@] s[@₃@] ([@μ@]+ ..) : 𝕃{ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]; subst' : 𝕃(RecSig)}
+    (* s[@₃@] : {ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]; subst' : 𝕃(RecSig)} 
+          | [ty : 𝕌; ... ; tm : [@$\TyS{W\tau_2}$@]; subst' : 𝕃(RecSig)] *)
+    - o[@₃@] = μ+ o[@₃@][@₁@] s[@₃@] (λ (Wrec ..)) : 𝕃{ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]; subst' : 𝕃(RecSig); subst : tm → nat → tm → tm}
     
-    (* s[@₄@] : {ty : 𝕎τ[@₁@]; ... subst : tm → nat → tm → tm } 
+    (* s[@₄@] : {ty : [@$\TyS{W\tau_1}$@]; ... subst : tm → nat → tm → tm } 
           | [.. ; tm : 𝕌; tvar : nat → tm; .. subst : tm → nat → tm → tm] *)
-    - o[@₄@] = μ+ o[@₃@] s[@₄@] [@("tvar"~0)@] : 𝕃{ty : 𝕎τ[@₁@]; ... t[@₁@] : [@\TyS{"tvar"~0}@]}
+    - o[@₄@] = μ+ o[@₃@] s[@₄@] [@("tvar"~0)@] : 𝕃{ty : [@$\TyS{W\tau_1}$@]; ... t[@₁@] : [@\TyS{"tvar"~0}@]}
   
-    (* s[@₅@] : {ty : 𝕎τ[@₁@]; tm : 𝕎τ[@₂@]; subst : 𝕃(RecSig); t1 : [@\TyS{"tvar"~0}@]} 
+    (* s[@₅@] : {ty : [@$\TyS{W\tau_1}$@]; tm : [@$\TyS{W\tau_2}$@]; subst : 𝕃(RecSig); t1 : [@\TyS{"tvar"~0}@]} 
           | [ty : 𝕌; tm : 𝕌; subst : 𝕃(RecSig); t1 : [@\TyS{"tvar"~0}@]] *)
     - o[@₅@] = μ+ o[@₄@] s[@₅@] .. : 𝕃{ ... }
   \end{lstlisting}
@@ -393,7 +393,7 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
 
 In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
 
-Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For legibility, curly brackets indicate a signature (omitting sealing at type level for readability) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
+Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For readability, RHS is informal---curly brackets indicate a signature (omitting sealing at type level) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
 
 For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
 
