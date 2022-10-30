@@ -43,12 +43,13 @@ $\goodSub{\Gm}{\gm}{\Dl}$.
 The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
 yields terms valid in~$\Gm$ (e.g., rule \ruleref{tm/sub}).
 %
-The two main forms of substitutions are weakening and extension:
+The two main forms of substitutions are weakening (\ruleref{sub/wk}) and extension (\ruleref{sub/ext}):
 \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
 \sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
 then applies~$\gm$.
 For example, rule \ruleref{tm/proj} states that if $t$ is a dependent pair
-of type $\TySigma{A}{B}$, then $\snd{t}$ has type $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
+that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
+$\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
 
 We use Tarski-style universes~\cite{hofmann1997syntax}: a universe~$\cU$
 is inhabited by the \emph{codes} of types,
@@ -92,10 +93,20 @@ term that does not invoke $\Wsup{\wsig}{\cdot}{\cdot}$ or $\Wrec{\wsig}{\cdot}{\
 the term can be reused---without being rechecked---for a different
 W-type signature~$\wsig'$ that extends~$\wsig$ with additional
 constructors.
-Moreover, the typing of the term should be made polymorphic to
+Moreover, the typing of the term should be made parametric to
 the definitions of those fields that invoke $\texttt{Wsup}$ or $\texttt{Wrec}$,
 so that the term can be reused---without being rechecked---when those fields
 are overridden to support the extended signature~$\wsig'$.
+%
+Such abstraction required by family polymorphism is supported via linkages.
+
+
+\noindentparagraph{Family polymorphism via linkages.}
+
+Family polymorphism requires late binding.
+In \TT, families are expressed through linkages, and late binding of
+field references is achieved by requiring that typing be polymorphic to
+the definition of that field.
 
 
 
