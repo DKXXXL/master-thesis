@@ -1,0 +1,124 @@
+\begin{figure}
+\small
+\renewcommand*{\arraystretch}{1.15}
+\newcolumntype{L}{>{$}l<{$}}
+\newcolumntype{C}{>{$}c<{$}}
+\newcolumntype{R}{>{$}r<{$}}
+\begin{tabular}{@{}lL@{\ }@{}}
+\lsti!Family STLC.!
+&
+\lsig_0 \coloneqq \LSigEmp
+\quad
+\lkg_0 \coloneqq \LkgEmp
+\quad
+\goodTerm{\cdot}{\lkg_1}{\TyLkg{\lsig_1}}
+\\[4pt]
+\multirow{2}{*}{\lsti!FInductive tm :=!}
+&
+\lsig_1 \coloneqq \LSigAdd{\lsig_0}{\seal_1}{T_1}
+\quad
+\lkg_1 \coloneqq \LkgAdd{\lkg_0}{t_1}
+\quad
+\goodTerm{\cdot}{\lkg_2}{\TyLkg{\lsig_2}}
+\quad
+\goodTerm{\TyTkg{\lsig_0}}{\seal_1}{\sub{A_1}{\SubstWeak{1}}}
+\\
+&
+\goodTerm{\mathit{self} : \big[\big]}{\wcode{\wsig_{\texttt{tm}}}}{\TyS{\wcode{\wsig_{\texttt{tm}}}}}
+\\[4pt]
+\multirow{2}{*}{\lsti!| tm_unit : tm |!\ \dadada}
+&
+\lsig_2 \coloneqq \LSigAdd{\lsig_1}{\seal_2}{T_2}
+\quad
+\lkg_2 \coloneqq \LkgAdd{\lkg_1}{t_2}
+\quad
+\goodTerm{\cdot}{\lkg_2}{\TyLkg{\lsig_2}}
+\quad
+\goodTerm{\TyTkg{\lsig_1}}{\seal_2}{\sub{A_2}{\SubstWeak{1}}}
+\\
+&
+\goodTerm{
+    \mathit{self} : \big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}}\big]
+}{
+    \Wsup{\wsig_{\texttt{tm}}}{\top}{\bot}
+}{
+    \El{\mathit{self.}\texttt{tm}}
+}
+\\[4pt]
+\lsti!FRecursion subst!\ \dadada
+\\
+\multirow{2}{*}{\lsti!Case tm_unit :=!\ \dadada}
+&
+\lsig_6 \coloneqq \LSigAdd{\lsig_5}{\seal_6}{T_6}
+\quad
+\lkg_6 \coloneqq \LkgAdd{\lkg_5}{t_6}
+\quad
+\goodTerm{\cdot}{\lkg_6}{\TyLkg{\lsig_6}}
+\quad
+\goodTerm{\TyTkg{\lsig_5}}{\seal_6}{\sub{A_6}{\SubstWeak{1}}}
+\\
+&
+\goodTerm{
+    \mathit{self} : \big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+}{
+%   \lambda\_.\,\lambda\_.\,\lambda x.\,\lambda t.\,\mathit{self}.\texttt{tm\_unit}
+    \dadada
+}{
+    \CaseSig{\top}{\bot}{\El{\mathit{self}.\texttt{tm}}\to\mathit{id}\to\El{\mathit{self}.\texttt{tm}}}
+}
+\\[4pt]
+\lsti!Case!\ \dadada
+\\
+\multirow{2}{*}{\lsti!End subst.!}
+&
+\lsig_{10} \coloneqq \LSigAdd{\lsig_9}{\seal_{10}}{T_{10}}
+\quad
+\lkg_{10} \coloneqq \LkgAdd{\lkg_9}{t_{10}}
+\quad
+\goodTerm{\cdot}{\lkg_{10}}{\TyLkg{\lsig_{10}}}
+\quad
+\goodTerm{\TyTkg{\lsig_9}}{\seal_{10}}{\sub{A_{10}}{\SubstWeak{1}}}
+\\
+&
+\goodTerm{
+    \mathit{self} : \left[{%
+    \begin{minipage}{.35\textwidth}%
+        \vspace{-3.5pt}
+    \begin{gather*}
+    \begin{array}{@{}l@{}}
+        \texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ 
+        \texttt{tm\_unit} : \El{\texttt{tm}},\ 
+        \dadada
+        \\
+        \texttt{subst\_tm\_unit} : \CaseSig{\top}{\bot}{\dadada},\ 
+        \dadada
+    \end{array}
+    \end{gather*}
+    \end{minipage}
+    }\right]
+}{
+    \lambda t.\,\Wrec{\wsig_{\texttt{tm}}}{\dadada}{t}
+}{
+    \begin{minipage}{.20\textwidth}%
+        \vspace{-3.5pt}\scriptsize
+    \begin{gather*}
+    \begin{array}{@{}l@{}}
+        \El{\mathit{self}.\texttt{tm}} \to \El{\mathit{self}.\texttt{tm}}
+        \\
+        \to \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+    \end{array}
+    \end{gather*}
+    \end{minipage}
+}
+\\
+\dadada
+\\[4pt]
+\lsti!End STLC.!
+&
+\goodTerm{\cdot}{\Tkg{\lkg_{20}}}{\TyTkg{\lsig_{20}}}
+\end{tabular}
+
+\caption{Typing of each field}
+\label{fig:stlc-linkage-typing}
+\end{figure}
+
