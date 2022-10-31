@@ -277,25 +277,25 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
   \\ \goodType{\Gm, A}{B}{i}}
 {\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
 
-\Rule[name=wsig/universe]
-{\goodWSig{\Gm}{\wsig}{n}}
-{\goodType{\Gm}{\TyWSingle {\wsig}}{i}
-\\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
-}
-
+% \Rule[name=wsig/universe]
+% {\goodWSig{\Gm}{\wsig}{n}}
+% {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
+% \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
+% }
+%
 \Rule[name=wsigeq/proj/eta]
 {\goodWSig{\Gm}{\wsig}{n} \\ j < n}
 {\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
 }
 
-\Rule[name=wsigeq/subst]
-{\goodWSig{\Delta}{\wsig}{n}
-  \\ {\goodSub{\Gm}{\gm}{\Delta}}}
-{\goodWSig{\Gm}{ \sub{\wsig}{\gm}}{n}
-  \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
-\\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
-  }
-
+% \Rule[name=wsigeq/subst]
+% {\goodWSig{\Delta}{\wsig}{n}
+%   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
+% {\goodWSig{\Gm}{ \sub{\wsig}{\gm}}{n}
+%   \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
+% \\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
+%   }
+%
 \Rule[name=ty/wsig/proj]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
@@ -600,7 +600,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 \Rule[name=tmeq/rec/beta]
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
-\\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
+% \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}
+}
 {\goodTerm{\Gamma}{\Wrec{\wsig}{h}{(\Wsup{\wsig}{a}{b})} \equiv 
 (\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{\wsig}{h[\pi_1]}{b})})]
 }{R}}
