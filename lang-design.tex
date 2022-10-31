@@ -287,14 +287,14 @@ Per the requirement, this relationship must be preserved into
 "typesafe" in "STLCFix".
 
 Note that the requirement still allows a derived family to introduce
-new declarations into the context of a field.
+new declarations into the context of a field. \EDJ{Maybe a better wording is ``the relative order between fields are preserved during inheritance''?}
 For example, the left column of \cref{fig:stlc-isorec-prod} shows an
 extension of STLC with iso-recursive types, where "tysubst" is
 introduced into the context of "hasty".
 
 \input{stlc-isorec-prod.tex}
 
-\noindentparagraph{Composing families.}
+\noindentparagraph{Composing families.} \EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
 
 Families can be readily reused to construct larger extensions that
 \emph{mix in}~\cite{mixin-1990} the functionalities of the individual
