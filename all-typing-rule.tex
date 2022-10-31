@@ -683,11 +683,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
 \\ \goodType{\Gm, A_1}{T_1}{}
 \\ \goodType{\Gm, A_2}{T_2}{}
-\\ \goodTerm{\Gm, A_2}{t}{T_2}}
+\\ \goodTerm{\Gm, A_2}{t \ t'}{T_2}}
 {
 \goodTerm{\Gm}
   {\inh
-  { \InhOv{h}{t} }{\LkgAdd{o}{t}}
+  { \InhOv{h}{t} }{\LkgAdd{o}{t'}}
   \equiv 
   \LkgAdd{\inh{h}{o}}{t}}
   {...}
