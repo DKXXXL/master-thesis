@@ -37,8 +37,8 @@ FDefinition env : Type := id -> option ty.
 FDefinition empty : env := \lambda _, None.
 
 FInductive hasty : env -> tm -> ty -> Prop :=
-| ht_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
 | ht_unit : \forall G, hasty G tm_unit ty_unit
+| ht_var  : [@\dadada@][@\hfill\codecomment{Typing rules}@]
 | ht_abs  : [@\dadada@]
 | ht_app  : [@\dadada@].
 

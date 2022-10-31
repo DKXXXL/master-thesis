@@ -14,12 +14,13 @@
     \SubstWeak{n} \mid \SubstExt{\gm}{t} \mid \SubstComp{\gm_1}{\gm_2}
     \\
 \text{Types} & A, B, T  &\Coloneqq &
-    \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{s}{t} \mid \TyS{t} \mid \El{t} \mid \sub{T}{\gm} \mid
+    \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{t_1}{t_2} \mid \TyS{t} \mid \El{t} \mid \sub{T}{\gm} \mid
     \\
     &&&
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
-    \TyWSingle{\wsig} \mid \wsigproj{j}{1}{\wsig} \mid \wsigproj{j}{2}{\wsig} \mid
-    \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid \lsigprojT{\lsig} \mid \lsigproj{2}{\lsig} \mid \CaseSig{A}{B}{T}
+    \TyWSingle{\wsig} \mid \wsigproj{i}{1}{\wsig} \mid \wsigproj{i}{2}{\wsig} \mid
+    \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid %\lsigprojT{\lsig} \mid
+    \lsigproj{2}{\lsig} \mid \CaseSig{A}{B}{T}
 \tikzmarkend{New2}
     \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
@@ -28,11 +29,12 @@
     \\
     &&&
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
-    \wsingle{\wsig} \mid \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
+    %\wsingle{\wsig} \mid
+    \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
     \\
     &&&
     \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
-    \Recproj{j}{\lkg} \mid \Wrec{\wsig}{\lkg}{t}
+    \Recproj{i}{\lkg} \mid \Wrec{\wsig}{\lkg}{t}
 \tikzmarkend{New3}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
@@ -156,23 +158,44 @@
     \goodTerm{\Gm}{\codety{T}}{\cU}
 }
 
-\Rule[name=tm/eq/c]{
+\Rule[name=tmeq/c]{
     \goodTerm{\Gm}{t}{\cU}
 }{
     \goodTerm{\Gm}{\codety{\El t} \equiv t}{\cU}
 }
 
-\Rule[name=ty/eq/el]{
+\Rule[name=tyeq/el]{
     \goodType{\Gm}{T}{j}
 }{
     \goodType{\Gm}{\El{\codety T} \equiv T}{}
 }
 
+\Rule[name=ty/s]{
+    \goodTerm{\Gm}{t}{T}
+}{
+    \goodType{\Gm}{\TyS{t}}{j \cup k}
+}
+
+\Rule[name=tm/s]{
+    \goodTerm{\Gm}{t}{T}
+}{
+    \goodTerm{\Gm}{t}{\TyS{t}}
+}
+
+\Rule[name=tmeq/s/eta]{
+    \goodTerm{\Gm}{t_1}{T}  
+    \\
+    \goodTerm{\Gm}{t_2}{\TyS{t_1}}
+}{
+    \goodTerm{\Gm}{t_1 \equiv t_2}{T}
+}
+
+
 \Rule[name=tm/w]{
     \goodWSig{\Gm}{\wsig}{n}
 }{
-    \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
-    \\
+%   \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
+%   \\
     \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 
@@ -194,11 +217,11 @@
 \Rule[name=tm/wsup]{
     \goodWSig{\Gm}{\wsig}{n}
     \\
-    \goodTerm{\Gm}{t_1}{\wsigproj{j}{1}{\wsig}}
+    \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
     \\
-    \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
-    \\
-    j \in \{1, ..., n\}
+    \goodTerm{\Gm, \sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
+%   \\
+%   i \in \{1, ..., n\}
 }{
     \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
 }
@@ -225,32 +248,42 @@
     }{}
 }
 
+\Rule[name=lsig/empty]{
+}{
+    \goodSig{\Gm}{\LSigEmp}{0}
+}
+
 \Rule[name=lsig/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
-    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
-    \\
     \goodType{\Gm, A}{T}{}
+    \\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
     \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
+}
+
+\Rule[name=l/empty]{
+}{
+    \goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}
 }
 
 \Rule[name=l/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
-    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
-    \\
     \goodTerm{\Gm, A}{t}{T}
+    \\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
     \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
 }
 
-\Rule[name=ty/eq/pk/empty]{
+\Rule[name=tyeq/pk/empty]{
 }{
     \goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{}
 }
 
-\Rule[name=tm/eq/pk/empty]{
+\Rule[name=tmeq/pk/empty]{
 }{
     \goodTerm{\Gm}{
         \Tkg{\LkgEmp}
@@ -259,7 +292,7 @@
     }{\TyTkg{\LSigEmp}}
 }
 
-\Rule[name=ty/eq/pk/add]{
+\Rule[name=tyeq/pk/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
@@ -273,7 +306,7 @@
     }{}
 }
 
-\Rule[name=tm/eq/pk/add]{
+\Rule[name=tmeq/pk/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}

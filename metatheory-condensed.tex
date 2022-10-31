@@ -60,18 +60,23 @@ we omit universe levels in the presentation for conciseness.
 
 \noindentparagraph{Introducing and eliminating inductive types.}
 
-W-types~\cite{martin1984intuitionistic} are a standard way to model
-inductive types in MLTT.
-A constructor of an inductive type~$T$ is given by a pair of types
+W-types~\cite{martin1984intuitionistic} are a succinct way to model
+inductive types in MLTT;
+together with the identity type $\TyId{\cdot}{\cdot}$, they can express a
+whole host of inductive types~\cite{hugunin2021not}.
+%
+A constructor is given by a pair of types
 $\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
 given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
 $\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
-it constructs a term of type~$T$ (rule \ruleref{tm/wsup}).
+$\Wsup{\wsig}{t_1}{t_2}$ constructs a term of type~$T$ (rule \ruleref{tm/wsup}).
 As the rules suggest, our formulation additionally supports
 \emph{W-type signatures}.
 A well formed W-type signature \goodWSig{\Gm}{\wsig}{n} is
 composed of $n$ pairs of types, each of which represents a constructor
-(rules \ruleref{wsig/empty} and \ruleref{wsig/add}).
+(rules \ruleref{wsig/empty} and \ruleref{wsig/add}),
+with $\wsigproj{i}{1}{\wsig}$ and $\wsigproj{i}{2}{\wsig}$ giving the
+$i$-th pair in~$\wsig$, and $\wcode{\wsig}$ giving the code of the W-type (\ruleref{tm/w}).
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
@@ -107,6 +112,142 @@ Family polymorphism requires late binding.
 In \TT, families are expressed through linkages, and late binding of
 field references is achieved by requiring that typing be polymorphic to
 the definition of that field.
+
+Well-formedness judgments of \emph{linkage signatures} have form
+$\goodSig{\Gm}{\lsig}{n}$.
+As rules \ruleref{lsig/empty} and \ruleref{lsig/add} show, a linkage
+signature is a list of $n$~types.
+%
+Well-formedness judgments of \emph{linkages} have form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
+where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
+As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
+of $n$~terms, each representing a field of the family modeled by the linkage.
+
+In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, A}{t}{T}$ is
+responsible for late binding.
+Here, $A$ abstracts the fields preceding the current field~$t$
+(i.e., those recorded by the first premise $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$).
+Crucially, unlike the second field in a dependent pair (\ruleref{tm/pair}),
+the typing of~$t$ in \ruleref{l/add} is polymorphic to how the fields in
+$t$'s context are defined, so that a different linkage that overrides
+fields in $t$'s context can reuse~$t$---without retyping it---by
+projecting it (\ruleref{l/proj2}) and then including it.
+
+This type~$A$ abstracting the context in \ruleref{l/add} and
+\ruleref{lsig/add} is not necessarily the same as those recorded by~$\lsig$,
+because a field representing the code $\wcode{\wsig}$ of a W-type has to
+expose different types to different succeeding fields.
+Succeeding fields that invoke
+$\Wsup{\wsig}{\cdot}{\cdot}$ or $\Wrec{\wsig}{\cdot}{\cdot}$
+should see the concrete signature~$\wsig$, as rules \ruleref{tm/wsup}
+and \ruleref{tm/wrec} stipulate, whereas $\wsig$ should be hidden
+from all other fields so that they can be reused
+for a W-type signature~$\wsig'$ extending~$\wsig$.
+
+We illustrate this with \cref{fig:stlc-linkage-typing}.
+On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
+is how the corresponding fields are modeled and typed in \TT.
+%
+$\lkg_i$ is the linkage that adds the $i$-th field~$t_i$ with the typing
+$\goodTerm{A_i}{t_i}{T_i}$.
+%
+Here, we feel free to use a notation with explicit names.
+We name the context as $\mathit{self}$ (cf.~\cref{fig:stlc-compiled})
+and feel free to write its type, which is a dependent tuple type, as a
+dependent record type with explicit labels.
+%
+\begin{itemize}[labelsep=*,leftmargin=1pc]
+
+\item 
+The first field $t_1$ is defined as $\wcode{\wsig_{\texttt{tm}}}$
+and given the singleton type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$, where $\wsig_{\texttt{tm}}$
+is the W-type signature for \lsti{tm}.
+This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
+
+\item 
+The next four fields model the four constructors of~\lsti{tm}.
+Constructor \lsti{tm_unit} is modeled as $\Wsup{\wsig_{\texttt{tm}}}{\top}{\bot}$
+and typed with $\El{\mathit{self}.\texttt{tm}}$, where $\mathit{self}$ stands for
+the typing context containing the first field~\lsti{tm}.
+Because the W-type signature $\wsig_{\texttt{tm}}$ is exposed to this typing context,
+$\El{\mathit{self}.\texttt{tm}}$ and $\El{\wcode{\wsig_{\texttt{tm}}}}$ can be equated,
+as required by rule \ruleref{tm/wsup}.
+
+\item
+Similarly, $\wsig_{\texttt{tm}}$ is exposed to the typing context of
+$t_{10}$, which models the recursive function \lsti{subst} by invoking
+the recursor $\Wrec{\wsig_{\texttt{tm}}}{\cdot}{\cdot}$.
+%
+Other fields automatically generated by the plugin, such as partial
+recursors and various propositional equalities, can also be modeled in
+this way by invoking $\texttt{Wrec}$.
+
+\item
+By contrast, $\wsig_{\texttt{tm}}$ is hidden from the typing context of all other fields.
+Their typing depends on the knowledge that \lsti!tm! has type~$\cU$,
+rather than \TyS{\wcode{\wsig_{\texttt{tm}}}},
+so they can be reused in a context where \lsti!tm! is defined as $\wcode{\wsig'_{\texttt{tm}}}$,
+where $\wsig'_{\texttt{tm}}$ extends~$\wsig_{\texttt{tm}}$ with additional constructors.
+
+\end{itemize}
+
+The third premise
+$\goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}$
+in rules \ruleref{l/add} and \ruleref{lsig/add} is
+responsible for hiding W-type signatures in~$\lsig$.
+Here, $\TyTkg{\lsig}$ is a dependent tuple type (rule \ruleref{tyeq/pk/add})
+packaging the types of all fields preceding the current field~$t$,
+and $\seal$ is the term turning the tuple $\Tkg{\lkg}$ of type
+$\TyTkg{\lsig}$ (rule \ruleref{tmeq/pk/add}) into a new term of type $A$
+that hides W-type signatures, if necessary.
+When no hiding is needed, $\seal$ is the identity $\var{0}$ and $A$ is
+$\TyTkg{\lsig}$.
+
+\bigskip
+
+
+A supplemental appendix gives a more complete example showing how families
+are modeled and type-checked as linkages.
+
+
+\begin{figure}
+\small
+\newcolumntype{L}{>{$}l<{$}}
+\newcolumntype{C}{>{$}c<{$}}
+\newcolumntype{R}{>{$}r<{$}}
+\begin{tabular}{@{}lR@{\ }C@{\ }LR@{\ \,}C@{\,\ }L@{}}
+\lsti!Family STLC.!
+& \lkg_0 & \coloneqq & \LkgEmp
+\\
+\lsti!FInductive tm :=!
+& \lkg_1 & \coloneqq & \LkgAdd{\lkg_0}{\dadada}
+& \mathit{self} : []
+& \vdash
+& \wcode{\wsig_{\texttt{tm}}} : \TyS{\wcode{\wsig_{\texttt{tm}}}}
+\\
+\lsti!| tm_unit : tm | !\dadada
+& \lkg_2 & \coloneqq & \LkgAdd{\lkg_1}{\dadada}
+& \mathit{self} : [\texttt{tm}:\TyS{\wcode{\wsig_{\texttt{tm}}}}]
+& \vdash
+& \Wsup{\wsig_{\texttt{tm}}}{\top}{\bot} : \El{\mathit{self.}\texttt{tm}}
+\\
+\lsti!FRecursion subst !\dadada
+\\
+\lsti!Case tm_unit := !\dadada
+& & &
+& \mathit{self} : [\texttt{tm}:\cU, \texttt{tm\_unit}: \El{\texttt{tm}}, \dadada]
+& \vdash
+& \dadada : \CaseSig{\top}{\bot}{\texttt{id}\to\El{\textit{self.}\texttt{tm}}\to\El{\textit{self.}\texttt{tm}}}
+\\
+\lsti!End subst.!
+& & &
+& \mathit{self} : [\texttt{tm}:\TyS{\wcode{\wsig_{\texttt{tm}}}}, \texttt{tm\_unit}: \El{\texttt{tm}}, \dadada]
+\\
+\lsti!!
+\end{tabular}
+\caption{Typing of each field}
+\label{fig:stlc-linkage-typing}
+\end{figure}
 
 
 
