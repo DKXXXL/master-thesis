@@ -44,13 +44,11 @@
 \end{gather*}
 
 \begin{mathpar}
-\judgebox{\goodCtx{\Gm}{i}}
-
-\judgebox{\goodSub{\Gm}{\gm}{\Dl}}
-
-\judgebox{\goodType{\Gm}{T}{}}
+\judgebox{\goodType{\Gm}{T_1 \equiv T_2}{}}
 
 \judgebox{\goodTerm{\Gm}{t}{T}}
+
+\judgebox{\goodTerm{\Gm}{t_1 \equiv t_2}{T}}
 
 \judgebox{\goodWSig{\Gm}{\wsig}{n}}
 
@@ -74,7 +72,7 @@
 
 \Rule[name=wsig/add]{
     \goodWSig{\Gm}{\wsig}{n}
-    \\
+    \\\\
     \goodType{\Gm}{A}{i}
     \\
     \goodType{\Gm, A}{B}{i}
@@ -86,7 +84,7 @@
     \goodWSig{\Gm}{\wsig}{n}
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
-    \\
+    \\\\
     \goodTerm{\Gm, \sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
 %   \\
 %   i \in \{1, ..., n\}
@@ -102,7 +100,7 @@
     \goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}
 }
 
-\Rule[name=ty/casety]{
+\Rule[name=tyeq/casety]{
     \goodType{\Gm}{A}{}
     \\
     \goodType{\Gm, A}{B}{}
@@ -144,6 +142,14 @@
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
     \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
+}
+
+\Rule[name=l/proj2]{   
+    \goodSig{\Gm}{\lsig}{n+1}
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}
+}{
+    \goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
 }
 
 \Rule[name=tyeq/pk/empty]{
