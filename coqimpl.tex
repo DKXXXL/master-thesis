@@ -7,9 +7,12 @@
 \item Further-bindable \lsti{FRecursion} $\Rightarrow$ axiomatize
 \item Non-overridable definitions $\Rightarrow$ expose definitional equality
 \item Instantiate inductive types, partial recursors, and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}
-\item Instantiate recursion/induction and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}\\
-      Code reuse
+\item Instantiate definition of recursive functions (induction proofs) and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}\\
+      Code shared by code compiled for derived families
+\item Include 
 \end{itemize}
+
+\ifShowOldWriting
 
 \newpage
 
@@ -969,6 +972,8 @@ EndFamily.
 % This ``Global Reasoning'' will be again useful in later examples.
 
 
+
+\fi
 
 
 \subsection{Implementation Limitation}

@@ -21,12 +21,14 @@ Also unlike our plugin, \TT does not feature automations such as
 the generation of propositional equalities and partial recursors,
 but it is expressive enough to encode their definitions.
 
-\input{selected-typing.tex}
+\input{mltt-selected.tex}
+\input{fmltt-selected.tex}
 
 \noindentparagraph{MLTT.}
 
-\cref{fig:typing-selected} presents the syntax and selected typing rules of \TT.
-The new forms (relative to MLTT) are highlighted.
+\cref{fig:mltt-selected} presents the syntax and selected typing rules of MLTT, and
+\cref{fig:fmltt-selected} \TT.
+%The new forms (relative to MLTT) are highlighted.
 We briefly review the base MLTT fragment first.
 
 As is standard in MLTT presentations, we use explicit substitutions~\cite{substcalculus,abadi1989subst}:
@@ -47,7 +49,7 @@ The two main forms of substitutions are weakening (\ruleref{sub/wk}) and extensi
 \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
 \sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
 then applies~$\gm$.
-For example, rule \ruleref{tm/proj} states that if $t$ is a dependent pair
+For example, rule \ruleref{tm/snd} states that if $t$ is a dependent pair
 that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$.
 

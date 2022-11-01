@@ -3,20 +3,12 @@
 
 \renewcommand*{\arraystretch}{1.25}
 
-\definecolor{new}{HTML}{F5EFE6}
+\definecolor{new}{HTML}{FFFFFF}
 
 \begin{gather*}
 \begin{array}{@{}r@{\hspace{2ex}}c@{\ \ }c@{\ \ }l@{}}
-\text{Contexts} & \Gm, \Dl &\Coloneqq &
-    \cdot \mid \Gm, A
-    \\ 
-\text{Substitutions} & \gm &\Coloneqq &
-    \SubstWeak{n} \mid \SubstExt{\gm}{t} \mid \SubstComp{\gm_1}{\gm_2}
-    \\
 \text{Types} & A, B, T  &\Coloneqq &
-    \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{t_1}{t_2} \mid \TyS{t} \mid \El{t} \mid \sub{T}{\gm} \mid
-    \\
-    &&&
+    ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
     \TyWSingle{\wsig} \mid \wsigproj{i}{1}{\wsig} \mid \wsigproj{i}{2}{\wsig} \mid
     \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid %\lsigprojT{\lsig} \mid
@@ -24,17 +16,14 @@
 \tikzmarkend{New2}
     \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
-    \var{n} \mid \sub{t}{\gm} \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \lam{t} \mid \app{t} \mid 
-    \\ &&& \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid \eqrefl{t} \mid  \Jeq{t_1}{t_2} \mid
-    \\
-    &&&
+    ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
     %\wsingle{\wsig} \mid
-    \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid
+    \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
     \\
     &&&
     \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
-    \Recproj{i}{\lkg} \mid \Wrec{\wsig}{\lkg}{t}
+    \Recproj{i}{\lkg}
 \tikzmarkend{New3}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
@@ -69,127 +58,6 @@
 
 \judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
 \\
-
-\Rule[name=sub/id]{
-    \goodCtx{\Gm}{i}
-}{
-    \goodSub{\Gm}{\SubstWeak{0}}{\Gm}
-}
-
-\Rule[name=sub/wk]{
-    \goodSub{\Gm}{\SubstWeak{n}}{\Dl}
-    \\
-    \goodType{\Gm}{A}{}
-}{
-    \goodSub{\Gm, A}{\SubstWeak{n+1}}{\Dl}
-}
-
-\Rule[name=sub/ext]{
-    \goodSub{\Gm}{\gm}{\Dl}
-    \\
-    \goodTerm{\Gm}{t}{\sub{A}{\gm}}
-    \\
-    \goodType{\Dl}{A}{}
-}{
-    \goodSub{\Gm}{\SubstExt{\gm}{t}}{\Dl,A}
-}
-
-\Rule[name=ty/sub]{
-    \goodType{\Dl}{T}{j}
-    \\
-    \goodSub{\Gm}{\gm}{\Dl}
-}{
-    \goodType{\Gm}{T[\gm]}{j}
-}
-
-\Rule[name=tm/sub]{
-    \goodTerm{\Dl}{t}{T}
-    \\
-    \goodSub{\Gm}{\gm}{\Dl}
-}{
-    \goodTerm{\Gm}{\sub{t}{\gm}}{\sub{T}{\gm}}
-}
-
-\Rule[name=tm/var]{
-    \goodCtx{\Gm, A_n, ..., A_1, A_0}{}
-}{
-    \goodSub{\Gm, A_n, ..., A_1, A_0}{\var{n}}{\sub{A_n}{\SubstWeak{n+1}}}
-}
-
-\Rule[name=tm/lam]{
-    \goodType{\Gm}{A}{}
-    \\
-    \goodTerm{\Gm, A}{t}{B}
-}{
-    \goodTerm{\Gm}{\lam{t}}{\TyPi {A} {B}}
-}
-
-\Rule[name=tm/app]{
-    \goodTerm{\Gm}{t}{\TyPi {A} {B}}
-}{
-    \goodTerm{\Gm, A}{\app{t}}{B}
-}
-
-\Rule[name=tm/pair]{
-    \goodTerm{\Gm}{t_1}{A} 
-    \\
-    \goodTerm{\Gm}{t_2}{\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}
-}{
-    \goodTerm{\Gm}{(t_1,t_2)}{\TySigma{A}{B}}
-}
-
-\Rule[name=tm/proj]{
-    \goodTerm{\Gm}{t}{\TySigma A B}
-}{
-    \goodTerm{\Gm}{\fst{t}}{A}
-    \\
-    \goodTerm{\Gm}{\snd{t}}{\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}}
-}
-
-\Rule[name=ty/el]{
-    \goodTerm{\Gm}{t}{\cU}
-}{
-    \goodType{\Gm}{\El{t}}{j}
-}
-
-\Rule[name=tm/c]{
-    \goodType{\Gm}{T}{j}
-}{
-    \goodTerm{\Gm}{\codety{T}}{\cU}
-}
-
-\Rule[name=tmeq/c]{
-    \goodTerm{\Gm}{t}{\cU}
-}{
-    \goodTerm{\Gm}{\codety{\El t} \equiv t}{\cU}
-}
-
-\Rule[name=tyeq/el]{
-    \goodType{\Gm}{T}{j}
-}{
-    \goodType{\Gm}{\El{\codety T} \equiv T}{}
-}
-
-\Rule[name=ty/s]{
-    \goodTerm{\Gm}{t}{T}
-}{
-    \goodType{\Gm}{\TyS{t}}{j \cup k}
-}
-
-\Rule[name=tm/s]{
-    \goodTerm{\Gm}{t}{T}
-}{
-    \goodTerm{\Gm}{t}{\TyS{t}}
-}
-
-\Rule[name=tmeq/s/eta]{
-    \goodTerm{\Gm}{t_1}{T}  
-    \\
-    \goodTerm{\Gm}{t_2}{\TyS{t_1}}
-}{
-    \goodTerm{\Gm}{t_1 \equiv t_2}{T}
-}
-
 
 \Rule[name=tm/w]{
     \goodWSig{\Gm}{\wsig}{n}
@@ -329,5 +197,5 @@
 \end{mathpar}
 
 \caption{Syntax and selected typing rules of \TT}
-\label{fig:typing-selected}
+\label{fig:fmltt-selected}
 \end{figure}

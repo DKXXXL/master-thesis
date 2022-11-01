@@ -45,7 +45,7 @@ Axiom subst_tm_var_eq : [@\dadada@].
 Axiom subst_tm_abs_eq : [@\dadada@].
 Axiom subst_tm_app_eq : [@\dadada@].
 [@\outdent@]End STLC\_subst.[@\tanc{c-STLC-subst-end}@][@\outersep@]
-[@\outdent@][@\dadada@][@\hfill\codecomment{Code emitted upon definition of \texttt{ty} in family \texttt{STLC}}@][@\tanc{c-STLC-ty-start}@][@\tanc{c-STLC-ty-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{ty} in family \texttt{STLC}}@] [@\dadada@][@\tanc{c-STLC-ty-start}@][@\tanc{c-STLC-ty-end}@][@\outersep@]
 [@\outdent@][@\codecomment{Code emitted upon definition of \texttt{env} in family \texttt{STLC}}@][@\tanc{c-STLC-env-start}@]
 [@\outdent@]Module Type STLC\_env\_Ctx.
 Include STLC\_ty\_Ctx.  Include STLC\_ty.
@@ -53,7 +53,7 @@ Include STLC\_ty\_Ctx.  Include STLC\_ty.
 [@\outdent@]Module STLC\_env (self : STLC\_env\_Ctx).
 Def env : Type := id -> option self.ty.
 [@\outdent@]End STLC\_env.[@\tanc{c-STLC-env-end}@][@\outersep@]
-[@\outdent@][@\dadada@][@\hfill\codecomment{Code emitted for other fields defined in family \texttt{STLC}}@][@\tanc{c-STLC-rest}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted for other fields defined in family \texttt{STLC}}@] [@\dadada@][@\tanc{c-STLC-rest}@][@\outersep@]
 [@\outdent@][@\codecomment{Code emitted upon completion of family \texttt{STLC}}@][@\tanc{c-STLC-start}@]
 [@\outdent@]Module STLC.[@\innersep@]
 Inductive tm\_ : Set :=[@\tanc{c-STLC-d-tm-start}@]
@@ -76,15 +76,15 @@ Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLC-d-e
 [@\outdent@]End STLC.[@\tanc{c-STLC-end}@]
 \end{lstlisting}
 
-\makeline[-1pt]{c-STLC-subst-start}{c-STLC-subst-end}[codecomment-color!55][1.8pt]
-\makeline[-1pt]{c-STLC-tm-start}{c-STLC-tm-end}[codecomment-color!55][1.8pt]
-\makeline[-1pt]{c-STLC-ty-start}{c-STLC-ty-end}[codecomment-color!55][1.8pt]
-\makeline[-1pt]{c-STLC-env-start}{c-STLC-env-end}[codecomment-color!55][1.8pt]
-\makeline[-1pt]{c-STLC-rest}{c-STLC-rest}[codecomment-color!55][1.8pt]
-\makeline[-1pt]{c-STLC-start}{c-STLC-firstcol-end}[codecomment-color!55][1.8pt]
+\makeline[-1pt]{c-STLC-subst-start}{c-STLC-subst-end}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLC-tm-start}{c-STLC-tm-end}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLC-ty-start}{c-STLC-ty-end}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLC-env-start}{c-STLC-env-end}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLC-rest}{c-STLC-rest}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLC-start}{c-STLC-firstcol-end}[codecomment-color!50][1.8pt]
 \makeline[4pt]{c-STLC-d-tm-start}{c-STLC-d-tm-end}[codecomment-color!35][1.0pt]
 \makeline[4pt]{c-STLC-d-subst-start}{c-STLC-firstcol-end}[codecomment-color!35][1.0pt]
-\makeline[.5\textwidth+8pt]{c-STLC-sndcol-start}{c-STLC-end}[codecomment-color!55][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLC-sndcol-start}{c-STLC-end}[codecomment-color!50][1.8pt]
 \makeline[.5\textwidth+12pt]{c-STLC-d-ty}{c-STLC-d-ty}[codecomment-color!35][1.0pt]
 \makeline[.5\textwidth+12pt]{c-STLC-d-env}{c-STLC-d-env}[codecomment-color!35][1.0pt]
 \makeline[.5\textwidth+12pt]{c-STLC-d-rest}{c-STLC-d-rest}[codecomment-color!35][1.0pt]
@@ -116,7 +116,7 @@ Def subst\_tm_fix := [@\dadada@].
 Include STLC\_subst(self).
 Axiom subst_tm_fix_eq : [@\dadada@].
 [@\outdent@]End STLCFix\_subst.[@\tanc{c-STLCFix-subst-end}@][@\outersep@]
-[@\outdent@][@\dadada@] [@\codecomment{Code emitted for other fields defined in family \texttt{STLCFix}}@][@\tanc{c-STLCFix-rest}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted for other fields defined in family \texttt{STLCFix}}@] [@\dadada@][@\tanc{c-STLCFix-rest}@][@\outersep@]
 [@\outdent\codecomment{Code emitted upon completion of family \texttt{STLCFix}}@][@\tanc{c-STLCFix-start}@]
 [@\outdent@]Module STLCFix.[@\innersep@]
 Inductive tm\_ : Set :=[@\tanc{c-STLCFix-d-tm-start}@]
@@ -139,10 +139,10 @@ Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLCFix-
 [@\outdent@]End STLCFix.[@\tanc{c-STLCFix-end}@]
 \end{lstlisting}
 
-\makeline[.5\textwidth+8pt]{c-STLCFix-tm-start}{c-STLCFix-tm-end}[codecomment-color!55][1.8pt]
-\makeline[.5\textwidth+8pt]{c-STLCFix-subst-start}{c-STLCFix-subst-end}[codecomment-color!55][1.8pt]
-\makeline[.5\textwidth+8pt]{c-STLCFix-rest}{c-STLCFix-rest}[codecomment-color!55][1.8pt]
-\makeline[.5\textwidth+8pt]{c-STLCFix-start}{c-STLCFix-end}[codecomment-color!55][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-tm-start}{c-STLCFix-tm-end}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-subst-start}{c-STLCFix-subst-end}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-rest}{c-STLCFix-rest}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-start}{c-STLCFix-end}[codecomment-color!50][1.8pt]
 \makeline[.5\textwidth+13pt]{c-STLCFix-d-tm-start}{c-STLCFix-d-tm-end}[codecomment-color!35][1.0pt]
 \makeline[.5\textwidth+13pt]{c-STLCFix-d-subst-start}{c-STLCFix-d-subst-end}[codecomment-color!35][1.0pt]
 \makeline[.5\textwidth+13pt]{c-STLCFix-d-ty}{c-STLCFix-d-ty}[codecomment-color!35][1.0pt]
