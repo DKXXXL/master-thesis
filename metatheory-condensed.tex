@@ -58,6 +58,9 @@ and $\codety{T}$ encoding type~$T$ (rule \ruleref{tm/c}).
 MLTT has an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
 
+A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
+in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
+
 \noindentparagraph{Introducing and eliminating inductive types.}
 
 W-types~\cite{martin1984intuitionistic} are a succinct way to model
@@ -157,7 +160,9 @@ we name the context as $\mathit{self}$ (cf.~\cref{fig:stlc-compiled})
 and feel free to write its type, which is a dependent tuple type, as a
 dependent record type with labels.
 %
-\begin{itemize}[labelsep=*,leftmargin=1pc]
+\begin{itemize}
+  [leftmargin=4ex]
+  %[labelsep=*,leftmargin=1pc]
 
 \item 
 The first field $t_1$ is defined as $\wcode{\wsig_{\texttt{tm}}}$
@@ -189,6 +194,10 @@ Their typing depends on the knowledge that \lsti!tm! has type~$\cU$,
 rather than \TyS{\wcode{\wsig_{\texttt{tm}}}},
 so they can be reused in a context where \lsti!tm! is defined as $\wcode{\wsig'_{\texttt{tm}}}$,
 where $\wsig'_{\texttt{tm}}$ extends~$\wsig_{\texttt{tm}}$ with additional constructors.
+%
+For example, in \cref{fig:stlc-linkage-typing}, the typing of the case handlers of
+\lsti{subst} is agnostic of the definition of \lsti!tm!---it sees only $\text{\lsti!tm!}:\cU$---so
+they can be reused by a linkage modeling \lsti{STLCFix}.
 
 \end{itemize}
 
