@@ -30,11 +30,11 @@ The proof can be found in appendix. The intuition of the model is similar to tha
 With the logical relation and the help of eta rule, we figure out the following canonical form
 \begin{theorem}[Canonical Forms].
   \begin{itemize}
-    \item if $\goodTerm{\cdot}{t}{El~("W"~*)}$ with $\goodTerm{\cdot}{*}{\bW~\sigma}$ and $\goodWSig{\cdot}{\sigma}{n}$, then $\goodTerm{\cdot}{t \equiv "Wsup"~j~a~b}{El~("W"~*)}$ for some $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot, B[(id, a)]}{b}{El~("W"~*)}$ and $j < n$
+    \item if $\goodTerm{\cdot}{t}{El~(\wcode{\tau})}$ with $\goodWSig{\cdot}{\tau}{n}$, then $\goodTerm{\cdot}{t \equiv "Wsup"~j~a~b}{El~(\wcode{\tau})}$ for some $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot, B[(id, a)]}{b}{El~(\wcode{\tau})}$ and $j < n$
     \item if $\goodTerm{\cdot}{t}{\mathbb{B}}$ then $\goodTerm{\cdot}{t \equiv "tt"}{\mathbb{B}}$ or $\goodTerm{\cdot}{t \equiv "ff"}{\mathbb{B}}$ 
-    \item if $\goodTerm{\cdot}{t}{\cL\sigma}$ with $\goodSig{\cdot}{\sigma}{n}$, then $\goodTerm{\cdot}{t \equiv \mu^+~o~t}{\cL\sigma}$ 
+    \item if $\goodTerm{\cdot}{t}{\cL\sigma}$ with $\goodSig{\cdot}{\sigma}{n}$, then $\goodTerm{\cdot}{t \equiv \LkgAdd{o}{t}}{\cL\sigma}$ 
     
-      $\quad$ for some $\goodTerm{\cdot}{o}{\cL(p_1\nu~\sigma)}$ and $\goodTerm{\cdot, p_1\nu'~\sigma}{t}{p_2\nu~\sigma}$
+      $\quad$ for some $\goodTerm{\cdot}{o}{\cL(\lkgproj{1}{\sigma})}$ and $\goodTerm{\cdot, \lsigproj{2}{\sigma}}{t}{\lkgproj{2}{\sigma}}$
     \item if $\goodTerm{\cdot}{t}{\Sigma A B}$ then $\goodTerm{\cdot}{t = (a, b)}{\Sigma A B}$ with $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot}{b}{B[(id, a)]}$
     \footnote{We emphasize the last one because $\cCt t$ is a dependent pair}
   \end{itemize}
