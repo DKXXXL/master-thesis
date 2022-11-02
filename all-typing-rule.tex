@@ -5,9 +5,23 @@ What's more, we use $\pi_1$ and $\pi_2$ (without argument) to represent $\pi_1~"
 For the singleton type $\TyS{a}$, we formulate in a more readable way instead of using the explicit introduction and elimination rule (e.g. a more explicit introduction rule will have a `constructor', say "s": $\frac{\goodTerm{\Gm}{a}{A}}{\goodTerm{\Gm}{"s"~a}{\TyS{a}}}$).
 
 
-\begin{mathparpagebreakable}
+\begin{mathpar}
 \judgebox{\goodCtx{\Gm}{i}}
-\\ 
+
+\judgebox{\goodSub{\Gm}{\gm}{\Dl}}
+
+\judgebox{\goodType{\Gm}{T}{}}
+
+\judgebox{\goodTerm{\Gm}{t}{T}}
+\\
+\judgebox{\goodWSig{\Gm}{\wsig}{n}}
+
+\judgebox{\goodSig{\Gm}{\lsig}{n} }
+
+\judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
+\end{mathpar}
+
+\begin{mathparpagebreakable}
 \Rule[name=ctx/ept]{ "" }{\goodCtx{\cdot}{0}} 
 \Rule[name=ctx/ext]
 {\goodCtx{\Gm}{i} \\ \goodType{\Gm}{A}{j}}
@@ -15,8 +29,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\judgebox{ \goodType{\Gm}{T}{i} }
-\\
 \Rule[name=ty/universe]
 { "" }
 {\goodType{\Gm}{\cU}{j + 1}}
@@ -86,8 +98,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\judgebox{ \goodTerm{\Gm}{t}{T} }
-\\
 \Rule[name=tm/code]
 {\goodType{\Gm}{T}{j}}
 {\goodTerm{\Gm}{\codety{T}}{\cU}
@@ -216,8 +226,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\judgebox{\goodSub{\Gm}{\gm}{\Delta}}
-\\
 \Rule[name=subst/ept]
 {""}{\goodSub{\Gm}{\epsilon}{\cdot}}
 \Rule[name=substeq/ept/eta]
@@ -261,8 +269,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\judgebox{\goodWSig{\Gm}{\wsig}{n}}
-\\
 \Rule[name=wsig/ept]
 {""}
 {\goodWSig{\Gm}{\WSigEmp}{0}}
@@ -350,8 +356,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\judgebox{\goodSig{\Gm}{\lsig}{n} }
-\\
 \Rule[name=ty/lkg]
 {\goodSig{\Gm}{\lsig}{n}}
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
@@ -607,10 +611,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 }{R}}
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-
-\judgebox{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}}
-
-\\
 \Rule[name=inh/id]
 {""}
 {\goodInh{\Gm}{\InhId}{\lsig}{\lsig}}

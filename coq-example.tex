@@ -58,7 +58,7 @@ Thus we provide a small-scale \textbf{escape hatch via "Overridable"}. Once "pin
 % that our inductive definition does satisfy the constraint, which is
 % exactly what we expect from "Closing Fact". If directly working on inductive definition doesn't bring us benefit during proof engineering, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
-Our formulation for the base STLC family is around 400+ LOCs; each families implementing single features both take around 300+ LOCs. 
+Our formulation for the base STLC family is around 400+ LOCs; each families implementing a single feature takes around 100~300 LOCs. 
 
 For each sub family, the main code bloat comes from the inversion lemma (global reasoning) and the fact we don't yet support  \mintinline{Coq}{Hint}.
 % need comparison with the original implementation
