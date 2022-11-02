@@ -1,0 +1,13 @@
+% Canonicity / Consistency Condensed
+\noindentparagraph{Consistency and Canonicity.}
+Two of the most fundamental properties for dependent type theory are \textit{consistency} and \textit{canonicity}:
+\begin{theorem}[Consistency]
+  $\goodTerm{\cdot}{t}{\bot}$ is impossible, i.e. $\bot$ is not inhabitted in the empty context
+\end{theorem}
+\begin{theorem}[Canonicity]
+  if $\goodTerm{\cdot}{t}{\cB}$ then it is either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$
+\end{theorem}
+Consistency means our dependent type theory suffices as a logical system as not every proposition is trivially provable. Canonicity means our dependent type theory sufficies as ``a computational foundation for mathematics''\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}. We can even argue that, if this canonicity theorem is proven in a computable meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
+then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type. 
+
+The 
