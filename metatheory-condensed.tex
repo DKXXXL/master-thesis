@@ -136,7 +136,7 @@ Crucially, unlike the second field in a dependent pair (\ruleref{tm/pair}),
 the typing of~$t$ in \ruleref{l/add} is polymorphic to how the fields in
 $t$'s context are defined, so that a different linkage that overrides
 fields in $t$'s context can reuse~$t$---without retyping it---by
-projecting it (\ruleref{l/proj2}) and then including it.
+projecting it (\ruleref{l/proj/2}) and then including it.
 
 This type~$A$ abstracting the context in \ruleref{l/add} and
 \ruleref{lsig/add} is not necessarily the same as those recorded by~$\lsig$,
@@ -149,17 +149,33 @@ and \ruleref{tm/wrec} stipulate, whereas $\wsig$ should be hidden
 from all other fields so that they can be reused
 for a W-type signature~$\wsig'$ extending~$\wsig$.
 
+\definecolor{A-color}{HTML}{E7EFC5}
+\definecolor{T-color}{HTML}{FFF1D0}
+\definecolor{t-color}{HTML}{FAE0E4}
+
 We illustrate this with \cref{fig:stlc-linkage-typing}.
 On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
 is how the corresponding fields are modeled and typed in \TT.
 %
 $\lkg_i$ is the linkage that adds the $i$-th field~$t_i$ with the typing
-$\goodTerm{A_i}{t_i}{T_i}$.
+$\goodTerm{%
+\tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i}(-0.02,-0.10)(-0.02,0.28)
+A_i%
+\tikzmarkend{A-i}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-i}(-0.02,-0.10)(-0.02,0.28)%
+t_i%
+\tikzmarkend{t-i}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T-i}(-0.02,-0.10)(-0.02,0.28)%
+T_i%
+\tikzmarkend{T-i}%
+}$.
 %
 For readability, we feel free to use a notation with explicit names
 in this typing judgment:
 we name the context as $\mathit{self}$ (cf.~\cref{fig:stlc-compiled})
-and feel free to write its type, which is a dependent tuple type, as a
+and feel free to write its type~$A_i$, which is a dependent tuple type, as a
 dependent record type with labels.
 %
 \begin{itemize}
@@ -206,18 +222,35 @@ they can be reused by a linkage modeling \lsti{STLCFix}.
 The third premise
 $\goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}$
 in rules \ruleref{l/add} and \ruleref{lsig/add} is
-responsible for hiding W-type signatures in~$\lsig$.
+responsible for hiding W-type signatures.
 Here, $\TyTkg{\lsig}$ is a dependent tuple type (rule \ruleref{tyeq/pk/add})
-packaging the types of all fields preceding the current field~$t$,
+that packages the types of all fields preceding the current field~$t$,
 and $\seal$ is the term turning the tuple $\Tkg{\lkg}$ of type
-$\TyTkg{\lsig}$ (rule \ruleref{tmeq/pk/add}) into a new term of type $A$
+$\TyTkg{\lsig}$ (rule \ruleref{tmeq/pk/add}) into a new tuple of type~$A$
 that hides W-type signatures behind $\cU$, if necessary.
-When no hiding is needed, $\seal$ is $\var{0}$ (the identity) and $A$ is
+%
+It is straightforward to find the~$\seal$ that fits the bill, though this process
+is not automated in \TT.
+In particular, when no hiding is needed, $\seal$ is $\var{0}$ (the identity) and $A$ is
 $\TyTkg{\lsig}$.
+In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are identities,
+and $\seal_6$ turns
+\begingroup
+\fontsize{9}{9}\selectfont%
+$\big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$
+\endgroup
+into
+\begingroup
+\fontsize{9}{9}\selectfont%
+$\big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$%
+\endgroup
+.
 
-When a family is closed and a complete linkage~$\lkg$ is formed, fields
-of the family can be accessed by projecting them out of the tuple
-$\Tkg{\lkg}$, as the last line of \cref{fig:stlc-linkage-typing} suggests.
+When a family is completed (e.g., \lsti!End!~\lsti!STLC!),
+a linkage~$\lkg$ containing all the fields is available
+(e.g., $\lkg_{20}$ in \cref{fig:stlc-linkage-typing}).
+Fields of the family can then be accessed by projecting them out of the tuple
+$\Tkg{\lkg}$.
 
 
 \noindentparagraph{Linkage transformers.}
@@ -225,17 +258,17 @@ $\Tkg{\lkg}$, as the last line of \cref{fig:stlc-linkage-typing} suggests.
 Inheritance and code reuse can already be expressed through projection
 of fields out of linkages and their inclusion into new linkages.
 To make common patterns of linkage manipulations more convenient,
-\TT builds \emph{linkage transformers}, whose well-formedness judgments
-have form $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$.
-Linkage transformers are second-class; the only way to use them is to
-apply them to linkages to form new linkages (\ruleref{tm/inh}).
+\TT provides a ``library'' of \emph{linkage transformers}, whose well-formedness judgments
+have form $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$. The idea is that
+applying~$h$ to a linkage of type~$\TyLkg{\lsig_1}$ yields a linkage of
+type~$\TyLkg{\lsig_2}$ (\ruleref{tm/inh}).
+%Linkage transformers are second-class; the only way to use them is to
+%apply them to linkages to form new linkages.
 %
-Derived families can be modeled as linkage transformers.
-%
-Linkage transformers are inductively constructed from several introduction
-rules.
-\cref{fig:typing-selected} shows the beta rule of an exemplary transformer,
-\ruleref{lxeq/ov/beta}.
+Derived families can be modeled as linkage transformers inductively
+constructed from the introduction forms $\InhId$, $\InhExt{h}{t}$, $\InhOv{h}{t}$, etc.
+\cref{fig:fmltt-selected} shows the beta rule of an exemplary transformer,
+\ruleref{tmeq/ov/beta}.
 It can be read as follows: given a linkage of form $\LkgAdd{\lkg}{t_1}$,
 applying the transformer $\InhOv{h}{t_2}$ overrides the linkage's last
 field~$t_1$ with~$t_2$.
@@ -252,8 +285,7 @@ quotient inductive-inductive types~\cite{nordvall2010inductive,altkap2016},
 available as a supplemental file in Agda syntax.
 %
 We also typeset a more complete set of rules than
-\cref{fig:mltt-typing-selected,fig:fmltt-typing-selected} allow
-and present it in a supplemental appendix.
+the space allows and present it in a supplemental appendix.
 %
 Another supplemental appendix gives a larger-scale example than
 \cref{fig:stlc-linkage-typing} showing how families are modeled and

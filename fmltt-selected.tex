@@ -123,7 +123,7 @@
     \goodSig{\Gm}{\lsig}{n} 
     \\
     \goodType{\Gm, A}{T}{}
-    \\
+    \\\\
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
     \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
@@ -138,13 +138,13 @@
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
     \goodTerm{\Gm, A}{t}{T}
-    \\
+    \\\\
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
     \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
 }
 
-\Rule[name=l/proj2]{   
+\Rule[name=l/proj/2]{
     \goodSig{\Gm}{\lsig}{n+1}
     \\
     \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}
@@ -152,20 +152,28 @@
     \goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
 }
 
-\Rule[name=tyeq/pk/empty]{
+\Rule[name=tm/inh]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
 }{
-    \goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{}
+    \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
 }
 
-\Rule[name=tmeq/pk/empty]{
-}{
-    \goodTerm{\Gm}{
-        \Tkg{\LkgEmp}
-        \equiv
-        \unit
-    }{\TyTkg{\LSigEmp}}
-}
-
+%\Rule[name=tyeq/pk/empty]{
+%}{
+%    \goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{}
+%}
+%
+%\Rule[name=tmeq/pk/empty]{
+%}{
+%    \goodTerm{\Gm}{
+%        \Tkg{\LkgEmp}
+%        \equiv
+%        \unit
+%    }{\TyTkg{\LSigEmp}}
+%}
+%
 \Rule[name=tyeq/pk/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
@@ -179,7 +187,7 @@
         \TySigma{\TyTkg {\lsig}}{\sub{T}{\SubstExt{\SubstWeak{1}}{\seal}}}
     }{}
 }
-
+\hfill
 \Rule[name=tmeq/pk/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
@@ -200,8 +208,30 @@
     }
 }
 
+\Rule[name=tmeq/ov/beta]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+    \\\\
+    \goodTerm{\Gm, A_1}{t_1}{T_1}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_1}}{\seal_1}{\sub{A_1}{\SubstWeak{1}}}
+    \\
+    \goodTerm{\Gm, A_2}{t_2}{T_2}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_2}}{\seal_2}{\sub{A_2}{\SubstWeak{1}}}
+}{
+    \goodTerm{\Gm}{
+        \inh{\InhOv{h}{t_2}}{\LkgAdd{\lkg}{t_1}}
+        \equiv 
+        \LkgAdd{\inh{h}{\lkg}}{t_2}
+    }{
+        \TyLkg{\LSigAdd{\lsig_2}{\seal_2}{T_2}}
+    }
+}
+
 \end{mathpar}
 
-\caption{Syntax and selected typing rules of \TT}
+\caption{Syntax and selected typing rules of \TT.}
 \label{fig:fmltt-selected}
 \end{figure}
