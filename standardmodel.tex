@@ -1,12 +1,4 @@
 
-\newcommand{\goodCtxS}[2]{{ {#1} \ \models_S }}
-\newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
-\newcommand{\goodTermS}[3]{{ {#1} \models_S {#2} : {#3} }}
-\newcommand{\goodSubS}[3]{{ {#1} \models_S {#2} : {#3} }}
-\newcommand{\goodSigS}[3]{{ {#1} \models_S {#2} \ \  \texttt{LSig}^{#3} }}
-\newcommand{\goodWSigS}[3]{{ {#1} \models_S {#2} \ \ \texttt{WSig}^{#3} }}
-\newcommand{\goodSealS}[4]{{ {#1} \models_S {#2} : {#3} \  |\  {#4} }}
-\newcommand{\goodInhS}[4]{{ {#1} \models_S {#2} : {#3} \twoheadrightarrow {#4}}}
 
 Once we have the syntax of our theory, the first question is if our theory is consistent, i.e., if we can syntactically derive bottom in our theory. We prove the consistency by extending the standard model from~\cite{altkap2016,kaposi2017type, kaposi2019gluing} and their formalization, where they formally resort to the concept of \textit{algebra/model} of QIIT. However, in this section, for readability, we only inductively interpret each syntax piece into naive set theory that is also respecting judgemental equalities. Please refer to our pseduo-Agda formulation for a more formal and complete version.
 
@@ -22,79 +14,79 @@ Here we will only show some interpretation and also omit the universe level to s
 \definecolor{new}{HTML}{F5EFE6}
 
 
-\begin{align*}
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod1}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodCtx{\Gm}{i}} & \text{ is a Set and we define } \goodCtxS{\Gm}{i} :\iff \denotesS{\goodCtx{\Gm}{i}} \text{ is defined}\tikzmarkend{stmod1} 
-  \\
-  \denotesS{\goodCtx{\cdot}{i}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodCtx{\Gm, A}{i}} &= \{(\Gm, a) : \Gm \in \denotesS{\goodCtx{\Gm}{}}, a \in \denotesS{\goodType{\Gm}{A}{}}(\Gm)\}
-  \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod2}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodSub{\Gm}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gm}{\Gm}{\Delta}} : \iff \denotesS{\Gm} \in \denotesS{\goodSub{\Gm}{\_}{\Delta}} \tikzmarkend{stmod2} 
-  \\
-  \denotesS{\goodSub{\Gm}{\_}{\Delta}} & = \denotesS{\goodCtx{\Gm}{i}} \rightarrow \denotesS{\goodCtx{\Delta}{j}} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod3}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodTerm{\Gm}{\_}{T}} & \text{ is a Set (of dependent function) } \\& \text{and we define }  {\goodTermS{\Gm}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gm}{\_}{T}}
-  \tikzmarkend{stmod3}
-  \\
-  \denotesS{\goodTerm{\Gm}{\_}{T}} & = \prod_{\Gm \in \denotesS{\goodCtx{\Gm}{i}}}\denotesS{T}(\Gm) \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod4}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gm}{i}}  
-  \\
-  & \text{ and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesS{\goodType{\Gm}{T}{i}} \text{ is defined } \tikzmarkend{stmod4} 
-  \\
-  \denotesS{\goodType{\Gm}{\Sigma A B}{}}(\Gm) &:= \sum_{a \in \denotesS{A}\Gm} \denotesS{B}(\Gm, a) \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod5}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gm}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gm}{\_}{n}} \tikzmarkend{stmod5} 
-  \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod6}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod6} \\   
-  \denotesS{\goodSig{\Gm}{\_}{n+1}} &= \{
-    (\denotesS{\sigma}, \denotesS{A}, \denotesS{f}, \denotesS{T}) :
-      {\goodSigS{\Gm}{\sigma}{n}}
-      \land  {\goodTypeS{\Gm}{A}{}} \\  
-      & \quad \quad \quad \land  {\goodSealS{\Gm}{f}{\sigma}{A}}
-      \land  {\goodTypeS{\Gm, A}{T}{i}} 
-  \} \\ 
-  \denotesS{\goodSig{\Gm}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gm}{\TyTkg {\tau}}{}} \denotesS{T["sf" \ f]} \\
-  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \denotesS{f} , \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod7}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod7}  \\
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\Gm) \land t \in \prod_{m' \in \denotesS{A}(\Gm)}\denotesS{T}(\Gm, m')  \}  \\
-  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \_, \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \denotesS{\goodSig{\Gm}{\LSigEmp}{0}} &= \star \\
-  \denotesS{\goodSig{\Gm}{\LSigAdd{\sigma}{s}{T}}{n+1}} &= (\sigma, A, f, T) \\
-  \denotesS{\goodTerm{\Gm}{\LkgEmp}{\cL \LSigEmp} } (\Gm) &= \star \\
-  \denotesS{\goodTerm{\Gm}{\LkgAdd{o}{t}}{\cL(\LSigAdd {\sigma}{s}  {T})}} \ (\Gm)&= (o(\Gm), (\lambda \ m' . t'(\Gm, m'))) \\
-  \denotesS{\goodTerm{\Gm}{\lkgproj{1}{t}}{\cL(\lsigproj{1}{\sigma})}}(\Gm) &=  "fst"~(t\Gm) \\ 
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod8}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}} & \text{ is a dependent function, defined inductively on } {\sigma} 
-  \tikzmarkend{stmod8}
-  \\
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
-  &= \denotesS{{\Tkg {\lkgproj{1}{o}}}}, \denotesS{(p_2\mu \ o)["sf" \ f][(id, \Tkg {\lkgproj{1} {o}})]} \\
-  & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
-  &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \denotesS{\goodType{\Gm}{\bot}{i}} \ (\Gm) &= \emptyset \\
-  \denotesS{\goodType{\Gm}{\cB}{i}} \ (\Gm) &= \{0, 1\} \quad \text{a specific two element set} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod9}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
-  & \text{ and we define } \goodWSigS{\Gm}{\tau}{n} :\iff \denotesS{\goodWSig{\Gm}{\tau}{n}} \in \denotesS{\goodWSig{\Gm}{\_}{n}}
-  \tikzmarkend{stmod9}
-  \\
-  \denotesS{\goodWSig{\Gm}{\WSigEmp}{0}} &= [] \quad \text{ an empty list} \\ 
-  \denotesS{\goodWSig{\Gm}{(\WSigAdd{\tau}{A}{B})}{n+1}}
-  &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gm}{\tau}{n}} \\ 
-  \denotesS{\goodType{\Gm}{\wsigproj{j}{1}{\tau}}{}} &= "fst"~({\denotesS{\tau}}_{j})\\
-  \denotesS{\goodType{\Gm, \wsigproj{j}{1}{\tau}}{\wsigproj{j}{2}{\tau}}{}} &= "snd"~({\denotesS{\tau}}_j)\\
-\end{align*}
+% \begin{align*}
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod1}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodCtx{\Gm}{i}} & \text{ is a Set and we define } \goodCtxS{\Gm}{i} :\iff \denotesS{\goodCtx{\Gm}{i}} \text{ is defined}\tikzmarkend{stmod1} 
+%   \\
+%   \denotesS{\goodCtx{\cdot}{i}} &= \{\star\} \quad \text{ a specific singleton set} \\
+%   \denotesS{\goodCtx{\Gm, A}{i}} &= \{(\Gm, a) : \Gm \in \denotesS{\goodCtx{\Gm}{}}, a \in \denotesS{\goodType{\Gm}{A}{}}(\Gm)\}
+%   \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod2}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodSub{\Gm}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gm}{\Gm}{\Delta}} : \iff \denotesS{\Gm} \in \denotesS{\goodSub{\Gm}{\_}{\Delta}} \tikzmarkend{stmod2} 
+%   \\
+%   \denotesS{\goodSub{\Gm}{\_}{\Delta}} & = \denotesS{\goodCtx{\Gm}{i}} \rightarrow \denotesS{\goodCtx{\Delta}{j}} \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod3}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodTerm{\Gm}{\_}{T}} & \text{ is a Set (of dependent function) } \\& \text{and we define }  {\goodTermS{\Gm}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gm}{\_}{T}}
+%   \tikzmarkend{stmod3}
+%   \\
+%   \denotesS{\goodTerm{\Gm}{\_}{T}} & = \prod_{\Gm \in \denotesS{\goodCtx{\Gm}{i}}}\denotesS{T}(\Gm) \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod4}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodType{\Gm}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gm}{i}}  
+%   \\
+%   & \text{ and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesS{\goodType{\Gm}{T}{i}} \text{ is defined } \tikzmarkend{stmod4} 
+%   \\
+%   \denotesS{\goodType{\Gm}{\Sigma A B}{}}(\Gm) &:= \sum_{a \in \denotesS{A}\Gm} \denotesS{B}(\Gm, a) \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod5}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gm}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gm}{\_}{n}} \tikzmarkend{stmod5} 
+%   \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod6}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod6} \\   
+%   \denotesS{\goodSig{\Gm}{\_}{n+1}} &= \{
+%     (\denotesS{\sigma}, \denotesS{A}, \denotesS{f}, \denotesS{T}) :
+%       {\goodSigS{\Gm}{\sigma}{n}}
+%       \land  {\goodTypeS{\Gm}{A}{}} \\  
+%       & \quad \quad \quad \land  {\goodSealS{\Gm}{f}{\sigma}{A}}
+%       \land  {\goodTypeS{\Gm, A}{T}{i}} 
+%   \} \\ 
+%   \denotesS{\goodSig{\Gm}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
+%   \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gm}{\TyTkg {\tau}}{}} \denotesS{T["sf" \ f]} \\
+%   & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \denotesS{f} , \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
+%   \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod7}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod7}  \\
+%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\Gm) \land t \in \prod_{m' \in \denotesS{A}(\Gm)}\denotesS{T}(\Gm, m')  \}  \\
+%   & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \_, \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
+%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
+%   \denotesS{\goodSig{\Gm}{\LSigEmp}{0}} &= \star \\
+%   \denotesS{\goodSig{\Gm}{\LSigAdd{\sigma}{s}{T}}{n+1}} &= (\sigma, A, f, T) \\
+%   \denotesS{\goodTerm{\Gm}{\LkgEmp}{\cL \LSigEmp} } (\Gm) &= \star \\
+%   \denotesS{\goodTerm{\Gm}{\LkgAdd{o}{t}}{\cL(\LSigAdd {\sigma}{s}  {T})}} \ (\Gm)&= (o(\Gm), (\lambda \ m' . t'(\Gm, m'))) \\
+%   \denotesS{\goodTerm{\Gm}{\lkgproj{1}{t}}{\cL(\lsigproj{1}{\sigma})}}(\Gm) &=  "fst"~(t\Gm) \\ 
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod8}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}} & \text{ is a dependent function, defined inductively on } {\sigma} 
+%   \tikzmarkend{stmod8}
+%   \\
+%   \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
+%   &= \denotesS{{\Tkg {\lkgproj{1}{o}}}}, \denotesS{(p_2\mu \ o)["sf" \ f][(id, \Tkg {\lkgproj{1} {o}})]} \\
+%   & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
+%   \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
+%   &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
+%   \denotesS{\goodType{\Gm}{\bot}{i}} \ (\Gm) &= \emptyset \\
+%   \denotesS{\goodType{\Gm}{\cB}{i}} \ (\Gm) &= \{0, 1\} \quad \text{a specific two element set} \\
+%   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod9}(0.05,-0.15)(-0.10,0.30)
+%   \denotesS{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
+%   & \text{ and we define } \goodWSigS{\Gm}{\tau}{n} :\iff \denotesS{\goodWSig{\Gm}{\tau}{n}} \in \denotesS{\goodWSig{\Gm}{\_}{n}}
+%   \tikzmarkend{stmod9}
+%   \\
+%   \denotesS{\goodWSig{\Gm}{\WSigEmp}{0}} &= [] \quad \text{ an empty list} \\ 
+%   \denotesS{\goodWSig{\Gm}{(\WSigAdd{\tau}{A}{B})}{n+1}}
+%   &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gm}{\tau}{n}} \\ 
+%   \denotesS{\goodType{\Gm}{\wsigproj{j}{1}{\tau}}{}} &= "fst"~({\denotesS{\tau}}_{j})\\
+%   \denotesS{\goodType{\Gm, \wsigproj{j}{1}{\tau}}{\wsigproj{j}{2}{\tau}}{}} &= "snd"~({\denotesS{\tau}}_j)\\
+% \end{align*}
 
 
 We encourage the reader to read the (pseudo-)Agda-style proof with more type annotation so it is clearer about the mathematical object doing the interpretation. Here, we need to clarify some ambiguity in our latex formulation. For example, when we wrote ``$\denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}}$ defined inductively on ${\sigma}$'', the best way to understand it is to consider we are defining a function $\denotesS{\goodType{\Gm}{\TyTkg {\_}}{}}$ as the interpretation for $\goodType{\Gm}{\TyTkg {\_}}{}$ that mapping $\denotesS{\sigma}$ to $\denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}}$, inductively on the length of the signature. The case is similar for $\denotesS{\cL \_}$, $\denotesS{\Tkg {\_}}$ and  $\denotesS{\Sigma \ \_ \ \_}$. \textbf{This is actually the formulation in Agda}---QIIT syntax consider $\TyTkg{} : "Sig"~\Gm~n \to "Ty"~\Gm$ as a constructor and our model needs to interpret this constructor to a function $\TyTkg{}^S : "Sig"^S \Gm^S~n \to "Ty"^S~\Gm^S$ with each judgement also interpreted. 
 
-Basically in Agda, we are simply constructing a function that mapping our QIIT data-type to some other data---it maps $"Con"$ to $"Con"^S$, "Ty : Con → Set" to "Ty$^S$ : Con$^S$ → Set" and etc. What's more, since judgemental equality in our meta-theory is represented by equality in QIIT, and the well-definedness of this mapping-out function implies that ``judgementally equal syntax is interpreted by the same semantic in the model''. 
+Basically in Agda, we are simply constructing a function that mapping our QIIT data-type to some other data---it maps constructor $"Con"$ to $"Con"^S$, and constructor "Ty : Con → Set" to "Ty$^S$ : Con$^S$ → Set" and etc. What's more, since judgemental equality in our meta-theory is represented by equality in QIIT, and the well-definedness of this mapping-out function implies that ``judgementally equal syntax is interpreted by the same semantic in the model''. 
 
 Note that $\denotesS{\goodSig{\Gm}{s}{n}}$ and $\denotesS{\goodType{\Gm}{\TyTkg{\sigma}}{i}}$ is mutual recursively defined together---because \\ $\goodSealS{\Gm}{f}{\sigma}{A}$ relies on $\TyTkg{}$. 
 
