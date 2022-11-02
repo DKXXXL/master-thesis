@@ -1,7 +1,36 @@
 To demonstrate the applicability of our design and implementation, we
 conduct three case studies.
 
+
+\noindentparagraph{Type safety of STLCs.}
+
+The first case study is the mechanization of the type safety theorem of
+STLC and those of its extensions,
+which has been occurring in the examples in this paper.
+The code base is ported from Software Foundations~\cite{sf-pl}.
+%
+The base STLC family consists of about 400 lines of code.
+Lines of code in each of the four derived families
+($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
+vary from 100 to 300, largely depending on how many constructors they
+add to the inductive types.
+
 \input{stlc-venn.tex}
+
+Using individual families to organize the mechanization of individual
+language features leads to a modular design that also facilitates code reuse.
+%
+Individually developed language features can be easily composed (as
+mixins) to form new STLC variants.
+%
+Composing features can lead to \emph{feature interactions}~\cite{batory2011feature}:
+features working correctly in isolation may require coordination when composed.
+For example, composing \lsti{STLCIsorec} and \lsti{STLCProd}
+(\cref{fig:stlc-isorec-prod}) creates a need to extend \lsti{tysubst} to
+handle \lsti{ty_prod}, which the type-checker enforces.
+
+The linguistic nature of our approach allows us to retain a programming
+style similar to the original proofs while achieving extensibility.
 
 \bigskip 
 

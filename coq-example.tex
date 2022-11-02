@@ -1,17 +1,17 @@
-\newpage\EDJ{Please delete this newpage command later}
+\newpage
 We provide three examples here for illustration and evaluation of our Coq plugin. 
 
-\subsection{Type Safety for STLC}\EDJ{We need a fuller view of the two examples. Especially show "accessing family components outside that family".}
+\subsection{Type Safety for STLC}
 \label{sec:coqexample-stlc}
 
-  \includegraphics[width=0.5\textwidth]{coqexmaple/Mixin-Venn-Diagram.pdf}
+% \includegraphics[width=0.5\textwidth]{coqexmaple/Mixin-Venn-Diagram.pdf}
 
 The first example is the example throughout our paper---type safety proof of STLC, largely adapted
 from Software Foundation~\cite{pierce2014software}. We singled out each language extensions from
 STLC and prove the type safety for them separately, following
 the style of the examples in MTC~\cite{delaware2013,forsta2020}.
 And we use the \textbf{mixin} feature---that is capable of mixing two linkage transformer---to mix the semantics and properties of language features---product
-, boolean (in \cref{fig:STLC-example}), sum type and iso-recursive type---with vanilla STLC.
+, boolean, sum type and iso-recursive type---with vanilla STLC.
 
 
 
@@ -20,7 +20,10 @@ And we use the \textbf{mixin} feature---that is capable of mixing two linkage tr
 % piece of data/inheritance judgement/inherited family}. 
 Compared with MTC,
 our example uses small-step operational semantics\YZ{Does MTC not define a small-step operational semantics for STLC?}\EDJreply{I thought they use big step with fuel. Though Coq a la carte use small-step in one example} by exploiting
-extensible inductive types. Most of the proof and computation are directly adapted from the one in Software Foundation, resulting in a similarly accessible proof. However, we highlight some special expriences when using our plugin. 
+extensible inductive types. Most of the proof and computation are
+directly adapted from the one in Software Foundation, resulting in a
+similarly accessible proof. However, we highlight some special
+experiences when using our plugin. 
 
 \begin{minted}[fontsize=\footnotesize]{Coq}
 Lemma subst_on_true :
@@ -36,9 +39,9 @@ Our proof is \textbf{more modular} as each part handling the extended feature ar
 
 We use \textbf{propositional computational axiom} when computing "FRecursion". For example, when we prove or extend substitution lemma for bool, we need to prove a subgoal like "subst_on_true" requiring a computation based on the definition of "subst". In vanilla Coq, that can be easily done via "simpl" but in our case, we need to use the postulated computation axiom to simplify the computation of "subst" instead.
 
-We handle \textbf{inversion lemma} differently. Inversion lemmas are those small lemmas while involving global reasoning. One example is "not_step_tm_true" which trivially asserts "tm_true" is not further reducible. It requires global reasoning because once the user errorneously add a constructor for "step tm_true tm_true" then this lemma cannot hold. Thus one way is to prove it by "FInduction" on the "step".  However, this brings a lot of boilerplate code as everytime "step" is extended with some unrelated constructor (e.g. "st_if : step (tm_if tm_true b c) b"), "not_step_tm_true" needs to be extended correspondingly---we need to check "st_if" doesn't "step tm_true" requiring using \textbf{partial recursor and the computational axiom} to prove "(tm_if tm_true b c) <> tm_true" syntactically speaking using tactic "fdiscriminate".
+We handle \textbf{inversion lemma} differently. Inversion lemmas are those small lemmas while involving global reasoning. One example is "not_step_tm_true" which trivially asserts "tm_true" is not further reducible. It requires global reasoning because once the user erroneously add a constructor for "step tm_true tm_true" then this lemma cannot hold. Thus, one way is to prove it by "FInduction" on the "step".  However, this brings a lot of boilerplate code as every time "step" is extended with some unrelated constructor (e.g. "st_if : step (tm_if tm_true b c) b"), "not_step_tm_true" needs to be extended correspondingly---we need to check "st_if" doesn't "step tm_true" requiring using \textbf{partial recursor and the computational axiom} to prove "(tm_if tm_true b c) <> tm_true" syntactically speaking using tactic "fdiscriminate".
 
-Thus we provide a small-scale \textbf{escape hatch via "Overridable"}. Once "pins {step}", we will know the \textit{concrete} (vanilla Coq) inductive type of "step" when proving "not_step_tm_true" and thus we can use all Coq's induction facility including "inversion". Once the definition of "step" extends during inheritance, due to the semantic of "Overridable", we need to provide a new proof but our plugin can also try to use the old proof script automatically. This trick can apply to small inversion lemma where we believe our inductive definition is ``well-formed'' enough and thus an "inversion" tactic can easily handle it. Another way to look at it is the fact that, this kind of inversion lemma should be part of the definition in the first hand, like a constraint---and the proof that our inductive definition satisfy this constraint should be trivial and any future extension should respect this constraint.
+Thus we provide a small-scale \textbf{escape hatch via "Overridable"}. Once "pins {step}", we will know the \textit{concrete} (vanilla Coq) inductive type of "step" when proving "not_step_tm_true" and thus we can use all Coq's induction facility including "inversion". Once the definition of "step" extends during inheritance, due to the semantic of "Overridable", we need to provide a new proof, but our plugin can also try to use the old proof script automatically. This trick can apply to small inversion lemma where we believe our inductive definition is ``well-formed'' enough and thus an "inversion" tactic can easily handle it. Another way to look at it is the fact that, this kind of inversion lemma should be part of the definition in the first hand, like a constraint---and the proof that our inductive definition satisfy this constraint should be trivial and any future extension should respect this constraint.
 
 % One kind of examples is about the computation, for example, substitution functions. Substitutions dealing with product and projection are defined in the corresponding children family. This is mainly done by inheriting and extending the handler family from the parents. The other kind of examples are about propositions and we directly use "(Extend) FTheorem" to handle them. In these cases we don't need to additionally define a auxillary handler family like we did for substitution---we simply use "Extend FTheorem" and our plugin will prepare the goals to prove. At the end, it will look like scattered proof scripts in a modular manner.
 % For example, the proof on progress on product projection is carried out in the children family that extend "tm" with products. \YZ{Can you say more about how your plugin enables more code reuse and modularity?}\EDJreply{please check}
@@ -58,7 +61,7 @@ Thus we provide a small-scale \textbf{escape hatch via "Overridable"}. Once "pin
 % that our inductive definition does satisfy the constraint, which is
 % exactly what we expect from "Closing Fact". If directly working on inductive definition doesn't bring us benefit during proof engineering, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
-Our formulation for the base STLC family is around 400+ LOCs; each families implementing a single feature takes around 100~300 LOCs. 
+Our formulation for the base STLC family is around 400+ LOCs; each family implementing a single feature takes around 100~300 LoCs. 
 
 For each sub family, the main code bloat comes from the inversion lemma (global reasoning) and the fact we don't yet support  \mintinline{Coq}{Hint}.
 % need comparison with the original implementation
