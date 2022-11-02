@@ -55,7 +55,7 @@ Thus we provide a small-scale \textbf{escape hatch via "Overridable"}. Once "pin
 % that our inductive definition does satisfy the constraint, which is
 % exactly what we expect from "Closing Fact". If directly working on inductive definition doesn't bring us benefit during proof engineering, then decompose the property (the constraint) with the concrete definition might be a good idea.
 
-Our formulation for the base STLC family is around 400+ LOCs; each families implementing a single feature takes around 100~300 LOCs. 
+Our formulation for the base STLC family is around 400 LOCs; each families implementing a single feature takes 100\~250 LOCs. 
 
 For each sub family, the main code bloat comes from the inversion lemma (global reasoning) and the fact we don't yet support  \mintinline{Coq}{Hint}.
 % need comparison with the original implementation
@@ -99,7 +99,7 @@ while language, with expression and stmt defined upon expression. Final "Result"
 The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter".
 The idea of abstract interpretation is to lift concrete interpretation, their value and their states into their abstract correspondence. Then we come up with a faithful (one example would be "analyze_faithful") and generic abstract intepreter. Then, the user can freely choose the instantiation and lifting of this generic framework and end up with their aiming program analyzer. For example, lifting 1 into abstract value "integer" can give us a type inferer; lifting 1 into an element of a very flat lattice can gives us a constant propagator. There are also special mathematical structure required in the abstract value (like lattices) for the abstract interpretation. 
 
-Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion". "analyze_soundness" is saying if 
+Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. In our implementation, this postulation happens in "absStateData" where we indicate the "lift" of concrete interpretation and the mathematical properties these lifted should satisfy. Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion", mainly on "exp" and "stmt". 
 It takes about 300+ LOCs. 
 % This example shows how
 % to use family inheritance to extend a concrete interpreter with abstract
