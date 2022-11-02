@@ -244,3 +244,14 @@
 \newcommand{\InhOv}[2]{\ensuremath{\texttt{Override}({#1},{#2})}}
 \newcommand{\InhInh}[1]{\ensuremath{\texttt{Inherit}({#1})}}
 \newcommand{\InhNest}[2]{\ensuremath{\texttt{Nest}({#1},{#2})}}
+
+
+
+\newcommand{\goodCtxS}[2]{{ {#1} \ \models_S }}
+\newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
+\newcommand{\goodTermS}[3]{{ {#1} \models_S {#2} : {#3} }}
+\newcommand{\goodSubS}[3]{{ {#1} \models_S {#2} : {#3} }}
+\newcommand{\goodSigS}[3]{{ {#1} \models_S {#2} \ \  \texttt{LSig}^{#3} }}
+\newcommand{\goodWSigS}[3]{{ {#1} \models_S {#2} \ \ \texttt{WSig}^{#3} }}
+\newcommand{\goodSealS}[4]{{ {#1} \models_S {#2} : {#3} \  |\  {#4} }}
+\newcommand{\goodInhS}[4]{{ {#1} \models_S {#2} : {#3} \twoheadrightarrow {#4}}}
