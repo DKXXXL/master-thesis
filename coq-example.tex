@@ -23,12 +23,9 @@ our example uses small-step operational semantics\YZ{Does MTC not define a small
 extensible inductive types. Most of the proof and computation are directly adapted from the one in Software Foundation, resulting in a similarly accessible proof. However, we highlight some special expriences when using our plugin. 
 
 \begin{minted}[fontsize=\footnotesize]{Coq}
-Lemma subst_on_true :
-  forall G, hasty G (subst tm_true x k) ty_bool.
-Overridable pins {step}
-  FClaim not_step_tm_true:
-    forall x', ~ step tm_true x' 
-  by { intros x' h; inversion h }.
+Lemma subst_on_true : forall G, hasty G (subst tm_true x k) ty_bool.
+Overridable pins {step} FClaim not_step_tm_true: forall x', ~ step tm_true x' 
+    by { intros x' h; inversion h }.
 \end{minted}
 
 Our proof is \textbf{more modular} as each part handling the extended feature are scattered in the extended families.
@@ -72,11 +69,12 @@ For each sub family, the main code bloat comes from the inversion lemma (global 
 \subsection{Abstract Interpreters for \texttt{Imp}}\YZ{Try to have two runnable interpreter -- choose another simple one like constant propagation. and remove LangMore}
 \label{sec:coqexample-analysis}
 The second example is adapted and modified from \citet{zm2017}.
-Contrary to our first example, here, we use a big-step interpreter with fuel
+Contrary to our first example, here we use a big-step interpreter with fuel
 as the operational semantics of an imperative language with
 side effects, and we specify the abstract interpretation and prove its
-soundness, with some postulation on both computation and property. Then we instantiate our abstract interpretation with two concrete computation---one for type inference and the other for constant propagation. Our analyzer will return the analysis result about the end of the program, e.g. our constant propagator will return what constant value each variable is at the end of the program. Thanks to the compilation to Coq module, we can directly run the resulting
-abstract interpreters.
+soundness. 
+% Then we instantiate our abstract interpretation with two concrete computation---one for type inference and the other for constant propagation. 
+Our analyzer will return the analysis result about the end of the program, e.g. our constant propagator will return what constant value each variable is at the end of the program. Thanks to the compilation to Coq module, we can directly run the resulting abstract interpreters.
 
 % Then we extend the base language with new features, and we instantiate
 % the postulation on computation for
@@ -88,23 +86,24 @@ abstract interpreters.
   \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows mean there are overriding.}\label{fig:abstract-interpretation-example}
 \end{figure}
 
-We construct four families, illustrated in \cref{fig:abstract-interpretation-example}.\YZ{Why is it useful to define these concrete and abstract interpreters as an inheritance chain?}\EDJreply{I don't think these examples are here to show the example themselves are useful. They are here to show family inheritance is useful, and can extend stuff to all sorts of things. I also add some details below on how each family can be extended and what each family means.}\YZreply{Why is it desired to define the abstract interpreter as an extension of the concrete interpreter family? What is lost by putting the two interpreters in the same family?}\EDJreply{Nothing is lost. This is just simulating people starting with bare (big-step) operational semantic. Because they may not working on abstract interpretation from the first place. Those people may extend "Lang" with other stuff like another type-safety proof or something.}
+\begin{minted}[fontsize=\footnotesize]{Coq}
+  Lemma analyze_faithful : forall prog st end_st, 
+    interp prog st = end_st -> abs_interp prog (lift st) = (lift end_st)
+\end{minted}
+  
+
+We construct four families, illustrated in \cref{fig:abstract-interpretation-example}.
 The first family "Lang" define the big step operator (using fuel) of a
 while language, with expression and stmt defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200 LOCs. 
-% We
-% can
-\YZ{In general, in a result section like this, you want to show what
-you *have done* rather than what you *can do*.}\EDJreply{Ok. deleted. I initially want to emphasize ``I **can** use arbitrary implementation for this environment mapping interface'' but I don't know how to say that without using ``can''.}
-% swap the implementation of "State" to have different memory/state
-% management by extending family "Lang".
-\YZ{What is 'different
-memory/state management'?}\EDJreply{Actually I should say environment mapping/dictionary. I instantiate it with function(closure) as environment mapping in "LangRun". It is possible to use other mapping like Coq's primitive dictionary.}
 
-The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter",
-together with a bunch of postulates as a big sealed family "absStateData". Then we prove the correctness of the
-abstract interpretation function "analyze". It takes about 300+ LOCs. This example shows how
-to use family inheritance to extend a concrete interpreter with abstract
-interpreters. 
+The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter".
+The idea of abstract interpretation is to lift concrete interpretation, their value and their states into their abstract correspondence. Then we come up with a faithful (one example would be "analyze_faithful") and generic abstract intepreter. Then, the user can freely choose the instantiation and lifting of this generic framework and end up with their aiming program analyzer. For example, lifting 1 into abstract value "integer" can give us a type inferer; lifting 1 into an element of a very flat lattice can gives us a constant propagator. There are also special mathematical structure required in the abstract value (like lattices) for the abstract interpretation. 
+
+Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion". "analyze_soundness" is saying if 
+It takes about 300+ LOCs. 
+% This example shows how
+% to use family inheritance to extend a concrete interpreter with abstract
+% interpreters. 
 % This example also shows in this family polymoprhism framework we can reason about "Lang" with computation details being abstracted. 
 
 % The third Family "LangMore" extend "LangwAbs" with nat constant and
@@ -113,8 +112,8 @@ interpreters.
 % using family inheritance to support new language feature, and compatible
 % with the existent reasoning in "LangwAbs.AbsInterpreter". 
 
-The third family and the fourth family "LangTyping" and "LangCP" instantiate some of the postulates of the
-"LangwAbs" and recover computational information of "analyze". The corresponding fields in "absStateData" is overridden by a concrete definition. The resulting abstract interpreter is expected
+The third family and the fourth family "LangTyping" and "LangCP" instantiate the postulates of the
+"LangwAbs" and recover computational information of "analyze". The corresponding fields in "absStateData" is overridden by concrete implementations. The resulting abstract interpreter is expected
 to act as a type-analyzer and constant-propagator respectively. It takes about 200+ LOCs. 
 % These are two examples of instantiate the detail computation of abstract interpretation. 
 
