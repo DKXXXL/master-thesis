@@ -99,8 +99,8 @@ while language, with expression and stmt defined upon expression. Final "Result"
 The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter".
 The idea of abstract interpretation is to lift concrete interpretation, their value and their states into their abstract correspondence. Then we come up with a faithful (one example would be "analyze_faithful") and generic abstract intepreter. Then, the user can freely choose the instantiation and lifting of this generic framework and end up with their aiming program analyzer. For example, lifting 1 into abstract value "integer" can give us a type inferer; lifting 1 into an element of a very flat lattice can gives us a constant propagator. There are also special mathematical structure required in the abstract value (like lattices) for the abstract interpretation. 
 
-Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. In our implementation, this postulation happens in "absStateData" where we indicate the "lift" of concrete interpretation and the mathematical properties these lifted should satisfy. Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion", mainly on "exp" and "stmt". 
-It takes about 300+ LOCs. 
+Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. In our implementation, this postulation happens in "absStateData" where we indicate the "lift" of concrete interpretation and the mathematical properties these lifted should satisfy. For example, "absState" is the lift of concrete state, "join" is doing lattice join on two abstract value... Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion", mainly on "exp" and "stmt". 
+It takes about 450 LOCs. 
 % This example shows how
 % to use family inheritance to extend a concrete interpreter with abstract
 % interpreters. 
@@ -113,8 +113,7 @@ It takes about 300+ LOCs.
 % with the existent reasoning in "LangwAbs.AbsInterpreter". 
 
 The third family and the fourth family "LangTyping" and "LangCP" instantiate the postulates of the
-"LangwAbs" and recover computational information of "analyze". The corresponding fields in "absStateData" is overridden by concrete implementations. The resulting abstract interpreter is expected
-to act as a type-analyzer and constant-propagator respectively. It takes about 200+ LOCs. 
+"LangwAbs" and thus recover computational information of "analyze". "LangCP" also extend "exp" with integer expression. The corresponding fields in "absStateData" is overridden by concrete implementations. The resulting abstract interpreter is expected to act as a type-analyzer and constant-propagator respectively. They takes 200 and 300 LOCs respectively. 
 % These are two examples of instantiate the detail computation of abstract interpretation. 
 
 
