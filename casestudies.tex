@@ -14,37 +14,44 @@ Lines of code in each of the four derived families
 ($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
 vary from 100 to 250, largely depending on how many constructors they
 add to the inductive types.
+%
+The linguistic nature of our approach allows us to retain a programming
+style similar to the original proofs in Software Foundations.
 
 \input{stlc-venn.tex}
 
 Using individual families to organize the mechanization of individual
 language features leads to a modular design that also facilitates code reuse.
 %
-Individually developed language features can be easily composed (as
-mixins) to form new STLC variants.
-%
+Individually developed features can be easily composed (as mixins) to
+form new STLC variants.
+
 Composing features can lead to \emph{feature interactions}~\cite{batory2011feature}:
 features working correctly in isolation may require coordination when composed.
 For example, composing \lsti{STLCIsorec} and \lsti{STLCProd}
 (\cref{fig:stlc-isorec-prod}) creates a need to extend \lsti{tysubst} to
 handle \lsti{ty_prod}, which the type-checker enforces.
 
-The linguistic nature of our approach allows us to retain a programming
-style similar to the original proofs while achieving extensibility.
+The elimination of inductive types defined via \lsti{FInductive} is
+mostly via the \lsti{FRecursion} and \lsti{FInduction} commands.
+An exception is seemingly trivial ``inversion lemmas''.
+For example, consider the lemma \lsti!\forall t, \neg step tm_true t!
+stating that \lsti!tm_true! is irreducible.
+If \lsti{step} were an ordinary inductive type, then it could be proved in Coq
+with \lsti{intros t H; inversion H}.
+But since \lsti{step} is extensible, it seems that the lemma has to be
+proved by \lsti{FInduction} on \lsti{step}, and that the programmer
+has to manually verify that the lemma still holds in derived families
+that add new constructors to \lsti{step}.
+%
+However, we observe that it is lighter-weight to use overriding: 
+the programmer can specify that the proof of the lemma should be overridden
+in any derived family that extends \lsti{step} with new constructors,
+and in return, they are permitted to treat \lsti{step} as an ordinary
+inductive type in the proof and thus discharge it with \lsti{inversion},
+with the plugin automatically trying the same proof script in a derived
+family to override the proof.
 
-\begin{itemize}
-\item 
-proofs similar to those in SF
-\item
-differences from SF:
-    \begin{itemize}
-    \item 
-    axiomatized equalities on subst
-    \item
-    inversion lemmas
-    \item
-    \end{itemize}
-\end{itemize}
 
 \bigskip 
 
