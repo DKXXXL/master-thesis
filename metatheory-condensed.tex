@@ -635,40 +635,40 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   
   \begin{lstlisting}
 
-  i₀ = inh-id : Inh ⋅ {} {} 
-  i₁ = inh-ov i₀ (W τ₁') : Inh ⋅ {ty : 𝕊(W τ₁)} {ty : 𝕊(W τ₁')}
-  s₂' : {ty : 𝕊(W τ₁')} | [ty : 𝕌] 
-  i₂ = inh-ov i₁ (W τ₂') 
+  i[@₀@] = inh-id : Inh ⋅ {} {} 
+  i[@₁@] = inh-ov i[@₀@] (W [@τ₁@]') : Inh ⋅ {ty : 𝕊(W τ₁)} {ty : 𝕊(W τ₁')}
+  s[@₂@]' : {ty : 𝕊(W τ₁')} | [ty : 𝕌] 
+  i[@₂@] = inh-ov i₁ (W τ₂') 
      : Inh ⋅ {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂') }
-  (* recall s₃₁ : {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} 
+  (* recall s[@₃₁@] : {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} 
                 | [ty : 𝕌;  ..] *)
-  s₃₁' : {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂')} | [ty : 𝕌; ..; tm_true : tm; ..]
-  ↑s₃ : Tm (⋅, [ty : 𝕌; ..; tm_true : tm; ..]) [ty : 𝕌; ..] 
-  (* ↑s₃ map (the type of) s₃₁' to the sealing before extension  s₃₁ *)
-  ii₃₀₀ = inh-id 
-        : Inh (⋅, [ty : 𝕌; ..; tm_true : tm; ..])
-              (RecSig τ₂  tm)[p₀, ↑s₃]
-              (RecSig τ₂  tm)[p₀, ↑s₃]
-  ii₃₀₁ = inh-extend (inh-extend ii₃₀₀ {p₁} .. ) {p₁} ..
-        : Inh (⋅, [ty : 𝕌; tm :𝕌; ..; tm_true : tm; ..]) 
-              (RecSig τ₂   tm)[p₀, ⇡s] (RecSig τ₂'  tm)
-  i₃₁ = inh+inh i₂ ↑s₃ ii₃₀₁ : 
+  s[@₃₁@]' : {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂')} | [ty : 𝕌; ..; tm_true : tm; ..]
+  ↑s[@₃@] : Tm (⋅, [ty : 𝕌; ..; tm_true : tm; ..]) [ty : 𝕌; ..] 
+  (* ↑s[@₃@] map (the type of) s[@₃₁@]' to the sealing before inheritance s[@₃₁@] *)
+  ii[@₃₀₀@] = inh-id 
+           ⫶ Inh ( ⋅, [ty : 𝕌; ..; tm_true : tm; ..])
+              (RecSig τ₂  tm)[p[@₀@], ↑s[@₃@]]
+              (RecSig τ₂  tm)[p[@₀@], ↑s[@₃@]]
+  ii[@₃₀₁@] = inh-extend (inh-extend ii[@₃₀₀@] {p[@₁@]} .. ) {p[@₁@]} ..
+        : Inh ( ⋅, [ty : 𝕌; tm :𝕌; ..; tm_true : tm; ..]) 
+              (RecSig τ₂  tm)[p[@₀@], ↑s[@₃@]] (RecSig τ₂'  tm)
+  i[@₃₁@] = inh+inh i[@₂@] ↑s[@₃@] ii[@₃₀₁@] : 
       Inh ⋅ {ty : 𝕊(W τ₁); ..; subst' : 𝕃(RecSig τ₂ tm)} 
             {ty : 𝕊(W τ₁'); ..; subst' : 𝕃(RecSig τ₂' tm)}
-  (* s₃' : {ty : W(τ₁'); tm : W(τ₂'); subst' : 𝕃(RecSig τ₂' tm) }
-          | [ty : 𝕌; .. ; tm : W(τ₂'); subst' : 𝕃(RecSig τ₂' tm)] *)
-  i₃ = inh-ov i₃₁ ..
-     : Inh ⋅ {ty : W(τ₁); tm : W(τ₂); subst' : 𝕃(RecSig τ₂ tm); subst : tm → nat → tm → tm}  
-             {ty : W(τ₁'); tm : W(τ₂'); subst' : 𝕃(RecSig τ₂' tm); subst : subst : tm → nat → tm → tm}
-  (* recall s₄ : {ty : W(τ₁); .. subst : .. } 
+  s[@₃@]' : {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂'); subst' : 𝕃(RecSig τ₂' tm) }
+      | [ty : 𝕌; .. ; tm : 𝕊(W τ₂'); subst' : 𝕃(RecSig τ₂' tm)] 
+  i[@₃@] = inh-ov i[@₃₁@] ..
+     : Inh ⋅ {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂); subst' : 𝕃(RecSig τ₂ tm); subst : tm → nat → tm → tm}  
+             {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂'); subst' : 𝕃(RecSig τ₂' tm); subst : subst : tm → nat → tm → tm}
+  (* recall s₄ : {ty : 𝕊(W τ₁); .. subst : .. } 
       | [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..] *)
-  s₄' : {ty : W(τ₁'); .. subst : .. } 
+  s[@₄@]' : {ty : 𝕊(W τ₁'); .. subst : .. } 
         | [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..]
-  ↑s₄ : Tm (⋅, [ty : 𝕌; .. ; tm : 𝕌; .. ; subst' : 𝕃(RecSig τ₂ tm);subst : ..]) 
+  ↑s[@₄@] : Tm (⋅, [ty : 𝕌; .. ; tm : 𝕌; .. ; subst' : 𝕃(RecSig τ₂ tm);subst : ..]) 
           [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..]
-  i₄ = inh-inh i₃ ↑s₄ :
-    Inh ⋅ {ty : W(τ₁); .. subst : ..; t1 : 𝕊(tm_var 0)} 
-          {ty : W(τ₁'); .. subst : ..; t1 : 𝕊(tm_var 0)} 
+  i[@₄@] = inh-inh i[@₃@] ↑s[@₄@] 
+         : Inh ⋅ {ty : 𝕊(W τ₁); .. subst : ..; t1 : 𝕊(tm_var 0)} 
+                 {ty : 𝕊(W τ₁'); .. subst : ..; t1 : 𝕊(tm_var 0)} 
   \end{lstlisting}
   
   \columnbreak
