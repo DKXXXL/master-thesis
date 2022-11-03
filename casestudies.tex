@@ -1,3 +1,6 @@
+%We report on our experience of applying the proposed design and implementation
+%to the mechanization of language metatheories.
+
 To demonstrate the applicability of our design and implementation, we
 conduct three case studies.
 
@@ -9,7 +12,7 @@ STLC and those of its extensions,
 which has been occurring in the examples in this paper.
 The code base is ported from Software Foundations~\cite{sf-pl}.
 %
-The base STLC family consists of about 400 lines of code.
+The base STLC family consists of about 400~LOC.
 Lines of code in each of the four derived families
 ($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
 vary from 100 to 250, largely depending on how many constructors they
@@ -53,8 +56,62 @@ with the plugin automatically trying the same proof script in a derived
 family to override the proof.
 
 
-\bigskip 
+\noindentparagraph{Abstract interpreters for imperative languages.}
 
-\cref{sec:coqexample-stlc}
-\cref{sec:coqexample-analysis}
-\cref{sec:coqexample-parser}
+Our second case study is a mechanization of abstract interpreters
+for simple imperative languages.
+In addition to the metatheories, this case study produces abstract
+interpreters that are directly runnable in Coq.
+
+The code is organized into four families.
+A base family, \lsti{Imp}, defines the abstract syntax of a while-language
+with pure expressions and impure statements, via \lsti{FInductive}.
+It also defines a big-step interpreter parameterized by a fuel value,
+via \lsti{FRecursion}.
+It contains \textasciitilde 200~LOC.
+
+A second family, \lsti{ImpGAI}, extends \lsti{Imp} and contains
+\textasciitilde 450~LOC.
+It exports a generic framework for deriving provably sound
+abstract interpreters.
+The soundness theorem of this generic abstract interpreter, \lsti{analyze},
+is with respect to the big-step interpreter, \lsti{eval}.
+It states that the abstraction relation \lsti{RState} over a
+concrete state~\lsti{S} and an abstract state~\lsti{absS} is preserved
+by the analysis:
+
+\begin{centered}
+\begin{minipage}{.86\textwidth}
+\begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
+\forall stmt fuel S absS, RState S absS -> RState (eval fuel stmt S) (analyze stmt absS)
+\end{lstlisting}
+\end{minipage}
+\end{centered}
+
+\noindent
+\lsti{analyze} is defined via \lsti{FRecursion}, and the soundness theorem
+is proved via \lsti{FInduction}.
+This family leaves fields representing the abstract domain, the
+abstraction relation, monotonicity of transfer functions, etc.\ 
+unspecified or unproven---a derived family can instantiate these
+``parameters'' by overriding the fields (and also possibly extend the abstract syntax),
+to create a sound, runnable abstract interpreter for a (possibly extended) while-language.
+
+The other two families then extend \lsti{ImpGAI}.
+Family \lsti{ImpTyping} (\textasciitilde200~LOC) is an abstract
+interpreter that does type inference.
+Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
+with natural number arithmetic via \lsti{FInductive},
+and instantiates the generic abstract interpreter to perform constant propagation.
+%
+Gallina code generated for these two families are runnable;
+they are put to test over simple queries.
+
+We note that our plugin cannot yet allow the expression of two abstract
+interpreters nested within the same family.
+Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
+to further increase the expressive power of our language design.
+
+%\cref{sec:coqexample-stlc}
+%\cref{sec:coqexample-analysis}
+%\cref{sec:coqexample-parser}
