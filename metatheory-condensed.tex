@@ -576,6 +576,103 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   \caption{Sealing and Linkage}\label{fig:sealing+linkage}
   \end{figure}
 
+
+\begin{figure}[!htb]
+  \lstset{
+      basicstyle=\fontsize{8}{8.5}\ttfamily,
+  % numbers=left,
+  }
+  
+  \begin{minipage}{\textwidth}
+  \begin{multicols}{3}
+  
+
+  \definecolor{codecomment-color}{HTML}{0DA3FF}
+  
+  \begin{lstlisting}
+  Family STLC_bool extends STLC. 
+
+   FInductive ty += ty_bool
+   FInductive tm += tm_true .. 
+   
+
+   FRecursion subst
+     (* Inherits all others *)
+   
+   
+
+   
+   
+
+     Case tm_true ...    
+
+   End subst 
+
+
+  
+
+   
+
+   Inherit t1
+
+
+
+
+
+
+
+  ...
+  \end{lstlisting}
+  
+  % \makeline[0pt]{Parser-exmp-before-start}{Parser-exmp-before-end}[codecomment-color!50]
+  
+  \columnbreak
+  % \definecolor{codecomment-color}{HTML}{5D030F}
+  
+  \begin{lstlisting}
+
+  i₀ = inh-id : Inh ⋅ {} {} 
+  i₁ = inh-ov i₀ (W τ₁') : Inh ⋅ {ty : 𝕊(W τ₁)} {ty : 𝕊(W τ₁')}
+  s₂' : {ty : 𝕊(W τ₁')} | [ty : 𝕌] 
+  i₂ = inh-ov i₁ (W τ₂') 
+     : Inh ⋅ {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂') }
+  (* recall s₃₁ : {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} 
+                | [ty : 𝕌;  ...] *)
+  s₃₁' : {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂')} | [ty : 𝕌; ...; tm_true : tm; ..]
+  ↑s₃ : Tm (⋅, [ty : 𝕌; ...; tm_true : tm; ..]) [ty : 𝕌; ...] (* the sealing before extension *)
+  ii₃₀₀ = inh-id 
+        : Inh (⋅, [ty : 𝕌; ...; tm_true : tm; ..])
+              (RecSig τ₂  tm)[p₀, ↑s₃]
+              (RecSig τ₂  tm)[p₀, ↑s₃]
+  ii₃₀₁ = inh-extend (inh-extend ii₃₀₀ {p₁} .. ) {p₁} ..
+        : Inh (⋅, [ty : 𝕌; tm :𝕌; tvar : nat → tm; ...; tm_true : tm]) (RecSig τ₂   tm)[p₀, ⇡s] (RecSig τ₂'  tm)
+  i₃₁ = inh+inh i₂ ↑s₃ ii₃₀₁ : 
+      Inh ⋅ {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂); subst' : 𝕃(RecSig τ₂ tm)} {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂'); subst' : 𝕃(RecSig τ₂' tm)}
+
+  (* s₃' : {ty : 𝕎(τ₁'); tm : 𝕎(τ₂'); subst' : 𝕃(RecSig τ₂' tm) }
+          | [ty : 𝕌; ... ; tm : 𝕎(τ₂'); subst' : 𝕃(RecSig τ₂' tm)] *)
+  i₃ = inh-ov i₃₁ ..
+    : Inh ⋅ {ty : 𝕎(τ₁); tm : 𝕎(τ₂); subst' : 𝕃(RecSig τ₂ tm); subst : tm → nat → tm → tm}  {ty : 𝕎(τ₁'); tm : 𝕎(τ₂'); subst' : 𝕃(RecSig τ₂' tm); subst : subst : tm → nat → tm → tm}
+  (* recall s₄ : {ty : 𝕎(τ₁); ... subst : tm → nat → tm → tm } 
+      | [ty : 𝕌; ... ; tm : 𝕌; ... ; subst' : 𝕃(RecSig τ₂ tm); subst : tm → nat → tm → tm] *)
+  s₄' : {ty : 𝕎(τ₁'); ... subst : tm → nat → tm → tm } 
+        | [ty : 𝕌; ... ; tm : 𝕌; ... ; subst' : 𝕃(RecSig τ₂' tm); subst : tm → nat → tm → tm]
+  ↑s₄ : Tm (⋅, [ty : 𝕌; ... ; tm : 𝕌; ... ; subst' : 𝕃(RecSig τ₂' tm); subst : tm → nat → tm → tm]) [ty : 𝕌; ... ; tm : 𝕌; ... ; subst' : 𝕃(RecSig τ₂ tm); subst : tm → nat → tm → tm]
+  i₄ = inh-inh i₃ ↑s₄ :
+    Inh ⋅ {ty : 𝕎(τ₁); ... subst : tm → nat → tm → tm; 𝕊(tm_var 0)} 
+          {ty : 𝕎(τ₁'); ... subst : tm → nat → tm → tm; 𝕊(tm_var 0)} 
+  \end{lstlisting}
+  
+  \columnbreak
+  
+
+  % \makeline[.5\textwidth+9pt]{Parser-exmp-after-start}{Parser-exmp-after-end}[codecomment-color!50]
+  
+  \end{multicols}
+  \end{minipage}
+  \caption{Inheritance Metatheory}\label{fig:inheritance}
+  \end{figure}
+
 In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
 
 Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For readability, RHS is informal---curly brackets indicate a signature (omitting sealing at type level) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
