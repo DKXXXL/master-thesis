@@ -89,20 +89,28 @@ Our analyzer will return the analysis result about the end of the program, e.g. 
   \caption{Inheritance Diagram for Abstract Interpretation Example. Black arrows are inheritance. Purple arrow are extending. Green arrows mean there are overriding.}\label{fig:abstract-interpretation-example}
 \end{figure}
 
+
+We construct four families, illustrated in \cref{fig:abstract-interpretation-example}.
+
+The first family "Lang" define the big step operator (using fuel) of a
+"Imp" language, with side-effect-free expression "exp" and statements "stmt" defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200 LOCs. 
+
+The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter".
+The idea of abstract interpretation is to lift concrete interpretation, their value, their computation and their states into their abstract correspondence. Then we come up with a sound and generic abstract intepreter. Then, the user can freely choose the instantiation and lifting of this generic framework and end up with their aiming program analyzer. For example, lifting 1 into abstract value "integer" can give us a type inferer; lifting 1 into an element of a very flat lattice can gives us a constant propagator. There are also special mathematical structure required in the abstract value (like lattices) for the abstract interpretation. 
+
 \begin{minted}[fontsize=\footnotesize]{Coq}
-  Lemma analyze_faithful : forall prog st end_st, 
-    interp prog st = end_st -> abs_interp prog (lift st) = (lift end_st)
+  Field RExp : exp -> absExp -> Prop. (* lifting of expression *)
+  Field RState : state -> absState -> Prop. (* lifting of state *)
+  Field exp_analyze : exp -> absState -> absExp.
+  Field exp_analyze_sound : forall st ast,
+    RState st ast -> RExp (exp_eval e mem) (exp_analyze e amem)
+  Field analyze_sound : forall fuel st ast,
+    RState st ast -> RState (eval fuel stm st) (analyze stm ast)
 \end{minted}
   
 
-We construct four families, illustrated in \cref{fig:abstract-interpretation-example}.
-The first family "Lang" define the big step operator (using fuel) of a
-while language, with expression and stmt defined upon expression. Final "Result" can be error, "out-of-fuel" or a legitmate "State". It takes about 200 LOCs. 
 
-The second family "LangwAbs" define the abstract interpreter for "Lang" in "LangwAbs.AbsInterpreter".
-The idea of abstract interpretation is to lift concrete interpretation, their value and their states into their abstract correspondence. Then we come up with a faithful (one example would be "analyze_faithful") and generic abstract intepreter. Then, the user can freely choose the instantiation and lifting of this generic framework and end up with their aiming program analyzer. For example, lifting 1 into abstract value "integer" can give us a type inferer; lifting 1 into an element of a very flat lattice can gives us a constant propagator. There are also special mathematical structure required in the abstract value (like lattices) for the abstract interpretation. 
-
-Thus, to implement this generic abstract interpreter, we need to postulate the abstract value and their mathematical property. Then we need to prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. In our implementation, this postulation happens in "absStateData" where we indicate the "lift" of concrete interpretation and the mathematical properties these lifted should satisfy. For example, "absState" is the lift of concrete state, "join" is doing lattice join on two abstract value... Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion", mainly on "exp" and "stmt". 
+Here, to implement our generic abstract interpreter, we need to postulate the abstract value and their mathematical property. We let the user specify the ``lifting'' predicate, e.g., "RState st ast" means abstract state "ast" is the lifting of the concrete state "st". The concrete expression evaluator "exp_eval" is abstracted into "exp_analyze" with appropriate soundness. However, for each "stmt" that transform between states, their transfer functions need to be handled more delicately: for assignment, we have "aupdate"; for "while" we have "Afixf" calculating fixpoint of a given transfer function, and satisfying monotonicity; for "ifte" we have "join" with their property. With these transfer functions postulated, we can prove the abstract interpreter is \textbf{sound and terminating}  with the help of these postulations. In our implementation, this postulation happens in "absStateData" where we indicate the "lift" of concrete interpretation and the mathematical properties these lifted should satisfy. For example, "absState" is the lift of concrete state, "join" is doing lattice join on two abstract value... Then for concrete analyzer, we only need to instantiate these postulation. The construction and proof of soundness uses "FInduction" and "FRecursion", mainly on "exp" and "stmt". 
 It takes about 450 LOCs. 
 % This example shows how
 % to use family inheritance to extend a concrete interpreter with abstract
