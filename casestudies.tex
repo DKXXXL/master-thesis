@@ -12,7 +12,7 @@ The code base is ported from Software Foundations~\cite{sf-pl}.
 The base STLC family consists of about 400 lines of code.
 Lines of code in each of the four derived families
 ($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
-vary from 100 to 300, largely depending on how many constructors they
+vary from 100 to 250, largely depending on how many constructors they
 add to the inductive types.
 
 \input{stlc-venn.tex}
@@ -31,6 +31,20 @@ handle \lsti{ty_prod}, which the type-checker enforces.
 
 The linguistic nature of our approach allows us to retain a programming
 style similar to the original proofs while achieving extensibility.
+
+\begin{itemize}
+\item 
+proofs similar to those in SF
+\item
+differences from SF:
+    \begin{itemize}
+    \item 
+    axiomatized equalities on subst
+    \item
+    inversion lemmas
+    \item
+    \end{itemize}
+\end{itemize}
 
 \bigskip 
 
