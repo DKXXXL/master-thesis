@@ -75,7 +75,7 @@ A second family, \lsti{ImpGAI}, extends \lsti{Imp} and contains
 It exports a generic framework for deriving provably sound
 abstract interpreters.
 The soundness theorem of this generic abstract interpreter, \lsti{analyze},
-is with respect to the big-step interpreter, \lsti{eval}.
+is with respect to the big-step interpreter, \lsti{eval}, inherited from \lsti{Imp}.
 It states that the abstraction relation \lsti{RState} over a
 concrete state~\lsti{S} and an abstract state~\lsti{absS} is preserved
 by the analysis:
@@ -99,9 +99,9 @@ to create a sound, runnable abstract interpreter for a (possibly extended) while
 
 The other two families then extend \lsti{ImpGAI}.
 Family \lsti{ImpTyping} (\textasciitilde200~LOC) is an abstract
-interpreter that does type inference.
+interpreter that does type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
-with natural number arithmetic via \lsti{FInductive},
+with natural number arithmetic,
 and instantiates the generic abstract interpreter to perform constant propagation.
 %
 Gallina code generated for these two families are runnable;
