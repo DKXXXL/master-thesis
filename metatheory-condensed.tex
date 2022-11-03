@@ -643,8 +643,8 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   (* recall s[@₃₁@] : {ty : 𝕊(W τ₁); tm : 𝕊(W τ₂)} 
                 | [ty : 𝕌;  ..] *)
   s[@₃₁@]' : {ty : 𝕊(W τ₁'); tm : 𝕊(W τ₂')} | [ty : 𝕌; ..; tm_true : tm; ..]
-  ↑s[@₃@] : Tm (⋅, [ty : 𝕌; ..; tm_true : tm; ..]) [ty : 𝕌; ..] 
-  (* ↑s[@₃@] map (the type of) s[@₃₁@]' to the sealing before inheritance s[@₃₁@] *)
+  ↑s[@₃@] : Tm ( ⋅, [ty : 𝕌; ..; tm_true : tm; ..]) [ty : 𝕌; ..] 
+  (* ↑s[@₃@] map (the type of) s[@₃₁@]' to that of the sealing s[@₃₁@] before inheritance *)
   ii[@₃₀₀@] = inh-id 
            ⫶ Inh ( ⋅, [ty : 𝕌; ..; tm_true : tm; ..])
               (RecSig τ₂  tm)[p[@₀@], ↑s[@₃@]]
@@ -664,7 +664,7 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
       | [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..] *)
   s[@₄@]' : {ty : 𝕊(W τ₁'); .. subst : .. } 
         | [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..]
-  ↑s[@₄@] : Tm (⋅, [ty : 𝕌; .. ; tm : 𝕌; .. ; subst' : 𝕃(RecSig τ₂ tm);subst : ..]) 
+  ↑s[@₄@] : Tm ( ⋅, [ty : 𝕌; .. ; tm : 𝕌; .. ; subst' : 𝕃(RecSig τ₂ tm);subst : ..]) 
           [ty : 𝕌; .. ; tm : 𝕌; .. ;subst' : 𝕃(RecSig τ₂ tm); subst : ..]
   i[@₄@] = inh-inh i[@₃@] ↑s[@₄@] 
          : Inh ⋅ {ty : 𝕊(W τ₁); .. subst : ..; t1 : 𝕊(tm_var 0)} 
