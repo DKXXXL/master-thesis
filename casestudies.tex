@@ -58,6 +58,10 @@ family to override the proof.
 
 \noindentparagraph{Abstract interpreters for imperative languages.}
 
+\begin{wrapfigure}[13]{r}{0.13\textwidth}
+\includegraphics[scale=.68]{graphics/ai-casestudy.pdf}
+\end{wrapfigure}
+
 Our second case study is a mechanization of abstract interpreters
 for simple imperative languages.
 In addition to the metatheories, this case study produces abstract
@@ -98,7 +102,7 @@ unspecified or unproven---a derived family can instantiate these
 to create a sound, runnable abstract interpreter for a (possibly extended) while-language.
 
 The other two families then extend \lsti{ImpGAI}.
-Family \lsti{ImpTyping} (\textasciitilde200~LOC) is an abstract
+Family \lsti{ImpTI} (\textasciitilde200~LOC) is an abstract
 interpreter that does type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural number arithmetic,
