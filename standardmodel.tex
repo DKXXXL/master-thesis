@@ -19,7 +19,7 @@ Here we will only show some interpretation and also omit the universe level to s
 %   \denotesS{\goodCtx{\Gm}{i}} & \text{ is a Set and we define } \goodCtxS{\Gm}{i} :\iff \denotesS{\goodCtx{\Gm}{i}} \text{ is defined}\tikzmarkend{stmod1} 
 %   \\
 %   \denotesS{\goodCtx{\cdot}{i}} &= \{\star\} \quad \text{ a specific singleton set} \\
-%   \denotesS{\goodCtx{\Gm, A}{i}} &= \{(\Gm, a) : \Gm \in \denotesS{\goodCtx{\Gm}{}}, a \in \denotesS{\goodType{\Gm}{A}{}}(\Gm)\}
+%   \denotesS{\goodCtx{\Gm, A}{i}} &= \{(\Gm, a) : \gm \in \denotesS{\goodCtx{\Gm}{}}, a \in \denotesS{\goodType{\Gm}{A}{}}(\gm)\}
 %   \\
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod2}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodSub{\Gm}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gm}{\Gm}{\Delta}} : \iff \denotesS{\Gm} \in \denotesS{\goodSub{\Gm}{\_}{\Delta}} \tikzmarkend{stmod2} 
 %   \\
@@ -27,13 +27,13 @@ Here we will only show some interpretation and also omit the universe level to s
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod3}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodTerm{\Gm}{\_}{T}} & \text{ is a Set (of dependent function) } \\& \text{and we define }  {\goodTermS{\Gm}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gm}{\_}{T}}
 %   \tikzmarkend{stmod3}
 %   \\
-%   \denotesS{\goodTerm{\Gm}{\_}{T}} & = \prod_{\Gm \in \denotesS{\goodCtx{\Gm}{i}}}\denotesS{T}(\Gm) \\
+%   \denotesS{\goodTerm{\Gm}{\_}{T}} & = \prod_{\gm \in \denotesS{\goodCtx{\Gm}{i}}}\denotesS{T}(\gm) \\
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod4}(0.05,-0.15)(-0.10,0.30)
 %   \denotesS{\goodType{\Gm}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gm}{i}}  
 %   \\
 %   & \text{ and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesS{\goodType{\Gm}{T}{i}} \text{ is defined } \tikzmarkend{stmod4} 
 %   \\
-%   \denotesS{\goodType{\Gm}{\Sigma A B}{}}(\Gm) &:= \sum_{a \in \denotesS{A}\Gm} \denotesS{B}(\Gm, a) \\
+%   \denotesS{\goodType{\Gm}{\Sigma A B}{}}(\gm) &:= \sum_{a \in \denotesS{A}\Gm} \denotesS{B}(\Gm, a) \\
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod5}(0.05,-0.15)(-0.10,0.30)
 %   \denotesS{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gm}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gm}{\_}{n}} \tikzmarkend{stmod5} 
 %   \\
@@ -52,14 +52,14 @@ Here we will only show some interpretation and also omit the universe level to s
 %   \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod7}(0.05,-0.15)(-0.10,0.30)
 %   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod7}  \\
-%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\Gm) \land t \in \prod_{m' \in \denotesS{A}(\Gm)}\denotesS{T}(\Gm, m')  \}  \\
+%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\gm)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\gm) \land t \in \prod_{m' \in \denotesS{A}(\gm)}\denotesS{T}(\Gm, m')  \}  \\
 %   & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \_, \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\Gm)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
+%   \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\gm)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
 %   \denotesS{\goodSig{\Gm}{\LSigEmp}{0}} &= \star \\
 %   \denotesS{\goodSig{\Gm}{\LSigAdd{\sigma}{s}{T}}{n+1}} &= (\sigma, A, f, T) \\
-%   \denotesS{\goodTerm{\Gm}{\LkgEmp}{\cL \LSigEmp} } (\Gm) &= \star \\
-%   \denotesS{\goodTerm{\Gm}{\LkgAdd{o}{t}}{\cL(\LSigAdd {\sigma}{s}  {T})}} \ (\Gm)&= (o(\Gm), (\lambda \ m' . t'(\Gm, m'))) \\
-%   \denotesS{\goodTerm{\Gm}{\lkgproj{1}{t}}{\cL(\lsigproj{1}{\sigma})}}(\Gm) &=  "fst"~(t\Gm) \\ 
+%   \denotesS{\goodTerm{\Gm}{\LkgEmp}{\cL \LSigEmp} } (\gm) &= \star \\
+%   \denotesS{\goodTerm{\Gm}{\LkgAdd{o}{t}}{\cL(\LSigAdd {\sigma}{s}  {T})}} \ (\gm)&= (o(\gm), (\lambda \ m' . t'(\Gm, m'))) \\
+%   \denotesS{\goodTerm{\Gm}{\lkgproj{1}{t}}{\cL(\lsigproj{1}{\sigma})}}(\gm) &=  "fst"~(t\Gm) \\ 
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod8}(0.05,-0.15)(-0.10,0.30)
 %   \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}} & \text{ is a dependent function, defined inductively on } {\sigma} 
 %   \tikzmarkend{stmod8}
@@ -69,8 +69,8 @@ Here we will only show some interpretation and also omit the universe level to s
 %   & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
 %   \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
 %   &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-%   \denotesS{\goodType{\Gm}{\bot}{i}} \ (\Gm) &= \emptyset \\
-%   \denotesS{\goodType{\Gm}{\cB}{i}} \ (\Gm) &= \{0, 1\} \quad \text{a specific two element set} \\
+%   \denotesS{\goodType{\Gm}{\bot}{i}} \ (\gm) &= \emptyset \\
+%   \denotesS{\goodType{\Gm}{\cB}{i}} \ (\gm) &= \{0, 1\} \quad \text{a specific two element set} \\
 %   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod9}(0.05,-0.15)(-0.10,0.30)
 %   \denotesS{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
 %   & \text{ and we define } \goodWSigS{\Gm}{\tau}{n} :\iff \denotesS{\goodWSig{\Gm}{\tau}{n}} \in \denotesS{\goodWSig{\Gm}{\_}{n}}
