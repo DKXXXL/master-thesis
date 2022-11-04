@@ -232,7 +232,7 @@ Overriding is made safe by requiring that when an overridable field is
 overridden, code whose type checking involves unfolding that field
 should be overridden too.
 We expect this feature to be used only occasionally.
-We give an example in \cref{sec:coqexample}.
+Our case studies contain uses of overriding (\cref{sec:casestudies}).
 
 
 \noindentparagraph{Sound logical reasoning.}
@@ -294,7 +294,7 @@ introduced into the context of "hasty".
 
 \input{stlc-isorec-prod.tex}
 
-\noindentparagraph{Composing families.} \EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
+\noindentparagraph{Composing families.}
 
 Families can be readily reused to construct larger extensions that
 \emph{mix in}~\cite{mixin-1990} the functionalities of the individual
@@ -302,7 +302,7 @@ families.
 In \cref{fig:stlc-isorec-prod}, family "STLCFixIsorec" is declared as
 an "STLC" extension that mixes in "STLCFix" and "STLCIsorec".
 As a result, \lsti{STLCFixIsorec.typesafe} is readily the proof of the type-safety
-theorem of an STLC equipped with fixpoints and iso-recursive types.
+theorem of an STLC equipped with fixpoints and iso-recursive types.\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
 
 Mixin composition is a form of multiple inheritance, which may lead to
 name conflicts in general.
