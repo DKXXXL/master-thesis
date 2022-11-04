@@ -107,9 +107,13 @@ interpreter that does type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural number arithmetic,
 and instantiates the generic abstract interpreter to perform constant propagation.
-%
-Gallina code generated for these two families are runnable;
-they are put to test over simple queries.
+
+Our implementation of family polymorphism retains the computation
+ability of the host proof assistant;
+Gallina code generated for \lsti{ImpTI} and \lsti{ImpCP} are directly
+runnable in Coq.
+The two abstract interpreters can be extracted into OCaml;
+we put them to test over simple queries.
 
 We note that our plugin cannot yet allow the expression of two abstract
 interpreters nested within the same family.
