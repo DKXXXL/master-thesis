@@ -62,3 +62,4 @@ runnable
 monotonicity
 metacircular
 pragma
+metalogic

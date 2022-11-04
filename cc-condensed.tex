@@ -1,129 +1,40 @@
-% Canonicity / Consistency Condensed
-\noindentparagraph{Consistency and Canonicity.}
-Two of the most fundamental properties for dependent type theory are \textit{consistency} and \textit{canonicity}.
+\noindentparagraph{Consistency.}
+One of the most fundamental properties of a dependent type theory is consistency.
 \begin{theorem}[Consistency]
+\label{thm:consistency}
   The typing judgment $\goodTerm{\cdot}{t}{\bot}$ is not derivable for any term~$t$.
 \end{theorem}
-\begin{theorem}[Canonicity]
-  If $\goodTerm{\cdot}{t}{\cB}$, then either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$.
-\end{theorem}
 
-Consistency says that the type $\bot$ is uninhabitable.
+\noindent
+Consistency says that the type $\bot$ is not inhabited.
 Thus, it is safe to use the type theory for logical reasoning, as not
 every proposition is trivially provable.
-Consistency is a consequence of a meta\-circular interpretation of all
+\cref{thm:consistency} is a consequence of a meta\-circular interpretation of all
 the well-formedness rules, which, in particular, interprets $\bot$ in
 \TT as an uninhabited type in the meta\-language.
 The construction of this interpretation follows the standard model of
 \citet{altkap2016}, extending it to handle linkages.
-We refer the reader to a supplemental Agda file for the complete proof.
+We refer the reader to a supplemental file (in Agda syntax) for the complete proof.
 
-Canonicity implies our dependent type theory suffices as ``a computational foundation for mathematics''\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}. We can even argue that, if this canonicity theorem is proven in a computable meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
+\noindentparagraph{Canonicity.}
 
-\newpage
+A second property we prove is canonicity.
 
-\ifShowOldWriting
+\begin{theorem}[Canonicity]
+\label{thm:canonicity}
+  If $\goodTerm{\cdot}{t}{\cB}$, then either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$.
+\end{theorem}
 
-then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type. 
+\noindent
+This canonicity theorem says that every closed term of the ground
+type~$\cB$ is convertible to one of the canonical forms $\true$ and~$\false$.
+When proved in a constructive meta\-logic, the proof of canonicity
+amounts to a normalization function for closed terms of the ground type.
+So canonicity serves to justify the computational nature of the type theory.
 
-We refer to the attached (pseudo-)Agda style code for \textbf{the complete consistency and canonicity proof}. But here we sketch the big picture.
-
-
-
-
-\noindentparagraph{Consistency} is proved by extending the standard model from~\citet{altkap2016,kaposi2017type, kaposi2019gluing} and their formalization. But if we were using naive set theory: (1) we use $\denotesS{}$ to map each intrinsic well-typed syntax piece into a mathematical object; (2) we define proof-irrelevant proposition $\models_S$ for each syntactical $\vdash$, and derive compatibility lemma for each rule. The main goal is to interpret $\denotesS{\bot} = \emptyset$ which implies it is impossible $\goodTermS{\cdot}{t}{\bot}$ and thus $\bot$ is syntactically non-derivable.\footnote{Actually our 1 is acting exactly as an interpretation function, and in our (pseudo-)Agda formulation we only do 1 because 2 is automatic; here we make 2 explicit to make our formulation closer to interpretation in the paper}
-
-We only need to take care of the new feature for our consistency model. But (1) since we have used sigma type to translate the linkage, using the model for sigma type for linkage will work; (2) directly using the inductive facility of (pseudo)-Agda (or naive set theory) to for W-type is enough due to the similarity of our W-type to the conventional W-type.
-
-Here we will only show some interpretation and also omit the universe level to sketch out the idea. 
-
-\definecolor{new}{HTML}{F5EFE6}
-
-
-\begin{align*}
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod1}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodCtx{\Gm}{i}} & \text{ is a Set and we define } \goodCtxS{\Gm}{i} :\iff \denotesS{\goodCtx{\Gm}{i}} \text{ is defined}\tikzmarkend{stmod1} 
-  \\
-  \denotesS{\goodCtx{\cdot}{i}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodCtx{\Gm, A}{i}} &= \{(\Gm, a) : \Gm \in \denotesS{\goodCtx{\Gm}{}}, a \in \denotesS{\goodType{\Gm}{A}{}}(\gm)\}
-  \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod2}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodSub{\Gm}{\_}{\Delta}} & \text{ is a Set and we define }  {\goodSubS{\Gm}{\Gm}{\Delta}} : \iff \denotesS{\Gm} \in \denotesS{\goodSub{\Gm}{\_}{\Delta}} \tikzmarkend{stmod2} 
-  \\
-  \denotesS{\goodSub{\Gm}{\_}{\Delta}} & = \denotesS{\goodCtx{\Gm}{i}} \rightarrow \denotesS{\goodCtx{\Delta}{j}} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod3}(0.05,-0.15)(-0.10,0.30) \denotesS{\goodTerm{\Gm}{\_}{T}} & \text{ is a Set (of dependent function) } \\& \text{and we define }  {\goodTermS{\Gm}{t}{T}} : \iff \denotesS{t} \in \denotesS{\goodTerm{\Gm}{\_}{T}}
-  \tikzmarkend{stmod3}
-  \\
-  \denotesS{\goodTerm{\Gm}{\_}{T}} & = \prod_{\gm \in \denotesS{\goodCtx{\Gm}{i}}}\denotesS{T}(\gm) \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod4}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{T}{i}} & \text{ is a family of sets indexed by } \denotesS{\goodCtx{\Gm}{i}}  
-  \\
-  & \text{ and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesS{\goodType{\Gm}{T}{i}} \text{ is defined } \tikzmarkend{stmod4} 
-  \\
-  \denotesS{\goodType{\Gm}{\Sigma A B}{}}(\gm) &:= \sum_{a \in \denotesS{A}\Gm} \denotesS{B}(\gm, a) \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod5}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigS{\Gm}{\sigma}{n}} :\iff \denotesS{\sigma} \in  \denotesS{\goodSig{\Gm}{\_}{n}} \tikzmarkend{stmod5} 
-  \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod6}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod6} \\   
-  \denotesS{\goodSig{\Gm}{\_}{n+1}} &= \{
-    (\denotesS{\sigma}, \denotesS{A}, \denotesS{f}, \denotesS{T}) :
-      {\goodSigS{\Gm}{\sigma}{n}}
-      \land  {\goodTypeS{\Gm}{A}{}} \\  
-      & \quad \quad \quad \land  {\goodSealS{\Gm}{f}{\sigma}{A}}
-      \land  {\goodTypeS{\Gm, A}{T}{i}} 
-  \} \\ 
-  \denotesS{\goodSig{\Gm}{\_}{0}} &= \{\star\} \quad \text{ a specific singleton set} \\
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}} &= \denotesS{\Sigma} \denotesS{\goodType{\Gm}{\TyTkg {\tau}}{}} \denotesS{T[(\SubstExt{p^1}{f})]} \\
-  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \denotesS{f} , \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{i}}&= \denotesS{\top}\quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod7}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} & \text{ is a family of sets, defined inductively on } \sigma \tikzmarkend{stmod7}  \\
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\gm)&= \{(m, t) :  m \in \denotesS{\cL \tau}(\gm) \land t \in \prod_{m' \in \denotesS{A}(\gm)}\denotesS{T}(\Gm, m')  \}  \\
-  & \quad \text{when } \denotesS{\sigma} = (\denotesS{\tau}, \denotesS{A}, \_, \denotesS{T}) \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodType{\Gm}{\cL \sigma}{i}} (\gm)&= \{\star\} \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \denotesS{\goodSig{\Gm}{\LSigEmp}{0}} &= \star \\
-  \denotesS{\goodSig{\Gm}{\LSigAdd{\sigma}{s}{T}}{n+1}} &= (\sigma, A, f, T) \\
-  \denotesS{\goodTerm{\Gm}{\LkgEmp}{\cL \LSigEmp} } (\gm) &= \star \\
-  \denotesS{\goodTerm{\Gm}{\LkgAdd{o}{t}}{\cL(\LSigAdd {\sigma}{s}  {T})}} \ (\gm)&= (o(\gm), (\lambda \ m' . t'(\Gm, m'))) \\
-  \denotesS{\goodTerm{\Gm}{\lkgproj{1}{t}}{\cL(\lsigproj{1}{\sigma})}}(\gm) &=  "fst"~(t\Gm) \\ 
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod8}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}} & \text{ is a dependent function, defined inductively on } {\sigma} 
-  \tikzmarkend{stmod8}
-  \\
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
-  &= \denotesS{{\Tkg {\lkgproj{1}{o}}}}, \denotesS{(p_2\mu \ o)["sf" \ f][(id, \Tkg {\lkgproj{1} {o}})]} \\
-  & \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{n+1}} \\
-  \denotesS{\goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\sigma}}}
-  &= \star \quad \text{ when } \denotesS{\sigma} \in \denotesS{\goodSig{\Gm}{\_}{0}} \\
-  \denotesS{\goodType{\Gm}{\bot}{i}} \ (\gm) &= \emptyset \\
-  \denotesS{\goodType{\Gm}{\cB}{i}} \ (\gm) &= \{0, 1\} \quad \text{a specific two element set} \\
-  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{stmod9}(0.05,-0.15)(-0.10,0.30)
-  \denotesS{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
-  & \text{ and we define } \goodWSigS{\Gm}{\tau}{n} :\iff \denotesS{\goodWSig{\Gm}{\tau}{n}} \in \denotesS{\goodWSig{\Gm}{\_}{n}}
-  \tikzmarkend{stmod9}
-  \\
-  \denotesS{\goodWSig{\Gm}{\WSigEmp}{0}} &= [] \quad \text{ an empty list} \\ 
-  \denotesS{\goodWSig{\Gm}{(\WSigAdd{\tau}{A}{B})}{n+1}}
-  &= (\denotesS{A}, \denotesS{B})~"::"~\denotesS{\goodWSig{\Gm}{\tau}{n}} \\ 
-  \denotesS{\goodType{\Gm}{\wsigproj{j}{1}{\tau}}{}} &= "fst"~({\denotesS{\tau}}_{j})\\
-  \denotesS{\goodType{\Gm, \wsigproj{j}{1}{\tau}}{\wsigproj{j}{2}{\tau}}{}} &= "snd"~({\denotesS{\tau}}_j)\\
-\end{align*}
-
-
-Here, we need to clarify some ambiguity in our latex formulation. For example, when we wrote ``$\denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}}$ defined inductively on ${\sigma}$'', the best way to understand it is to consider we are defining a function $\denotesS{\goodType{\Gm}{\TyTkg {\_}}{}}$ as the interpretation for $\goodType{\Gm}{\TyTkg {\_}}{}$ that mapping $\denotesS{\sigma}$ to $\denotesS{\goodType{\Gm}{\TyTkg {\sigma}}{}}$, inductively on the length of the signature. The case is similar for $\denotesS{\cL \_}$, $\denotesS{\Tkg {\_}}$ and  $\denotesS{\Sigma \ \_ \ \_}$. \textbf{This is actually the formulation in Agda}---QIIT syntax consider $\TyTkg{} : "Sig"~\Gm~n \to "Ty"~\Gm$ as a constructor and our model needs to interpret this constructor to a function $\TyTkg{}^S : "Sig"^S \Gm^S~n \to "Ty"^S~\Gm^S$ with each judgement also interpreted. 
-
-Basically in Agda, we are simply constructing a function that mapping our QIIT data-type(stands for syntax) to some other data---it maps $"Con"$ to $"Con"^S$, "Ty : Con → Set" to "Ty$^S$ : Con$^S$ → Set" and etc. What's more, since judgemental equality in our meta-theory is represented by equality in QIIT, and the well-definedness of this mapping-out function implies that ``judgementally equal syntax is interpreted by the same semantic in the model''. Note that $\denotesS{\goodSig{\Gm}{s}{n}}$ and $\denotesS{\goodType{\Gm}{\TyTkg{\sigma}}{i}}$ is mutual recursively defined together---because \\ $\goodSealS{\Gm}{f}{\sigma}{A}$ relies on $\TyTkg{}$. 
-
-Finally, notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have $\cdot \models_S t : \bot$ which exactly means $\denotesS{t}(\star) \in \denotesS{\bot}(\star) = \emptyset$ 
-and that is a contradiction.
-
-\fi
-
-\noindentparagraph{Canonicity} is proved by following the canonicity argument from~\citet{coquand2018canonicity,sterling2019algebraic, kaposi2019gluing} to construct the canonicity model. Canonicity is also called \textit{reducibility}.
-
-Now we sketch out the big picture of the proof. The canonicity model $"Tm"^C~\Gamma^C~"T"^C$ will map each syntax piece $("t : Tm Γ T") \mapsto "(t, tₚ) :" "Tm"^C~\Gamma^C~"T"^C = \sum~("t : Tm Γ T")."Tm"_p~\Gamma^C~"T"^C~"t"$ to a dependent pair\footnote{This $"Tm"_p$ is usually called dependent model.}, of which the first part will be the same as the input syntax. Using this mapping on closed boolean term $"t : Tm ⋅ "\mathbb{B}$ will give us a proof of $"Tm"_p~\cdot^C~\mathbb{B}^C~"t"$, which will unfolds to our final goal $"t" \equiv "tt" + "t" \equiv "ff"$. Roughly, this can read as ``every closed boolean term is reducible''.  Thus once we can ``propagate'' $(\cdot)^C$ (i.e. construct this model completely) for every syntactic piece, we are done. In our (pseudo) Agda formulation, we use $(\cdot)_2$ to replace the notation of $(\cdot)^C$ because we consider most parts of this model are actually a dependent pair.
-
-Another helpful analogy of the canonicity model is that $"Tm"_p~\Gamma^C~"T"^C~"t"$ can be understood as ``a reducible set'': $"t" \in \{$ Reducible Terms of type $T$ (and $T_p$) in context $\Gamma$ (and $\Gamma_p$) $\}$. This reformulation can be understood as an unfolding of the \textit{type-theoretic logical relation proof}.\footnote{We usually use predicate to encode ``belong to''/``is element of'' relation in type theory} If we use the terminology of the conventional formulation, this reducible set means if we apply its element $t$ with a substitution $\gamma$ from the set $\Gamma$ (where we have $\Gamma_p$ witnesses the ``reducibility'' of $\Gamma$), then we will have $t[\gamma] \in T_p$ as a closed and \textbf{reducible} term. Now if $\Gamma$ is actually empty $\cdot$ and $T$ is $\cB$, we are done. 
-
-Again, using the same insight from earlier, we reuse the model for sigma type and W-type for linkages and our inductive type.
-
+We prove \cref{thm:canonicity} by constructing a logical-relations model
+for the well-formedness rules, following prior approaches~\cite{coquand2018canonicity,sterling2019algebraic,kaposi2019gluing}.
+In particular, a closed, well formed type $\goodType{\cdot}{T}{}$ is interpreted
+as a logical predicate on closed terms: the predicate includes all
+closed, reducible terms of type~$T$.
+The proof is available as a supplemental file in Agda syntax.
