@@ -110,10 +110,9 @@ and instantiates the generic abstract interpreter to perform constant propagatio
 
 Our implementation of family polymorphism retains the computation
 ability of the host proof assistant;
-Gallina code generated for \lsti{ImpTI} and \lsti{ImpCP} are directly
-runnable in Coq.
-The two abstract interpreters can be extracted into OCaml;
-we put them to test over simple queries.
+the two abstract interpreters in \lsti{ImpTI} and \lsti{ImpCP} are
+directly runnable in Coq.
+We also extract them to OCaml and put them to test over simple queries.
 
 We note that our plugin cannot yet allow the expression of two abstract
 interpreters nested within the same family.

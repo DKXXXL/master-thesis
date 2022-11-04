@@ -78,6 +78,12 @@
     \goodTerm{\Gm}{\sub{t}{\gm}}{\sub{T}{\gm}}
 }
 
+\Rule[name=tmeq/sub/id]{
+    \goodTerm{\Gm}{t}{ T }
+}{
+    \goodTerm{\Gm}{ \sub{t}{\SubstId} \equiv t}{ T }
+}
+
 \Rule[name=tm/var]{
     \goodCtx{\Gm, A_n, ..., A_1, A_0}{}
 }{

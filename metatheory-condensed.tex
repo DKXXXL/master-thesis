@@ -280,10 +280,28 @@ signature~$\wsig'_{\texttt{tm}}$.
 
 \noindentparagraph{The complete formalization.}
 
-The definitive version is a \textbf{pen-and-paper} formalization assuming the facility of quotient inductive-inductive types~\cite{nordvall2010inductive,altkap2016} and extensional equality (equality reflection), available as a supplemental file in a \textbf{(pseudo-)Agda syntax}. Our formalization is directly following Agda syntax and type-checking (equality-checking) is done manually, leaving traces in the comments. We are currently working on mechanizing it and relying on Agda's rewriting mechanism to replace our limited usage of equality reflection. 
-%
-We also typeset a more complete set of rules than
-the space allows and present it in a supplemental appendix.
+The definitive version containing all the rules in \TT is stated in
+terms of a meta\-language supporting quotient inductive-inductive types
+(QIITs)~\cite{nordvall2010inductive,altkap2016}.
+QIITs support equality constructors, which facilitate the expression of
+conversion rules (e.g., \ruleref{tmeq/sub/id}).
+The formalization is available as a supplemental file in Agda syntax,
+though it is not checked by Agda because Agda does not support QIITs
+natively.
+An effort to mechanize the formalization is ongoing, using Agda's
+\lsti{REWRITE} pragma to replace the limited uses of equality reflection.
+%a \textbf{pen-and-paper} formalization
+%assuming the facility of quotient inductive-inductive
+%types~\cite{nordvall2010inductive,altkap2016} and extensional equality
+%(equality reflection), available as a supplemental file in a
+%\textbf{(pseudo-)Agda syntax}. Our formalization is directly following
+%Agda syntax and type-checking (equality-checking) is done manually,
+%leaving traces in the comments. We are currently working on mechanizing
+%it and relying on Agda's rewriting mechanism to replace our limited
+%usage of equality reflection. 
+
+We also typeset a more complete set of rules than the space allows and
+present it in a supplemental appendix.
 %
 Another supplemental appendix gives a more complete example than
 \cref{fig:stlc-linkage-typing} showing how families are modeled and
