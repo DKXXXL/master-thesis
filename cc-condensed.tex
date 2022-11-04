@@ -13,7 +13,7 @@ every proposition is trivially provable.
 the well-formedness rules, which, in particular, interprets $\bot$ in
 \TT as an uninhabited type in the meta\-language.
 The construction of this interpretation follows the standard model of
-\citet{altkap2016}, extending it to handle linkages.
+\citet{altkap2016}, extending it to handle linkages. 
 We refer the reader to a supplemental file (in Agda syntax) for the complete proof.
 
 \noindentparagraph{Canonicity.}
@@ -38,3 +38,5 @@ In particular, a closed, well formed type $\goodType{\cdot}{T}{}$ is interpreted
 as a logical predicate on closed terms: the predicate includes all
 closed, reducible terms of type~$T$.
 The proof is available as a supplemental file in Agda syntax.
+
+The handling of linkages in both models are inspired by the handling of sigma types, as we syntactic translated linkages to sigma types in the earlier section.
