@@ -1,13 +1,29 @@
 % Canonicity / Consistency Condensed
 \noindentparagraph{Consistency and Canonicity.}
-Two of the most fundamental properties for dependent type theory are \textit{consistency} and \textit{canonicity}:
+Two of the most fundamental properties for dependent type theory are \textit{consistency} and \textit{canonicity}.
 \begin{theorem}[Consistency]
-  $\goodTerm{\cdot}{t}{\bot}$ is not derivable, i.e. $\bot$ is not inhabitted in the empty context
+  The typing judgment $\goodTerm{\cdot}{t}{\bot}$ is not derivable for any term~$t$.
 \end{theorem}
 \begin{theorem}[Canonicity]
-  if $\goodTerm{\cdot}{t}{\cB}$ then it is either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$
+  If $\goodTerm{\cdot}{t}{\cB}$, then either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$.
 \end{theorem}
-Consistency means our dependent type theory suffices as a logical system as not every proposition is trivially provable. Canonicity implies our dependent type theory sufficies as ``a computational foundation for mathematics''\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}. We can even argue that, if this canonicity theorem is proven in a computable meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
+
+Consistency says that the type $\bot$ is uninhabitable.
+Thus, it is safe to use the type theory for logical reasoning, as not
+every proposition is trivially provable.
+Consistency is a consequence of a meta\-circular interpretation of all
+the well-formedness rules, which, in particular, interprets $\bot$ in
+\TT as an uninhabited type in the meta\-language.
+The construction of this interpretation follows the standard model of
+\citet{altkap2016}, extending it to handle linkages.
+We refer the reader to a supplemental Agda file for the complete proof.
+
+Canonicity implies our dependent type theory suffices as ``a computational foundation for mathematics''\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}. We can even argue that, if this canonicity theorem is proven in a computable meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
+
+\newpage
+
+\ifShowOldWriting
+
 then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type. 
 
 We refer to the attached (pseudo-)Agda style code for \textbf{the complete consistency and canonicity proof}. But here we sketch the big picture.
@@ -100,6 +116,8 @@ Basically in Agda, we are simply constructing a function that mapping our QIIT d
 
 Finally, notice that we interpret the bottom type using empty set, and thus we know it is not possible to derive $\cdot \vdash t : \bot$: otherwise we have $\cdot \models_S t : \bot$ which exactly means $\denotesS{t}(\star) \in \denotesS{\bot}(\star) = \emptyset$ 
 and that is a contradiction.
+
+\fi
 
 \noindentparagraph{Canonicity} is proved by following the canonicity argument from~\citet{coquand2018canonicity,sterling2019algebraic, kaposi2019gluing} to construct the canonicity model. Canonicity is also called \textit{reducibility}.
 
