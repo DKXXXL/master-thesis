@@ -1,11 +1,15 @@
-We use a plugin to the Coq proof assistant to demonstrate the key
-ingredients of our design,
-though we believe our design could be adapted to other proof assistants such as Lean.
+We present the key ingredients of our design as an extension to the Coq
+proof assistant,
+though we believe it could be adapted to other proof assistants such as Lean.
+We call our design and implementation \Lang (\underline{f}amily
+\underline{\smash{po}}lymorphism for a \underline{\smash{p}}roof assistant).
+In this section, we focus on the language design of \Lang.
+\cref{sec:coqimpl} describes its implementation as a Coq plugin.
 
 \input{stlc-mechanized.tex}
 
 \cref{fig:stlc-mechanized} shows how STLC and its extension with
-fixpoints can be mechanized using our plugin, in a style envisioned in
+fixpoints can be mechanized using \Lang, in a style envisioned in
 \cref{fig:stlc-nonmechanized}.
 The base family "STLC" hosts the STLC metatheories, from abstract syntax
 to the type-safety theorem.
@@ -182,10 +186,10 @@ After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
 from a base family to a derived family.\EDJ{I think the reviewer might ask : what if the subst late-bound tm_unit case/why the subst cases cannot be late-bound? it not necessary return tm_unit in those case. 
 \\ What the plugin generates is actually subst tm_unit x t = subst.tm_unit. In other words, it points back to the handler instead of the concrete constructor. That is one of the advantage of looking FRecursion as a family.}
 %
-Based on this insight, our plugin automatically generates
+Based on this insight, \Lang automatically generates
 propositional equalities for each recursive function defined with \lsti{FRecursion},
 making them available as axioms for use by the rest of the current family.
-The plugin also provides a tactic \lsti{fsimpl} that enables, for instance,
+\Lang also provides a tactic \lsti{fsimpl} that enables, for instance,
 simplifying \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
 Under the hood, \lsti{fsimpl} works by rewriting using the postulated
 propositional equalities.
@@ -214,19 +218,19 @@ in the base family.
 Overriding is potentially incompatible with having equalities on late bound names, however.
 
 Coq distinguishes \emph{opaque} definitions from \emph{transparent} ones.
-Our plugin supports the overriding of opaque definitions, which
+\Lang supports the overriding of opaque definitions, which
 include most proofs.
 It is safe to override opaque definitions, because Coq will never attempt to unfold them.
 For transparent definitions, the common case is that the programmer does
 not want to override them.
 In \cref{fig:stlc-mechanized}, "env", "empty", "subst", and "steps" are
 transparent---that is, they are not defined with \lsti{Qed}.
-Our plugin treats transparent definitions as non-overridable by default.
+\Lang treats transparent definitions as non-overridable by default.
 Thus, the definitional equalities on "env", "empty", and "steps",
 as well as the propositional equality on "subst", are available to the
 type checker for type-checking the families.
 
-Our plugin does allow the overriding of transparent definitions that are
+\Lang does allow the overriding of transparent definitions that are
 explicitly marked as \lsti{Overridable} by the programmer.
 Overriding is made safe by requiring that when an overridable field is
 overridden, code whose type checking involves unfolding that field
@@ -306,7 +310,7 @@ theorem of an STLC equipped with fixpoints and iso-recursive types.\EDJ{I feel t
 
 Mixin composition is a form of multiple inheritance, which may lead to
 name conflicts in general.
-Our plugin requires the programmer to resolve conflicts by
+\Lang requires the programmer to resolve conflicts by
 explicitly overriding conflicted fields.
 
 In the presence of extensible inductive types, mixin composition may
@@ -337,7 +341,7 @@ and above all, why should a property like
 \lsti{\neg(tm_var "x" = tm_abs "y" t)} have anything to do with "tm_fix"?
 
 To provide a streamlined programming experience (\ref{chg:tooling}),
-our plugin offers two tactics, \lsti{finjection} and \lsti{fdiscriminate}.
+\Lang offers two tactics, \lsti{finjection} and \lsti{fdiscriminate}.
 For example, in a proof state that contains a manifestly false assumption
 \lsti{H : tm_var "x" = tm_abs "y" t}, the programmer can use
 \lsti{fdiscriminate H} to obtain \lsti{False} and thus discharge
