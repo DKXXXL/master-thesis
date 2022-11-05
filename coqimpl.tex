@@ -1,16 +1,190 @@
 \input{stlc-compiled.tex}
+\input{stlcfix-compiled.tex}
 
-\begin{itemize}
-\item Parameterized by enclosing family "self": explicit extensibility hooks
-\item "self" includes only those fields in the context
-\item Extensible inductive type $\Rightarrow$ axiomatize
-\item Further-bindable \lsti{FRecursion} $\Rightarrow$ axiomatize
-\item Non-overridable definitions $\Rightarrow$ expose definitional equality
-\item Instantiate inductive types, partial recursors, and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}
-\item Instantiate definition of recursive functions (induction proofs) and equalities $\Rightarrow$ OK to use recursor; equalities easily discharged by \lsti{reflexivity}\\
-      Code shared by code compiled for derived families
-\item Include 
+We implement our language design as a Coq plugin.
+Rather than modifying the Coq kernel, a prototypical implementation as a
+plugin allows a clearly defined trusted base and
+improved compatibility with different versions of Coq.
+
+The implementation works by translating programs in \Lang syntax into
+programs that can be checked and evaluated by Coq.
+The translation is compatible with interactive theorem proving, in that
+a family is translated piece by piece, allowing each field to be defined
+and checked separately.
+The translation is modular and efficient, in that
+code inherited from a base family need not be retranslated or rechecked.
+
+\noindentparagraph{Explicit self parameterization.}
+
+The spirit of the translation is to take ``family polymorphism''
+literally: every field is translated into a Coq definition that is
+polymorphic to (i.e., universally quantified over) a representation of
+its enclosing family.
+While this universal quantification has been implicit with the \Lang
+syntax, it has to be made explicit in the translated Coq code.
+
+\cref{fig:stlc-compiled,fig:stlcfix-compiled} illustrate the translation of the
+\lsti{STLC} and \lsti{STLCFix} families from \cref{fig:stlc-mechanized}.
+Fields of a family are translated into parameterized Coq modules
+(or parameterized module types).
+
+For instance, consider field \lsti{env} in family \lsti{STLC}.
+It is translated into a top-level module named \lsti{STLC\_env}.
+This module has a parameter called \lsti{self} representing the enclosing
+family: fields of the current family in the context of \lsti{env} can be
+referenced through this \lsti{self}.
+In particular, \lsti{env} is defined as \lsti{id -> option ty},
+where \lsti{ty} is a late-bound reference to the \lsti{ty} field of the
+enclosing family.
+Hence, this reference to \lsti{ty} is translated in \lsti{STLC\_env} to \lsti{self.ty},
+which is manifestly polymorphic to the enclosing family.
+This translation of the \lsti{env} field can be shared
+with a derived family even if it extends \lsti{ty} (e.g., \lsti{STLCProd})---%
+no recompilation is needed because \lsti{self.ty} is not tied to a
+particular definition of \lsti{ty}.
+
+The type of \lsti{STLC\_env}'s \lsti{self} parameter is \lsti{STLC\_env\_Ctx},
+a module type constructed from the translation of \lsti{env}'s preceding
+field, \lsti{STLC\_ty}, and its context \lsti{STLC\_ty\_Ctx}.
+In turn, \lsti{STLC\_ty\_Ctx} (not shown in \cref{fig:stlc-compiled}) is
+constructed from the translation of \lsti{ty}'s preceding field,
+\lsti{STLC\_subst}, and its context \lsti{STLC\_subst\_Ctx}.
+Thus, the \lsti{self} parameter can be used to reference those and only
+those fields in the current field's typing context, which echoes the
+discussion in \cref{sec:sound}.
+
+
+\noindentparagraph{Translating extensible inductive types.}
+
+An \lsti{FInductive} definition is translated to a parameterized module type.
+Consider the inductive type \lsti{tm}.
+In \lsti{STLC}, it is translated to a top-level module type
+\lsti{STLC\_tm} that declares a \lsti{tm} type,
+its constructors (\lsti{tm_unit} etc.),
+its partial recursor (\lsti{tm_prect_STLC}),
+and the propositional equalities on the partial recursor (\lsti{tm_unit_eq_STLC} etc.).
+
+Importantly,
+\lsti{STLC\_tm} merely declares the existence of these names and their types;
+it does not specify their definitions or proofs.
+Knowing the existence of these names and their types
+suffices to type-check and translate the rest of the family.
+Leaving the definitions and proofs open enables \lsti{STLC} and \lsti{STLCFix}
+to instantiate \lsti{tm} differently upon \lsti{End}~\lsti{STLC} and \lsti{End}~\lsti{STLCFix}.
+
+The command \lsti{FInductive tm : Set += tm_fix : }\dadada~in family
+\lsti{STLCFix} is again translated to a module type \lsti{STLCFix\_tm} (\cref{fig:stlcfix-compiled}).
+It includes all names declared by \lsti{STLC\_tm}, and additionally declares
+the new constructor \lsti{tm_fix} and related equalities.
+
+
+\noindentparagraph{Translating recursion and induction.}
+
+An \lsti{FRecursion} definition is translated in two parts:
+first a module containing the definitions of all the case handlers,
+and then a module type declaring the existence of the recursive function as well as
+its propositional equalities.
+
+Consider the translation of \lsti{subst} in family \lsti{STLC}.
+First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
+every time the programmer completes a \lsti{Case}, a case handler (e.g., \lsti{Def subst\_tm_unit})
+is generated and added to the module.
+
+Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generated.
+%
+As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,
+so its definition is not exposed to the succeeding fields.
+Accordingly, the translation \lsti{STLC\_subst} merely declares the type of \lsti{subst}
+and the existence of its propositional equalities, leaving \lsti{subst} undefined
+and the equalities unproven.
+%
+The propositional equalities are stated in terms of the case handlers,
+whose definitions \emph{are} available through the \lsti{self} parameter.
+For example, the type of \lsti{subst_tm_unit_eq} can be simplified to
+\lsti{\forall x t, self.subst self.tm_unit x t = self.tm_unit}.
+The equalities will be available for use in the checking and translation of
+the succeeding fields through their \lsti{self} parameters.
+
+Importantly, code generated for the case handlers is shared with derived families.
+In \cref{fig:stlcfix-compiled}, \lsti{STLCFix\_subst\_Cases}
+reuses---without rechecking---all the case handlers in
+\lsti{STLC\_subst\_Cases} via the command \lsti{Include STLC\_subst\_Cases(self)}.
+
+The translation of \lsti{FInduction} is similar, except that there is no need to
+register propositional equalities, as \lsti{FInduction} proofs are considered opaque.
+
+
+\noindentparagraph{Translation of further-bindables vs.\ non-further-bindables.}
+
+In family \lsti{STLC},
+field \lsti{env} and the case handlers for \lsti{subst}
+are not further-bindable by derived families.
+In contrast, \lsti{tm}, \lsti{subst}, and the related equalities
+can be further bound.
+The distinction is reflected in the translations.
+Further-bindable fields are translated to module types that export only types of the fields.
+Non-further-bindable fields are translated to modules that export definitional equalities
+on the fields.
+
+%\footnotetext{%
+%Axioms in Coq module types are more like parameters than real axioms.
+%They become part of the signature described by the module type.
+%}
+
+
+\noindentparagraph{Eliminating \lsti{self} by aggregation.}
+
+Upon the conclusion of a family definition (e.g., \lsti{End}~\lsti{STLCFix}),
+\lsti{self} parameters in the translations of the fields must be instantiated,
+so that references like \lsti{STLCFix.typesafe} can be translated.
+This is done by assembling the \lsti{self}-parameterized pieces into a single module.
+%
+For example, module \lsti{STLC} in \cref{fig:stlc-compiled} is generated
+upon \lsti{End}~\lsti{STLCFix}.
+All the fields are added to this module in the same order as they appear in the family definition.
+
+For the further-bindables, \lsti{Axiom}s declared in the module types must be instantiated.
+%
+\begin{itemize}[align=left,itemsep=5pt,labelsep=*,leftmargin=*]
+
+\item
+For \lsti{tm},
+an inductive type \lsti{tm\_} is generated, with \lsti{tm\_}
+instantiating the axiomatized \lsti{tm} type, and with
+its constructors (\lsti{tm_unit\_} etc.) instantiating 
+the axiomatized constructors (\lsti{tm_unit} etc.).
+%
+The partial recursor \lsti{tm_prect_STLC} is instantiated
+%to \lsti{\lambda}\,\lsti{P, tm\__rect (\lambda}\,\lsti{t, option (P t))},
+with the help of \lsti{tm\_rect}, the recursor of the generated \lsti{tm\_} type.
+Proving the equalities on \lsti{tm_prect_STLC} is then trivial, by \lsti{reflexivity}.
+
+\item
+Similarly, \lsti{subst} is instantiated by applying the recursor \lsti{tm\_rect}
+to the (already included) case handlers (\lsti{subst\_tm_unit}, etc.).
+Propositional equalities on \lsti{subst} are then trivial, by \lsti{reflexivity}.
+
 \end{itemize}
+
+For the non-further-bindables, the translated modules are directly included
+(e.g., \lsti{Include STLC\_subst\_Cases} and \lsti{Include STLC\_env}).
+%
+The instantiations of \lsti{self}s are implicit thanks to a Coq nicety:
+when including a higher-order module, Coq automatically instantiates its
+parameter with the current interactive module environment.
+For instance, command \lsti{Include STLC\_subst\_Cases} is successfully executed,
+because Coq automatically instantiates \lsti{self} using the current
+module environment, which contains all the fields required by \lsti{STLC\_subst\_Cases\_Ctx}.
+
+Module \lsti{STLCFix} in \cref{fig:stlcfix-compiled} is generated upon
+\lsti{End}~\lsti{STLCFix}, in the same fashion described above for \lsti{STLC}.
+The translation makes code and proof sharing evident.
+For example, the four case handlers for \lsti{subst} compiled for \lsti{STLC}
+are reused by module \lsti{STLCFix}. So is the proof of \lsti{typesafe}.
+
+Finally, the reference \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a family)
+can simply be translated to \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a module),
+as the last line of \cref{fig:stlcfix-compiled} shows.
 
 \ifShowOldWriting
 

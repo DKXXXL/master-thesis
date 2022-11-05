@@ -1,0 +1,99 @@
+\begin{figure}
+\vspace{-5pt}
+\begin{minipage}{\textwidth}
+\begin{multicols}{2}
+
+\lstset{
+  basicstyle=\fontsize{8}{8.2}\ttfamily,
+% numbers=left,
+}
+
+\colorlet{codecomment-color}{dkgreen}
+
+\newcommand{\innersep}{\vspace{6pt}}
+\newcommand{\outersep}{\vspace{5pt}}
+\newcommand{\outdent}{\!\!\!}
+
+\colorlet{codecomment-color}{orange}
+
+\begin{lstlisting}
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{tm} in \texttt{STLCFix}}@][@\tanc{c-STLCFix-tm-start}@]
+[@\outdent@]Module Type STLCFix\_tm\_Ctx.
+[@\outdent@]End STLCFix\_tm\_Ctx.[@\innersep@]
+[@\outdent@]Module Type STLCFix\_tm (self : STLCFix\_tm\_Ctx).
+Include STLC\_tm(self).
+Axiom tm_fix : id -> tm -> tm.
+Axiom tm_fix_eq_STLC : \forall[@\,@][@\dadada@],[@\,@]tm_prect_STLC [@\dadada@][@\;@]=[@\;@]None.
+Axiom tm_prect_STLCFix : [@\dadada@].
+Axiom tm_fix_eq_STLCFix : [@\dadada@].
+[@\outdent@]End STLCFix\_tm.[@\tanc{c-STLCFix-tm-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{subst} in \texttt{STLCFix}}@][@\tanc{c-STLCFix-subst-start}@]
+[@\outdent@]Module Type STLCFix\_subst\_Cases\_Ctx.
+Include STLCFix\_tm\_Ctx. Include STLCFix\_tm.
+[@\outdent@]End STLCFix\_subst\_Cases\_Ctx.[@\innersep@]
+[@\outdent@]Module STLCFix\_subst\_Cases
+[@\outdent@](self : STLCFix\_subst\_Cases\_Ctx).
+Include STLC\_subst\_Cases(self).
+Def subst\_tm_fix := [@\dadada@].
+[@\outdent@]End STLCFix\_subst\_Cases.[@\innersep@]
+[@\outdent@]Module Type STLCFix\_subst\_Ctx.
+Include STLCFix\_subst\_Cases\_Ctx.
+Include STLCFix\_subst\_Cases.
+[@\outdent@]End STLCFix\_subst\_Ctx.[@\innersep@]
+[@\outdent@]Module Type STLCFix\_subst (self[@\,@]:[@\,@][@\textls[-30]{STLCFix}@]\_[@\textls[-30]{subst}@]\_[@\textls[-30]{Ctx}@]).
+Include STLC\_subst(self).
+Axiom subst_tm_fix_eq : [@\dadada@].
+[@\outdent@]End STLCFix\_subst.[@\tanc{c-STLCFix-subst-end}@][@\outersep@]
+[@\outdent@][@\codecomment{Code emitted for other fields defined in \texttt{STLCFix}}@] [@\dadada@][@\tanc{c-STLCFix-rest}@][@\outersep@]
+[@\outdent\codecomment{Code emitted upon conclusion of \texttt{STLCFix}}@][@\tanc{c-STLCFix-start}@]
+[@\outdent@]Module STLCFix.[@\innersep@]
+Inductive tm\_ : Set :=[@\tanc{c-STLCFix-d-tm-start}@]
+| tm_unit\_[@\,@]:[@\,@]tm\_ | tm_var\_[@\,@]:[@\,@]id -> tm\_
+| tm_abs\_[@\,@]:[@\,@]id->tm\_->tm\_ | tm_app\_[@\,@]:[@\,@]tm\_->tm\_->tm\_
+| tm_fix\_[@\,@]:[@\,@]id->tm\_->tm\_.
+[@\codecomment{Instantiate \texttt{tm} \& its constructors}@]
+Def tm := tm\_.
+Def tm_unit := tm_unit\_. Def tm_var := tm_var\_.
+Def tm_abs  := tm_abs\_.  Def tm_app := tm_app\_.
+Def tm_fix  := tm_fix\_.
+[@\codecomment{Instantiate \texttt{tm} partial recursors \& their equalities}@] [@\dadada@][@\tanc{c-STLCFix-d-tm-end}@][@\innersep@]
+Include STLCFix\_subst\_Cases. [@\tanc{c-STLCFix-d-subst-start}@]
+[@\codecomment{Instantiate \texttt{subst} \& its equalities}@]
+Def subst := tm\__rect _ subst\_tm_unit subst\_tm_var
+             subst\_tm_abs  subst\_tm_app subst\_tm_fix.
+Fact[@\;@][@\textls[-40]{subst\_tm\_unit\_eq}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLCFix-d-subst-end}@][@\innersep@]
+[@\codecomment{\textls[-10]{Instantiate \texttt{ty}, its constructors, partial recursor \& eq.}}@] [@\dadada@][@\tanc{c-STLCFix-d-ty}@][@\innersep@]
+Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLCFix-d-env}@][@\innersep@]
+[@\codecomment{Include/Instantiate other fields of \texttt{STLCFix}}@] [@\dadada@][@\tanc{c-STLCFix-d-rest}@][@\innersep@]
+[@\outdent@]End STLCFix.[@\tanc{c-STLCFix-end}@]
+\end{lstlisting}
+
+\makeline[-1pt]{c-STLCFix-tm-start}{c-STLCFix-tm-end}[codecomment-color!50][1.8pt]
+\makeline[-1pt]{c-STLCFix-subst-start}{c-STLCFix-subst-end}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-rest}{c-STLCFix-rest}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+8pt]{c-STLCFix-start}{c-STLCFix-end}[codecomment-color!50][1.8pt]
+\makeline[.5\textwidth+12pt]{c-STLCFix-d-tm-start}{c-STLCFix-d-tm-end}[codecomment-color!35][1.0pt]
+\makeline[.5\textwidth+12pt]{c-STLCFix-d-subst-start}{c-STLCFix-d-subst-end}[codecomment-color!35][1.0pt]
+\makeline[.5\textwidth+12pt]{c-STLCFix-d-ty}{c-STLCFix-d-ty}[codecomment-color!35][1.0pt]
+\makeline[.5\textwidth+12pt]{c-STLCFix-d-env}{c-STLCFix-d-env}[codecomment-color!35][1.0pt]
+\makeline[.5\textwidth+12pt]{c-STLCFix-d-rest}{c-STLCFix-d-rest}[codecomment-color!35][1.0pt]
+
+\vspace{-8pt}
+
+\definecolor{codecomment-color}{HTML}{000080}
+
+\begin{lstlisting}
+[@\outdent@][@\codecomment{Code emitted upon command \texttt{\textls[-35]{Check STLCFix.typesafe}}}@][@\tanc{c-Check-STLCFix-typesafe-start}@]
+[@\outdent@]Check STLCFix.typesafe.[@\tanc{c-Check-STLCFix-typesafe-end}@]
+\end{lstlisting}
+
+\makeline[.5\textwidth+8pt]{c-Check-STLCFix-typesafe-start}{c-Check-STLCFix-typesafe-end}[codecomment-color!50][1.8pt]
+
+\end{multicols}
+\end{minipage}
+
+\vspace{-12pt}
+
+\caption{Compilation of family \lsti!STLCFix! (\cref{fig:stlc-mechanized}).}
+\label{fig:stlcfix-compiled}
+\end{figure}

@@ -63,3 +63,7 @@ monotonicity
 metacircular
 pragma
 metalogic
+STLCFix
+Further-bindable
+further-bindable
+non-further-bindable

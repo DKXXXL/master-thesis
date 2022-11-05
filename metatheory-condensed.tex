@@ -311,6 +311,7 @@ type-checked using linkages and linkage transformers.
 
 \input{cc-condensed.tex}
 
+\ifShowOldWriting
 \newpage
 
 To formalize our metatheory, we follow the formulation of~\citet{altkap2016}, which provides a declarative and intrinsic style of the predicative \textit{Martin-Lof Type Theory} (MLTT)~\cite{martin1982constructive},
@@ -760,9 +761,6 @@ In this way, we will consider the program in our metatheory similar to those van
 \subsection{Syntactic Translation that removes Linkages}
 To further provide the intuition why our core calculus is sound, we provide a syntactic translation from our core calculus to the subpart where linkages are absent. This can justify the \textit{consistency} and \textit{canonicity} modulo the quirky (but apparent) formulation of our inductive type. To be complete, we also provide a consistency and canonicity proof for our complete core calculus in the appendix.
 
-\newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
-\newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
-
 Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related. We omit most of the inheritance translation.
 
 
@@ -800,5 +798,4 @@ Thanks to QIIT formulation, syntactic translation becomes a function between QII
   \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\LSigAdd {\sigma_1} {s_1}{T})}{(\LSigAdd {\sigma_2} {s_2} {T[(p^1, \uparrow^s)]})}} &= \mu^+~(h[(p^1,\lkgproj{1}{"var"_0})])\\ &\quad \quad \{f_2[p^1]\}~(\lkgproj{2}{"var"_0})[(p^1, \uparrow^s[{p^1}^{\uparrow}])] \\
 \end{align*}
 
-
-
+\fi
