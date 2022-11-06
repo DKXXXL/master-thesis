@@ -35,9 +35,9 @@ For example, composing \lsti{STLCIsorec} and \lsti{STLCProd}
 (\cref{fig:stlc-isorec-prod}) creates a need to extend \lsti{tysubst} to
 handle \lsti{ty_prod}, which the type-checker enforces.
 
-The elimination of inductive types defined via \lsti{FInductive} is
+Elimination of inductive types defined via \lsti{FInductive} is
 mostly via the \lsti{FRecursion} and \lsti{FInduction} commands.
-An exception is seemingly trivial ``inversion lemmas''.
+An exception is some seemingly trivial ``inversion lemmas''.
 For example, consider the lemma \lsti!\forall t, \neg step tm_true t!
 stating that \lsti!tm_true! is irreducible.
 If \lsti{step} were an ordinary inductive type, then it could be proved in Coq
@@ -47,13 +47,19 @@ proved by \lsti{FInduction} on \lsti{step}, and that the programmer
 has to manually verify that the lemma still holds in derived families
 that add new constructors to \lsti{step}.
 %
-However, we observe that it is lighter-weight to use overriding: 
+However, we observe that it is lighter-weight to use overriding (\cref{sec:override}):
 the programmer can specify that the proof of the lemma should be overridden
-in any derived family that extends \lsti{step} with new constructors,
+in any derived family that further binds \lsti{step},
 and in return, they are permitted to treat \lsti{step} as an ordinary
-inductive type in the proof and thus discharge it with \lsti{inversion},
-with the plugin automatically trying the same proof script in a derived
+inductive type in the proof and thus discharge the proof with \lsti{inversion}.
+The plugin then automatically tries the same proof script in a derived
 family to override the proof.
+
+We note that the current plugin implementation does not support
+mutually inductive types or mutual induction, which will be
+useful for modeling languages much more complex than STLCs.
+We believe that generalizing our design to mutually inductive types does
+not pose theoretical challenges, however.
 
 
 \noindentparagraph{Abstract interpreters for imperative languages.}

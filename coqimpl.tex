@@ -122,9 +122,11 @@ are not further-bindable by derived families.
 In contrast, \lsti{tm}, \lsti{subst}, and the related equalities
 can be further bound.
 The distinction is reflected in the translations.
-Further-bindable fields are translated to module types that export only types of the fields.
-Non-further-bindable fields are translated to modules that export definitional equalities
+The further-bindable fields are translated to module types that export only types of the fields.
+The non-further-bindable fields are translated to modules that export definitional equalities
 on the fields.
+Opaque definitions can be further bound, too (\cref{sec:override});
+they are translated to modules that export opaque definitions.
 
 %\footnotetext{%
 %Axioms in Coq module types are more like parameters than real axioms.
@@ -1146,10 +1148,6 @@ EndFamily.
 % This ``Global Reasoning'' will be again useful in later examples.
 
 
-
-\fi
-
-
 \subsection{Implementation Limitation}
 We list some of the current limitation of our implementation. We believe some of these limitations can be remedied by more engineering efforts.
 \begin{itemize}
@@ -1160,3 +1158,5 @@ We list some of the current limitation of our implementation. We believe some of
   \item We don't consider the compatibility of universe polymorphism mechanism with our plugin
   \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
 \end{itemize}
+
+\fi

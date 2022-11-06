@@ -1,6 +1,70 @@
-This section discusses related work.
+There exist many approaches to modular mechanization or proof reuse,
+with different focuses and trade-offs.
 
+\noindentparagraph{\`A la carte.}
 
+The design pattern \emph{data types à la carte} (DTC) introduced for Haskell by~\citet{dtc}
+is a source of inspiration for many approaches
+\cite{delaware2013,delaware2013b,schwaab2013modular,keuchel2013generic,forsta2020}.
+The original DTC encoding requires type-level general recursion that
+fails the strict positivity check imposed by proof assistants including Coq and Agda.
+\citet{delaware2013} introduce \emph{meta-theory à la carte} (MTC):
+it overcomes the problem by using Church encodings for
+data types and using Mendler-style folds for evaluation,
+though it requires \lsti{Set} impredicativity.
+Feature composition is automated through heavy use of type classes.
+The framework is implemented as a Coq library.
+\citet{schwaab2013modular} adapt DTC to Agda by considering a restricted
+class of functors that admit least fixed points.
+\citet{keuchel2013generic} use datatype-generic programming techniques
+for the underlying representation of type-level fixed points and
+avoid \lsti{Set} impredicativity.
+
+All of these approaches are largely extra\-linguistic, in that they work
+within the confine of the language offered by a proof assistant, which
+comes with trade-offs.
+On the one hand,
+they can be conveniently distributed as libraries, and the encoding can
+be more easily adapted for new purposes.
+For example, MTC~\cite{delaware2013} has been applied to implementing
+composable program adverbs~\cite{liwei2022} and been adapted to support
+unanticipated feature extensions that require type changes
+\cite{delaware2013b}.
+
+On the other hand, the extra\-linguistic nature of the approaches tend
+to lead to non-idiomatic code and offset their user-friendliness.
+In particular, because data types have to be encoded (rather than expressed
+through natively supported inductive types), the resulting code is
+less readable and the resulting programming style inaccessible to non-experts.
+In addition, extra programmer effort may be required, such as
+having to manually prove additional well-formedness conditions on the algebras.
+
+\citet{forsta2020} introduce \emph{Coq à la carte}.
+It still follows DTC, but rather than embracing DTC's use of generic
+fixed points, it considers specific instantiations instead.
+The resulting mechanism appears more streamlined than prior \emph{à la
+carte} approaches particularly for its extensive tool support for generating boilerplate code.
+%
+The approach does not seem to fully address the expression problem,
+as \citet{liwei2022} observe, in that extending a composed
+mechanization requires recompilation.
+
+Our approach addresses the expression problem by extending the
+linguistic facilities offered by a proof assistant.
+Families, in particular, offer an organizational advantage.  They allow
+grouping and coevolving related types, functions, and proofs without
+explicit parameterization;
+all further-bindable fields and all opaque fields are automatically
+extensibility hooks.
+Because family polymorphism does not require explicit parameterization
+or complex encodings,
+the resulting programming experience and code are accessible to the
+working Coq programmer.
+The more OO aspects of family polymorphism, such as the ability to
+override and families as mixins, also facilitate extensibility and reuse
+with minimal programmer effort.
+
+\bigskip
 
 
 \textbf{Modular Mechanized Metatheory: Linguistic Approach} We group the work that achieves modular mechanized metatheory by extending surface syntax of proof assistants to provide better abstraction as \textit{linguistic approach}. 
@@ -8,11 +72,12 @@ This section discusses related work.
 The closest work to ours might be \citet{boite2004proof}--they try to support \textit{extended} inductive type and related proof reuse in Coq. This biggest difference lies in our (incomplete) adaption of Family Polymorphism -- apart from supporting proof reuse and extension by inheritance, we also support implementation swapping using overriding, and we also argue that Family Polymorphism can provide a better and cleaner way of organizing mechanized metatheory development a well as solving related expression problem. The other difference lies in the handling of the extension of the inductive type. In our paradigm, the discussion of \textit{extensible} inductive type and \textit{partial recursor} is unavoidable, which characterizes all possible extension of a given inductive type. In their work, without using Family to organized the code, the extended inductive type can be considered as a different inductive type than the original one, possibly leading to more expression problem~\cite{wadler-ep}. The situation is similar for \citet{levin2003tinkertype}---they aim for modular manipulation of metatheory but didn't consider expression problem.  What's more, our implementation is based on Coq plugin and is thus potentially more friendly to Coq community.
 % Another similar work is proof weaving \citep{mulhern2006proof} but I don't see a evaluation section in that paper
 
+\ifShowOldWriting
 
 \textbf{Modular Mechanized Metatheory: Semantic Approach} We group the work using the semantic as encoding (e.g. Church Encoding, datatype-generic programming) to achieve certain design patterns without modify the surface syntax of the proof assistants as \textit{semantic approach}, that includes \citet{delaware2013,forsta2020,liwei2022,schwaab2013modular, keuchel2013generic} and so on. Their advantages are various: their techniques are more general and thus can be applied across different (dependent-typed) proof assistants and their technique can be easily distributed like a library and thus doesn't need to alter the core of the proof assistants. The downsides are mainly about the threshold: they are not friendly for the junior Coq development and these indirect encoding of datatype might lead to worse readability and accessibility compared to the direct style like ours.
 
 
-
-
 \textbf{Solution to The Expression Problem}
 % Have no idea how to write this :(
+
+\fi

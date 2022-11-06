@@ -67,3 +67,8 @@ STLCFix
 Further-bindable
 further-bindable
 non-further-bindable
+Recursors
+encodings
+Mendler-style
+extralinguistic
+impredicativity

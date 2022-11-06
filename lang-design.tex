@@ -23,6 +23,7 @@ theorems that need no adjustments ("ty", "env", "empty", "steps", and
 In particular, executing the last command, \lsti{Check STLCFix.typesafe},
 displays the type-safety theorem of the fixpoints extension.
 
+\subsection{Extensible Inductive Types and Exhaustive Recursion/Induction}
 
 \noindentparagraph{Extending inductive types.}
 
@@ -120,6 +121,9 @@ a constructor to "hasty", the programmer is required to handle this extra case
 in the proof of "substlem" in family "STLCFix".
 
 
+\subsection{Late Binding and Equalities}
+\label{sec:latebind}
+
 \noindentparagraph{Late binding of nested names.}
 
 OO inheritance allows the late binding of method names.
@@ -206,21 +210,25 @@ As far as the type checker is concerned, \lsti{tm_unit} and
 equates them definitionally by unfolding \lsti{STLCFix.subst} and
 performing normalization.
 
-\noindentparagraph{Overriding.}
+
+\subsection{Overriding}
+\label{sec:override}
+%\noindentparagraph{Overriding.}
 
 In an OO language, a subclass can override methods of a superclass.
 Similar expressiveness is useful for metatheory mechanization, too.
 %
-For example, in a derived family, the programmer may want to override
-the proof of a lemma, using a different proof strategy than it was proved
-in the base family.
+For example, in a derived family, rather than adding new cases to an
+induction proof, the programmer may prefer overriding the proof
+entirely, as we observe in our case studies (\cref{sec:casestudies}).
 %
 Overriding is potentially incompatible with having equalities on late bound names, however.
 
 Coq distinguishes \emph{opaque} definitions from \emph{transparent} ones.
 \Lang supports the overriding of opaque definitions, which
 include most proofs.
-It is safe to override opaque definitions, because Coq will never attempt to unfold them.
+It is safe to override opaque definitions, because the type checker will
+never attempt to unfold them.
 For transparent definitions, the common case is that the programmer does
 not want to override them.
 In \cref{fig:stlc-mechanized}, "env", "empty", "subst", and "steps" are
@@ -230,16 +238,18 @@ Thus, the definitional equalities on "env", "empty", and "steps",
 as well as the propositional equality on "subst", are available to the
 type checker for type-checking the families.
 
-\Lang does allow the overriding of transparent definitions that are
+\Lang does allow the overriding of transparent definitions
 explicitly marked as \lsti{Overridable} by the programmer.
 Overriding is made safe by requiring that when an overridable field is
 overridden, code whose type checking involves unfolding that field
 should be overridden too.
-We expect this feature to be used only occasionally.
-Our case studies contain uses of overriding (\cref{sec:casestudies}).
+We expect this feature to be used occasionally.
 
 
-\noindentparagraph{Sound logical reasoning.}
+\subsection{Sound Logical Reasoning}
+\label{sec:sound}
+
+%\noindentparagraph{Sound logical reasoning.}
 
 In \cref{fig:stlc-mechanized}, just because the "typesafe" theorem in
 "STLC" is inherited and reused by "STLCFix", it does not follow that
@@ -249,7 +259,7 @@ of circular reasoning: the proof of "progress" would depend on "typesafe",
 yet the proof of "typesafe" depends on "progress".
 %
 Such circularity would easily lead to logical inconsistency:
-\YZ{Mention non-exhaustivity/overriding already poses challenges to ensuring consistency.}
+%\YZ{Mention non-exhaustivity/overriding already poses challenges to ensuring consistency.}
 
 \begin{centered}
 \definecolor{codecomment-color}{HTML}{556B2F}
@@ -291,22 +301,35 @@ Per the requirement, this relationship must be preserved into
 "typesafe" in "STLCFix".
 
 Note that the requirement still allows a derived family to introduce
-new declarations into the context of a field. \EDJ{Maybe a better wording is ``the relative order between fields are preserved during inheritance''?}
+new declarations into the context of a field. %\EDJ{Maybe a better wording is ``the relative order between fields are preserved during inheritance''?}
 For example, the left column of \cref{fig:stlc-isorec-prod} shows an
 extension of STLC with iso-recursive types, where "tysubst" is
 introduced into the context of "hasty".
+%
+In the event that it cannot be inferred where to place of a newly introduced field,
+programmer annotation is required. 
 
 \input{stlc-isorec-prod.tex}
 
-\noindentparagraph{Composing families.}
+
+\subsection{Composing Families as Mixins}
+
+%\noindentparagraph{Composing families.}
 
 Families can be readily reused to construct larger extensions that
 \emph{mix in}~\cite{mixin-1990} the functionalities of the individual
 families.
+A family like \lsti{STLCFix} can be viewed as a family-to-family functor---%
+and hence a mixin, in the sense of \cite{flatt1998mixin}---that
+transforms any family providing the base STLC functionalities into a new
+family additionally supporting fixpoints.
+%\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
+
 In \cref{fig:stlc-isorec-prod}, family "STLCFixIsorec" is declared as
 an "STLC" extension that mixes in "STLCFix" and "STLCIsorec".
-As a result, \lsti{STLCFixIsorec.typesafe} is readily the proof of the type-safety
-theorem of an STLC equipped with fixpoints and iso-recursive types.\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
+The family is declared with minimal verbiage, yet
+\lsti{STLCFixIsorec.typesafe} is automatically a proof of the type-safety
+theorem of an STLC equipped with fixpoints and iso-recursive types.
 
 Mixin composition is a form of multiple inheritance, which may lead to
 name conflicts in general.
@@ -323,6 +346,24 @@ Hence, for exhaustivity, it is required that a composition of
 "STLCProd" and "STLCIsorec" should additionally handle the "ty_prod"
 case in "tysubst".
 
+%\YZ{
+%Family IDENT.
+%
+%Family IDENT extends IDENT_0.
+%
+%Family IDENT extends IDENT_0 using IDENT_1, IDENT_2, ..., IDENT_n.
+%
+%Semantically, family IDENT is the composition λ IDENT_0. IDENT_n(…(IDENT_2(IDENT_1(IDENT_0)))…).
+%
+%IDENT_0 is called the immediate superfamily of IDENT.
+%
+%If the using-clause is present, then for each i > 0, IDENT_0 must be the same as, or a derived family of, the immediate superfamily of IDENT_i.
+%
+%If there is any name conflict among nested fields, then either the programmer has to resolve it or the composition is rejected upon attempting to close the family.
+%}
+
+
+\subsection{Injectivity and Disjointness of Constructors via Partial Recursors}
 
 \noindentparagraph{Tactics support for constructors.}
 
