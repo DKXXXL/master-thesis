@@ -1,7 +1,11 @@
 There exist many approaches to modular mechanization or proof reuse,
 with different focuses and trade-offs.
 
-\noindentparagraph{\`A la carte.}
+\noindentparagraph{Encodings based on product lines or DTC.}
+
+\citet{delaware2011} engineer product lines of theorems and proofs built
+from feature modules. Feature composition is manual, which seems to have
+motivated later approaches based on DTC.
 
 The design pattern \emph{data types à la carte} (DTC) introduced for Haskell by~\citet{dtc}
 is a source of inspiration for many approaches
@@ -54,8 +58,7 @@ linguistic facilities offered by a proof assistant.
 Families, in particular, offer an organizational advantage.  They allow
 grouping and coevolving related types, functions, and proofs without
 explicit parameterization;
-all further-bindable fields and all opaque fields are automatically
-extensibility hooks.
+all further-bindable fields are automatically extensibility hooks.
 Because family polymorphism does not require explicit parameterization
 or complex encodings,
 the resulting programming experience and code are accessible to the
@@ -63,6 +66,18 @@ working Coq programmer.
 The more OO aspects of family polymorphism, such as the ability to
 override and families as mixins, also facilitate extensibility and reuse
 with minimal programmer effort.
+
+\noindentparagraph{Proof reuse, proof weaving, and proof repair.}
+
+\citet{boite2004proof} addresses proof reuse specifically in response
+to inductive types extended with new constructors. Proof reuse is
+via a tactic that adapts the original proof to the extended inductive
+type while generating proof obligations, so rechecking of proof terms is
+entailed.
+The design requires distinct names for a base inductive type and its
+extensions (including distinct names for constructors), while our
+approach supports the late binding of names.
+
 
 \bigskip
 
