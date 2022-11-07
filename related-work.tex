@@ -67,7 +67,7 @@ The more OO aspects of family polymorphism, such as the ability to
 override and families as mixins, also facilitate extensibility and reuse
 with minimal programmer effort.
 
-\noindentparagraph{Proof reuse, proof weaving, and proof repair.}
+\noindentparagraph{Proof reuse and proof repair.}
 
 \citet{boite2004proof} addresses proof reuse specifically in response
 to inductive types extended with new constructors. Proof reuse is
@@ -75,19 +75,38 @@ via a tactic that adapts the original proof to the extended inductive
 type while generating proof obligations, so rechecking of proof terms is
 entailed.
 The design requires distinct names for a base inductive type and its
-extensions (including distinct names for constructors), while our
-approach supports the late binding of names.
+extensions (including distinct names for constructors), while family
+polymorphism in our approach allows names to be late bound.
+
+\citet{mulhern2006proof} introduces a heuristic approach that allows proofs
+for multiple small languages to be combined to yield proofs for
+composite languages, as long as the proof structure follows the same
+pattern.
+%
+\citet{johlut2004} enable proof reuse in Isabelle by adapting theorems
+from one setting for reuse in another: proof terms are transformed
+by first explicitly stating all assumptions, and then abstracting over
+function symbols and type constants.
+
+Pumpkin Pi~\cite{ringer2021pumpkin} is a Coq plug-in that helps
+repair proofs broken by changes in type definitions.
+Its decompiler from proof terms to proof scripts prioritizes suggesting
+useful tactics over soundness.
+While Pumpkin Pi focuses on refactoring existing proofs in response to
+changed definitions,
+the focus of our solution is preempting refactoring altogether by
+writing code that has built-in hooks for future extensions.
 
 
 \bigskip
 
+\ifShowOldWriting
 
 \textbf{Modular Mechanized Metatheory: Linguistic Approach} We group the work that achieves modular mechanized metatheory by extending surface syntax of proof assistants to provide better abstraction as \textit{linguistic approach}. 
 
 The closest work to ours might be \citet{boite2004proof}--they try to support \textit{extended} inductive type and related proof reuse in Coq. This biggest difference lies in our (incomplete) adaption of Family Polymorphism -- apart from supporting proof reuse and extension by inheritance, we also support implementation swapping using overriding, and we also argue that Family Polymorphism can provide a better and cleaner way of organizing mechanized metatheory development a well as solving related expression problem. The other difference lies in the handling of the extension of the inductive type. In our paradigm, the discussion of \textit{extensible} inductive type and \textit{partial recursor} is unavoidable, which characterizes all possible extension of a given inductive type. In their work, without using Family to organized the code, the extended inductive type can be considered as a different inductive type than the original one, possibly leading to more expression problem~\cite{wadler-ep}. The situation is similar for \citet{levin2003tinkertype}---they aim for modular manipulation of metatheory but didn't consider expression problem.  What's more, our implementation is based on Coq plugin and is thus potentially more friendly to Coq community.
 % Another similar work is proof weaving \citep{mulhern2006proof} but I don't see a evaluation section in that paper
 
-\ifShowOldWriting
 
 \textbf{Modular Mechanized Metatheory: Semantic Approach} We group the work using the semantic as encoding (e.g. Church Encoding, datatype-generic programming) to achieve certain design patterns without modify the surface syntax of the proof assistants as \textit{semantic approach}, that includes \citet{delaware2013,forsta2020,liwei2022,schwaab2013modular, keuchel2013generic} and so on. Their advantages are various: their techniques are more general and thus can be applied across different (dependent-typed) proof assistants and their technique can be easily distributed like a library and thus doesn't need to alter the core of the proof assistants. The downsides are mainly about the threshold: they are not friendly for the junior Coq development and these indirect encoding of datatype might lead to worse readability and accessibility compared to the direct style like ours.
 
