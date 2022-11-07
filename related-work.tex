@@ -49,9 +49,14 @@ fixed points, it considers specific instantiations instead.
 The resulting mechanism appears more streamlined than prior \emph{à la
 carte} approaches particularly for its extensive tool support for generating boilerplate code.
 %
-The approach does not seem to fully address the expression problem,
-as \citet{liwei2022} observe, in that extending a composed
-mechanization requires recompilation.
+But even with the tool support, components of individually developed
+feature extensions (e.g., "substlem") have to be composed separately by
+invoking the tool.
+%
+%The approach does not seem to fully address the expression problem,
+%as \citet{liwei2022} observe, in that further extending a composed
+%mechanization causes (a small amount of) boilerplate code that glues definitions
+%to be regenerated.
 
 Our approach addresses the expression problem by extending the
 linguistic facilities offered by a proof assistant.
@@ -64,7 +69,9 @@ or complex encodings,
 the resulting programming experience and code are accessible to the
 working Coq programmer.
 The more OO aspects of family polymorphism, such as the ability to
-override and families as mixins, also facilitate extensibility and reuse
+use families as mixins and the ability to grow a series of mechanized
+languages in integral increments, also facilitate extensibility and
+reuse
 with minimal programmer effort.
 
 \noindentparagraph{Proof reuse and proof repair.}
