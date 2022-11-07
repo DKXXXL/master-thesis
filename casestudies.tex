@@ -44,8 +44,8 @@ If \lsti{step} were an ordinary inductive type, then it could be proved in Coq
 simply by \lsti{intros t H; inversion H}.
 But since \lsti{step} is extensible, it seems that the lemma has to be
 proved by \lsti{FInduction} on \lsti{step}, and that the programmer
-has to verify that the lemma still holds in derived families
-that add new constructors to \lsti{step}.
+has to verify that a derived family does not accidentally make \lsti{tm_true} reducible.
+%lemma still holds in derived families that add new constructors to \lsti{step}.
 %
 We observe that it is lighter-weight to use overriding (\cref{sec:override}) instead:
 the programmer can specify that the proof of the lemma should be overridden
