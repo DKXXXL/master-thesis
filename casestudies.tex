@@ -37,23 +37,25 @@ handle \lsti{ty_prod}, which the type-checker enforces.
 
 Elimination of inductive types defined via \lsti{FInductive} is
 mostly via the \lsti{FRecursion} and \lsti{FInduction} commands.
-An exception is some seemingly trivial ``inversion lemmas''.
+An exception is a handful of trivial ``inversion lemmas''.
 For example, consider the lemma \lsti!\forall t, \neg step tm_true t!
 stating that \lsti!tm_true! is irreducible.
 If \lsti{step} were an ordinary inductive type, then it could be proved in Coq
-with \lsti{intros t H; inversion H}.
+simply by \lsti{intros t H; inversion H}.
 But since \lsti{step} is extensible, it seems that the lemma has to be
 proved by \lsti{FInduction} on \lsti{step}, and that the programmer
-has to manually verify that the lemma still holds in derived families
+has to verify that the lemma still holds in derived families
 that add new constructors to \lsti{step}.
 %
-However, we observe that it is lighter-weight to use overriding (\cref{sec:override}):
+We observe that it is lighter-weight to use overriding (\cref{sec:override}) instead:
 the programmer can specify that the proof of the lemma should be overridden
 in any derived family that further binds \lsti{step},
 and in return, they are permitted to treat \lsti{step} as an ordinary
 inductive type in the proof and thus discharge the proof with \lsti{inversion}.
 The plugin then automatically tries the same proof script in a derived
-family to override the proof.
+family to override the proof. Although proof scripts rather
+than proof terms are reused, rechecking of proof terms seems justified
+by the triviality of the lemmas and the terseness of the proofs.
 
 We note that the current plugin implementation does not support
 mutually inductive types or mutual induction, which will be
