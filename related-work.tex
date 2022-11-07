@@ -94,11 +94,28 @@ Its decompiler from proof terms to proof scripts prioritizes suggesting
 useful tactics over soundness.
 While Pumpkin Pi focuses on refactoring existing proofs in response to
 changed definitions,
-the focus of our solution is preempting refactoring altogether by
-writing code that has built-in hooks for future extensions.
+our solution can be viewed as an effort to preempt refactoring by
+allowing the programmer to write code that has built-in hooks for
+future extensions.
+
+\noindentparagraph{Solutions to the expression problem} abound.
+Our approach is the first that applies family polymorphism~\cite{ernst2001family},
+an idea found in the context of OO programming,
+to the context of mechanized proofs.
+Families in \Lang are second-class, in that they are not considered
+terms by themselves.
+Families as modeled in \TT (namely linkages) are first-class and thus more flexible.
+The distinction corresponds to class-based vs.\ object-base family
+polymorphism as summarized before~\cite{cdnw07-tribe}.
+
+\citet{bac2006} address the expression problem in a functional language,
+introducing a language mechanism that allows pattern-matching cases to
+be added retroactively in accordance with extensions to variant types.
+Our \lsti{FRecursion} and \lsti{FInduction} commands achieve a similar
+functionality, with families bestowing additional organizational power.
 
 
-\bigskip
+
 
 \ifShowOldWriting
 
@@ -109,9 +126,5 @@ The closest work to ours might be \citet{boite2004proof}--they try to support \t
 
 
 \textbf{Modular Mechanized Metatheory: Semantic Approach} We group the work using the semantic as encoding (e.g. Church Encoding, datatype-generic programming) to achieve certain design patterns without modify the surface syntax of the proof assistants as \textit{semantic approach}, that includes \citet{delaware2013,forsta2020,liwei2022,schwaab2013modular, keuchel2013generic} and so on. Their advantages are various: their techniques are more general and thus can be applied across different (dependent-typed) proof assistants and their technique can be easily distributed like a library and thus doesn't need to alter the core of the proof assistants. The downsides are mainly about the threshold: they are not friendly for the junior Coq development and these indirect encoding of datatype might lead to worse readability and accessibility compared to the direct style like ours.
-
-
-\textbf{Solution to The Expression Problem}
-% Have no idea how to write this :(
 
 \fi
