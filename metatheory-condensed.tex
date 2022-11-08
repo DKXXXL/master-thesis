@@ -288,19 +288,29 @@ applying~$h$ to a linkage of type~$\TyLkg{\lsig_1}$ yields a linkage of
 type~$\TyLkg{\lsig_2}$ (\ruleref{tm/inh}).
 %Linkage transformers are second-class; the only way to use them is to
 %apply them to linkages to form new linkages.
-%
+
 Derived families can be modeled as linkage transformers inductively
-constructed from the introduction forms $\InhId$, $\InhExt{h}{t}$, $\InhOv{h}{t}$, etc.
+constructed from the introduction forms
+$\InhId$, $\InhExt{h}{t}$, $\InhOv{h}{t}$, $\InhInh{h}$, etc.
 \cref{fig:fmltt-selected} shows the beta rule of an exemplary transformer,
 \ruleref{tmeq/ov/beta}.
 It can be read as follows: given a linkage of form $\LkgAdd{\lkg}{t_1}$,
 applying the transformer $\InhOv{h}{t_2}$ overrides the linkage's last
 field~$t_1$ with~$t_2$.
-$\InhOv{\InhId}{\wcode{\wsig'_{\texttt{tm}}}}$, for instance, can be used
-in \cref{fig:stlc-linkage-typing} to form a derived family that
+For instance, the construction below shows that 
+$\InhOv{\InhId}{\wcode{\wsig'_{\texttt{tm}}}}$ is used as the first step
+in creating a derived family that
 overrides $\wsig_{\texttt{tm}}$ with an extended
 signature~$\wsig'_{\texttt{tm}}$.
+\vspace{.9ex}
 
+\noindent
+\input{stlcfix-linkage-typing.tex}
+
+\noindent
+A supplemental appendix gives a more complete example
+showing how families are modeled and
+type-checked using linkages and linkage transformers.
 
 \noindentparagraph{The complete formalization.}
 
@@ -323,13 +333,9 @@ An effort to mechanize the formalization is ongoing, using Agda's
 %leaving traces in the comments. We are currently working on mechanizing
 %it and relying on Agda's rewriting mechanism to replace our limited
 %usage of equality reflection. 
-
+%
 We also typeset a more complete set of rules than the space allows and
 present it in a supplemental appendix.
-%
-Another supplemental appendix gives a more complete example than
-\cref{fig:stlc-linkage-typing} showing how families are modeled and
-type-checked using linkages and linkage transformers.
 
 \input{cc-condensed.tex}
 
