@@ -12,7 +12,8 @@ The translation is compatible with interactive theorem proving, in that
 a family is translated piece by piece, allowing each field to be defined
 and checked separately.
 The translation is modular and efficient, in that
-code inherited from a base family need not be retranslated or rechecked.
+code compiled for non-further-bindable fields of a base family
+is shared with derived families without having to be rechecked.
 
 \noindentparagraph{Explicit self parameterization.}
 
@@ -142,7 +143,7 @@ so that references like \lsti{STLCFix.typesafe} can be translated.
 This is done by assembling the \lsti{self}-parameterized pieces into a single module.
 %
 For example, module \lsti{STLC} in \cref{fig:stlc-compiled} is generated
-upon \lsti{End}~\lsti{STLCFix}.
+upon \lsti{End}~\lsti{STLC}.
 All the fields are added to this module in the same order as they appear in the family definition.
 
 For the further-bindables, \lsti{Axiom}s declared in the module types must be instantiated.
@@ -183,6 +184,13 @@ Module \lsti{STLCFix} in \cref{fig:stlcfix-compiled} is generated upon
 The translation makes code and proof sharing evident.
 For example, the four case handlers for \lsti{subst} compiled for \lsti{STLC}
 are reused by module \lsti{STLCFix}. So is the proof of \lsti{typesafe}.
+
+One may argue that because the first four constructors of \lsti{tm} are
+repeated in \lsti{STLCFix}, the translation does not satisfy the
+modular compilation requirement. Compared with alternatives that create
+wrapper inductive types, we consider it a small price to pay in return
+for the clarity of implementation especially given that compiled case handlers
+are entirely reusable without rechecking.
 
 Finally, the reference \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a family)
 can simply be translated to \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a module),
