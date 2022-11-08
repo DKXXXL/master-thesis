@@ -47,8 +47,7 @@ Axiom subst_tm_unit_eq :
   \forall x t, self.subst (self.tm_unit) x t =
   self.subst\_tm_unit x t.
 Axiom subst_tm_var_eq : [@\dadada@].
-Axiom subst_tm_abs_eq : [@\dadada@].
-Axiom subst_tm_app_eq : [@\dadada@].
+Axiom [@\dadada@]
 [@\outdent@]End STLC\_subst.[@\tanc{c-STLC-subst-end}@][@\columnbreak@]
 [@\outdent@][@\codecomment{Code emitted upon definition of \texttt{ty} in family \texttt{STLC}}@] [@\tanc{c-STLC-ty-start}@]
 [@\dadada@][@\tanc{c-STLC-ty-end}@][@\outersep@]
@@ -63,21 +62,20 @@ Def env : Type := id -> option self.ty.
 [@\dadada@][@\tanc{c-STLC-rest-end}@][@\outersep@]
 [@\outdent@][@\codecomment{Code emitted upon conclusion of family \texttt{STLC}}@][@\tanc{c-STLC-start}@]
 [@\outdent@]Module STLC.[@\innersep@]
-Inductive tm\_ : Set :=[@\tanc{c-STLC-d-tm-start}@]
-| tm_unit\_[@\,@]:[@\,@]tm\_ | tm_var\_[@\,@]:[@\,@]id -> tm\_
-| tm_abs\_[@\,@]:[@\,@]id->tm\_->tm\_ | tm_app\_[@\,@]:[@\,@]tm\_->tm\_->tm\_.
-[@\codecomment{Instantiate \texttt{tm} \& its constructors}@]
-Def tm := tm\_.
-Def tm_unit := tm_unit\_. Def tm_var := tm_var\_.
-Def tm_abs  := tm_abs\_.  Def tm_app := tm_app\_.
+[@\codecomment{Instantiate \texttt{tm} \& its constructors}@][@\tanc{c-STLC-d-tm-start}@]
+Inductive tm : Set :=
+| tm_unit : tm | tm_var : id -> tm
+| tm_abs : id -> tm -> tm | tm_app : tm -> tm -> tm.
 [@\codecomment{Instantiate \texttt{tm} partial recursor \& its equalities}@]
-Def tm_prect_STLC := \lambda P, tm\__rect (\lambda[@\,@]t, option (P t)).
-Fact[@\;@][@\textls[-20]{tm\_unit\_eq\_STLC}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLC-d-tm-end}@][@\innersep@]
+Def tm_prect_STLC := \lambda P, tm_rect (\lambda[@\,@]t, option (P t)).
+Fact [@\textls[-20]{tm\_unit\_eq\_STLC}@] : [@\dadada@]. [@\textls[-40]{{\color{dkblue}reflexivity}.}@] Qed.
+Fact [@\dadada@][@\tanc{c-STLC-d-tm-end}@][@\innersep@]
 Include STLC\_subst\_Cases.[@\tanc{c-STLC-d-subst-start}@]
 [@\codecomment{Instantiate \texttt{subst} \& its equalities}@]
-Def subst[@\,@] := tm\__rect _ subst\_tm_unit subst\_tm_var
-                        subst\_tm_abs  subst\_tm_app.
-Fact[@\;@][@\textls[-40]{subst\_tm\_unit\_eq}@][@\,@]:[@\,@][@\dadada@].[@\,@][@\textls[-40]{{\color{dkblue}reflexivity}.}@][@\,@]Qed.[@\hfill@]Fact [@\dadada@][@\tanc{c-STLC-d-subst-end}@][@\tanc{c-STLC-firstcol-end}@][@\innersep@]
+Def subst[@\,@] := tm_rect _ subst\_tm_unit
+  subst\_tm_var subst\_tm_abs subst\_tm_app.
+Fact [@\textls[-40]{subst\_tm\_unit\_eq}@] : [@\dadada@]. [@\textls[-40]{{\color{dkblue}reflexivity}.}@] Qed.
+Fact [@\dadada@][@\tanc{c-STLC-d-subst-end}@][@\tanc{c-STLC-firstcol-end}@][@\innersep@]
 [@\codecomment{Instantiate \texttt{ty}, its constructors, partial recusor \& eq.}@] [@\dadada@][@\tanc{c-STLC-d-ty}@][@\tanc{c-STLC-sndcol-start}@][@\innersep@]
 Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLC-d-env}@][@\innersep@]
 [@\codecomment{Include/Instantiate other fields of family \texttt{STLC}}@] [@\dadada@][@\tanc{c-STLC-d-rest}@][@\innersep@]

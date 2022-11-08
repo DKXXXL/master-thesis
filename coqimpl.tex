@@ -146,29 +146,6 @@ For example, module \lsti{STLC} in \cref{fig:stlc-compiled} is generated
 upon \lsti{End}~\lsti{STLC}.
 All the fields are added to this module in the same order as they appear in the family definition.
 
-For the further-bindables, \lsti{Axiom}s declared in the module types must be instantiated.
-%
-\begin{itemize}[align=left,itemsep=5pt,labelsep=*,leftmargin=*]
-
-\item
-For \lsti{tm},
-an inductive type \lsti{tm\_} is generated, with \lsti{tm\_}
-instantiating the axiomatized \lsti{tm} type, and with
-its constructors (\lsti{tm_unit\_} etc.) instantiating 
-the axiomatized constructors (\lsti{tm_unit} etc.).
-%
-The partial recursor \lsti{tm_prect_STLC} is instantiated
-%to \lsti{\lambda}\,\lsti{P, tm\__rect (\lambda}\,\lsti{t, option (P t))},
-with the help of \lsti{tm\_rect}, the recursor of the generated \lsti{tm\_} type.
-Proving the equalities on \lsti{tm_prect_STLC} is then trivial, by \lsti{reflexivity}.
-
-\item
-Similarly, \lsti{subst} is instantiated by applying the recursor \lsti{tm\_rect}
-to the (already included) case handlers (\lsti{subst\_tm_unit}, etc.).
-Propositional equalities on \lsti{subst} are then trivial, by \lsti{reflexivity}.
-
-\end{itemize}
-
 For the non-further-bindables, the translated modules are directly included
 (e.g., \lsti{Include STLC\_subst\_Cases} and \lsti{Include STLC\_env}).
 %
@@ -179,11 +156,33 @@ For instance, command \lsti{Include STLC\_subst\_Cases} is successfully executed
 because Coq automatically instantiates \lsti{self} using the current
 module environment, which contains all the fields required by \lsti{STLC\_subst\_Cases\_Ctx}.
 
+For the further-bindables, \lsti{Axiom}s declared in the module types must be instantiated.
+%
+\begin{itemize}[align=left,itemsep=0pt,labelsep=*,leftmargin=*]
+
+\item
+An inductive type \lsti{tm} is generated, instantiating the axiomatized
+\lsti{tm} type and its constructors.
+%
+The partial recursor \lsti{tm_prect_STLC} is defined
+%to \lsti{\lambda}\,\lsti{P, tm_rect (\lambda}\,\lsti{t, option (P t))},
+with the help of \lsti{tm_rect}, the recursor Coq generates for \lsti{tm}.
+Proving the equalities on \lsti{tm_prect_STLC} is then trivial, by \lsti{reflexivity}.
+
+\item
+Similarly, \lsti{subst} is instantiated by applying the recursor \lsti{tm_rect}
+to the (already included) case handlers (\lsti{subst\_tm_unit}, etc.).
+Propositional equalities on \lsti{subst} are then trivial, by \lsti{reflexivity}.
+
+\end{itemize}
+
 Module \lsti{STLCFix} in \cref{fig:stlcfix-compiled} is generated upon
 \lsti{End}~\lsti{STLCFix}, in the same fashion described above for \lsti{STLC}.
 The translation makes code and proof sharing evident.
-For example, the four case handlers for \lsti{subst} compiled for \lsti{STLC}
-are reused by module \lsti{STLCFix}. So is the proof of \lsti{typesafe}.
+For example, the four case handlers (\lsti{subst\_tm_var} etc.) compiled for \lsti{STLC}
+are reused to instantiate \lsti{subst}.
+Translations of the definition of \lsti{env} and the proof of \lsti{typesafe},
+are also reused to construct module \lsti{STLCFix}.
 
 One may argue that because the first four constructors of \lsti{tm} are
 repeated in \lsti{STLCFix}, the translation does not satisfy the
