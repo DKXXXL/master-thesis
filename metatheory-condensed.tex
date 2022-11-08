@@ -1,25 +1,48 @@
-We contribute \TT, a core type theory that incorporates the core elements
-of \underline{f}a\underline{m}i\underline{l}y polymorphism into
-\underline{M}artin-\underline{L}öf dependent \underline{t}ype \underline{t}heory~\cite{martin1982constructive},
-while maintaining consistency and canonicity.\NA{maybe you can give an overview of the salient points of the design and what they're trying to achieve? What is the core aspect modeled by the theory?}
+We contribute \TT, a core type theory that extends
+%\underline{f}a\underline{m}i\underline{l}y polymorphism
+%\underline{M}artin-\underline{L}öf dependent \underline{t}ype \underline{t}heory (MLTT)~\cite{martin1982constructive}
+Martin-Löf dependent type theory (MLTT)~\cite{martin1982constructive}
+with facilities to express family polymorphism
+while maintaining consistency and canonicity.
+%\NA{maybe you can give an overview of the salient points of the design and what they're trying to achieve? What is the core aspect modeled by the theory?}
+%
+We acknowledge that the presentation herein is dense for an audience
+without prior exposure to MLTT, so we summarize the salient points
+first before delving into the technical details.
 
-Most notably, \TT extends MLTT with what we call \emph{linkages}
-(a namesake of the theoretical device through which \citet{zm2017} model
-family polymorphism in an OO setting).
-Linkages model families, so they are like tuples but with a twist: they
-support late binding.
+\noindentparagraph{Summary.}
 
 \TT is intended as a foundational model. So unlike our programmer-facing plugin,
 typing is structural rather than nominal, and
-it supports family polymorphism by providing MLTT-style typing rules that
-can be used to \emph{encode} core aspects of the language supported by our
-plugin, rather than building them in directly.
+partial recursors and propositional equalities are not automated but have to
+be explicitly defined.
+\TT provides MLTT-style constructs that can be used to \emph{encode}
+family polymorphism rather than building it in directly.
 %
-For example, \TT supports extending inductive types through
-formation rules that enable the encoding of the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
-Also unlike our plugin, \TT does not feature automations such as
-the generation of propositional equalities and partial recursors,
-but it is expressive enough to encode their definitions.
+Most notably, \TT extends MLTT with what we call \emph{linkages}.\footnote{
+Linkages are a namesake of the theoretical device through which prior work~\cite{zm2017} models
+family polymorphism in an OO setting, but the technical details differ significantly.}
+Linkages model families, so they are like tuples but with a twist: they
+support late binding.
+Unlike dependent tuples where a later component is \emph{existentially}
+quantified over the earlier ones, a linkage component is \emph{universally}
+quantified over---and thus polymorphic to---components preceding it.
+%
+\TT also features \emph{linkage transformers} that can be used to inductively
+construct linkages from other linkages, by inheriting or overriding components of a linkage,
+or by extending linkages with new components.
+%
+Inductive types are modeled as W-types~\cite{martin1984intuitionistic} and their
+extension as overriding.
+%
+Consistency and canonicity are proved by giving semantic models to the syntax.
+
+%\TT supports extending inductive types through
+%formation rules that enable the encoding of the further binding of W-types~\cite{martin1984intuitionistic} in linkages.
+
+%Also unlike our plugin, \TT does not feature automations such as
+%the generation of propositional equalities and partial recursors,
+%but it is expressive enough to encode their definitions.
 
 \input{mltt-selected.tex}
 \input{fmltt-selected.tex}
@@ -30,7 +53,7 @@ but it is expressive enough to encode their definitions.
 \cref{fig:fmltt-selected} \TT.
 %The new forms (relative to MLTT) are highlighted.
 We briefly review the base MLTT fragment first.
-
+%
 As is standard in MLTT presentations, we use explicit substitutions~\cite{substcalculus,abadi1989subst}:
 substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
 of the syntax rather than meta-operations.
