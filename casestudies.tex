@@ -121,12 +121,16 @@ Our implementation of family polymorphism retains the computation
 ability of the host proof assistant;
 the two abstract interpreters in \lsti{ImpTI} and \lsti{ImpCP} are
 directly runnable in Coq.
-We also extract them to OCaml and put them to test over simple queries.
+We also extract them to OCaml and put them to test over queries.
 
 We note that our plugin cannot yet allow the expression of two abstract
 interpreters nested within the same family.
 Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
 to further increase the expressive power of our language design.
+
+In addition to the two case studies above, we also use extensible
+inductive types for modeling extensible context-free grammars and derive
+decision procedures for them.
 
 %\cref{sec:coqexample-stlc}
 %\cref{sec:coqexample-analysis}
