@@ -403,10 +403,16 @@
 %  \renewcommand\@subsecfont{\bfseries\sffamily}
 %  \renewcommand\@subsubsecfont{\bfseries\sffamily}
   \renewcommand\@parfont{\bfseries\itshape}
-  \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%\parindent}%
-  {-.5\baselineskip \@plus -.8\p@ \@minus -.2\p@}%
+
+  \renewcommand\noindentparagraph{\@startsection{paragraph}{4}{\z@}%
+  {-1.2ex}%
   {-3.5\p@}%
-  {\ACM@NRadjust{\@parfont\@adddotafter}}}
+  {\ACM@NRadjust{\@parfont}}}
+
+  \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-.8ex \@plus -1ex \@minus -.0\p@}%
+  {.5ex}%
+  {\ACM@NRadjust\@subsecfont}}
 \makeatother
 
 \renewcommand{\floatpagefraction}{0.75}

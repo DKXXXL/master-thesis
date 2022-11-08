@@ -1,6 +1,3 @@
-\input{stlc-compiled.tex}
-\input{stlcfix-compiled.tex}
-
 We implement our language design as a Coq plugin.
 Rather than modifying the Coq kernel, a prototypical implementation as a
 plugin allows a clearly defined trusted base and
@@ -29,12 +26,13 @@ syntax, it has to be made explicit in the translated Coq code.
 Fields of a family are translated into parameterized Coq modules
 (or parameterized module types).
 
-For instance, consider field \lsti{env} in family \lsti{STLC}.
+For instance,
+consider field \lsti{env} in family \lsti{STLC}.
 It is translated into a top-level module named \lsti{STLC\_env}.
 This module has a parameter called \lsti{self} representing the enclosing
 family: fields of the current family in the context of \lsti{env} can be
-referenced through this \lsti{self}.
-In particular, \lsti{env} is defined as \lsti{id -> option ty},
+referenced through \lsti{self}.
+In particular, \lsti{env} is defined as \lsti{id}\,->\,\lsti{option ty},
 where \lsti{ty} is a late-bound reference to the \lsti{ty} field of the
 enclosing family.
 Hence, this reference to \lsti{ty} is translated in \lsti{STLC\_env} to \lsti{self.ty},
@@ -54,6 +52,8 @@ Thus, the \lsti{self} parameter can be used to reference those and only
 those fields in the current field's typing context, which echoes the
 discussion in \cref{sec:sound}.
 
+\input{stlc-compiled.tex}
+\input{stlcfix-compiled.tex}
 
 \noindentparagraph{Translating extensible inductive types.}
 
@@ -179,17 +179,19 @@ Propositional equalities on \lsti{subst} are then trivial, by \lsti{reflexivity}
 Module \lsti{STLCFix} in \cref{fig:stlcfix-compiled} is generated upon
 \lsti{End}~\lsti{STLCFix}, in the same fashion described above for \lsti{STLC}.
 The translation makes code and proof sharing evident.
-For example, the four case handlers (\lsti{subst\_tm_var} etc.) compiled for \lsti{STLC}
-are reused to instantiate \lsti{subst}.
-Translations of the definition of \lsti{env} and the proof of \lsti{typesafe},
+In particular, case handlers compiled for \lsti{STLC}
+are reused to instantiate \lsti{subst}, \lsti{substlem}, and alike.
+\lsti{STLC\_env} and \lsti{STLC\_typesafe}
 are also reused to construct module \lsti{STLCFix}.
-
+%
 One may argue that because the first four constructors of \lsti{tm} are
 repeated in \lsti{STLCFix}, the translation does not satisfy the
-modular compilation requirement. Compared with alternatives that create
-wrapper inductive types, we consider it a small price to pay in return
-for the clarity of implementation especially given that compiled case handlers
-are entirely reusable without rechecking.
+modular compilation requirement.
+We could address this issue by using wrapper types,
+but we consider restating constructors a small price to pay in return
+for the clarity and concision of implementation.
+We emphasize that compiled case handlers
+are entirely reusable without rechecking, even with restated constructors.
 
 Finally, the reference \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a family)
 can simply be translated to \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a module),

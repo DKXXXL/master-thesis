@@ -22,7 +22,7 @@ family polymorphism rather than building it in directly.
 Most notably, \TT extends MLTT with what we call \emph{linkages}.\footnote{
 Linkages are a namesake of the theoretical device through which prior work~\cite{zm2017} models
 family polymorphism in an OO setting, but the technical details differ significantly.}
-Linkages model families, so they are like tuples but with a twist: they
+Linkages model families, so they are tuples composed of fields but with a twist: they
 support late binding.
 Unlike dependent tuples where a later component is \emph{existentially}
 quantified over the earlier ones, a linkage component is \emph{universally}
@@ -176,6 +176,8 @@ for a W-type signature~$\wsig'$ extending~$\wsig$.
 \definecolor{T-color}{HTML}{FFF1D0}
 \definecolor{t-color}{HTML}{FAE0E4}
 
+\input{stlc-linkage-typing.tex}
+
 We illustrate this with \cref{fig:stlc-linkage-typing}.
 On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
 is how the corresponding fields are modeled and typed in \TT.
@@ -256,19 +258,19 @@ is not automated in \TT.
 In particular, when no hiding is needed, $\seal$ is $\var{0}$ (the identity) and $A$ is
 $\TyTkg{\lsig}$.
 In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are identities,
-and $\seal_6$ turns
+and $\seal_6$ is from
 \begingroup
 \fontsize{9}{9}\selectfont%
 $\big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$
 \endgroup
-into
+to
 \begingroup
 \fontsize{9}{9}\selectfont%
 $\big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$%
 \endgroup
 .
 
-When a family is completed (e.g., \lsti!End!~\lsti!STLC!),
+When a family is concluded (e.g., \lsti!End!~\lsti!STLC!),
 a linkage~$\lkg$ containing all the fields is available
 (e.g., $\lkg_{53}$ in \cref{fig:stlc-linkage-typing}).
 Fields of the family can then be accessed by projecting them out of the tuple
@@ -328,8 +330,6 @@ present it in a supplemental appendix.
 Another supplemental appendix gives a more complete example than
 \cref{fig:stlc-linkage-typing} showing how families are modeled and
 type-checked using linkages and linkage transformers.
-
-\input{stlc-linkage-typing.tex}
 
 \input{cc-condensed.tex}
 
@@ -616,6 +616,109 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   \end{figure}
 
 
+
+In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
+
+Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For readability, RHS is informal---curly brackets indicate a signature (omitting sealing at type level) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
+
+For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
+
+Basically, the hidden prior fields---inductive type are sealed into arbitrary type with ``constructors only'', where the recursion is constructed without sealing the inductive type.  Generally speaking, each extensible inductive type are hidden for all the other fields except for the recursion on itself. 
+
+We choose to expose the definition of $t_1$ to all the following fields including $t_2$ by using singleton type $\TyS{-}$. If other fields, say $t_3$, want to hide it, just seal $t_1$ into type "tm"; and then overriding $t_1$ will not disrupt the inheritablity of $t_3$. But such overriding will definitely disrupt the inheritablity of $t_2$ as $s_5$ doesn't hide $t_1$. Generally speaking, any field that has a clear "hiding" semantic on the prior fields can be understood as sealing. All of our plugin commands have clear "hiding" semantics.
+
+% Intuitively, sealing corresponds to the following surface syntax\\
+% \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
+
+
+% The reader should feel this subtle difference compared to our current plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by all the following fields.
+
+
+% Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
+
+Due to the definition of sealing, we can see the importance of compilation type, as the result of a sealing is usually a (nested) $\Sigma$-type instead of a linkage type. For example, $\TyLkg{\{a : S(\bot), b : a \to \bot\}}$ can only be sealed into $\TyTkg{\{a : \cU, b : a \to \bot\}}$ but never $\TyLkg{\{a : \cU, b : a \to \bot\}}$. Because the latter cannot be inhabitted---by projecting the second field of the $ t : \TyLkg{\{a : \cU, b : a \to \bot\}}$, we can get a proof of bottom type. For simplicity, we make sealing a term in the context of compilation type instead of linkage type.
+
+% The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
+
+% The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$ for a type $\goodType{\Gamma}{A}{}$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.
+
+% The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
+
+% But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited
+% and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
+
+% However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensable.
+
+% Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
+
+% Inductive type and recursor and handlers
+
+$$
+\Rule[name=Inh]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+\quad \goodTerm{\Gamma}{l}{\cL \sigma_1}
+}
+{\goodTerm{\Gamma}{("inh" \ h \ l)}{\cL \sigma_2}},
+\Rule[name=Inh-Id]
+{}
+{\goodInh{\Gamma}{"inhid"}{\sigma}{\sigma}},
+\Rule[name=Inh-Ext]
+{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
+  \quad \goodTerm{\Gamma, A_2}{t}{T}}
+{\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
+$$
+
+% Inhertance judgement
+Currently we can achieve inheritance by projecting out the field, and then add back the projection into the children family. That means the formulation of linkage already captures the concept of \textit{code reuse}. 
+
+However, in the plugin implementation, we use "Family"s to organize the code reuse. They are second class objects like Coq's "Module". What's more, a "Family" (with or without "extends" clause) can be considered as a standalone piece of code trying to \textit{inherit} an existent (but maybe empty) family. Thus we model them using \textit{inheritance judgement} $\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}$ instead of considering them as first class terms. Inheritance judgement is like ``library function'' upon linkage for achieving inheritance and overriding. The only way to use $h$ is by \ruleref{Inh} and transforming a linkage of signature $\sigma_1$ to another linkage of $\sigma_2$. Inheritance judgement can be inductively constructed via inheriting operations, overriding operations, extending operations and etc, corresponding to "Inherit", "Override" and "Extend" command  in our plugin implementation.
+
+
+In this way, we will consider the program in our metatheory similar to those vanilla MLTT program, except there are meta variables denoting inheirtance judgement (i.e. "Family"), of which the only usage is to apply \ruleref{Inh}. We don't yet consider non-trivial equality between derivations of inheritance judgements.
+
+
+\subsection{Syntactic Translation that removes Linkages}
+To further provide the intuition why our core calculus is sound, we provide a syntactic translation from our core calculus to the subpart where linkages are absent. This can justify the \textit{consistency} and \textit{canonicity} modulo the quirky (but apparent) formulation of our inductive type. To be complete, we also provide a consistency and canonicity proof for our complete core calculus in the appendix.
+
+Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related. We omit most of the inheritance translation.
+
+
+
+\begin{align*}
+  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
+  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ are mutually recursive, } \\
+  & \text{defined by induction on the signature length} \\  
+  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
+  &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
+  {\Sigr{\Gamma}{(n+1)}} &= 
+    \Sigma~(\Sigr{\Gamma}{n})
+          ~(\Sigma~\cU
+                  ~(\Sigma~(\Pi(\TyTkg {("var"_0[p^1])})(El~"var"_0[p^1]))~\cU)) \\
+  \Sigr{\Gamma}{0} &= \top \\
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
+  \text{ and inductively on the signature length} \\
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
+      \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
+  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
+    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(El \ (\app{("pjr"^3~\denotesT{\sigma})})[(p^1, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]) \\
+  \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
+  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(El~(\fst{(\snd{\denotesT{\sigma}})}))(El~(\app{("pjr"^3~\denotesT{\sigma})} )) \\
+  &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
+  \denotesT{\goodSig{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
+  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{(\LSigAdd{\sigma}{s}{T})}}} &= (\denotesT{m}, \lam{t}) \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
+  (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{(\snd{\denotesT{m}})}, f = p_f\nu~\sigma \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
+\end{align*}
+\begin{align*}
+  \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\
+  \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\LSigAdd {\sigma_1} {s_1}{T})}{(\LSigAdd {\sigma_2} {s_2} {T[(p^1, \uparrow^s)]})}} &= \mu^+~(h[(p^1,\lkgproj{1}{"var"_0})])\\ &\quad \quad \{f_2[p^1]\}~(\lkgproj{2}{"var"_0})[(p^1, \uparrow^s[{p^1}^{\uparrow}])] \\
+\end{align*}
+
+
+
 \begin{figure}[!htb]
   \lstset{
       basicstyle=\fontsize{8}{8.5}\ttfamily,
@@ -719,105 +822,5 @@ Concretely, we encode our STLC example to show the motivation of the sealing.
   \end{minipage}
   \caption{Inheritance Metatheory}\label{fig:inheritance}
   \end{figure}
-
-In \cref{fig:sealing+linkage}, the "hiding" comment illustrates the late-bound prior fields for each fields.   For "tm", "ty" is late-bound and thus extending "ty" won't cause disruption on the inheritance of "tm". For "subst" itself, the definition of "tm"  cannot hidden for the sake of exhaustiveness checking. However, for each case handler inside "subst", "tm" is late-bound and thus each handler is inheritable. 
-
-Each hiding comment corresponds to the textual-aligned sealing derivation on RHS. For readability, RHS is informal---curly brackets indicate a signature (omitting sealing at type level) and square bracket indicate a nested $\Sigma$-type, corresponding to sealing judgment $\goodSeal{}{s}{\sigma}{A}$.
-
-For "tm", "ty" is hidden and thus the sealing "s₂" will make "ty" into an arbitrary type "𝕌" and expose its constructor "bool", "arrow", and etc. Then when constructing "o₂", the newly added field "tm" as "⋆ : 𝕎τ₂" is constructed in the context where "ty : 𝕌", ignoring its original eliminator. (Because eliminator is only possible when "ty : 𝕎τ₁"). On the other hand, for "subst", only "ty" is hidden and thus the sealing "s₃" leave "tm : 𝕎τ₂" untouched and "Wrec" becomes possible when constructing "o₃".
-
-Basically, the hidden prior fields---inductive type are sealed into arbitrary type with ``constructors only'', where the recursion is constructed without sealing the inductive type.  Generally speaking, each extensible inductive type are hidden for all the other fields except for the recursion on itself. 
-
-We choose to expose the definition of $t_1$ to all the following fields including $t_2$ by using singleton type $\TyS{-}$. If other fields, say $t_3$, want to hide it, just seal $t_1$ into type "tm"; and then overriding $t_1$ will not disrupt the inheritablity of $t_3$. But such overriding will definitely disrupt the inheritablity of $t_2$ as $s_5$ doesn't hide $t_1$. Generally speaking, any field that has a clear "hiding" semantic on the prior fields can be understood as sealing. All of our plugin commands have clear "hiding" semantics.
-
-% Intuitively, sealing corresponds to the following surface syntax\\
-% \mintinline{Coq}{Field hiding {x, y, z ...} newfield := t...} where every former field "x","y","z",...  hide its definition when type-check "t", and remaining former fields have their definition exposed for "t". Thus, "x","y","z", ... can be overridden but other fields have to stay the same if we want to inherit "t". In meta-theory, we control the sealing $f$ so that "x","y","z",... only has type exposed and remaining fields are definitionally exposed using singleton type.
-
-
-% The reader should feel this subtle difference compared to our current plugin implementation---$(\mu^+ ~o~\{f\}~t)$ reads as \textit{``$t$ is a new well-typed field when we abstract the \textbf{prior} fields using $f$''}. In other words, every field in meta-theory has the right to choose how they perceive and abstract the prior fields. While in the plugin, "Overridable" keyword will decide how the current defining field is percived by all the following fields.
-
-
-% Given a signature $\sigma$, we have the linkage type $\cL\sigma$ inhabited by linkages; and the \textit{compilation type} $\cC\sigma$ of the linkage type. The compilation type corresponds to how we compile a context into a \mintinline{Coq}{Module Type} in the plugin implementation---in metatheory, $\cC\sigma$ will be a nested sigma type. For example, $\cC\{a : \cU, b : a \to \bot \} = \Sigma(a : \cU).\Sigma (b : a \to \bot). \top$.
-
-Due to the definition of sealing, we can see the importance of compilation type, as the result of a sealing is usually a (nested) $\Sigma$-type instead of a linkage type. For example, $\TyLkg{\{a : S(\bot), b : a \to \bot\}}$ can only be sealed into $\TyTkg{\{a : \cU, b : a \to \bot\}}$ but never $\TyLkg{\{a : \cU, b : a \to \bot\}}$. Because the latter cannot be inhabitted---by projecting the second field of the $ t : \TyLkg{\{a : \cU, b : a \to \bot\}}$, we can get a proof of bottom type. For simplicity, we make sealing a term in the context of compilation type instead of linkage type.
-
-% The difference between compilation type and linkage types lies in their introduction rules. The compilation types are just syntactic sugar for sigma types. However, the intro rules for the linkage types gives it the power of late-binding (also the fundation of inheritance and overriding). More concretely, the boxed premise in \ruleref{Lnkg Add} is making $t$ parametric on $A$, contrary to how in sigma type, the $t$ will be about a concrete $a : A$. This parametricity makes $t$ inheritable and the earlier stuff about $A$ late-bound.
-
-% The sealing judgement provides a witness $f$ that a context $\Gamma, \cC\sigma$ can be abstracted into an \textit{interface} $\Gamma, A$ for a type $\goodType{\Gamma}{A}{}$. For example, sealing judgement can abstract an inductive type with constructors into an arbitrary type with functions (but without eliminators). Then any later fields $\goodTerm{\Gamma, A}{t}{T}$ relies only on the \textit{interface} $A$ can be inherited to other contexts (e.g. using extended inductive type), as long as the targeting contexts can be abstracted into the surrounding \textit{interface} for $t$ (i.e. $\Gamma, A$)  as well.
-
-% The importance of the compilation type lies in its difference from the linkage type. First we have a singleton type $"s A" : S(T) \iff "A" \equiv T$, i.e. a type of one single term.  We can see that we have a term $x : \cC\{A : S(\bot), B : A \to \bot \} \vdash h_1 : \cC\{A : \cU, B:A \to \bot \}$ which is equivalent to $x : \Sigma (A: S(\bot)). A \to \bot \vdash h_1 : \Sigma (A: \cU). A \to \bot$. This can be considered as using seal to do an abstraction on $A:S(\bot)$.
-
-% But we can never have a term $x : \cL\{a : S(\bot), b : a \to \bot \} \vdash h_2 : \cL\{a : \cU, b : a \to \bot \}$, as we know $\cL\{a : S(\bot), b : a \to \bot \}$ is inhabited
-% and that leads to a close term of $\cL\{a : \cU, b : a \to \bot \}$ due to the nature of late-binding of $\cL\sigma$---once we override $a$ with $\top$ we will have inconsistency using $b$. This example illustrates the programming difference between the sigma type and linkage type.  
-
-% However, this form of abstracting a type is very important when programming in our metatheory---as later we will show inductive type of different constructors locates in different type (universe), and to make later fields inheritable we need to work on an interface of abstracted type. Thus the compilation type is indispensable.
-
-% Looking closely, the sealing judgement helps to model most machinaries about abstraction in plugin implementation.
-
-% Inductive type and recursor and handlers
-
-$$
-\Rule[name=Inh]
-{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-\quad \goodTerm{\Gamma}{l}{\cL \sigma_1}
-}
-{\goodTerm{\Gamma}{("inh" \ h \ l)}{\cL \sigma_2}},
-\Rule[name=Inh-Id]
-{}
-{\goodInh{\Gamma}{"inhid"}{\sigma}{\sigma}},
-\Rule[name=Inh-Ext]
-{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}
-  \quad \goodTerm{\Gamma, A_2}{t}{T}}
-{\goodInh{\Gamma}{"inhext" \ h \ t}{\sigma_1}{(\nu^+ \  \sigma_2\  T)}}
-$$
-
-% Inhertance judgement
-Currently we can achieve inheritance by projecting out the field, and then add back the projection into the children family. That means the formulation of linkage already captures the concept of \textit{code reuse}. 
-
-However, in the plugin implementation, we use "Family"s to organize the code reuse. They are second class objects like Coq's "Module". What's more, a "Family" (with or without "extends" clause) can be considered as a standalone piece of code trying to \textit{inherit} an existent (but maybe empty) family. Thus we model them using \textit{inheritance judgement} $\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}$ instead of considering them as first class terms. Inheritance judgement is like ``library function'' upon linkage for achieving inheritance and overriding. The only way to use $h$ is by \ruleref{Inh} and transforming a linkage of signature $\sigma_1$ to another linkage of $\sigma_2$. Inheritance judgement can be inductively constructed via inheriting operations, overriding operations, extending operations and etc, corresponding to "Inherit", "Override" and "Extend" command  in our plugin implementation.
-
-
-In this way, we will consider the program in our metatheory similar to those vanilla MLTT program, except there are meta variables denoting inheirtance judgement (i.e. "Family"), of which the only usage is to apply \ruleref{Inh}. We don't yet consider non-trivial equality between derivations of inheritance judgements.
-
-
-\subsection{Syntactic Translation that removes Linkages}
-To further provide the intuition why our core calculus is sound, we provide a syntactic translation from our core calculus to the subpart where linkages are absent. This can justify the \textit{consistency} and \textit{canonicity} modulo the quirky (but apparent) formulation of our inductive type. To be complete, we also provide a consistency and canonicity proof for our complete core calculus in the appendix.
-
-Thanks to QIIT formulation, syntactic translation becomes a function between QIIT type, which by definition respects all the judgemental equalities. We will now sketch this translation $\denotesT{\_}$, which keeps most parts untouched except for the linkages related. We omit most of the inheritance translation.
-
-
-
-\begin{align*}
-  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
-  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ are mutually recursive, } \\
-  & \text{defined by induction on the signature length} \\  
-  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
-  &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
-  {\Sigr{\Gamma}{(n+1)}} &= 
-    \Sigma~(\Sigr{\Gamma}{n})
-          ~(\Sigma~\cU
-                  ~(\Sigma~(\Pi(\TyTkg {("var"_0[p^1])})(El~"var"_0[p^1]))~\cU)) \\
-  \Sigr{\Gamma}{0} &= \top \\
-  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
-  \text{ and inductively on the signature length} \\
-  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
-      \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
-  \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
-    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(El \ (\app{("pjr"^3~\denotesT{\sigma})})[(p^1, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]) \\
-  \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
-  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(El~(\fst{(\snd{\denotesT{\sigma}})}))(El~(\app{("pjr"^3~\denotesT{\sigma})} )) \\
-  &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
-  \denotesT{\goodSig{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
-  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{(\LSigAdd{\sigma}{s}{T})}}} &= (\denotesT{m}, \lam{t}) \\ 
-  \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
-  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
-  (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
-  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{(\snd{\denotesT{m}})}, f = p_f\nu~\sigma \\ 
-  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
-\end{align*}
-\begin{align*}
-  \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\
-  \denotesT{\goodInh{\Gamma}{"inhinh"~h~T~\uparrow^s}{(\LSigAdd {\sigma_1} {s_1}{T})}{(\LSigAdd {\sigma_2} {s_2} {T[(p^1, \uparrow^s)]})}} &= \mu^+~(h[(p^1,\lkgproj{1}{"var"_0})])\\ &\quad \quad \{f_2[p^1]\}~(\lkgproj{2}{"var"_0})[(p^1, \uparrow^s[{p^1}^{\uparrow}])] \\
-\end{align*}
 
 \fi
