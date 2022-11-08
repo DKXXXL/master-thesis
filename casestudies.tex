@@ -42,33 +42,30 @@ For example, consider the lemma \lsti!\forall t, \neg step tm_true t!
 stating that \lsti!tm_true! is irreducible.
 If \lsti{step} were an ordinary inductive type, then it could be proved in Coq
 simply by \lsti{intros t H; inversion H}.
-But since \lsti{step} is extensible, it seems that the lemma has to be
-proved by \lsti{FInduction} on \lsti{step}, and that the programmer
-has to verify that a derived family does not accidentally make \lsti{tm_true} reducible.
+But \lsti{step} is extensible. So one way to prove the lemma is
+by \lsti{FInduction} on \lsti{step} and verifying that
+a derived family does not accidentally make \lsti{tm_true} reducible.
 %lemma still holds in derived families that add new constructors to \lsti{step}.
 %
 We observe that it is lighter-weight to use overriding (\cref{sec:override}) instead:
 the programmer can specify that the proof of the lemma should be overridden
 in any derived family that further binds \lsti{step},
 and in return, they are permitted to treat \lsti{step} as an ordinary
-inductive type in the proof and thus discharge the proof with \lsti{inversion}.
+inductive type in the proof and thus use \lsti{inversion} to prove it.
 The plugin then automatically tries the same proof script in a derived
 family to override the proof. Although proof scripts rather
-than proof terms are reused, rechecking of proof terms seems justified
-by the triviality of the lemmas and the terseness of the proofs.
+than proof terms are reused, the practice seems justified
+by the triviality of the lemmas and the terseness of the proof scripts.
 
-We note that the current plugin implementation does not support
-mutually inductive types or mutual induction, which will be
+The current plugin implementation does not yet support
+mutually inductive types or mutual induction, which are
 useful for modeling languages much more complex than STLCs.
-We believe that generalizing our design to mutually inductive types does
-not pose theoretical challenges, however.
+However,
+we believe generalizing our design to mutually inductive types does
+not pose theoretical challenges.
 
 
 \noindentparagraph{Abstract interpreters for imperative languages.}
-
-\begin{wrapfigure}[13]{r}{0.13\textwidth}
-\includegraphics[scale=.68]{graphics/ai-casestudy.pdf}
-\end{wrapfigure}
 
 Our second case study is a mechanization of abstract interpreters
 for simple imperative languages.
@@ -99,6 +96,10 @@ by the analysis:
 \end{lstlisting}
 \end{minipage}
 \end{centered}
+
+\begin{wrapfigure}[13]{r}{0.13\textwidth}
+\includegraphics[scale=.68]{graphics/ai-casestudy.pdf}
+\end{wrapfigure}
 
 \noindent
 \lsti{analyze} is defined via \lsti{FRecursion}, and the soundness theorem
