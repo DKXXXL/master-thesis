@@ -1,0 +1,89 @@
+\begin{table}[]
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+  \hline
+   &
+    $i$ &
+    $A_i$ &
+    $A_i'$ &
+    $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ &
+    $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i}{A_i}$ &
+    $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$ \\ \hline
+  Family STLC\_bool &
+    0 &
+     &
+     &
+    $\{\}$ &
+    $\{\}$ &
+    $\InhId$ \\ \hline
+  FInductive tm += &
+    1 &
+    $[]$ &
+    $[]$ &
+    $\{"tm" : \TyS{\wcode{\wsig_1}}\}$ &
+    $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$ &
+    $\InhOv{}{}$ \\ \hline
+  | .. | tm\_false &
+    2 &
+    $["tm" : \cU,$ .. &
+    $["tm" : \cU, ..$ &
+     &
+     &
+     \\ \hline
+   &
+     &
+    $"tm_unit"]$ &
+    $"tm_unit", "tm_true" ]$ &
+     &
+     &
+     \\ \hline
+  FRecursion subst &
+     &
+     &
+     &
+     &
+     &
+     \\ \hline
+  (* Inherit ... *) &
+    $\alpha$ &
+     &
+     &
+    $\RecSig{\wsig_1}{"tm"}$ &
+    $\RecSig{\wsig_1}{"tm"}$ &
+    $\InhId$ \\ \hline
+  Case tm\_true &
+    $\beta$ &
+    $\TyTkg{\RecSig{\wsig_1}{"tm"}}$ &
+    $\TyTkg{\RecSig{\wsig_1}{"tm"}}$ &
+    $\sigma_{\alpha}$ &
+    $\{.. "tm:true": \}$ &
+    $\InhExt{}{}$ \\ \hline
+  End subst &
+    3 &
+    $A_2$ &
+    $A_2'$ &
+    $\{.. subst' : \TyLkg{\lsig_\alpha}\}$ &
+    $\{.. subst' : \TyLkg{\lsig_\beta'}\}$ &
+    $\InhNest{}{}$ \\ \hline
+   &
+    4 &
+    $\TyTkg{\lsig_3}$ &
+    $\TyTkg{\lsig_3'}$ &
+    $\{.. subst : \El{"tm"} \to \mathbb{N} \to ..\}$ &
+    $\{.. subst : \El{"tm"} \to \mathbb{N} \to ..\}$ &
+    $\InhOv{}{}$ \\ \hline
+  (* Inherit t1 *) &
+    5 &
+    $["tm":\cU, $ &
+    $["tm":\cU, $ &
+    $\{.. "t"_1 : \El{"tm"}\}$ &
+    $\{.. "t"_1 : \El{"tm"}\}$ &
+    $\InhInh{}$ \\ \hline
+   &
+     &
+    $.. subst]$ &
+    $.. subst]$ &
+     &
+     &
+     \\ \hline
+  \end{tabular}
+  \end{table}
