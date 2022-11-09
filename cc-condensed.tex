@@ -32,12 +32,12 @@ A second property we prove is canonicity.
 This canonicity theorem says that every closed term of the ground
 type~$\cB$ is convertible to one of the canonical forms $\true$ and~$\false$.
 When canonicity is proved in a constructive meta\-logic, its proof
-amounts to a normalization function for closed terms of the ground type\EDJ{Suggesting use "boolean type". Because natural number type can be also considered ground type in other context (but this theorem on boolean cannot ensure canonicity for nat). We also does specify what is ground type. }.
+amounts to a normalization function for closed terms of the ground type.\EDJ{Suggesting use "boolean type". Because natural number type can be also considered ground type in other context (but this theorem on boolean cannot ensure canonicity for nat). We also does specify what is ground type. }\YZreply{I think it is clear from the context and from the article 'the' that 'the ground type' refers to B.}
 So canonicity serves to justify the computational nature of the type theory.
 
 We prove \cref{thm:canonicity} by constructing a logical-relations model
 for the well-formedness rules, following prior approaches~\cite{coquand2018canonicity,sterling2019algebraic,kaposi2019gluing}.
 In particular, a closed, well formed type $\goodType{\cdot}{T}{}$ is interpreted
 into a logical predicate on closed terms: the predicate includes all
-closed, ``reducible''\EDJ{I will add a it is my bad to introduce "reducible" without defining it first. But my intension is to give a feeling of the dynamic operational semantic for the reader (of course OS is not here in our setting)} terms of type~$T$.
+closed, ``reducible'' terms of type~$T$.\EDJ{I will add a it is my bad to introduce "reducible" without defining it first. But my intension is to give a feeling of the dynamic operational semantic for the reader (of course OS is not here in our setting)}\YZreply{Is there a more accurate way to say things here?}
 The proof is available as a supplemental file in Agda syntax.
