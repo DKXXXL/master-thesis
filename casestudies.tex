@@ -73,24 +73,25 @@ In addition to the metatheories, this case study produces abstract
 interpreters that are directly ready for program extraction in Coq.
 
 The code is organized into four families.
-A base family, \lsti{Imp}, defines the abstract syntax of a while-language
-with pure expressions and impure statements, via \lsti{FInductive}.
-The semantic is formulated as a functional interpreter like a CEK machine\cite{felleisen1986control}, parameterized by a fuel value,
-via \lsti{FRecursion}.
+A base family, \lsti{Imp}, defines via \lsti{FInductive} the abstract
+syntax of a while-language with pure expressions and impure statements.
+The semantics is given by an interpreter defined as a CEK-style abstract
+machine~\cite{felleisen1986control} and parameterized by a fuel value.
+Family \lsti{Imp} defines the interpreter via \lsti{FRecursion}.
 It contains \textasciitilde 200~LOC.
 
-A second family, \lsti{ImpGAI}, extends \lsti{Imp} and contains
+A second family, \lsti{ImpGAI}, extends \lsti{Imp} and uses
 \textasciitilde 550~LOC.
 It exports a generic framework for deriving
-abstract interpreters with partial correctness.
-The soundness theorem of this generic abstract interpreter, \lsti{analyze},
-is with respect to the interpreter, \lsti{eval}, inherited from \lsti{Imp}.
-It states that the abstraction relation \lsti{RState} over a
+abstract interpreters with partial-correctness guarantees.
+Soundness of the abstract interpreter, \lsti{analyze},
+is stated with respect to the interpreter, \lsti{eval}, inherited from \lsti{Imp}.
+The theorem says that the abstraction relation \lsti{RState} over a
 concrete state~\lsti{S} and an abstract state~\lsti{absS} is preserved
 by the analysis:
 
 \begin{centered}
-\begin{minipage}{.86\textwidth}
+\begin{minipage}{.91\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
 \forall stmt fuel S absS, RState S absS -> RState (eval fuel stmt S) (analyze fuel stmt absS)
 \end{lstlisting}
@@ -106,23 +107,26 @@ by the analysis:
 is proved via \lsti{FInduction}.
 This family leaves fields representing the abstract domain, the
 abstraction relation, monotonicity of transfer functions, etc.\ 
-largely unspecified or unproven\EDJ{It is not very relaxed. Currently everything is using a dicionary as memory model and stick with that. The abstract value for each expression is the one *really* unspecified.}---a derived family can instantiate these
-``parameters'' by overriding appropriate fields (and also possibly extend the abstract syntax),
-to create a sound, runnable abstract interpreter for a (possibly extended) while-language.
+largely unspecified or unproven---a derived family can further bind
+these ``parameters'' by overriding appropriate fields (and also possibly
+extend the abstract syntax), to create a sound, runnable abstract
+interpreter for a (possibly extended) while-language.
+%\EDJ{It is not very relaxed. Currently everything is using a dicionary as memory model and stick with that. The abstract value for each expression is the one *really* unspecified.}
 
 The other two families then extend \lsti{ImpGAI}.
 Family \lsti{ImpTI} (\textasciitilde200~LOC) is an abstract
 interpreter that does type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural number arithmetic,
-and instantiates the generic abstract interpreter to perform constant propagation.
+and further binds the generic abstract interpreter to perform constant propagation.
 
 Our implementation of family polymorphism retains the computation
 ability of the host proof assistant;
 the two abstract interpreters in \lsti{ImpTI} and \lsti{ImpCP} are
-directly ready for program extraction to OCaml and put them to test over queries.
+ready for program extraction to OCaml.
+We put them to test over queries.
 
-We note that our plugin cannot yet allow the expression of two abstract
+We note that our plugin cannot yet allow the expression of two derived abstract
 interpreters nested within the same family.
 Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
 to further increase the expressive power of our language design.
