@@ -37,10 +37,9 @@ the common practice is still to copy code and proofs and then modify them in eac
 But having to maintain multiple copies is highly non-modular and
 antithetical to good software engineering.
 %
-The programmer could also turn to design patterns~\cite{delaware2011,delaware2013} that
-use software product lines or Church encodings.
+The programmer could also turn to design patterns and encodings~\cite{delaware2011,delaware2013,schwaab2013modular,keuchel2013generic,forsta2020}.
 But they tend to require heavy lifting from the programmer to make code
-extensible, often leading to non-idiomatic programming styles.
+extensible and often lead to non-idiomatic programming styles.
 
 We thus set out to answer the following question:
 can extensible metatheory mechanization be made easier by
@@ -114,7 +113,8 @@ Specifically, we make the following contributions.
 
 \endgroup
 
-\begin{itemize}[leftmargin=3.5ex]
+\begin{itemize}%[leftmargin=3.5ex]
+    [labelsep=*,leftmargin=1pc,itemsep=3pt]
 
 \item We present a
 %\EDJ{Are you sure? This claim is so bold.}\YZreply{Is there any previous language designs in this space?}\EDJreply{Olivier Boite. 2004. Proof reuse with extended inductive types. In International Conference on Theorem Proving in
@@ -124,7 +124,7 @@ metatheory mechanization in a higher-order, dependent type theory with
 inductive types (\cref{sec:lang-design}).
 The language design reconciles the expressiveness enabled by
 family polymorphism with the rigor of a proof assistant,
-while retaining an idiomatic programming style.
+while largely retaining an idiomatic programming style.
 
 \item We contribute a prototypical implementation of our language
 mechanism as a Coq plugin (\cref{sec:coqimpl}). The plugin works by
@@ -141,8 +141,8 @@ and canonicity.
 \item We present case studies of using our Coq plugin to mechanize
 language metatheories (\cref{sec:casestudies}).
 They show how our language design naturally solves the EP and
-enables a high degree of reuse and extensibility
-for proof engineering.
+enables a good amount of reuse and extensibility
+for mechanizing proofs.
 
 \end{itemize}
 

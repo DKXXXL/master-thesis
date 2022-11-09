@@ -98,18 +98,19 @@ A family-polymorphism design must tame self reference to guarantee consistency.
 
 \noindentparagraph{%
 \headinglabel{C4}{chg:tooling}.\,
-User experience and tooling.%
+User experience and system implementation.%
 }
 
 Interactive theorem proving and tactic programming are central to
-the idiomatic programming experience in a proof assistant.
+a typical programming experience with a proof assistant.
 A language design integrating family polymorphism should be compatible
-with these programming styles.
-In particular, it should be possible in our tool to
+with these forms of programming.
+In particular, it should be possible in our system to
 incrementally navigate through vernacular commands and, moreover, construct proofs
 with common tactics while getting instant feedback on the proof state,
 even in the middle of a family definition.
-In addition, it should remain possible to perform computations on terms that mention families.
+Last but not least, in addition to producing theorems,
+it should be possible for terms defined in families to possess computational content.
 
 \ifShowOldWriting
 
