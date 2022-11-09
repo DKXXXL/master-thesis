@@ -116,11 +116,13 @@ to the context of mechanized proofs.
 %The distinction corresponds to class-based vs.\ object-base family
 %polymorphism as summarized before~\cite{cdnw07-tribe}.
 
-\citet{bac2006} address the expression problem in a functional setting,
-introducing a language mechanism that allows pattern-matching cases to
-be added retroactively in accordance with extensions to variant types.
+\citet{bac2006} address the expression problem for a core subset of Standard~ML
+by combining explicitly coded open recursion with a mechanism that
+allows pattern-matching cases to be defined separately and combined
+later.
 Our \lsti{FRecursion} and \lsti{FInduction} commands achieve a similar
-functionality, with families bestowing additional organizational power.
+functionality, with families making open recursion implicit and
+bestowing organizational power.
 
 
 
