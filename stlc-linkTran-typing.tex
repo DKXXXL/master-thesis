@@ -9,7 +9,7 @@ Surface Syntax          & $i$      & $A_i$             & $A_i'$                 
 \lsti!Family STLC\_bool...! & 0        &                   &                              \\ \cline{2-4} 
 \lsti!FInductive tm +=!     & 1        & $[]$              & $[]$                         \\ \cline{2-4} 
 \lsti!| .. | tm\_true | ..! & 2       & $["tm" : \cU, "tm_var" : id \to \El{"tm"} .. $                          & $["tm" : \cU,  ..$                         \\
-                      &          & $"tm_unit" : \El{"tm"}]$      & $"tm_unit", "tm_true", .. ]$ \\ \cline{2-4} 
+                      &          & $"tm_unit" : \El{"tm"}]$      & $"tm_unit", "tm_true" : \El{"tm"}, .. ]$ \\ \cline{2-4} 
 \lsti!FRecursion subst!     &          &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ &                   &                              \\ \cline{2-4} 
@@ -55,7 +55,7 @@ Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i
 \rowcolor[HTML]{FFFFE6} 
 Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$             \\ \hline
 \lsti!Family STLC\_bool...! & 0        & $\InhId$                                             \\ \cline{2-3} 
-\lsti!FInductive tm +=!     & 1        & $\InhOv{i_1}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
+\lsti!FInductive tm +=!     & 1        & $\InhOv{i_0}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
 \lsti!| .. | tm\_true | ..!  & 2        &                                                      \\
                         &          &                                                      \\ \cline{2-3} 
 \lsti!FRecursion subst!     &          &                                                      \\ \cline{2-3} 
@@ -63,7 +63,7 @@ Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$   
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!Case tm\_true!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
-\lsti!End subst!            & 3        & $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
+\lsti!End subst!            & 3        & $\InhNest{i_1}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
                         & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
 \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
                         &          &                                                      \\ \hline
@@ -78,3 +78,5 @@ When sketching signature $\lsig$, we use curly bracket as a shorthand for signat
 
 
 Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_5}{\lsig_5'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow s_3}{A_3}$ and $\goodTerm{A_4'}{\uparrow s_4}{A_4}$ (omitting debruijn indices here) for checking the compatibility between $A_i$ and $A_i'$.
+
+Note that in our table, the Row 2 only has information of $A_2$ and $A_2'$ (i.e. there is no $\lsig_2$ and $\lsig_2'$). We especially use one row to indicate that $s_2$ and $s_2'$ is ``sealing/abstracting'' $\lsig_1' = \{"tm" : \TyS{\wcode{\wsig_1'}}\}$, into a nested dependent pair of "tm" type and its constructors $A_2' = ["tm" : \cU, "tm_var" : id \to \El{"tm"}, "tm_lam" : id \to \El{"tm"} \to \El{"tm"}, "tm_app" : \El{"tm"} \to \El{"tm"} \to \El{"tm"}]$.
