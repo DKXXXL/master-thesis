@@ -106,16 +106,17 @@ allowing the programmer to write code that has built-in hooks for
 future extensions.
 
 \noindentparagraph{Solutions to the expression problem} abound.
+Almost all solutions involve some form of either explicit or implicit parameterization.
 Our approach is the first that applies family polymorphism~\cite{ernst2001family},
 an idea found in the context of OO programming,
 to the context of mechanized proofs.
-Families in \Lang are second-class, in that they are not considered
-terms by themselves.
-Families as modeled in \TT (namely linkages) are first-class and thus more flexible.\EDJ{A more unified way is to consider Coq's Family (our surface syntax) second class corresponds to Inheritance Judgement/Linkage Transformer (secondclass in type theory). Linkage transformer is the helper function to construct first class linkage easily. Even non-derived (surface syntax) family can be considered in this way because they are just inheritance on empty family.}
-The distinction corresponds to class-based vs.\ object-base family
-polymorphism as summarized before~\cite{cdnw07-tribe}.
+%Families in \Lang are second-class, in that they are not considered
+%terms by themselves.
+%Families as modeled in \TT (namely linkages) are first-class and thus more flexible.\EDJ{A more unified way is to consider Coq's Family (our surface syntax) second class corresponds to Inheritance Judgement/Linkage Transformer (secondclass in type theory). Linkage transformer is the helper function to construct first class linkage easily. Even non-derived (surface syntax) family can be considered in this way because they are just inheritance on empty family.}
+%The distinction corresponds to class-based vs.\ object-base family
+%polymorphism as summarized before~\cite{cdnw07-tribe}.
 
-\citet{bac2006} address the expression problem in a functional language,
+\citet{bac2006} address the expression problem in a functional setting,
 introducing a language mechanism that allows pattern-matching cases to
 be added retroactively in accordance with extensions to variant types.
 Our \lsti{FRecursion} and \lsti{FInduction} commands achieve a similar
