@@ -31,7 +31,7 @@ surface-syntax program     & $i$      & $A_i$             & $A_i'$              
 \begin{tabular}{|l|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
-surface-syntax program & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i'}{A_i'}$ \\ \hline
+surface-syntax program & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{T_i}$ & $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i'}{T_i'}$ \\ \hline
 \lsti!Family STLC_bool...! & 0        & $\{\}$                                   & $\{\}$                                   \\ \cline{2-4} 
 \lsti!FInductive tm +=!     & 1        & $\{"tm" : \TyS{\wcode{\wsig_1}}\}$       & $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$      \\ \cline{2-4} 
 \lsti!| .. | tm_true | ..!  & 2        &                                          &                                          \\
@@ -55,19 +55,19 @@ surface-syntax program & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $
 \begin{tabular}{|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
-surface-syntax program     & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$             \\ \hline
+surface-syntax program     & $i$      & $\goodInh{..}{h_i}{\sigma_i}{\sigma_i'}$             \\ \hline
 \lsti!Family STLC_bool...! & 0        & $\InhId$                                             \\ \cline{2-3} 
-\lsti!FInductive tm +=!     & 1        & $\InhOv{i_0}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
+\lsti!FInductive tm +=!     & 1        & $\InhOv{h_0}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
 \lsti!| .. | tm_true | ..!  & 2        &                                                      \\
                         &          &                                                      \\ \cline{2-3} 
 \lsti!FRecursion subst!     &          &                                                      \\ \cline{2-3} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
 \rowcolor[HTML]{E0D7D7} 
-\lsti!Case tm_true ...!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
-\lsti!End subst!            & 3        & $\InhNest{i_1}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
-                        & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
-\lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
+\lsti!Case tm_true ...!        & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
+\lsti!End subst!            & 3        & $\InhNest{h_1}{h_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
+                        & 4        & $\InhOv{h_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
+\lsti!(* Inherit t1 *)!     & 5        & $\InhInh{h_4}$ with $\uparrow s_4$                   \\
                         &          &                                                      \\ \hline
 \end{tabular}
 \end{centered}
