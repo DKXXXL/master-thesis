@@ -8,17 +8,17 @@
 Surface Syntax          & $i$      & $A_i$             & $A_i'$                       \\ \hline
 \lsti!Family STLC\_bool...! & 0        &                   &                              \\ \cline{2-4} 
 \lsti!FInductive tm +=!     & 1        & $[]$              & $[]$                         \\ \cline{2-4} 
-\lsti!| .. | tm\_true | ..! & 2       & $["tm" : \cU,$ ..                         & $["tm" : \cU, ..$                         \\
-                        &          & $"tm_unit"]$      & $"tm_unit", "tm_true", .. ]$ \\ \cline{2-4} 
+\lsti!| .. | tm\_true | ..! & 2       & $["tm" : \cU, "tm_var" : id \to \El{"tm"} .. $                          & $["tm" : \cU,  ..$                         \\
+                      &          & $"tm_unit" : \El{"tm"}]$      & $"tm_unit", "tm_true", .. ]$ \\ \cline{2-4} 
 \lsti!FRecursion subst!     &          &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!Case tm\_true!       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
 \lsti!End subst!            & 3        & $A_2$             & $A_2'$                       \\ \cline{2-4} 
-                        & 4        & $\TyTkg{\lsig_3}$ & $\TyTkg{\lsig_3'}$           \\ \cline{2-4} 
+                      & 4        & $\TyTkg{\lsig_3}$ & $\TyTkg{\lsig_3'}$           \\ \cline{2-4} 
 \lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
-                       &         & $ \to \El{"tm"} \to \El{"tm"} ]$          & $ \to \El{"tm"} \to \El{"tm"} ]$          \\ \hline
+                      &         & $ \to \El{"tm"} \to \El{"tm"} ]$          & $ \to \El{"tm"} \to \El{"tm"} ]$          \\ \hline
 \end{tabular}
 \end{table}
 
@@ -29,20 +29,20 @@ Surface Syntax          & $i$      & $A_i$             & $A_i'$                 
 \begin{tabular}{|l|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
-Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i}{A_i}$ \\ \hline
+Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i'}{A_i'}$ \\ \hline
 \lsti!Family STLC\_bool...! & 0        & $\{\}$                                   & $\{\}$                                   \\ \cline{2-4} 
 \lsti!FInductive tm +=!     & 1        & $\{"tm" : \TyS{\wcode{\wsig_1}}\}$       & $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$      \\ \cline{2-4} 
 \lsti!| .. | tm\_true | ..!  & 2        &                                          &                                          \\
-                        &          &                                          &                                          \\ \cline{2-4} 
+                      &          &                                          &                                          \\ \cline{2-4} 
 \lsti!FRecursion subst!     &          &                                          &                                          \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                 & $\RecSig{\wsig_1}{"tm"}$                 \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!Case tm\_true!        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
 \lsti!End subst!            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & $\{.. subst' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
-                        & 4        & $\{.. subst : \El{"tm"} \to id \to ..\}$ & $\{.. subst : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
+                      & 4        & $\{.. subst : \El{"tm"} \to id \to ..\}$ & $\{.. subst : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
 \lsti!(* Inherit t1 *)!     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
-                        &          &                                          &                                          \\ \hline
+                      &          &                                          &                                          \\ \hline
 \end{tabular}
 \end{table}
 
@@ -50,22 +50,31 @@ Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{table}[]
-  \begin{tabular}{|l|l|l|}
-  \hline
-  \rowcolor[HTML]{FFFFE6} 
-  Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$             \\ \hline
-  \lsti!Family STLC\_bool...! & 0        & $\InhId$                                             \\ \cline{2-3} 
-  \lsti!FInductive tm +=!     & 1        & $\InhOv{i_1}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
-  \lsti!| .. | tm\_true | ..!  & 2        &                                                      \\
-                          &          &                                                      \\ \cline{2-3} 
-  \lsti!FRecursion subst!     &          &                                                      \\ \cline{2-3} 
-  \rowcolor[HTML]{E0D7D7} 
-  \lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
-  \rowcolor[HTML]{E0D7D7} 
-  \lsti!Case tm\_true!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
-  \lsti!End subst!            & 3        & $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
-                          & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
-  \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
-                          &          &                                                      \\ \hline
-  \end{tabular}
-  \end{table}
+\begin{tabular}{|l|l|l|}
+\hline
+\rowcolor[HTML]{FFFFE6} 
+Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$             \\ \hline
+\lsti!Family STLC\_bool...! & 0        & $\InhId$                                             \\ \cline{2-3} 
+\lsti!FInductive tm +=!     & 1        & $\InhOv{i_1}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
+\lsti!| .. | tm\_true | ..!  & 2        &                                                      \\
+                        &          &                                                      \\ \cline{2-3} 
+\lsti!FRecursion subst!     &          &                                                      \\ \cline{2-3} 
+\rowcolor[HTML]{E0D7D7} 
+\lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
+\rowcolor[HTML]{E0D7D7} 
+\lsti!Case tm\_true!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
+\lsti!End subst!            & 3        & $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
+                        & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
+\lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
+                        &          &                                                      \\ \hline
+\end{tabular}
+\end{table}
+
+We take "Family STLC_bool" extending "STLC" as an example. We list out the surface syntax and their translation in out \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. 
+
+Before we sketch out the signature, we need to specify \textit{the sealing premise} $s$ in \ruleref{lsig/add}. However, we omit $s$ as the information of $A$ is enough to specify $s$.
+
+When sketching signature $\lsig$, we use curly bracket as a shorthand for signature and square bracket as a shorthand for (deeply) nested sigma type (usually used in the case of $\TyTkg{\cdot}$). Because every $\lsig_i$ is always constructed from $\lsig_{i-1}$ so in the figure we omit the previous fields in each signature.  The only exceptions are the rows indexed by $\alpha$ and $\beta$. These two rows are describing a nested family for case handlers, and $\lsig_\beta$ is constructed by $\lsig_\alpha$. 
+
+
+Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_5}{\lsig_5'}$ using the four constructors. There are two upcasting operations required $\goodTerm{A_3'}{\uparrow s_3}{A_3}$ and $\goodTerm{A_4'}{\uparrow s_4}{A_4}$ (omitting debruijn indices here) for checking the compatibility between $A_i$ and $A_i'$.
