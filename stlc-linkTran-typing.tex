@@ -1,7 +1,9 @@
+In this appendix, we ...
+
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
-\begin{table}[]
+\begin{centered}
 \begin{tabular}{|l|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
@@ -20,12 +22,12 @@ surface-syntax program     & $i$      & $A_i$             & $A_i'$              
 \lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
                       &         & $ \to \El{"tm"} \to \El{"tm"} ]$          & $ \to \El{"tm"} \to \El{"tm"} ]$          \\ \hline
 \end{tabular}
-\end{table}
+\end{centered}
 
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
-\begin{table}[]
+\begin{centered}
 \begin{tabular}{|l|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
@@ -44,12 +46,12 @@ surface-syntax program & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $
 \lsti!(* Inherit t1 *)!     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
                       &          &                                          &                                          \\ \hline
 \end{tabular}
-\end{table}
+\end{centered}
 
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
-\begin{table}[]
+\begin{centered}
 \begin{tabular}{|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFFE6} 
@@ -68,9 +70,9 @@ surface-syntax program     & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$
 \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
                         &          &                                                      \\ \hline
 \end{tabular}
-\end{table}
+\end{centered}
 
-We take "Family STLC_bool" extending "STLC" as an example. We list out the surface syntax and their translation in out \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. 
+We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example. We list out the surface syntax and their translation into \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. 
 
 Before we sketch out the signature, we need to specify \textit{the sealing premise} $s$ in \ruleref{lsig/add}. However, we omit $s$ as the information of $A$ is enough to specify $s$.
 
