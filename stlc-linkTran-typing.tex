@@ -19,7 +19,7 @@ surface-syntax program     & $i$      & $A_i$             & $A_i'$              
 \lsti!Case tm_true ...!       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
 \lsti!End subst!            & 3        & $A_2$             & $A_2'$                       \\ \cline{2-4} 
                       & 4        & $\TyTkg{\lsig_3}$ & $\TyTkg{\lsig_3'}$           \\ \cline{2-4} 
-\lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
+\lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. "subst" : \El{"tm"} \to id $ & $["tm":\cU, .. "subst" : \El{"tm"} \to id $ \\
                       &         & $ \to \El{"tm"} \to \El{"tm"} ]$          & $ \to \El{"tm"} \to \El{"tm"} ]$          \\ \hline
 \end{tabular}
 \end{centered}
@@ -41,8 +41,8 @@ surface-syntax program & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{T_i}$ & $
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                 & $\RecSig{\wsig_1}{"tm"}$                 \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!Case tm_true ...!        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
-\lsti!End subst!            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & $\{.. subst' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
-                      & 4        & $\{.. subst : \El{"tm"} \to id \to ..\}$ & $\{.. subst : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
+\lsti!End subst!            & 3        & $\{.. "subst'" : \TyLkg{\lsig_\alpha}\}$   & $\{.. "subst"' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
+                      & 4        & $\{.. "subst" : \El{"tm"} \to id \to ..\}$ & $\{.. "subst" : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
 \lsti!(* Inherit t1 *)!     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
                       &          &                                          &                                          \\ \hline
 \end{tabular}
@@ -66,7 +66,7 @@ surface-syntax program     & $i$      & $\goodInh{..}{h_i}{\sigma_i}{\sigma_i'}$
 \rowcolor[HTML]{E0D7D7} 
 \lsti!Case tm_true ...!        & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
 \lsti!End subst!            & 3        & $\InhNest{h_1}{h_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
-                        & 4        & $\InhOv{h_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
+                        & 4        & $\InhOv{h_3}{\lambda t. \Wrec{\wsig_1'}{t}{"subst'"}}$ \\ \cline{2-3} 
 \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{h_4}$ with $\uparrow s_4$                   \\
                         &          &                                                      \\ \hline
 \end{tabular}
