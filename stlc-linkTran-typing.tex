@@ -14,7 +14,7 @@ Surface Syntax          & $i$      & $A_i$             & $A_i'$                 
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-\lsti!Case tm\_true!       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
+\lsti!Case tm\_true ...!       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
 \lsti!End subst!            & 3        & $A_2$             & $A_2'$                       \\ \cline{2-4} 
                       & 4        & $\TyTkg{\lsig_3}$ & $\TyTkg{\lsig_3'}$           \\ \cline{2-4} 
 \lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
@@ -38,7 +38,7 @@ Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                 & $\RecSig{\wsig_1}{"tm"}$                 \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-\lsti!Case tm\_true!        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
+\lsti!Case tm\_true ...!        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
 \lsti!End subst!            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & $\{.. subst' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
                       & 4        & $\{.. subst : \El{"tm"} \to id \to ..\}$ & $\{.. subst : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
 \lsti!(* Inherit t1 *)!     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
@@ -62,7 +62,7 @@ Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$   
 \rowcolor[HTML]{E0D7D7} 
 \lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
 \rowcolor[HTML]{E0D7D7} 
-\lsti!Case tm\_true!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
+\lsti!Case tm\_true ...!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
 \lsti!End subst!            & 3        & $\InhNest{i_1}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
                         & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
 \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
