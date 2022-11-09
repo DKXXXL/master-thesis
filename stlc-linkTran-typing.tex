@@ -6,18 +6,18 @@
 \hline
 \rowcolor[HTML]{FFFFE6} 
 Surface Syntax          & $i$      & $A_i$             & $A_i'$                       \\ \hline
-***Family STLC\_bool... & 0        &                   &                              \\ \cline{2-4} 
-***FInductive tm +=     & 1        & $[]$              & $[]$                         \\ \cline{2-4} 
-*** .. | tm\_true | .. & 2       & $["tm" : \cU,$ ..                         & $["tm" : \cU, ..$                         \\
+\lsti!Family STLC\_bool...! & 0        &                   &                              \\ \cline{2-4} 
+\lsti!FInductive tm +=!     & 1        & $[]$              & $[]$                         \\ \cline{2-4} 
+\lsti!| .. | tm\_true | ..! & 2       & $["tm" : \cU,$ ..                         & $["tm" : \cU, ..$                         \\
                         &          & $"tm_unit"]$      & $"tm_unit", "tm_true", .. ]$ \\ \cline{2-4} 
-FRecursion subst***     &          &                   &                              \\ \cline{2-4} 
+\lsti!FRecursion subst!     &          &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-(* Inherit ... *)***    & $\alpha$ &                   &                              \\ \cline{2-4} 
+\lsti!(* Inherit ... *)!    & $\alpha$ &                   &                              \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-Case tm\_true***       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
-End subst***            & 3        & $A_2$             & $A_2'$                       \\ \cline{2-4} 
+\lsti!Case tm\_true!       & $\beta$ & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          & $\TyTkg{\RecSig{\wsig_1}{"tm"}}$          \\ \cline{2-4} 
+\lsti!End subst!            & 3        & $A_2$             & $A_2'$                       \\ \cline{2-4} 
                         & 4        & $\TyTkg{\lsig_3}$ & $\TyTkg{\lsig_3'}$           \\ \cline{2-4} 
-(* Inherit t1 *)***    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
+\lsti!(* Inherit t1 *)!    & 5       & $["tm":\cU, .. subst : \El{"tm"} \to id $ & $["tm":\cU, .. subst : \El{"tm"} \to id $ \\
                        &         & $ \to \El{"tm"} \to \El{"tm"} ]$          & $ \to \El{"tm"} \to \El{"tm"} ]$          \\ \hline
 \end{tabular}
 \end{table}
@@ -30,18 +30,18 @@ End subst***            & 3        & $A_2$             & $A_2'$                 
 \hline
 \rowcolor[HTML]{FFFFE6} 
 Surface Syntax & $i$ & $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ & $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i}{A_i}$ \\ \hline
-***Family STLC\_bool... & 0        & $\{\}$                                   & $\{\}$                                   \\ \cline{2-4} 
-***FInductive tm +=     & 1        & $\{"tm" : \TyS{\wcode{\wsig_1}}\}$       & $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$      \\ \cline{2-4} 
-*** .. | tm\_true | ..  & 2        &                                          &                                          \\
+\lsti!Family STLC\_bool...! & 0        & $\{\}$                                   & $\{\}$                                   \\ \cline{2-4} 
+\lsti!FInductive tm +=!     & 1        & $\{"tm" : \TyS{\wcode{\wsig_1}}\}$       & $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$      \\ \cline{2-4} 
+\lsti!| .. | tm\_true | ..!  & 2        &                                          &                                          \\
                         &          &                                          &                                          \\ \cline{2-4} 
-FRecursion subst***     &          &                                          &                                          \\ \cline{2-4} 
+\lsti!FRecursion subst!     &          &                                          &                                          \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-(* Inherit ... *)***    & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                 & $\RecSig{\wsig_1}{"tm"}$                 \\ \cline{2-4} 
+\lsti!(* Inherit ... *)!    & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                 & $\RecSig{\wsig_1}{"tm"}$                 \\ \cline{2-4} 
 \rowcolor[HTML]{E0D7D7} 
-Case tm\_true***        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
-End subst***            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & $\{.. subst' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
+\lsti!Case tm\_true!        & $\beta$  & $\sigma_{\alpha}$                        & $\{.. "tm:true": \}$                     \\ \cline{2-4} 
+\lsti!End subst!            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & $\{.. subst' : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
                         & 4        & $\{.. subst : \El{"tm"} \to id \to ..\}$ & $\{.. subst : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
-(* Inherit t1 *)***     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
+\lsti!(* Inherit t1 *)!     & 5        & $\{.. "t"_1 : \El{"tm"}\}$               & $\{.. "t"_1 : \El{"tm"}\}$               \\
                         &          &                                          &                                          \\ \hline
 \end{tabular}
 \end{table}
@@ -54,18 +54,18 @@ End subst***            & 3        & $\{.. subst' : \TyLkg{\lsig_\alpha}\}$   & 
   \hline
   \rowcolor[HTML]{FFFFE6} 
   Surface Syntax          & $i$      & $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$             \\ \hline
-  ***Family STLC\_bool... & 0        & $\InhId$                                             \\ \cline{2-3} 
-  ***FInductive tm +=     & 1        & $\InhOv{i_1}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
-  *** .. | tm\_true | ..  & 2        &                                                      \\
+  \lsti!Family STLC\_bool...! & 0        & $\InhId$                                             \\ \cline{2-3} 
+  \lsti!FInductive tm +=!     & 1        & $\InhOv{i_1}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
+  \lsti!| .. | tm\_true | ..!  & 2        &                                                      \\
                           &          &                                                      \\ \cline{2-3} 
-  FRecursion subst***     &          &                                                      \\ \cline{2-3} 
+  \lsti!FRecursion subst!     &          &                                                      \\ \cline{2-3} 
   \rowcolor[HTML]{E0D7D7} 
-  (* Inherit ... *)***    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
+  \lsti!(* Inherit ... *)!    & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
   \rowcolor[HTML]{E0D7D7} 
-  Case tm\_true***        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
-  End subst***            & 3        & $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
+  \lsti!Case tm\_true!        & $\beta$  & $\InhExt{i_\alpha}{..}$                              \\ \cline{2-3} 
+  \lsti!End subst!            & 3        & $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
                           & 4        & $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
-  (* Inherit t1 *)***     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
+  \lsti!(* Inherit t1 *)!     & 5        & $\InhInh{i_4}$ with $\uparrow s_4$                   \\
                           &          &                                                      \\ \hline
   \end{tabular}
   \end{table}
