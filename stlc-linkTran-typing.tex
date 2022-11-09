@@ -8,16 +8,16 @@ In this appendix, we ...
   \hline
   \rowcolor[HTML]{FFFC9E} 
   surface syntax of program & $i$ & $\lsig_i = \LSigAdd{\lsig_{i-1}}{s_i}{T_i}$ & $\lsig_i' = \LSigAdd{\lsig_{i-1}'}{s_i}{T_i}$ \\ \hline
-  \lsti!Family STLC\_bool...!   & 0        & $\{\}$                                     & $\{\}$                                     \\ \cline{2-4} 
+  \lsti!Family STLC_bool...!   & 0        & $\{\}$                                     & $\{\}$                                     \\ \cline{2-4} 
   \lsti!FInductive tm += !      & 1        & $\{"tm" : \TyS{\wcode{\wsig_1}}\}$         & $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$        \\ \cline{2-4} 
-  \lsti! (*earlier constr*)!    & 2        & $\{..; "tm_var": \El{"tm"}, .. \}$         & $\{..;"tm_var": \El{"tm"},.. \}$           \\ \cline{2-4} 
-  \lsti! .. | tm\_true | .. !   & 3        & $\lsig_2$                                  & $\{..,"tm_true":\El{"tm"} \}$              \\ \cline{2-4} 
+  \lsti! (*existent constr*)!    & 2        & $\{..; "tm_var": \El{"tm"}, .. \}$         & $\{..;"tm_var": \El{"tm"},.. \}$           \\ \cline{2-4} 
+  \lsti! .. | tm_true | .. !   & 3        & $\lsig_2$                                  & $\{..,"tm_true":\El{"tm"} \}$              \\ \cline{2-4} 
   \rowcolor[HTML]{CDCDCD} 
   \lsti!  FRecursion subst!       &          &                                            &                                            \\ \cline{2-4} 
   \rowcolor[HTML]{CDCDCD} 
   \lsti!  (* Inherit ... *)!      & $\alpha$ & $\RecSig{\wsig_1}{"tm"}$                   & $\RecSig{\wsig_1}{"tm"}$                   \\ \cline{2-4} 
   \rowcolor[HTML]{CDCDCD} 
-  \lsti!  Case tm\_true!          & $\beta$  & $\lsig_{\alpha}$                          & $\{.. "tm:true": \}$                       \\ \cline{2-4} 
+  \lsti!  Case tm_true!          & $\beta$  & $\lsig_{\alpha}$                          & $\{.. "tm:true": \}$                       \\ \cline{2-4} 
   \rowcolor[HTML]{FFFFFF} 
   \lsti!  End subst!              & 4        & $\{.. "subst'" : \TyLkg{\lsig_\alpha}\}$   & $\{.. "subst'" : \TyLkg{\lsig_\beta'}\}$   \\ \cline{2-4} 
                             & 5        & $\{.. "subst" : \El{"tm"} \to id \to ..\}$ & $\{.. "subst" : \El{"tm"} \to id \to ..\}$ \\ \cline{2-4} 
@@ -35,21 +35,21 @@ In this appendix, we ...
 \hline
 \rowcolor[HTML]{FFFC9E} 
 surface syntax of program & $i$      & $\goodInh{..}{h_i}{\lsig_i}{\lsig_i'}$             \\ \hline
-\lsti!Family STLC\_bool!   & 0        & $\InhId$                                             \\ \cline{2-3} 
+\lsti!Family STLC_bool!   & 0        & $\InhId$                                             \\ \cline{2-3} 
 \lsti!FInductive tm += !       & 1        & $\InhOv{h_0}{\wcode{\wsig_1'}}$                      \\ \cline{2-3} 
-\lsti! (*earlier constr*) !   & 2        & $\InhOv{h_1}{\Wsup{\wsig_1'}{\top}{\bot}}$           \\ \cline{2-3} 
-\lsti! .. | tm\_true | ..!    & 3        & $\InhExt{h_2}{\Wsup{\wsig_1'}{\top}{\bot}}$          \\ \cline{2-3} 
+\lsti! (*existent constr*) !   & 2        & $\InhOv{h_1}{\Wsup{\wsig_1'}{\top}{\bot}}$           \\ \cline{2-3} 
+\lsti! .. | tm_true | ..!    & 3        & $\InhExt{h_2}{\Wsup{\wsig_1'}{\top}{\bot}}$          \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
 \lsti!  FRecursion subst!       &          &                                                      \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
 \lsti!  (* Inherit ... *)!      & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
-\lsti!  Case tm\_true!          & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
+\lsti!  Case tm_true!          & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
 \rowcolor[HTML]{FFFFFF} 
 \lsti!  End subst!              & 4        & $\InhNest{h_3}{h_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
-                          & 5        & $\InhOv{h_4}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \cline{2-3} 
+                          & 5        & $\InhOv{h_4}{\lambda t. \Wrec{\wsig_1'}{t}{"subst'"}}$ \\ \cline{2-3} 
 \lsti!(* Do the same on ty*)! & 6        & ...                                                  \\ \cline{2-3} 
-\lsti!(* Inherit env *)!      & 7        & $\InhInh{h_6}$ with $\uparrow s_4$                   \\ \hline
+\lsti!(* Inherit env *)!      & 7        & $\InhInh{h_6}$ with $\uparrow s_6$                   \\ \hline
 \end{tabular}
 \end{centered}
 
@@ -57,9 +57,7 @@ surface syntax of program & $i$      & $\goodInh{..}{h_i}{\lsig_i}{\lsig_i'}$   
 We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example. We list out the surface syntax and their translation into \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. We omit the information for $s_i$ and $A_i$
 
 
-When sketching signature $\lsig$, we use curly bracket as a shorthand for signature. Because every $\lsig_i$ is always constructed from $\lsig_{i-1}$ so in the figure we omit the previous fields in each signature.  One exception are the rows indexed by $\alpha$ and $\beta$. These two rows are describing a nested family for case handlers, and $\lsig_\beta$ is based on $\lsig_\alpha$. The other exception is $\lsig_3$
+When sketching signature $\lsig$, we use curly bracket as a shorthand for signature. Because every $\lsig_i$ is always constructed from $\lsig_{i-1}$ so in the figure we omit the previous fields in each signature.  One exception are the rows indexed by $\alpha$ and $\beta$. These two rows are describing a nested family for case handlers, and $\lsig_\beta$ is based on $\lsig_\alpha$. The other exception is $\lsig_3$, which is directly $\lsig_2$ since the parent doesn't have those new constructor. Note for $\lsig_2$ and $\lsig_2'$, there are actually multiple constructors inserted into the signature (e.g. "tm_lam" and "tm_app") which we omitted here.
 
 
-Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_7}{\lsig_7'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow s_3}{A_3}$ and $\goodTerm{A_4'}{\uparrow s_4}{A_4}$ (omitting debruijn indices here) for checking the compatibility between $A_i$ and $A_i'$.
-
-Note that in our table, the Row 2 only has information of $A_2$ and $A_2'$ (i.e. there is no $\lsig_2$ or $\lsig_2'$). We especially use one row to indicate that $s_2$ and $s_2'$ is ``sealing/abstracting'' $\lsig_1' = \{"tm" : \TyS{\wcode{\wsig_1'}}\}$, into a nested dependent pair of "tm" type and its constructors $A_2' = ["tm" : \cU, "tm_var" : id \to \El{"tm"}, "tm_lam" : id \to \El{"tm"} \to \El{"tm"}, "tm_app" : \El{"tm"} \to \El{"tm"} \to \El{"tm"}, "tm_true" : \El{"tm"}, "tm_false" : \El{"tm"}]$.
+Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_7}{\lsig_7'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow s_3}{A_3}$ and $\goodTerm{A_6'}{\uparrow s_6}{A_6}$ (omitting debruijn indices here) for checking the compatibility between the omitted $A_i$ and $A_i'$.
