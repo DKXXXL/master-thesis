@@ -1,3 +1,6 @@
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{table}[]
   \begin{tabular}{|l|l|l|l|l|l|l|}
   \hline
@@ -8,27 +11,27 @@
     $\sigma_i = \LSigAdd{\sigma_{i-1}}{s_i}{A_i}$ &
     $\sigma_i' = \LSigAdd{\sigma_{i-1}'}{s_i}{A_i}$ &
     $\goodInh{..}{i_i}{\sigma_i}{\sigma_i'}$ \\ \hline
-  Family STLC\_bool &
+  ***Family STLC\_bool... &
     0 &
      &
      &
     $\{\}$ &
     $\{\}$ &
     $\InhId$ \\ \hline
-  FInductive tm += &
+  ***FInductive tm += &
     1 &
     $[]$ &
     $[]$ &
     $\{"tm" : \TyS{\wcode{\wsig_1}}\}$ &
     $\{"tm" : \TyS{\wcode{\wsig_1'}}\}$ &
-    $\InhOv{}{}$ \\ \hline
-  | .. | tm\_false &
+    $\InhOv{i_1}{\wcode{\wsig_1'}}$ \\ \hline
+  ***| .. | tmfalse &
     2 &
     $["tm" : \cU,$ .. &
     $["tm" : \cU, ..$ &
      &
      &
-     \\ \hline
+     \\
    &
      &
     $"tm_unit"]$ &
@@ -36,48 +39,50 @@
      &
      &
      \\ \hline
-  FRecursion subst &
+  FRecursion subst*** &
      &
      &
      &
      &
      &
      \\ \hline
-  (* Inherit ... *) &
+  \rowcolor[HTML]{E0D7D7} 
+  (* Inherit ... *)*** &
     $\alpha$ &
      &
      &
     $\RecSig{\wsig_1}{"tm"}$ &
     $\RecSig{\wsig_1}{"tm"}$ &
     $\InhId$ \\ \hline
-  Case tm\_true &
+  \rowcolor[HTML]{E0D7D7} 
+  Case tm\_true*** &
     $\beta$ &
     $\TyTkg{\RecSig{\wsig_1}{"tm"}}$ &
     $\TyTkg{\RecSig{\wsig_1}{"tm"}}$ &
     $\sigma_{\alpha}$ &
     $\{.. "tm:true": \}$ &
-    $\InhExt{}{}$ \\ \hline
-  End subst &
+    $\InhExt{i_\alpha}{..}$ \\ \hline
+  End subst*** &
     3 &
     $A_2$ &
     $A_2'$ &
     $\{.. subst' : \TyLkg{\lsig_\alpha}\}$ &
     $\{.. subst' : \TyLkg{\lsig_\beta'}\}$ &
-    $\InhNest{}{}$ \\ \hline
+    $\InhNest{i_2}{i_\beta}$ with $\uparrow s_3$ \\ \hline
    &
     4 &
     $\TyTkg{\lsig_3}$ &
     $\TyTkg{\lsig_3'}$ &
     $\{.. subst : \El{"tm"} \to id \to ..\}$ &
     $\{.. subst : \El{"tm"} \to id \to ..\}$ &
-    $\InhOv{}{}$ \\ \hline
-  (* Inherit t1 *) &
+    $\InhOv{i_3}{\lambda t. \Wrec{\wsig_1'}{t}{subst'}}$ \\ \hline
+  (* Inherit t1 *)*** &
     5 &
     $["tm":\cU, .. subst : \El("tm") \to id $ &
     $["tm":\cU, .. subst : \El("tm") \to id $ &
     $\{.. "t"_1 : \El{"tm"}\}$ &
     $\{.. "t"_1 : \El{"tm"}\}$ &
-    $\InhInh{}$ \\ \hline
+    $\InhInh{i_4}$ with $\uparrow s_4$ \\
    &
      &
     $ \to \El(tm) \to \El(tm) ]$ &
