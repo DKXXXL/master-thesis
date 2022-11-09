@@ -320,10 +320,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodSub{\Gm}{\gm}{\Theta}}
 {\goodWSig{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
 \\ \goodWSig{\Gm}{\sub{\WSigAdd{\wsig}{A}{B}}{\gm} \equiv \WSigAdd{\sub{\wsig}{\gm}}{\sub{A}{\gm}}{\sub{B}{\gm^\uparrow}} }{n+1}
-\\\\ \goodType{\Gm}{\sub{\wsigproj{j}{1}{\wsig}}{\gm} \equiv \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{i} 
+\\ \goodType{\Gm}{\sub{\wsigproj{j}{1}{\wsig}}{\gm} \equiv \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{i} 
 \\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
 }
- 
+\\
 \Rule[name=tm/wcode]
 {\goodWSig{\Gm}{\wsig}{n}}
 {\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
