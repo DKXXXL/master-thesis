@@ -7,7 +7,7 @@ In this appendix, we ...
 \begin{tabular}{|l|l|l|l|}
   \hline
   \rowcolor[HTML]{FFFC9E} 
-  surface syntax of program & $i$ & $\lsig_i = \LSigAdd{\lsig_{i-1}}{s_i}{T_i}$ & $\lsig_i' = \LSigAdd{\lsig_{i-1}'}{s_i}{T_i}$ \\ \hline
+  surface syntax of program & $i$ & $\lsig_i = \LSigAdd{\lsig_{i-1}}{s_i}{T_i}$ & $\lsig_i' = \LSigAdd{\lsig_{i-1}'}{s_i'}{T_i'}$ \\ \hline
   \lsti!Family STLC_bool...!   & 0        & $\{\}$                                     & $\{\}$                                     \\ \cline{2-4} 
   \lsti!FInductive tm += !      & 1        & $\{"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}}}\}$         & $\{"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}'}}\}$        \\ \cline{2-4} 
   \lsti! (*existent constr*)!    & 2        & $\{..; "tm_var": \El{"tm"}, .. \}$         & $\{..;"tm_var": \El{"tm"},.. \}$           \\ \cline{2-4} 

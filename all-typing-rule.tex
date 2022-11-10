@@ -513,29 +513,32 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 }
 
 \end{mathparpagebreakable}
-\begin{mathparpagebreakable}
-\judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
-= [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
-\\
-\Rule[name=seal/subst]
-{ \goodSeal{\Delta}{s}{\lsig}{A}
-  \\ {\goodSub{\Gm}{\gm}{\Delta}}}
-{\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
-\coloneq
-\boxed{
-\frac
-{ \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
-  \\  \goodSub{\Gm}{\gm}{\Delta}  }
-{\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}}
-\\
-\\
-\Rule[name=seal/id]
-{}
-{\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
-\coloneq \boxed{\goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}}
-\\
 
-\medskip
+% \begin{mathparpagebreakable}
+% \judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
+% = [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
+% \\
+% \Rule[name=seal/subst]
+% { \goodSeal{\Delta}{s}{\lsig}{A}
+%   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
+% {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
+% \coloneq
+% \boxed{
+% \frac
+% { \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
+%   \\  \goodSub{\Gm}{\gm}{\Delta}  }
+% {\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}}
+% \\
+% \\
+% \Rule[name=seal/id]
+% {}
+% {\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
+% \coloneq \boxed{\goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}}
+% \\
+
+% \end{mathparpagebreakable}
+
+\begin{mathparpagebreakable}
 
 
 \\
