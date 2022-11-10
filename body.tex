@@ -55,6 +55,8 @@
 \bibliographystyle{tex-macros/ACM-Reference-Format.bst}
 \bibliography{refs.bib}
 
+\ifreport
+
 \appendix
 
 \newpage
@@ -73,13 +75,12 @@
 \label{sec:agda-files}
 \input{agda-files.tex}
 
-\if 0
-\section{Metatheory, in detail}
-\label{sec:metatheory}
-\input{metatheory.tex}
-
-\section{Example in Metatheory}
-\label{sec:coqexample}
-\input{coq-example.tex}
+%\section{Metatheory, in detail}
+%\label{sec:metatheory}
+%\input{metatheory.tex}
+%
+%\section{Example in Metatheory}
+%\label{sec:coqexample}
+%\input{coq-example.tex}
 
 \fi
