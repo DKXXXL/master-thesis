@@ -347,7 +347,7 @@ annotation is required.
 Families can be readily reused to construct larger extensions that
 \emph{mix in}~\cite{mixin-1990} the functionalities of the individual
 families.
-A family like \lsti{STLCFix} can be viewed as a family-to-family functor---%
+A family like \lsti{STLCFix} can be viewed as a family-to-family functor\EDJ{The reader might be confused why look at them as functor, as the parent seems unchanged. One insight is that the parent of nested family, in Zhang OOPSLA 2017, is late-bound. Thus it has to be a functor. }---%
 and hence a mixin, in the sense of \cite{flatt1998mixin}---that
 transforms any family providing the base STLC functionalities into a new
 family additionally supporting fixpoints.
@@ -360,7 +360,7 @@ The family is declared with minimal verbiage, yet
 theorem of an STLC equipped with fixpoints and iso-recursive types.
 
 Mixin composition is a form of multiple inheritance, which may lead to
-name conflicts in general.
+name conflicts in general.\EDJ{Only name conflicts on overridable fields can be resolved like this. Name/definition conflicts for normal fields cannot be resolved (cannot be mixed in). }
 \Lang requires the programmer to resolve conflicts by
 explicitly overriding conflicted fields.
 
