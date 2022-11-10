@@ -43,9 +43,9 @@ no recompilation is needed because \lsti{self.ty} is not tied to any
 concrete definition of \lsti{ty}.
 
 The type of \lsti{STLC\_env}'s \lsti{self} parameter is \lsti{STLC\_env\_Ctx},
-a module type constructed from \lsti{STLC\_ty}, 
-the translation of the field before \lsti{env},
-and its context \lsti{STLC\_ty\_Ctx}\EDJ{Why I see in the figure there are only two includes, i.e. only stlcty and stlctyctx}.
+a module type constructed from \lsti{STLC\_ty}
+(i.e., the translation of the field before \lsti{env})
+and its context \lsti{STLC\_ty\_Ctx}.
 In turn, \lsti{STLC\_ty\_Ctx} (not shown in \cref{fig:stlc-compiled}) is
 constructed from \lsti{STLC\_subst},
 the translation of the field before \lsti{ty},
