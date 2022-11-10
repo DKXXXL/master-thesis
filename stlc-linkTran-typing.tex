@@ -46,10 +46,10 @@ surface syntax of program & $i$      & $\goodInh{..}{h_i}{\lsig_i}{\lsig_i'}$   
 \rowcolor[HTML]{CDCDCD} 
 \lsti!  Case tm_true!          & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
 \rowcolor[HTML]{FFFFFF} 
-\lsti!  End subst!              & 4        & $\InhNest{h_3}{h_\beta}$ with $\uparrow s_3$         \\ \cline{2-3} 
+\lsti!  End subst!              & 4        & $\InhNest{h_3}{h_\beta}$ with $\uparrow^s_3$         \\ \cline{2-3} 
                           & 5        & $\InhOv{h_4}{\lambda t. \Wrec{\wsig_{\texttt{tm}}'}{t}{"subst'"}}$ \\ \cline{2-3} 
 \lsti!(* Do the same on ty*)! & 6        & ...                                                  \\ \cline{2-3} 
-\lsti!(* Inherit env *)!      & 7        & $\InhInh{h_6}$ with $\uparrow s_6$                   \\ \hline
+\lsti!(* Inherit env *)!      & 7        & $\InhInh{h_6}$ with $\uparrow^s_6$                   \\ \hline
 \end{tabular}
 \end{centered}
 
@@ -60,4 +60,4 @@ We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example. We list out
 When sketching signature $\lsig$, we use curly bracket as a shorthand for signature. Because every $\lsig_i$ is always constructed from $\lsig_{i-1}$ so in the figure we omit the previous fields in each signature.  One exception are the rows indexed by $\alpha$ and $\beta$. These two rows are describing a nested family for case handlers, and $\lsig_\beta'$ is based on $\lsig_\alpha'$ and $\lsig_\beta = \lsig_\alpha$. The other exception is $\lsig_3$, which is directly $\lsig_2$ since the parent doesn't have those new constructor. Note for $\lsig_2$ and $\lsig_2'$, there are actually multiple constructors inserted into the signature (e.g. "tm_lam" and "tm_app") which we omitted here.
 
 
-Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_7}{\lsig_7'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow s_3}{A_3}$ and $\goodTerm{A_6'}{\uparrow s_6}{A_6}$ (omitting debruijn indices here) for checking the compatibility between the omitted $A_i$ and $A_i'$.
+Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_7}{\lsig_7'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow^s_3}{A_3}$ and $\goodTerm{A_6'}{\uparrow^s_6}{A_6}$ (omitting debruijn indices here) for checking the compatibility between the omitted $A_i$ and $A_i'$.
