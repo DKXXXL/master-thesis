@@ -54,6 +54,16 @@ associated with an inductive type.
 For example, if "tm" were defined as an ordinary inductive type, then
 its eliminator would have the following type:
 
+%\begin{centered}
+%\begin{minipage}{.995\textwidth}
+%\newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
+%\begin{lstlisting}[basicstyle=\fontsize{8.25}{9.9}\ttfamily]
+%tm_rect : \forall (P : tm -> Type), [@\hlcase{tm-recursor-case-unit}@]P tm_unit[@\tikzmarkend{tm-recursor-case-unit}@] -> [@\hlcase{tm-recursor-case-var}@](\forall x, P (tm_var x))[@\tikzmarkend{tm-recursor-case-var}@] ->
+%  [@\hlcase{tm-recursor-case-abs}@](\forall x t, P t -> P (tm_abs x t))[@\tikzmarkend{tm-recursor-case-abs}@] -> [@\hlcase{tm-recursor-case-app}@](\forall t1, P t1 -> \forall t2, P t2 -> P (tm_app t1 t2))[@\tikzmarkend{tm-recursor-case-app}@] -> \forall t, P t
+%\end{lstlisting}
+%\end{minipage}
+%\end{centered}
+
 \begin{centered}
 \begin{minipage}{.71\textwidth}
 \newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
@@ -244,14 +254,14 @@ performing normalization.
 %\noindentparagraph{Overriding.}
 
 In an OO language, a subclass can override methods of a superclass.
-Similar expressiveness is useful for metatheory mechanization, too.
+Similar expressivity is useful for mechanizing proofs, too.
 %
 For example, in a derived family, rather than adding new cases to an
 induction proof, the programmer may prefer overriding the proof
 entirely, as we observe in our case studies (\cref{sec:casestudies}).
-%
-Overriding is potentially incompatible with having equalities on late bound names, however.
 
+Overriding is potentially incompatible with having equalities on late bound names, however.
+%
 Coq distinguishes \emph{opaque} definitions from \emph{transparent} ones.
 \Lang supports the overriding of opaque definitions, which
 include most proofs.
@@ -286,7 +296,8 @@ If the programmer did, then they would be committing the logical fallacy
 of circular reasoning: the proof of "progress" would depend on "typesafe",
 yet the proof of "typesafe" depends on "progress".
 %
-Such circularity would easily lead to logical inconsistency:
+Such circularity would easily lead to logical inconsistency.
+Consider the following two families, where "B" extends "A":
 %\YZ{Mention non-exhaustivity/overriding already poses challenges to ensuring consistency.}
 
 \begin{centered}
@@ -314,8 +325,7 @@ End B.[@\tanc{B-inconsistency-end}@]
 \end{centered}
 
 \noindent
-In the program above, family~"B" extends~"A", overriding lemma~"f" by
-proving it using lemma~"g".
+"B" overrides lemma~"f" by proving it using~"g".
 Lemma~"g" is in turn inherited from family "A", where it is proven using
 a late bound reference to lemma~"f".
 Circularity between "f" and "g" allows proving \lsti{False}!
@@ -527,8 +537,9 @@ is reusable by family "STLCFix", because the partial recursor and its
 computational behaviors are compatible with the late binding of "tm".
 
 Within family "STLCFix", a second partial recursor
-(called "tm_prect_STLCFix") and its computational behaviors are axiomatized,
-so properties such as \lsti[basicstyle=\fontsize{8.25}{9},columns=fixed,basewidth=0.9ex]{tm_fix x t1 = tm_fix x t2 ->  t1 = t2} can be proved.
+(called "tm_prect_STLCFix") and its computational behaviors are automatically axiomatized,
+which allows properties of \lsti[basewidth=0.9ex]{tm_fix}, such as
+\lsti[columns=fixed,basewidth=1.2ex]{tm_fix x t1 = tm_fix x t2 ->  t1 = t2}, to be proved.
 
 %\noindentparagraph{Limitations.}
 
