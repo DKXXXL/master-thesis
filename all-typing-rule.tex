@@ -455,14 +455,14 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodTerm{\Gm}{o}{\TyLkg {\LSigEmp}}}
 {\goodTerm{\Gm}{o \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
  
-\Rule[name=l/pkg]
+\Rule[name=tm/pk]
 { \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 }
 {
   \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
 }
 
-\Rule[name=l/pkg/subst]
+\Rule[name=tmeq/pk/subst]
 { \goodSub{\Gm}{\gm}{\Theta}
 }
 {
@@ -518,7 +518,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 
 \\
-\Rule[name=pkg/def]
+\Rule[name=tmeq/pk/def]
 {}
 {\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
 \\
@@ -681,11 +681,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=inh/id/beta]
+\Rule[name=tmeq/inhid/beta]
 { \goodTerm{\Gm}{o}{\TyLkg{\sigma} }}
 {\goodTerm{\Gm}{\inh {(\InhId)} {o} \equiv o}{...}}
 
-\Rule[name=inh/ext/beta]
+\Rule[name=tmeq/ext/beta]
 {
   \goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}
@@ -697,7 +697,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=inh/inh/beta]
+\Rule[name=tmeq/inh/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm}{m}{\TyLkg {\sigma_1}}
   \\ \goodTerm{\Gm, A_1}{t}{T}
@@ -707,23 +707,31 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=inh/ov/beta]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
-\\ \goodType{\Gm, A_1}{T_1}{}
-\\ \goodType{\Gm, A_2}{T_2}{}
-\\ \goodTerm{\Gm, A_2}{t \ t'}{T_2}}
-{
-\goodTerm{\Gm}
-  {\inh
-  { \InhOv{h}{t} }{\LkgAdd{o}{t'}}
-  \equiv 
-  \LkgAdd{\inh{h}{o}}{t}}
-  {...}
+\Rule[name=tmeq/ov/beta]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+    \\\\
+    \goodTerm{\Gm, A_1}{t_1}{T_1}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_1}}{\seal_1}{\sub{A_1}{\SubstWeak{1}}}
+    \\
+    \goodTerm{\Gm, A_2}{t_2}{T_2}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_2}}{\seal_2}{\sub{A_2}{\SubstWeak{1}}}
+}{
+    \goodTerm{\Gm}{
+        \inh{\InhOv{h}{t_2}}{\LkgAdd{\lkg}{t_1}}
+        \equiv 
+        \LkgAdd{\inh{h}{\lkg}}{t_2}
+    }{
+        \TyLkg{\LSigAdd{\lsig_2}{\seal_2}{T_2}}
+    }
 }
 \\
 
 \\
-\Rule[name=inh/nest/beta]
+\Rule[name=tmeq/nest/beta]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\
