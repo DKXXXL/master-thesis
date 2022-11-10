@@ -102,7 +102,7 @@ Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generate
 As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,
 % \EDJ{If we don't allow further binding case handler(mentioned in your last reply), how do the user further bind the subst? I mean in the surface syntax}\YZreply{The position is that individual case handlers cannot be further bound, but the recursive function itself can be further bound by acquiring new case handlers.}
 so its definition is not exposed to the fields that come after it.
-Accordingly, the translation \lsti{STLC\_subst} merely declares the type of \lsti{subst}
+Accordingly, the translation \lsti{STLC\_subst} merely declares the types of \lsti{subst}
 and the equalities about its computational behaviors, leaving \lsti{subst} undefined
 and the equalities unproven.
 %
@@ -134,8 +134,8 @@ The distinction is reflected in the translations.
 The further-bindable fields are translated to module types that export only types of the fields.
 The non-further-bindable fields are translated to modules that export definitional equalities
 on the fields.
-Opaque fields can be further bound, too (\cref{sec:override});
-they are translated to modules that export opaque fields.
+Opaque fields in \Lang can be further bound (\cref{sec:override});
+they are translated to Coq modules that export opaque fields.
 
 %\footnotetext{%
 %Axioms in Coq module types are more like parameters than real axioms.
@@ -179,12 +179,12 @@ an inductive type \lsti{tm} is generated, instantiating the axiomatized
 The partial recursor \lsti{tm_prect_STLC} is defined
 %to \lsti{\lambda}\,\lsti{P, tm_rect (\lambda}\,\lsti{t, option (P t))},
 with the help of \lsti{tm_rect}, the recursor Coq generates for \lsti{tm}.
-Proving the equalities on \lsti{tm_prect_STLC} is then trivial, by \lsti{reflexivity}.
+Computational behaviors of \lsti{tm_prect_STLC} are immediate, by \lsti{reflexivity}.
 
 \item
 Similarly, \lsti{subst} is instantiated by applying the recursor \lsti{tm_rect}
 to the (already included) case handlers. %(\lsti{subst\_tm_unit}, etc.).
-Propositional equalities on \lsti{subst} are then trivial, by \lsti{reflexivity}.
+Computational behaviors of \lsti{subst} are then immediate, by \lsti{reflexivity}.
 
 \end{itemize}
 
