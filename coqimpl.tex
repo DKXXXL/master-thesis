@@ -45,7 +45,7 @@ concrete definition of \lsti{ty}.
 The type of \lsti{STLC\_env}'s \lsti{self} parameter is \lsti{STLC\_env\_Ctx},
 a module type constructed from \lsti{STLC\_ty}, 
 the translation of the field before \lsti{env},
-and its context \lsti{STLC\_ty\_Ctx}.
+and its context \lsti{STLC\_ty\_Ctx}\EDJ{Why I see in the figure there are only two includes, i.e. only stlcty and stlctyctx}.
 In turn, \lsti{STLC\_ty\_Ctx} (not shown in \cref{fig:stlc-compiled}) is
 constructed from \lsti{STLC\_subst},
 the translation of the field before \lsti{ty},
@@ -63,9 +63,9 @@ An \lsti{FInductive} definition is translated to a parameterized module type.
 Consider the inductive type \lsti{tm}.
 In \lsti{STLC}, it is translated to a top-level module type
 \lsti{STLC\_tm} that declares a \lsti{tm} type,
-its constructors (e.g., \lsti{tm_abs}),
+its constructors (e.g., \lsti{tm_abs}) \EDJ{I am not sure if it is better we emphasize in the following way :`` that declares a tm type, its constructors (e.g. tmabs) as a normal function,.. '' i.e. emphasize it is a normal function in the module type},
 its partial recursor (\lsti{tm_prect_STLC}),
-and the propositional equalities on the partial recursor
+and the propositional equalities\EDJ{I propose to change this sentence to ``and the prop eq about computational behaviour on the partial recursor''. And thus in the other parts of the paper, we can use the word ``computational behaviour'' instead of prop eq. Because just saying prop eq seems a bit of lack of context/details.} on the partial recursor
 (e.g., \lsti{tm_abs_eq_STLC}; \cref{sec:prec}).
 
 Importantly,
@@ -89,7 +89,7 @@ the new constructor \lsti{tm_fix} and related equalities.
 An \lsti{FRecursion} definition is translated in two parts:
 first a module containing the definitions of all the case handlers,
 and then a module type declaring the existence of the recursive function as well as
-its propositional equalities.
+its propositional equalities.\EDJ{Simiarly, here I think using ``computational behaviour'' is more accurate than using the word ``prop eq''}
 
 Consider the translation of \lsti{subst} in family \lsti{STLC}.
 First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
@@ -98,7 +98,8 @@ is generated and added to the module.
 
 Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generated.
 %
-As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,\EDJ{If we don't allow further binding case handler(mentioned in your last reply), how do the user further bind the subst? I mean in the surface syntax}\YZreply{The position is that individual case handlers cannot be further bound, but the recursive function itself can be further bound by acquiring new case handlers.}
+As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,
+% \EDJ{If we don't allow further binding case handler(mentioned in your last reply), how do the user further bind the subst? I mean in the surface syntax}\YZreply{The position is that individual case handlers cannot be further bound, but the recursive function itself can be further bound by acquiring new case handlers.}
 so its definition is not exposed to the fields that come after it.
 Accordingly, the translation \lsti{STLC\_subst} merely declares the type of \lsti{subst}
 and the existence of its propositional equalities, leaving \lsti{subst} undefined
