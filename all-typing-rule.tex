@@ -88,7 +88,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
   \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0} \\
   \goodType{\Gm}{ \sub{(\TyPi {A} {B})}{\gm} \equiv \TyPi {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
   \\ 
-  \goodType{\Gm}{ \sub{(\Sigma A B)}{\gm} \equiv \Sigma \sub{A}{\gm} \sub{B}{\gm^\uparrow} }{j \cup k}
+  \goodType{\Gm}{ \sub{(\TySigma{A}{B})}{\gm} \equiv \TySigma {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
   \\ 
   \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{j \cup k}
   \\   \goodType{\Gm}{ \sub{\TyS{a}}{\gm} \equiv \TyS{\sub{a}{\gm}} } {j \cup k}
@@ -152,10 +152,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \Rule[name=tm/pair]
 {\goodTerm{\Gm}{u}{A} 
 \\ \goodTerm{\Gm}{v}{B[(id, u)]}}
-{\goodTerm{\Gm}{(u,v)}{\Sigma A B}}
+{\goodTerm{\Gm}{(u,v)}{\TySigma {A} {B}}}
 
 \Rule[name=tm/pair/proj]
-{\goodTerm{\Gm}{t}{\Sigma A B}}
+{\goodTerm{\Gm}{t}{\TySigma {A} {B}}}
 {\goodTerm{\Gm}{\fst{t}}{A}
 \\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
 }
@@ -216,7 +216,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \Rule[name=tm/subst]
 {}
 {\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{(\sub{t}{\gm^\uparrow})}}{\TyPi {A} {B}}
-\\ \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\Sigma A B}
+\\ \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\TySigma {A} {B}}
 \\ \goodType{\Gm}{\El{(\sub{T}{\gm})} \equiv \sub{(\El{T})}{\gm}}{}
 \\ \goodTerm{\Gm}{ \sub{\true}{\gm} \equiv \true}{\cB} 
 \\  \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
@@ -483,7 +483,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \Rule[name=lkgeq/add/eta]
 {\goodTerm{\Gm}{\lkg}{\TyLkg \lsig}}
-{\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{\lkg}}{\lkgproj{2}{\lkg}}{\TyLkg{\lsig}} \equiv \lkg }{\TyLkg{\lsig}}}
+{\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{\lkg}}{\lkgproj{2}{\lkg}} \equiv \lkg }{\TyLkg{\lsig}}}
 \\
 
 
@@ -523,7 +523,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
 \\
 \goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {f} {T}} \equiv 
-    \Sigma (\TyTkg {\lsig}) T["sf" \ f]}{}
+    \TySigma {(\TyTkg {\lsig})} {T["sf" \ f]} }{}
 \\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
 \\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {\lkg} {t})} \equiv ((\Tkg {\lkg}), t["sf" \ f][(id, \Tkg {\lkg})]) }{}
 }
