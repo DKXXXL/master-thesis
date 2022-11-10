@@ -31,7 +31,7 @@ with field names represented by variable bindings.
 But there is a twist: linkages support late binding.
 Unlike dependent tuples where a later component is \emph{existentially}
 quantified over the earlier ones, a linkage component is \emph{universally}
-quantified over---and thus polymorphic to---components preceding it.
+quantified over---and thus polymorphic to---the components preceding it.
 
 \item
 \TT also features \emph{linkage transformers} modeling the inductive
@@ -168,23 +168,27 @@ In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, A}{t}{T}$ is
 responsible for late binding.
 Here, $A$ abstracts the fields preceding the current field~$t$
 (i.e., those recorded by the first premise $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$).
-Crucially, unlike the second field in a dependent pair (\ruleref{tm/pair}),
-the typing of~$t$ in \ruleref{l/add} is polymorphic to how the fields in
-$t$'s context are defined, so that a different linkage that overrides
-fields in $t$'s context can reuse~$t$---without retyping it---by
-projecting it and then including it\EDJ{I suggest change this sentence to `by projecting it out of parent linkage and adding it in the derived linkage'}.
+Crucially, %unlike the second field in a dependent pair (\ruleref{tm/pair}),
+the premise $\goodTerm{\Gm, A}{t}{T}$ makes clear that
+the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified over
+how the fields in $t$'s context are defined.
+So a different linkage~$\ell'$ that overrides fields in $t$'s context (and thus models a derived family)
+can reuse~$t$---without retyping it---by first
+projecting~$t$ from $\LkgAdd{\lkg}{t}$ and then appending it to~$\lkg'$.
+%\EDJ{I suggest change this sentence to `by projecting it out of parent linkage and adding it in the derived linkage'}.
 
 This type~$A$ abstracting the context in \ruleref{l/add} and
-\ruleref{lsig/add} is not necessarily the same as those recorded by~$\lsig$\EDJ{Suggest changing to ``not necessarily the same as those recorded by lsig in the prior fields''},
+\ruleref{lsig/add} do not necessarily contain the same types of the prior fields as recorded by~$\TyLkg{\lsig}$,
+%\EDJ{Suggest changing to ``not necessarily the same as those recorded by lsig in the prior fields''},
 because a field representing the code $\wcode{\wsig}$ of a W-type has to
 expose different types to different fields that come after it.
 Later fields that invoke
 $\Wsup{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
 should see the concrete signature~$\wsig$, as rules \ruleref{tm/wsup}
-and \ruleref{tm/wrec} stipulate, whereas $\wsig$ should be hidden
-from all other fields so that they can be reused
-for a W-type signature~$\wsig'$ extending~$\wsig$\EDJ{Suggest changing to ``so that they can be reused
-in a different context where W-type signature~$\wsig'$ is extended to~$\wsig$''}.
+and \ruleref{tm/wrec} stipulate.
+By contrast, $\wsig$ should be hidden
+from all other fields, so that they can be reused
+in a different context where the W-type signature~$\wsig$ is replaced by an extended one~$\wsig'$.
 
 \definecolor{A-color}{HTML}{E7EFC5}
 \definecolor{T-color}{HTML}{FFF1D0}
