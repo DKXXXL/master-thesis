@@ -361,10 +361,10 @@ The family is declared with minimal verbiage, yet
 \lsti{STLCFixIsorec.typesafe} is automatically a proof of the type-safety
 theorem of an STLC equipped with fixpoints and iso-recursive types.
 
-Mixin composition is a form of multiple inheritance, which may lead to
-name conflicts in general.\EDJ{Only name conflicts on overridable fields can be resolved like this. Name/definition conflicts for normal fields cannot be resolved (cannot be mixed in). }
+Mixin composition is a form of multiple inheritance, which may cause
+name conflicts in general. %\EDJ{Only name conflicts on overridable fields can be resolved like this. Name/definition conflicts for normal fields cannot be resolved (cannot be mixed in). }
 \Lang requires the programmer to resolve conflicts by
-explicitly overriding conflicted fields.
+overriding conflicted overridable fields.
 
 In the presence of extensible inductive types, mixin composition may
 also create an obligation to retrofit the mixins with new case handlers.
@@ -440,28 +440,28 @@ weakened elimination principle where the motive is an \lsti{option} type.
 For example, within family "STLC", the partial recursor for
 "tm" has the following type:
 
-%\begin{centered}
-%\begin{minipage}{\textwidth}
-%\newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
-%\begin{lstlisting}[basicstyle=\fontsize{8.25}{9.9}\ttfamily]
-%tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] -> [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] ->
-%  [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
-%  [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] -> \forall t, option (P t)
-%\end{lstlisting}
-%\end{minipage}
-%\end{centered}
-
 \begin{centered}
-\begin{minipage}{.97\textwidth}
+\begin{minipage}{\textwidth}
 \newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9.9}\ttfamily]
 tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] -> [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] ->
-                [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
-                [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] ->
-                \forall t, option (P t)
+  [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
+  [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] -> \forall t, option (P t)
 \end{lstlisting}
 \end{minipage}
 \end{centered}
+
+%\begin{centered}
+%\begin{minipage}{.97\textwidth}
+%\newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
+%\begin{lstlisting}[basicstyle=\fontsize{8.25}{9.9}\ttfamily]
+%tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] -> [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] ->
+%                [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
+%                [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] ->
+%                \forall t, option (P t)
+%\end{lstlisting}
+%\end{minipage}
+%\end{centered}
 
 \noindent
 As expected, "tm_prect_STLC" is axiomatized along with
