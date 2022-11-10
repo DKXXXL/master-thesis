@@ -82,8 +82,7 @@ The command \lsti{FInductive tm : Set += tm_fix : }\dadada~in family
 \lsti{STLCFix} is again translated to a module type \lsti{STLCFix\_tm} (\cref{fig:stlcfix-compiled}).
 It includes all the names declared by \lsti{STLC\_tm}
 via command \lsti!Include STLC\_tm(self)!,
-and additionally declares
-the new constructor \lsti{tm_fix} and related equalities.
+and additionally declares \lsti{tm_fix}, a partial recursor, and related equalities.
 
 
 \noindentparagraph{Translating recursion and induction.}
@@ -91,7 +90,7 @@ the new constructor \lsti{tm_fix} and related equalities.
 An \lsti{FRecursion} definition is translated in two parts:
 first a module containing the definitions of all the case handlers,
 and then a module type declaring the existence of the recursive function as well as
-its propositional equalities.\EDJ{Simiarly, here I think using ``computational behaviour'' is more accurate than using the word ``prop eq''}
+its computational behaviors.
 
 Consider the translation of \lsti{subst} in family \lsti{STLC}.
 First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
@@ -104,16 +103,16 @@ As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,
 % \EDJ{If we don't allow further binding case handler(mentioned in your last reply), how do the user further bind the subst? I mean in the surface syntax}\YZreply{The position is that individual case handlers cannot be further bound, but the recursive function itself can be further bound by acquiring new case handlers.}
 so its definition is not exposed to the fields that come after it.
 Accordingly, the translation \lsti{STLC\_subst} merely declares the type of \lsti{subst}
-and the existence of its propositional equalities, leaving \lsti{subst} undefined
+and the equalities about its computational behaviors, leaving \lsti{subst} undefined
 and the equalities unproven.
 %
-The propositional equalities are stated in terms of the case handlers,
+The equalities are stated in terms of the case handlers,
 whose definitions \emph{are} available through the \lsti{self} parameter.
-So Coq can simplify, for example, \lsti{subst_tm_unit_eq}'s type to
-\lsti!\forall x t, self.subst self.tm_unit x t = self.tm_unit!.
-The equalities will be included and available for use in the
-translations of the subsequent fields through their \lsti{self}
-parameters.
+So Coq can simplify, for example, the type of \lsti{subst_tm_unit_eq} to
+\lsti[basicstyle=\fontsize{8.5}{9},basewidth=.95ex]{\forall x t, self.subst self.tm_unit x t = self.tm_unit}.
+These equalities about the computational bahaviors of \lsti{subst}
+will be included and available for use in the translations of the
+subsequent fields through their \lsti{self} parameters.
 
 Importantly, code generated for the case handlers is shared with derived families.
 In \cref{fig:stlcfix-compiled}, module \lsti{STLCFix\_subst\_Cases}
@@ -121,7 +120,7 @@ reuses---without rechecking---all the case handlers in
 \lsti{STLC\_subst\_Cases} via command \lsti{Include STLC\_subst\_Cases(self)}.
 
 The translation of \lsti{FInduction} is similar, except that there is no need to
-register propositional equalities, as \lsti{FInduction} proofs are considered opaque.
+register computational behaviors, as \lsti{FInduction} proofs are considered opaque.
 
 
 \noindentparagraph{Translation of further-bindables vs.\ non-further-bindables.}
