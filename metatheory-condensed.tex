@@ -13,7 +13,7 @@ first before delving into the technical details.
 \noindentparagraph{Summary.}
 
 \TT is intended as a foundational model. So unlike our programmer-facing plugin,
-typing is structural rather than nominal, and
+typing is structural rather than nominal\EDJ{I don't actually know what do you mean by structural here. I think surface syntax (Coq) is pretty structual as well.}, and
 fields automatically axiomatized by the plugin require explicit definitions in \TT.
 %
 \TT provides MLTT-style constructs that can be used to express families and
@@ -171,10 +171,10 @@ Crucially, unlike the second field in a dependent pair (\ruleref{tm/pair}),
 the typing of~$t$ in \ruleref{l/add} is polymorphic to how the fields in
 $t$'s context are defined, so that a different linkage that overrides
 fields in $t$'s context can reuse~$t$---without retyping it---by
-projecting it and then including it.
+projecting it and then including it\EDJ{I suggest change this sentence to `by projecting it out of parent linkage and adding it in the derived linkage'}.
 
 This type~$A$ abstracting the context in \ruleref{l/add} and
-\ruleref{lsig/add} is not necessarily the same as those recorded by~$\lsig$,
+\ruleref{lsig/add} is not necessarily the same as those recorded by~$\lsig$\EDJ{Suggest changing to ``not necessarily the same as those recorded by lsig in the prior fields''},
 because a field representing the code $\wcode{\wsig}$ of a W-type has to
 expose different types to different fields that come after it.
 Later fields that invoke
@@ -182,7 +182,8 @@ $\Wsup{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
 should see the concrete signature~$\wsig$, as rules \ruleref{tm/wsup}
 and \ruleref{tm/wrec} stipulate, whereas $\wsig$ should be hidden
 from all other fields so that they can be reused
-for a W-type signature~$\wsig'$ extending~$\wsig$.
+for a W-type signature~$\wsig'$ extending~$\wsig$\EDJ{Suggest changing to ``so that they can be reused
+in a different context where W-type signature~$\wsig'$ is extended to~$\wsig$''}.
 
 \definecolor{A-color}{HTML}{E7EFC5}
 \definecolor{T-color}{HTML}{FFF1D0}

@@ -41,7 +41,7 @@ In particular, because data types have to be encoded (rather than expressed
 through natively supported inductive types), the resulting code is
 less readable and the resulting programming style inaccessible to non-experts.
 In addition, extra programmer effort may be required, such as
-having to manually prove additional well-formedness conditions on the algebras.
+having to manually prove additional well-formedness conditions on the algebras\EDJ{What is this `algebra'? I mean if it is a very frequent word to the audience  familiar with DTC then removing explanation is fine.}.
 
 \citet{forsta2020} introduce \emph{Coq à la carte}.
 It still follows DTC, but rather than embracing DTC's use of generic
@@ -105,7 +105,7 @@ our solution can be viewed as an effort to preempt refactoring by
 allowing the programmer to write code that has built-in hooks for
 future extensions.
 
-\noindentparagraph{Solutions to the expression problem} abound.
+\noindentparagraph{Solutions to the expression problem} abound\EDJ{I have been meaning to ask but is this ``abound'' you intentionally put outside of the boldfont?}.
 Almost all solutions involve some form of either explicit or implicit parameterization.
 Our approach is the first that applies family polymorphism~\cite{ernst2001family},
 an idea found in the context of OO programming,
