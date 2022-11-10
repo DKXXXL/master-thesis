@@ -22,7 +22,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \end{mathpar}
 
 \begin{mathparpagebreakable}
-\Rule[name=ctx/ept]{ "" }{\goodCtx{\cdot}{0}} 
+\Rule[name=ctx/empty]{ "" }{\goodCtx{\cdot}{0}} 
 \Rule[name=ctx/ext]
 {\goodCtx{\Gm}{i} \\ \goodType{\Gm}{A}{j}}
 {\goodCtx{\Gm, A}{i \cup j}}  
@@ -226,9 +226,9 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\Rule[name=subst/ept]
+\Rule[name=subst/empty]
 {""}{\goodSub{\Gm}{\epsilon}{\cdot}}
-\Rule[name=substeq/ept/eta]
+\Rule[name=substeq/empty/eta]
 { \goodSub{\Gm}{\gm}{\cdot} }{\goodSub{\Gm}{ \gm \equiv \epsilon}{\cdot}}
 
 \Rule[name=subst/id]
@@ -269,19 +269,23 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
-\Rule[name=wsig/ept]
+\Rule[name=wsig/empty]
 {""}
 {\goodWSig{\Gm}{\WSigEmp}{0}}
  
-\Rule[name=wsigeq/ept/eta]
+\Rule[name=wsigeq/empty/eta]
 {\goodWSig{\Gm}{\wsig}{0}}
 {\goodWSig{\Gm}{\wsig \equiv \WSigEmp}{0}}
 
-\Rule[name=wsig/add]
-{\goodWSig{\Gm}{\wsig}{n}
-  \\ \goodType{\Gm}{A}{i}
-  \\ \goodType{\Gm, A}{B}{i}}
-{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
+\Rule[name=wsig/add]{
+    \goodWSig{\Gm}{\wsig}{n}
+    \\\\
+    \goodType{\Gm}{A}{i}
+    \\
+    \goodType{\Gm, A}{B}{i}
+}{
+    \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
+}
 
 % \Rule[name=wsig/universe]
 % {\goodWSig{\Gm}{\wsig}{n}}
@@ -324,16 +328,23 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
 }
 \\
-\Rule[name=tm/wcode]
-{\goodWSig{\Gm}{\wsig}{n}}
-{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}
+\Rule[name=tm/w]{
+    \goodWSig{\Gm}{\wsig}{n}
+}{
+    \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 
-\Rule[name=ind/cstr]
-{{\goodWSig{\Gm}{\wsig}{n}}
-  \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
-  \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
-{\goodTerm{\Gm}{\Wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
+\Rule[name=tm/wsup]{
+    \goodWSig{\Gm}{\wsig}{n}
+    \\
+    \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
+    \\\\
+    \goodTerm{\Gm, \sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
+%   \\
+%   i \in \{1, ..., n\}
+}{
+    \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
+}
 
 \Rule[name=ind/cstr/subst ]
 {\goodSub{\Gm}{\gm}{\Theta}}
@@ -361,7 +372,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodType{\Gm}{\TyLkg{\lsig}}{i}
 \\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 
-\Rule[name=ty/lkg/subst]
+\Rule[name=ty/lsig/subst]
 {\goodSig{\Delta}{\lsig}{n}
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
 {\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
@@ -371,20 +382,23 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=lsig/ept]
+\Rule[name=lsig/empty]
 {""}
 {\goodSig{\Gm}{\LSigEmp}{0}}
  
-\Rule[name=lsigeq/ept/eta]
+\Rule[name=lsigeq/empty/eta]
 {\goodSig{\Gm}{\lsig}{0}}
 {\goodSig{\Gm}{\lsig \equiv \LSigEmp}{0}}
 
-\Rule[name=lsig/add]
-{\goodSig{\Gm}{\lsig}{n} 
- \\ \goodType{\Gm}{A}{}
- \\ \goodSeal{\Gm}{\seal}{\lsig}{A}
- \\ \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{(\LSigAdd {\lsig}{\seal}{T})}{n+1}}
+\Rule[name=lsig/add]{
+    \goodSig{\Gm}{\lsig}{n} 
+    \\
+    \goodType{\Gm, A}{T}{}
+    \\\\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
+}{
+    \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
+}
 \\
 
 \\ 
@@ -431,23 +445,24 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 
 \\
-\Rule[name=lnkg/ept]
+\Rule[name=l/empty]
 {""}
-{\goodTerm{\Gm}{\LkgEmp}{\TyLkg {\LSigEmp}}  
+{
+  \goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}
 }
  
-\Rule[name=lnkg/ept/eta]
+\Rule[name=l/empty/eta]
 {\goodTerm{\Gm}{o}{\TyLkg {\LSigEmp}}}
 {\goodTerm{\Gm}{o \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
  
-\Rule[name=lnkg/pkg]
+\Rule[name=l/pkg]
 { \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
 }
 {
   \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
 }
 
-\Rule[name=lkg/pkg/subst]
+\Rule[name=l/pkg/subst]
 { \goodSub{\Gm}{\gm}{\Theta}
 }
 {
@@ -456,13 +471,14 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=lkg/add]
-{ \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
-\\ \goodType{\Gm}{A}{}
-\\  \goodSeal{\Gm}{\seal}{\lsig}{A} 
-\\  \goodTerm{\Gm, A}{t}{T}
-}
-{\goodTerm{\Gm}{(\LkgAdd {o} {t})}{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}
+\Rule[name=l/add]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
+    \\
+    \goodTerm{\Gm, A}{t}{T}
+    \\\\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
+}{
+    \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
 }
 
 \Rule[name=lkgeq/add/eta]
@@ -472,7 +488,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 
 \\
-\Rule[name=lkg/proj]
+\Rule[name=l/proj]
 {\goodTerm{\Gm}{o}{\TyLkg{\lsig}}}
 {\goodTerm{\Gm}{\lkgproj{1} {o}}{\TyLkg {(\lsigproj{1} {\lsig})}}
 \\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{o}}{\lsigproj{2}{\lsig}}
@@ -542,16 +558,23 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 
 \\
-\Rule[name=ty/casesig]
-{\goodType{\Gm}{A}{}
-\\ \goodType{\Gm, A}{B}{}
-\\ \goodType{\Gm}{R}{}
+\Rule[name=tyeq/casety]{
+    \goodType{\Gm}{A}{}
+    \\
+    \goodType{\Gm, A}{B}{}
+    \\
+    \goodType{\Gm}{T}{}
+}{
+    \goodType{\Gm}{
+        \CaseSig{A}{B}{R}
+        \equiv
+        \TyPi{A}{\TyPi {\TyPi{B}{\sub{T}{\SubstWeak{2}}}} {\sub{T}{\SubstWeak{2}}}}
+    }{}
 }
-{\goodType{\Gm}{\CaseSig{A}{B}{R} \equiv (\TyPi {A} {(\TyPi {(\TyPi {B} {(\sub{R}{ \SubstComp {\pi_1}{\pi_1}})})} {\sub{R}{\SubstComp{\pi_1}{\pi_1}}})} )}{}}
 \\
 
 \\
-\Rule[name=reclkg/defN]
+\Rule[name=recl/defN]
 {\goodWSig{\Gm}{\wsig}{n+1}
 }
 {\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv 
@@ -561,12 +584,12 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=reclkg/def0]
+\Rule[name=recl/def0]
 {\goodWSig{\Gm}{\wsig}{0}
 }
 {\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
 
-\Rule[name=reclkg/proj]
+\Rule[name=recl/proj]
 { \goodWSig{\Gm}{\wsig}{N}
 \\ \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
 \\ j < N
@@ -574,17 +597,17 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 \\
 \\
-\Rule[name=tm/wrec]
-{ \goodWSig{\Gm}{\wsig}{N}
-\\ \goodType{\Gm}{R}{}
-\\ \goodTerm{\Gm}{r}{\TyLkg{(\RecSig{\wsig}{R})}}
-\\ \goodTerm{\Gm}{w}{\El{(\wcode{\wsig})}}
+\Rule[name=tm/wrec]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
+    \\
+    \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
+}{
+    \goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}
 }
-{\goodTerm{\Gm}{\Wrec{\wsig}{w}{r}}{R}}
 \\
 
 \\
-\Rule[name=reclkg/proj/beta]{
+\Rule[name=recl/proj/beta]{
   \goodWSig{\Gm}{\wsig}{N}
   \\ j < N
   \\ \goodTerm{\Gm}{o}{\TyLkg{\RecSig{\wsig}{R}}}
@@ -595,11 +618,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 
 \\
-\Rule[name=reclkg/proj/defN]{}{
+\Rule[name=recl/proj/defN]{}{
   \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{...}
 }
  
-\Rule[name=reclkg/proj/def0]{}{
+\Rule[name=recl/proj/def0]{}{
   \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{...}
 }
 \\
@@ -641,11 +664,13 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodInh{\Gm}{\InhInh{h}}{(\LSigAdd {\sigma_1} {\seal_1}  {T})}{(\LSigAdd   {\sigma_2} {\seal_2} {T[(\pi_1, \uparrow^s)]})}}
 \\
 \\
-\Rule[name=tm/inh]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
-\\ \goodTerm{\Gm}{l}{\TyLkg{\sigma_1}}
+\Rule[name=tm/inh]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+}{
+    \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
 }
-{\goodTerm{\Gm}{(\inh {h} {l})}{\TyLkg{\sigma_2}}} 
 
 \Rule[name=inh/nest]
 {\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
