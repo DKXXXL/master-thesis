@@ -98,7 +98,7 @@ is generated and added to the module.
 
 Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generated.
 %
-As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,\EDJ{If we don't allow further bound of case handler(mentioned in your last reply), how do the user further bound the subst? I mean in the surface syntax}
+As discussed in \cref{sec:latebind}, \lsti{subst} can be further bound,\EDJ{If we don't allow further binding case handler(mentioned in your last reply), how do the user further bind the subst? I mean in the surface syntax}\YZreply{The position is that individual case handlers cannot be further bound, but the recursive function itself can be further bound by acquiring new case handlers.}
 so its definition is not exposed to the fields that come after it.
 Accordingly, the translation \lsti{STLC\_subst} merely declares the type of \lsti{subst}
 and the existence of its propositional equalities, leaving \lsti{subst} undefined
