@@ -8,13 +8,14 @@ and if-then-else expressions.
 The left column of the table below shows initial code excerpted from
 this family.
 Each cell in the last column defines a linkage transformer~$h_i$
-inductively constructed from the linkage transformers $h_0$, ..., $h_{i-1}$.
+inductively constructed from the linkage transformers $h_0$, ..., $h_{i-1}$
+using one of the introduction forms.
 The goal is to eventually construct a linkage transformer $h_n$ representing
 the entire family \lsti{STLCBool}.
 
-Of note is the two grayed rows. They are constructing a linkage~$h_\beta$
+Of note is the two grayed rows. They are constructing a linkage transformer~$h_\beta$
 containing the case handlers for \lsti{subst}.
-This linkage $h_\beta$ is then appended as a nested linkage to $h_3$.
+This $h_\beta$ is then appended to $h_3$ as a nested linkage transformer.
 
 \medskip
 
@@ -66,7 +67,7 @@ surface-syntax program & $i$      & $\goodInh{\cdot}{h_i}{\lsig_i}{\lsig_i'}$   
 \rowcolor[HTML]{CDCDCD} 
 \lsti!FRecursion subst!\ \;\dadada\ \;\lsti!+=! & $\alpha$ & $\InhId$ \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
-\lsti!  Case tm_true := !\dadada. & $\beta$  & $\InhExt{h_\alpha}{...}$ \\ \cline{2-3} 
+\lsti!  Case tm_true := !\dadada. \lsti! Case !\dadada & $\beta$  & $\InhExt{h_\alpha}{...}$ \\ \cline{2-3} 
 \rowcolor[HTML]{FFFFFF} 
 \lsti!End subst.!              & 4        & $\InhNest{h_3}{h_\beta}$
   %with $\uparrow^s_3$
