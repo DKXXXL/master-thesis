@@ -668,25 +668,25 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \Rule[name=inh/ov]
 {
-\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}  
+\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
 \\ \goodType{\Gm, A_1}{T_1}{}
 \\ \goodType{\Gm, A_2}{T_2}{}
   \\ \goodTerm{\Gm, A_2}{t}{T_2}}
-{\goodInh{\Gm}{\InhOv{h}{t}}{(\LSigAdd  {\sigma_1 } {\seal_1} {T_1})}{(\LSigAdd   {\sigma_2} {\seal_2} {T_2})}}
+{\goodInh{\Gm}{\InhOv{h}{t}}{(\LSigAdd  {\lsig_1 } {\seal_1} {T_1})}{(\LSigAdd   {\lsig_2} {\seal_2} {T_2})}}
 \\
 
 \\
 \Rule[name=inh/ext]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}}
-{\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}}
+{\goodInh{\Gm}{\InhExt {h} {t}}{\lsig_1}{(\LSigAdd {\lsig_2} {\seal_2} { T})}}
 
 \Rule[name=inh/inh]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
 \\ \goodType{\Gm, A_1}{T}{}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
-{\goodInh{\Gm}{\InhInh{h}}{\LSigAdd {\sigma_1} {\seal_1}  {T}}{\LSigAdd   {\sigma_2} {\seal_2} {T[(\pi_1, \uparrow^s)]}}}
+{\goodInh{\Gm}{\InhInh{h}}{\LSigAdd {\lsig_1} {\seal_1}  {T}}{\LSigAdd   {\lsig_2} {\seal_2} {T[(\pi_1, \uparrow^s)]}}}
 \\
 \\
 \Rule[name=tm/inh]{
@@ -698,37 +698,39 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 }
 
 \Rule[name=inh/nest]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\\\
 \goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
-{\goodInh{\Gm}{\InhNest{h}{i}}{\LSigAdd {\sigma_1} {\seal_1}  {\TyLkg\tau_1}}{\LSigAdd   {\sigma_2} {\seal_2} {\TyLkg{\tau_2}}}}
+{\goodInh{\Gm}{\InhNest{h}{i}}{\LSigAdd {\lsig_1} {\seal_1}  {\TyLkg\tau_1}}{\LSigAdd   {\lsig_2} {\seal_2} {\TyLkg{\tau_2}}}}
 \\
 
 \\
 \Rule[name=tmeq/inhid/beta]
 { \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig} }}
-{\goodTerm{\Gm}{\inh {\InhId} {\lkg} \equiv \lkg}{...}}
+{\goodTerm{\Gm}{\inh {\InhId} {\lkg} \equiv \lkg}{\TyLkg{\lsig}}}
 
 \Rule[name=tmeq/ext/beta]
 {
-  \goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
+  \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+  \\ \goodSeal{\Gm}{\seal_2}{\lsig_2}{A_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}
-  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\sigma_1}}
+  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
 }
 {\goodTerm{\Gm}{\inh {{\InhExt {h} {t}}} {\lkg}
 \equiv \LkgAdd{\inh {h}{\lkg}}{t}
-}{...}}
+}{ \TyLkg{\LSigAdd{\lsig_1}{\seal_2}{T}} }}
 \\
 
 \\
 \Rule[name=tmeq/inh/beta]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
-  \\ \goodTerm{\Gm}{m}{\TyLkg {\sigma_1}}
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+  \\ \goodTerm{\Gm}{m}{\TyLkg {\lsig_1}}
   \\ \goodTerm{\Gm, A_1}{t}{T}
+  \\ \goodSeal{\Gm}{\seal_2}{\lsig_2}{A_2}
   \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 }
-{\goodTerm{\Gm}{\inh {\InhInh{h}} {\LkgAdd{m}{t}} \newline  \equiv \LkgAdd{\inh {h} {m}}  {t[(\pi_1, \uparrow^s)]}}{...}} 
+{\goodTerm{\Gm}{\inh {\InhInh{h}} {\LkgAdd{m}{t}} \newline  \equiv \LkgAdd{\inh {h} {m}}  {t[(\pi_1, \uparrow^s)]}}{\TyLkg{\LSigAdd{\lsig_2}{\seal_2}{\sub{T}{\SubstExt{\pi_1}{\uparrow^s}}}}}} 
 \\
 
 \\
@@ -757,7 +759,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \\
 \Rule[name=tmeq/nest/beta]
-{\goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\
 \goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
@@ -767,7 +769,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \inh{\InhNest{h}{i}}{\LkgAdd{\lkg}{t}} \equiv 
 \LkgAdd{\inh{h}{\lkg}}{\inh{i}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
 }
-{...}
+{\TyLkg{\LSigAdd{\lsig_1}{\seal_2}{\TyLkg{\tau_2}}}}
 }
 
 \end{mathparpagebreakable}
