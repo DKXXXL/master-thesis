@@ -353,7 +353,7 @@ transforms any family providing the base STLC functionalities into a new
 family additionally supporting fixpoints.
 %\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
 
-In \cref{fig:stlc-isorec-prod}, "STLCFixIsorec" is declared as
+In \cref{fig:stlc-isorec-prod}, "STLCFixIsorec" is declared as \EDJ{I think this paragraph is confusing for the audience about ``what is the relationship between this graph and the above graph?'' or ``why did you mention functor in the first place?''.  I think saying that mixin is an operation on two functors might be helpful, but does introduce a great deal of complexity in the text. What's more, w know mixin of two (standalone) families is not really making sense because two families might have a bunch of duplication. Thus mixin of two functors is making sense. I think this point needs to be mentioned (still the complexity of text is a problem). }
 an "STLC" extension that mixes in "STLCFix" and "STLCIsorec".
 The family is declared with minimal verbiage, yet
 \lsti{STLCFixIsorec.typesafe} is automatically a proof of the type-safety
@@ -526,7 +526,7 @@ equalities are compatible with the late binding of "tm".
 Also note that within family "STLCFix", a second partial recursor
 (called "tm_prect_STLCFix") and its equalities are available,
 allowing properties about "tm_fix",
-such as \lsti{\neg(tm_var "x" = tm_fix "y" t)}, to be proved.
+such as \lsti{\neg(tm_var "x" = tm_fix "y" t)}, to be proved.\EDJ{Actually this one is provable using the first partial recursor because LHS is "Some sth" RHS is "None". An approrpiate example is STLC_bool where "tm_true = tm_false" because using first partial recursor both will reduced to "None", only the second partial recursor can distinguish them.}
 
 %\noindentparagraph{Limitations.}
 
