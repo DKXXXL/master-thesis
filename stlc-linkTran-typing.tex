@@ -54,7 +54,7 @@ surface syntax of program & $i$      & $\goodInh{..}{h_i}{\lsig_i}{\lsig_i'}$   
 \end{centered}
 
 
-We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example. We list out the surface syntax and their translation into \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. We omit the information for $s_i$ and $A_i$
+We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example, based on the example \cref{fig:stlc-linkage-typing} and \cref{fig:stlc-mechanized}. We list out the surface syntax and their translation into \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. We omit the information for $s_i$ and $A_i$
 
 
 When sketching signature $\lsig$, we use curly bracket as a shorthand for signature. Because every $\lsig_i$ is always constructed from $\lsig_{i-1}$ so in the figure we omit the previous fields in each signature.  One exception are the rows indexed by $\alpha$ and $\beta$. These two rows are describing a nested family for case handlers, and $\lsig_\beta'$ is based on $\lsig_\alpha'$ and $\lsig_\beta = \lsig_\alpha$. The other exception is $\lsig_3$, which is directly $\lsig_2$ since the parent doesn't have those new constructor. Note for $\lsig_2$ and $\lsig_2'$, there are actually multiple constructors inserted into the signature (e.g. "tm_lam" and "tm_app") which we omitted here.
