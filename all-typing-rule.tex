@@ -213,15 +213,15 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodTerm{\Gm}{x}{\TyS{a}}}
 {\goodTerm{\Gm}{x \equiv a}{A}}
 
-\Rule[name=tm/subst]
+\Rule[name=tmeq/subst]
 {}
-{\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{(\sub{t}{\gm^\uparrow})}}{\TyPi {A} {B}}
+{\goodTerm{\Gm}{ \sub{(\lam{t})}{\gm} \equiv \lam{\sub{t}{\gm^\uparrow}}}{\TyPi {A} {B}}
 \\ \goodTerm{\Gm}{ \sub{(u,v)}{\gm} \equiv (\sub{u}{\gm},\sub{v}{\gm})}{\TySigma {A} {B}}
-\\ \goodType{\Gm}{\El{(\sub{T}{\gm})} \equiv \sub{(\El{T})}{\gm}}{}
+\\ \goodType{\Gm}{\El{\sub{T}{\gm}} \equiv \sub{(\El{T})}{\gm}}{}
 \\ \goodTerm{\Gm}{ \sub{\true}{\gm} \equiv \true}{\cB} 
 \\  \goodTerm{\Gm}{ \sub{\false}{\gm} \equiv \false}{\cB} 
-\\ \goodTerm{\Gm}{\sub{\ifb{c}{a}{b}}{\gm} \equiv \ifb{\sub{c}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm}}}{T}
-\\ \goodTerm{\Gm}{\sub{\Jeq{w}{t}}{\gm} \equiv \Jeq{\sub{w}{\gm}}{\sub{t}{\gm}}}{..}
+\\ \goodTerm{\Gm}{\sub{(\ifb{c}{a}{b})}{\gm} \equiv \ifb{\sub{c}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm}}}{T}
+\\ \goodTerm{\Gm}{\sub{(\Jeq{w}{t})}{\gm} \equiv \Jeq{\sub{w}{\gm}}{\sub{t}{\gm}}}{}
 }
 
 \end{mathparpagebreakable}
@@ -258,8 +258,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \Rule[name=substeq/comp/assoc]
 {}
 {\goodSub{\Gm}{ 
-  \SubstComp{\gm_1}{\SubstComp{\gm_2}{\gm_3}} 
-  \equiv \SubstComp{\SubstComp{\gm_1}{\gm_2}}{\gm_3} 
+  \SubstComp{\gm_1}{(\SubstComp{\gm_2}{\gm_3})} 
+  \equiv \SubstComp{(\SubstComp{\gm_1}{\gm_2})}{\gm_3} 
   }
   {\Theta}}
 
@@ -346,16 +346,16 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
     \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
 }
 
-\Rule[name=ind/cstr/subst ]
+\Rule[name=tmeq/wsup/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
-{\goodTerm{\Gm}{\sub{\Wsup{T}{a}{b}}{\gm} \equiv \Wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
+{\goodTerm{\Gm}{\sub{(\Wsup{T}{a}{b})}{\gm} \equiv \Wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 
 \Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
   \\ \goodType{\Gm}{A}{i}
   \\ \goodType{\Gm, A}{B}{i}
 }{
-  \goodWSig{\Gm}{\sub{\WSigSub{\WSigAdd{\wsig}{A}{B}}}{\gm} \equiv \wsig}{n}
+  \goodWSig{\Gm}{{\WSigSub{\WSigAdd{\wsig}{A}{B}}} \equiv \wsig}{n}
 }
 
 \Rule[name=wsigeq/sub/subst]{
@@ -421,10 +421,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodType{\Gm}{A}{}
 \\ \goodSeal{\Gm}{\seal}{\lsig}{A}
 \\ \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{\lsigproj{1} {(\LSigAdd  {\lsig}  {\seal}  {T})} \equiv \lsig}{n}
-\\ \goodType{\Gm}{\lsigprojT {(\LSigAdd  {\lsig} {\seal} {T})} \equiv A}{}
-\\ \goodSeal{\Gm}{\lsigproj{s}{(\LSigAdd{\lsig} {\seal} {T})} \equiv \seal}{\lsig}{A}
-\\ \goodType{\Gm, A}{\lsigproj{2}{(\LSigAdd {\lsig} {\seal}  {T})} \equiv T}{}
+{\goodSig{\Gm}{\lsigproj{1} {\LSigAdd  {\lsig}  {\seal}  {T}} \equiv \lsig}{n}
+\\ \goodType{\Gm}{\lsigprojT {\LSigAdd  {\lsig} {\seal} {T}} \equiv A}{}
+\\ \goodSeal{\Gm}{\lsigproj{s}{\LSigAdd{\lsig} {\seal} {T}} \equiv \seal}{\lsig}{A}
+\\ \goodType{\Gm, A}{\lsigproj{2}{\LSigAdd {\lsig} {\seal}  {T}} \equiv T}{}
 }
 \\
 
@@ -436,10 +436,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodSig{\Gm}{\sub{(\LSigAdd {\lsig}{\seal}{T})}{\gm} \equiv 
   \LSigAdd {\sub{\lsig}{\gm}}{\sub{\seal}{\gm^\uparrow}}{\sub{T}{\gm^\uparrow}}
 }{n+1}
-\\ \goodSig{\Gm}{ \sub{\lsigproj{1}{\lsig}}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
-\\ \goodType{\Gm}{\sub{\lsigprojT {\lsig}}{\gm} \equiv \lsigprojT {\sub{\lsig}{\gm}}}{}
+\\ \goodSig{\Gm}{ \sub{(\lsigproj{1}{\lsig})}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
+\\ \goodType{\Gm}{\sub{(\lsigprojT {\lsig})}{\gm} \equiv \lsigprojT {\sub{\lsig}{\gm}}}{}
 \\ \goodSeal{\Gm}{\sub{\lsigproj{s}{\lsig}}{\gm} \equiv {\lsigproj{s}{\sub{\lsig}{\gm}}} }{\lsig}{A}
-\\ \goodType{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{ \sub{\lsigproj{2}{\lsig}}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
+\\ \goodType{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{ \sub{(\lsigproj{2}{\lsig})}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
 }
 \\
 
@@ -466,7 +466,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 { \goodSub{\Gm}{\gm}{\Theta}
 }
 {
-  \goodTerm{\Gm}{\sub{\Tkg {\lkg}}{\gm} \equiv \Tkg {\sub{\lkg}{\gm}}}{\TyTkg{\lsig}}
+  \goodTerm{\Gm}{\sub{(\Tkg {\lkg})}{\gm} \equiv \Tkg {\sub{\lkg}{\gm}}}{\TyTkg{\lsig}}
 }
 \\
 
@@ -490,7 +490,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\
 \Rule[name=l/proj]
 {\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}}
-{\goodTerm{\Gm}{\lkgproj{1} {\lkg}}{\TyLkg {(\lsigproj{1} {\lsig})}}
+{\goodTerm{\Gm}{\lkgproj{1} {\lkg}}{\TyLkg {\lsigproj{1} {\lsig}}}
 \\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
 }
 \\
@@ -501,8 +501,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \\ \goodType{\Gm}{A}{}
 \\  \goodSeal{\Gm}{f}{\lsig}{A} 
  \\ \goodTerm{\Gm, A}{t}{T}}
-{\goodTerm{\Gm}{\lkgproj{1} {(\LkgAdd {\lkg} {t})} \equiv \lkg}{\TyLkg \lsig}
-\\ \goodTerm{\Gm, A}{\lkgproj{2}{(\LkgAdd {\lkg}{t})} \equiv t}{T}
+{\goodTerm{\Gm}{\lkgproj{1} {\LkgAdd {\lkg} {t}} \equiv \lkg}{\TyLkg \lsig}
+\\ \goodTerm{\Gm, A}{\lkgproj{2}{\LkgAdd {\lkg}{t}} \equiv t}{T}
 }
 \\
 \\
@@ -510,8 +510,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodSub{\Gm}{\gm}{\Theta}}
 {
 \goodTerm{\Gm}{\sub{\LkgEmp}{\gm} \equiv \LkgEmp}{\TyLkg {\LSigEmp}}
-\\ \goodTerm{\Gm}{\sub{(\LkgAdd {\lkg} {t}) }{\gm} \equiv (\LkgAdd {\sub{\lkg}{\gm}} {\sub{t}{\gm^\uparrow}})}{\sub{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}{\gm}}
-\\\\ \goodTerm{\Gm}{ \sub{\lkgproj{1} {\lkg}}{\gm} \equiv \lkgproj{1} {\sub{\lkg}{\gm}} }{\sub{\TyLkg (\lsigproj{1} {\lsig})}{\gm}}
+\\ \goodTerm{\Gm}{\sub{(\LkgAdd {\lkg} {t}) }{\gm} \equiv \LkgAdd {\sub{\lkg}{\gm}} {\sub{t}{\gm^\uparrow}}}{\sub{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}{\gm}}
+\\\\ \goodTerm{\Gm}{ \sub{\lkgproj{1} {\lkg}}{\gm} \equiv \lkgproj{1} {\sub{\lkg}{\gm}} }{\sub{\TyLkg {\lsigproj{1} {\lsig}}}{\gm}}
 \\
 \goodTerm{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{\sub{\lkgproj{2}{\lkg}}{\gm^\uparrow} \equiv \lkgproj{2}{\sub{\lkg}{\gm}}}{\lsigproj{2}{\lsig}}}
 \\
