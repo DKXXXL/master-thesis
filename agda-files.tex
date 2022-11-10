@@ -1,16 +1,16 @@
-We make four agda source code files (publicly and anonymously) openly avaliable, and they include the corresponding QIIT syntax definition and models. 
+We provide four agda source code files in the ``other supplemental material'', and they include the corresponding QIIT syntax definition and models. 
 
-For syntax, please check \\ \href{https://drive.google.com/file/d/1aoG67rmXzP_x1MvZCIN3do0sucyqjwkn/view?usp=sharing}{https://drive.google.com/file/d/1aoG67rmXzP_x1MvZCIN3do0sucyqjwkn/view?usp=sharing}. This is done by mainly following the formulation \citet{altkap2016}. This is also very close to \citet{coquand2018canonicity} and \citet{sterling2019algebraic} but we formulate our syntax in a type-theoretic framework.
+For syntax, please check "syntax.agda" in the ``other supplemental material''. This is done by mainly following the formulation \citet{altkap2016}. This is also very close to \citet{coquand2018canonicity} and \citet{sterling2019algebraic} but we formulate our syntax in a type-theoretic framework.
 
-For syntactic translation, please check \\ \href{https://drive.google.com/file/d/1pMqn8DS4T4jiCubzk3HgMANjrfKpcGlI/view?usp=sharing}{https://drive.google.com/file/d/1pMqn8DS4T4jiCubzk3HgMANjrfKpcGlI/view?usp=sharing}. The syntactic translation here is to translate most of the novel feature introduced in this paper into a standard MLTT. 
+For syntactic translation, please check "SyntaxTranslation.agda" in the ``other supplemental material'' . The syntactic translation here is to translate most of the novel feature introduced in this paper into a standard MLTT. 
 The essence here is to translate linkage into a sigma type  with dependent function inside---and the dependent function is simulating the nature of ``late-binding'' of each field.
 
 
 This is the first QIIT-model we give. A QIIT-model can be roughly consider as an arbitrary mapping from the QIIT data(our syntax in this case), also respecting the quotient(judgemental equality in this case). Here, the syntactic translation model is mapping to (a subpart of) the original QIIT data (itself). 
 
-For consistency model, please check \\ \href{https://drive.google.com/file/d/1pNhnn125P5byAHDaSIlpbxMvr1F-9FRo/view?usp=sharing}{https://drive.google.com/file/d/1pNhnn125P5byAHDaSIlpbxMvr1F-9FRo/view?usp=sharing}. This is following the standard model from \citet{altkap2016,kaposi2017type,kaposi2019gluing}.
+For consistency model, please check "semantic.agda" in the ``other supplemental material''. This is following the standard model from \citet{altkap2016,kaposi2017type,kaposi2019gluing}.
 
-For canonicity model, please check \\ \href{https://drive.google.com/file/d/1R6C7QNfyu8fbl6LE2ruvpqZ_ZDSRVo0c/view?usp=sharing}{https://drive.google.com/file/d/1R6C7QNfyu8fbl6LE2ruvpqZ_ZDSRVo0c/view?usp=sharing}. This is mainly following \citet{coquand2018canonicity,sterling2019algebraic}, but we carried out our argument in a type-theortic framework.  In other references, it is also called reducibility argument, as an instance of proof-relevant logical relation. Our model can be considered as a verbose/more concrete version of \citet{kaposi2019gluing}.
+For canonicity model, please check "canonicity.agda" in the ``other supplemental material''. This is mainly following \citet{coquand2018canonicity,sterling2019algebraic}, but we carried out our argument in a type-theortic framework.  In other references, it is also called reducibility argument, as an instance of proof-relevant logical relation. Our model can be considered as a verbose/more concrete version of \citet{kaposi2019gluing}.
 
 For both consistency and canonicity model, the key part is still about handling the novel feature. Thanks to the insight from syntactic translation, we can always inspired by consistency and canonicity model of sigma type and dependent function in standard MLTT.
 
