@@ -170,7 +170,8 @@
 \newcommand{\goodSub}[3]{\ensuremath{ {#1} \vdash {#2} : {#3} }}
 \newcommand{\goodSig}[3]{\ensuremath{ {#1} \vdash {#2} \ \ \texttt{LSig}^{#3} }}
 \newcommand{\goodWSig}[3]{\ensuremath{ {#1} \vdash {#2} \ \ \texttt{WSig}^{#3} }}
-\newcommand{\goodSeal}[4]{\ensuremath{ {#1} \vdash {#2} : {#3} \  |\  {#4} }}
+% \newcommand{\goodSeal}[4]{\ensuremath{ {#1} \vdash {#2} : {#3} \  |\  {#4} }}
+
 \newcommand{\goodInh}[4]{\ensuremath{ {#1} \vdash {#2} : {#3} \twoheadrightarrow {#4}}}
 \newcommand{\nat}{\ensuremath{\mathbf{N}}}
 
@@ -245,7 +246,7 @@
 \newcommand{\InhInh}[1]{\ensuremath{\texttt{Inherit}({#1})}}
 \newcommand{\InhNest}[2]{\ensuremath{\texttt{Nest}({#1},{#2})}}
 
-
+\newcommand{\goodSeal}[4]{\ensuremath{ \goodTerm{{#1}, \TyTkg{#3}}{{#2}}{\sub{{#4}}{p^1}} }}
 
 \newcommand{\goodCtxS}[2]{{ {#1} \ \models_S }}
 \newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
