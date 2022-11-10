@@ -104,28 +104,36 @@ The \lsti{FInduction} command is similar to \lsti{FRecursion} but
 allows cases to be defined in proof mode.
 Consider "weakenlem" as an example.
 It is proven by induction on the typing relation "hasty".
-Its \lsti{motive} clause suggests that the lemma reads as
+Its \lsti{motive} clause shows that the lemma reads as
+\lstinline[basicstyle=\fontsize{8}{9}\ttfamily]!\forall G t T, hasty G t T -> \forall G', includedin G G' -> hasty G' t T!.
+
+%\begin{centered}
+%\begin{minipage}{.63\textwidth}
+%\begin{lstlisting}[basicstyle=\fontsize{8}{9}\ttfamily]
+%\forall G t T, hasty G t T -> \forall G', includedin G G' -> hasty G' t T.
+%\end{lstlisting}
+%\end{minipage}
+%\end{centered}
+
+\noindent
+Upon entering case "ht_abs", for instance, Coq enters proof mode with the goal
 
 \begin{centered}
-\begin{minipage}{.63\textwidth}
+\begin{minipage}{.635\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8}{9}\ttfamily]
-\forall G t T, hasty G t T -> \forall G', includedin G G' -> hasty G' t T.
+\forall G', includedin G G' -> hasty G' (tm_abs x t) (ty_arrow T1 T2)
 \end{lstlisting}
 \end{minipage}
 \end{centered}
 
 \noindent
-Upon entering case "ht_abs", for instance, Coq enters proof mode with the goal
-
-\begin{lstlisting}[basicstyle=\fontsize{8}{9}\ttfamily]
-  \forall ...
-\end{lstlisting}
-
-\noindent
+and with the induction hypothesis
+\lstinline[basicstyle=\fontsize{8}{9}\ttfamily]!\forall G', includedin (extend G x T1) G' -> hasty G' t T2!.
+%
 The programmer can use tactic programming to discharge the goal.
 %The idiomatic programming experience with Coq is largely preserved.
-Because the lemma is by induction on "hasty" and because "STLCFix" adds
-a constructor to "hasty", the programmer is required in family "STLCFix" to
+Because the lemma is by \lsti!FInduction! on "hasty" and because "STLCFix" adds
+a constructor "ht_fix" to "hasty", the programmer is required in family "STLCFix" to
 extend the proof of "substlem" to handle this extra case.
 
 
@@ -146,19 +154,23 @@ When "st_beta" is inherited into family "STLCFix", "st_beta" has a type that now
 refers to the "subst" function in "STLCFix", where "subst" is defined
 by handling all the five cases known to that family.
 Thus, late binding of "subst" allows the derived family to reuse "st_beta"
-to $\beta$-reduce abstractions whose body is a fixpoint.
+as the $\beta$-reduction rule for applications possibly constructed from "tm_fix".
 
-Importantly, a name is late bound only within a family that defines or extends it.
+Importantly, a name is late bound only within a family that defines or further binds it.
 Outside such families, the name can be accessed only by explicitly
 specifying a family that contains it.
 For example, the last line of \cref{fig:stlc-mechanized} accesses "typesafe"
-with "STLCFix.typesafe".
-Executing the command prints
+with a qualifier "STLCFix".
+The command prints
 
+\begin{centered}
+\begin{minipage}{.880\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
 STLCFix.typesafe: \forall t t' T, STLCFix.steps t t' -> STLCFix.hasty STLCFix.empty t T ->
-                   STLCFix.value t' \/ \exists t'', STLCFix.step t' t''.
+                  STLCFix.value t' \/ \exists t'', STLCFix.step t' t''.
 \end{lstlisting}
+\end{minipage}
+\end{centered}
 
 \noindent
 In this type, all references to nested names are qualified by "STLCFix", as desired.
@@ -169,9 +181,13 @@ In this type, all references to nested names are qualified by "STLCFix", as desi
 Consider proving the "ht_unit" case of the substitution lemma, "substlem".
 The goal is seemingly trivial: the programmer is asked to prove
 
+\begin{centered}
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[basicstyle=\fontsize{8.25}{9}\ttfamily]
 \forall G' G x t' T', G' = extend G x T' -> hasty empty t' T' -> hasty G (subst tm_unit x t') ty_unit.
 \end{lstlisting}
+\end{minipage}
+\end{centered}
 
 \noindent
 If "subst" were an ordinary Coq function, then the programmer could
@@ -180,7 +196,7 @@ discharge the goal with
 The Ltac term \lsti{simpl subst} unfolds \lsti{subst} using its definition
 and simplifies \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
 
-However, with \lsti{subst} being late bound, \lsti{subst} can no longer
+But with \lsti{subst} being late bound, \lsti{subst} cannot and should not
 be unfolded~(\ref{chg:latebind-v-defeq}):
 the definition of \lsti{subst}, as a recursive function,
 varies across families, yet a derived family should be able to reuse the
@@ -195,24 +211,27 @@ affect \emph{propositional equality}.
 That is, \lsti{\forall x t, subst tm_unit x t = tm_unit},
 as a proposition (\lsti{Prop}), should still hold.
 After all, how \lsti{subst} is defined on \lsti{tm_unit} does not vary
-from a base family to a derived family.\EDJ{I think the reviewer might ask : what if the subst late-bound tm_unit case/why the subst cases cannot be late-bound? it not necessary return tm_unit in those case. 
-\\ What the plugin generates is actually subst tm_unit x t = subst.tm_unit. In other words, it points back to the handler instead of the concrete constructor. That is one of the advantage of looking FRecursion as a family.}
+from a base family to a derived family.
+%\EDJ{I think the reviewer might ask : what if the subst late-bound tm_unit case/why the subst cases cannot be late-bound? it not necessary return tm_unit in those case. 
+%\\ What the plugin generates is actually subst tm_unit x t = subst.tm_unit. In other words, it points back to the handler instead of the concrete constructor. That is one of the advantage of looking FRecursion as a family.}\YZreply{Currently the paper is taking the position that case handlers cannot be further bound, to make the story simpler.}
+What varies is \lsti{subst} itself as a recursive function combining the case handlers.
 %
 Based on this insight, \Lang automatically generates
-propositional equalities for each recursive function defined with \lsti{FRecursion},
-making them available as axioms for use by the rest of the current family.
+a propositional equality for each case handler defined within \lsti{FRecursion},
+making the equalities and the recursive function available as axioms for use by the rest of the current family.
 \Lang also provides a tactic \lsti{fsimpl} that enables, for instance,
 simplifying \lsti{subst tm_unit x t'} to \lsti{tm_unit}.
-Under the hood, \lsti{fsimpl} works by rewriting using the postulated
-propositional equalities.
+Under the hood, \lsti{fsimpl} works by rewriting applications of the
+axiomatized recursive function using the axiomatized propositional equalities.
 
 Note that the definitional equality on \lsti{subst} is available
-outside those families that contain "subst".
-Within those families, the meaning of \lsti{subst} is late bound, so only
+\emph{outside} those families that contain "subst".
+Within those families, the meaning of \lsti{subst} is late bound
+(i.e., polymorphic to the enclosing family), so only
 propositional equality is available.
 In contrast, outside those families, \lsti{subst} is always referenced
-by specifying a family that contains it, \EDJ{I think the reviewer without background of Family Polymorphism will be confused at this paragraph. i.e. Why inside family it is late-bound but not outside? }
-such as \lsti{STLC.subst} or \lsti{STLCFix.subst}.
+by specifying a family that contains it, %\EDJ{I think the reviewer without background of Family Polymorphism will be confused at this paragraph. i.e. Why inside family it is late-bound but not outside? }
+as in \lsti{STLC.subst} and \lsti{STLCFix.subst}.
 As far as the type checker is concerned, \lsti{tm_unit} and
 \lsti{STLCFix.subst tm_unit x t'} are the same thing---the type checker
 equates them definitionally by unfolding \lsti{STLCFix.subst} and
@@ -314,8 +333,8 @@ For example, the left column of \cref{fig:stlc-isorec-prod} shows an
 extension of STLC with iso-recursive types, where "tysubst" is
 introduced into the context of "hasty".
 %
-In the event that it cannot be inferred where to place of a newly introduced field,
-programmer annotation is required. 
+In the event that \Lang cannot infer where the programmer intends to place a new field,
+annotation is required. 
 
 \input{stlc-isorec-prod.tex}
 
@@ -333,7 +352,7 @@ transforms any family providing the base STLC functionalities into a new
 family additionally supporting fixpoints.
 %\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
 
-In \cref{fig:stlc-isorec-prod}, family "STLCFixIsorec" is declared as
+In \cref{fig:stlc-isorec-prod}, "STLCFixIsorec" is declared as
 an "STLC" extension that mixes in "STLCFix" and "STLCIsorec".
 The family is declared with minimal verbiage, yet
 \lsti{STLCFixIsorec.typesafe} is automatically a proof of the type-safety
@@ -459,15 +478,17 @@ tm_fix_eq_STLC : \forall x t P H1 H2 H3 H4, tm_prect_STLC P H1 H2 H3 H4 (tm_fix 
 
 Partial recursors appear weaker than ordinary recursors,
 but there is power in restraint.
-Partial recursors offer a principled, uniform way to derive injectivity and disjointness of
-constructors, while allowing for extensibility:
+Partial recursors serve as extensional characterizations of inductive types allowing future extension.
+In particular,
+they offer a principled, uniform way to derive injectivity and disjointness of
+constructors:
 they enable injective mappings from a late bound inductive
 type, like "tm", to an ordinary inductive type, like \lsti{\nat},
 the injectivity and disjointness of whose constructors are readily
 available.
 %
 For example, in a proof state with the assumption \lsti{H : tm_var "x" = tm_abs "y" t},
-running \lsti{fdiscriminate H} first applies the injective mapping to
+running \lsti{fdiscriminate H} first applies an injective mapping to
 both sides of~\lsti{H}, obtaining
 
 \begin{centered}
