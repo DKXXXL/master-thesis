@@ -347,9 +347,10 @@ annotation is required.
 Families can be readily reused to construct larger extensions that
 \emph{mix in}~\cite{mixin-1990} the functionalities of the individual
 families.
-A family like \lsti{STLCFix} can be viewed as a family-to-family functor\EDJ{The reader might be confused why look at them as functor, as the parent seems unchanged. One insight is that the parent of nested family, in Zhang OOPSLA 2017, is late-bound. Thus it has to be a functor. }---%
+A family like \lsti{STLCFix} can be viewed as a family-to-family functor---%\EDJ{The reader might be confused why look at them as functor, as the parent seems unchanged. One insight is that the parent of nested family, in Zhang OOPSLA 2017, is late-bound. Thus it has to be a functor. }
 and hence a mixin, in the sense of \cite{flatt1998mixin}---that
-transforms any family providing the base STLC functionalities into a new
+transforms any family providing the base STLC functionalities
+(i.e., \lsti{STLC} or a derived family there of) into a new
 family additionally supporting fixpoints.
 %\EDJ{I feel this paragraph will cause more confusion---because it is inheritance judgement/linkage transformer being mixed in, not family itself. Conceptually not distinguishing family and linkage transfomer will make reader wonder what this magic black box here actually is}
 
