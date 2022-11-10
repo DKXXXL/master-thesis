@@ -452,21 +452,21 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 }
  
 \Rule[name=l/empty/eta]
-{\goodTerm{\Gm}{o}{\TyLkg {\LSigEmp}}}
-{\goodTerm{\Gm}{o \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
+{\goodTerm{\Gm}{\lkg}{\TyLkg {\LSigEmp}}}
+{\goodTerm{\Gm}{\lkg \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
  
 \Rule[name=tm/pk]
-{ \goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
+{ \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
 }
 {
-  \goodTerm{\Gm}{\Tkg {o}}{\TyTkg{\lsig}}
+  \goodTerm{\Gm}{\Tkg {\lkg}}{\TyTkg{\lsig}}
 }
 
 \Rule[name=tmeq/pk/subst]
 { \goodSub{\Gm}{\gm}{\Theta}
 }
 {
-  \goodTerm{\Gm}{\sub{\Tkg {o}}{\gm} \equiv \Tkg {\sub{o}{\gm}}}{\TyTkg{\lsig}}
+  \goodTerm{\Gm}{\sub{\Tkg {\lkg}}{\gm} \equiv \Tkg {\sub{\lkg}{\gm}}}{\TyTkg{\lsig}}
 }
 \\
 
@@ -482,27 +482,27 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 }
 
 \Rule[name=lkgeq/add/eta]
-{\goodTerm{\Gm}{o}{\TyLkg \lsig}}
-{\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{o}}{\lkgproj{2}{o}}{\TyLkg{\lsig}} \equiv o }{\TyLkg{\lsig}}}
+{\goodTerm{\Gm}{\lkg}{\TyLkg \lsig}}
+{\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{\lkg}}{\lkgproj{2}{\lkg}}{\TyLkg{\lsig}} \equiv \lkg }{\TyLkg{\lsig}}}
 \\
 
 
 \\
 \Rule[name=l/proj]
-{\goodTerm{\Gm}{o}{\TyLkg{\lsig}}}
-{\goodTerm{\Gm}{\lkgproj{1} {o}}{\TyLkg {(\lsigproj{1} {\lsig})}}
-\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{o}}{\lsigproj{2}{\lsig}}
+{\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}}
+{\goodTerm{\Gm}{\lkgproj{1} {\lkg}}{\TyLkg {(\lsigproj{1} {\lsig})}}
+\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
 }
 \\
 
 \\ 
 \Rule[name=lkgeq/proj/beta]
-{\goodTerm{\Gm}{o}{\TyLkg {\lsig}} 
+{\goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
 \\ \goodType{\Gm}{A}{}
 \\  \goodSeal{\Gm}{f}{\lsig}{A} 
  \\ \goodTerm{\Gm, A}{t}{T}}
-{\goodTerm{\Gm}{\lkgproj{1} {(\LkgAdd {o} {t})} \equiv o}{\TyLkg \lsig}
-\\ \goodTerm{\Gm, A}{\lkgproj{2}{(\LkgAdd {o}{t})} \equiv t}{T}
+{\goodTerm{\Gm}{\lkgproj{1} {(\LkgAdd {\lkg} {t})} \equiv \lkg}{\TyLkg \lsig}
+\\ \goodTerm{\Gm, A}{\lkgproj{2}{(\LkgAdd {\lkg}{t})} \equiv t}{T}
 }
 \\
 \\
@@ -510,10 +510,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {\goodSub{\Gm}{\gm}{\Theta}}
 {
 \goodTerm{\Gm}{\sub{\LkgEmp}{\gm} \equiv \LkgEmp}{\TyLkg {\LSigEmp}}
-\\ \goodTerm{\Gm}{\sub{(\LkgAdd {o} {t}) }{\gm} \equiv (\LkgAdd {\sub{o}{\gm}} {\sub{t}{\gm^\uparrow}})}{\sub{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}{\gm}}
-\\\\ \goodTerm{\Gm}{ \sub{\lkgproj{1} {o}}{\gm} \equiv \lkgproj{1} {\sub{o}{\gm}} }{\sub{\TyLkg (\lsigproj{1} {\lsig})}{\gm}}
+\\ \goodTerm{\Gm}{\sub{(\LkgAdd {\lkg} {t}) }{\gm} \equiv (\LkgAdd {\sub{\lkg}{\gm}} {\sub{t}{\gm^\uparrow}})}{\sub{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}{\gm}}
+\\\\ \goodTerm{\Gm}{ \sub{\lkgproj{1} {\lkg}}{\gm} \equiv \lkgproj{1} {\sub{\lkg}{\gm}} }{\sub{\TyLkg (\lsigproj{1} {\lsig})}{\gm}}
 \\
-\goodTerm{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{\sub{\lkgproj{2}{o}}{\gm^\uparrow} \equiv \lkgproj{2}{\sub{o}{\gm}}}{\lsigproj{2}{\lsig}}}
+\goodTerm{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{\sub{\lkgproj{2}{\lkg}}{\gm^\uparrow} \equiv \lkgproj{2}{\sub{\lkg}{\gm}}}{\lsigproj{2}{\lsig}}}
 \\
 
 
@@ -525,7 +525,7 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {f} {T}} \equiv 
     \Sigma (\TyTkg {\lsig}) T["sf" \ f]}{}
 \\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
-\\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {o} {t})} \equiv ((\Tkg {o}), t["sf" \ f][(id, \Tkg {o})]) }{}
+\\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {\lkg} {t})} \equiv ((\Tkg {\lkg}), t["sf" \ f][(id, \Tkg {\lkg})]) }{}
 }
 
 \end{mathparpagebreakable}
@@ -591,10 +591,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \Rule[name=recl/proj]
 { \goodWSig{\Gm}{\wsig}{N}
-\\ \goodTerm{\Gm}{o}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ \goodTerm{\Gm}{\lkg}{\TyLkg{(\RecSig{\wsig}{R})}}
 \\ j < N
 }
-{\goodTerm{\Gm}{\Recproj{j}{o}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
+{\goodTerm{\Gm}{\Recproj{j}{\lkg}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
 \\
 \\
 \Rule[name=tm/wrec]{
@@ -610,20 +610,20 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 \Rule[name=recl/proj/beta]{
   \goodWSig{\Gm}{\wsig}{N}
   \\ j < N
-  \\ \goodTerm{\Gm}{o}{\TyLkg{\RecSig{\wsig}{R}}}
+  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
 }{
-  \goodTerm{\Gm}{\Recproj{j}{o}}{
+  \goodTerm{\Gm}{\Recproj{j}{\lkg}}{
     \CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R}}
 }
 \\
 
 \\
 \Rule[name=recl/proj/defN]{}{
-  \goodTerm{\Gm}{\Recproj{n+1}{o} \equiv \Recproj{n}{ \lkgproj{1}{o}}}{...}
+  \goodTerm{\Gm}{\Recproj{n+1}{\lkg} \equiv \Recproj{n}{ \lkgproj{1}{\lkg}}}{...}
 }
  
 \Rule[name=recl/proj/def0]{}{
-  \goodTerm{\Gm}{\Recproj{0}{o} \equiv \sub{\lkgproj{2}{o}}{("id", \Tkg{\lkgproj{1}{o}})}}{...}
+  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{("id", \Tkg{\lkgproj{1}{\lkg}})}}{...}
 }
 \\
 
@@ -682,17 +682,17 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \\
 \Rule[name=tmeq/inhid/beta]
-{ \goodTerm{\Gm}{o}{\TyLkg{\sigma} }}
-{\goodTerm{\Gm}{\inh {(\InhId)} {o} \equiv o}{...}}
+{ \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig} }}
+{\goodTerm{\Gm}{\inh {(\InhId)} {\lkg} \equiv \lkg}{...}}
 
 \Rule[name=tmeq/ext/beta]
 {
   \goodInh{\Gm}{h}{\sigma_1}{\sigma_2}
   \\ \goodTerm{\Gm, A_2}{t}{T}
-  \\ \goodTerm{\Gm}{o}{\TyLkg{\sigma_1}}
+  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\sigma_1}}
 }
-{\goodTerm{\Gm}{\inh {\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}} {o}
-\equiv \LkgAdd{\inh {h}{o}}{t}
+{\goodTerm{\Gm}{\inh {\goodInh{\Gm}{\InhExt {h} {t}}{\sigma_1}{(\LSigAdd {\sigma_2} {\seal_2} { T})}} {\lkg}
+\equiv \LkgAdd{\inh {h}{\lkg}}{t}
 }{...}}
 \\
 
@@ -739,8 +739,8 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {
 \goodTerm{\Gm}
 {
-\inh{\InhNest{h}{i}}{\LkgAdd{o}{t}} \equiv 
-\LkgAdd{\inh{h}{o}}{\inh{i}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
+\inh{\InhNest{h}{i}}{\LkgAdd{\lkg}{t}} \equiv 
+\LkgAdd{\inh{h}{\lkg}}{\inh{i}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
 }
 {...}
 }
