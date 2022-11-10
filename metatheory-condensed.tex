@@ -118,10 +118,10 @@ $i$-th pair in~$\wsig$, and $\wcode{\wsig}$ giving the code of the W-type (\rule
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
 case handlers for the $n$ constructors in~$\wsig$ (\ruleref{tm/wrec}).
-Each case handler has a type of the form $\CaseSig{A}{B}{T}$, where
-$T$ is the motive of the recursion (\ruleref{tyeq/casety}).
-For simplicity, we model non-dependent motives.
-This collection of case handlers~$\lkg$ then encodes those defined and inherited
+Each case handler has a type of form $\CaseSig{A}{B}{T}$, where
+$T$ is the motive of the recursion (\ruleref{tyeq/casety});
+for simplicity, we model non-dependent motives for recursion.
+The collection of case handlers~$\lkg$ encodes those defined and inherited
 by an \lsti{FRecursion} command in our plugin.
 We choose to type it with a linkage type $\TyLkg{\RecSig{\wsig}{T}}$
 to avoid introducing non-dependent $n$-tuples, which linkages generalize.

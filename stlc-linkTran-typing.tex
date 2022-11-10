@@ -1,16 +1,37 @@
-In this appendix, we ...
+In this appendix, we sketch how to use the ``library'' of linkage
+transformers in \TT to inductively construct a linkage that models a
+derived family of \lsti{STLC}.
 
+We use \lsti{STLCBool} as an example. \lsti{STLCBool} extends
+\lsti{STLC} with boolean values (\lsti{tm_true} and \lsti{tm_false})
+and if-then-else expressions.
+The left column of the table below shows initial code excerpted from
+this family.
+Each cell in the last column defines a linkage transformer~$h_i$
+inductively constructed from the linkage transformers $h_0$, ..., $h_{i-1}$.
+The goal is to eventually construct a linkage transformer $h_n$ representing
+the entire family \lsti{STLCBool}.
+
+Of note is the two grayed rows. They are constructing a linkage~$h_\beta$
+containing the case handlers for \lsti{subst}.
+This linkage $h_\beta$ is then appended as a nested linkage to $h_3$.
+
+\medskip
+
+\if 0
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{centered}
+  \small
+\renewcommand*{\arraystretch}{1.35}
 \begin{tabular}{|l|l|l|l|}
   \hline
   \rowcolor[HTML]{FFFC9E} 
-  surface syntax of program & $i$ & $\lsig_i = \LSigAdd{\lsig_{i-1}}{s_i}{T_i}$ & $\lsig_i' = \LSigAdd{\lsig_{i-1}'}{s_i'}{T_i'}$ \\ \hline
-  \lsti!Family STLC_bool...!   & 0        & $\{\}$                                     & $\{\}$                                     \\ \cline{2-4} 
+  surface-syntax program & $i$ & $\lsig_i = \LSigAdd{\lsig_{i-1}}{s_i}{T_i}$ & $\lsig_i' = \LSigAdd{\lsig_{i-1}'}{s_i'}{T_i'}$ \\ \hline
+  \lsti!Family STLCBool...!   & 0        & $\{\}$                                     & $\{\}$                                     \\ \cline{2-4} 
   \lsti!FInductive tm += !      & 1        & $\{"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}}}\}$         & $\{"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}'}}\}$        \\ \cline{2-4} 
-  \lsti! (*existent constr*)!    & 2        & $\{..; "tm_var": \El{"tm"}, .. \}$         & $\{..;"tm_var": \El{"tm"},.. \}$           \\ \cline{2-4} 
+  \codecomment{existent constr.}    & 2        & $\{..; "tm_var": \El{"tm"}, .. \}$         & $\{..;"tm_var": \El{"tm"},.. \}$           \\ \cline{2-4} 
   \lsti! .. | tm_true | .. !   & 3        & $\lsig_2$                                  & $\{..,"tm_true":\El{"tm"} \}$              \\ \cline{2-4} 
   \rowcolor[HTML]{CDCDCD} 
   \lsti!  FRecursion subst!       &          &                                            &                                            \\ \cline{2-4} 
@@ -26,33 +47,44 @@ In this appendix, we ...
   \end{tabular}
 \end{centered}
 
+\fi
+
 % Please add the following required packages to your document preamble:
 % \usepackage[table,xcdraw]{xcolor}
 % If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{centered}
-
+\small
+\renewcommand*{\arraystretch}{1.25}
 \begin{tabular}{|l|l|l|}
 \hline
 \rowcolor[HTML]{FFFC9E} 
-surface syntax of program & $i$      & $\goodInh{..}{h_i}{\lsig_i}{\lsig_i'}$             \\ \hline
-\lsti!Family STLC_bool!   & 0        & $\InhId$                                             \\ \cline{2-3} 
+surface-syntax program & $i$      & $\goodInh{\cdot}{h_i}{\lsig_i}{\lsig_i'}$             \\ \hline
+\lsti!Family STLCBool!   & 0        & $\InhId$                                             \\ \cline{2-3} 
 \lsti!FInductive tm += !       & 1        & $\InhOv{h_0}{\wcode{\wsig_{\texttt{tm}}'}}$                      \\ \cline{2-3} 
-\lsti! (*existent constr*) !   & 2        & $\InhOv{h_1}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$           \\ \cline{2-3} 
-\lsti! .. | tm_true | ..!    & 3        & $\InhExt{h_2}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$          \\ \cline{2-3} 
+\codecomment{existing constructors}   & 2        & $\InhOv{h_1}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$           \\ \cline{2-3} 
+\lsti!| tm_true |!\ \;\dadada    & 3        & $\InhExt{h_2}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$          \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
-\lsti!  FRecursion subst!       &          &                                                      \\ \cline{2-3} 
+\lsti!FRecursion subst!\ \;\dadada\ \;\lsti!+=! & $\alpha$ & $\InhId$ \\ \cline{2-3} 
 \rowcolor[HTML]{CDCDCD} 
-\lsti!  (* Inherit ... *)!      & $\alpha$ & $\InhId$                                             \\ \cline{2-3} 
-\rowcolor[HTML]{CDCDCD} 
-\lsti!  Case tm_true!          & $\beta$  & $\InhExt{h_\alpha}{..}$                              \\ \cline{2-3} 
+\lsti!  Case tm_true := !\dadada. & $\beta$  & $\InhExt{h_\alpha}{...}$ \\ \cline{2-3} 
 \rowcolor[HTML]{FFFFFF} 
-\lsti!  End subst!              & 4        & $\InhNest{h_3}{h_\beta}$ with $\uparrow^s_3$         \\ \cline{2-3} 
-                          & 5        & $\InhOv{h_4}{\lambda t. \Wrec{\wsig_{\texttt{tm}}'}{t}{"subst'"}}$ \\ \cline{2-3} 
-\lsti!(* Do the same on ty*)! & 6        & ...                                                  \\ \cline{2-3} 
-\lsti!(* Inherit env *)!      & 7        & $\InhInh{h_6}$ with $\uparrow^s_6$                   \\ \hline
+\lsti!End subst.!              & 4        & $\InhNest{h_3}{h_\beta}$
+  %with $\uparrow^s_3$
+  \\ \cline{2-3} 
+                          & 5        & $\InhOv{h_4}{\lambda t. \Wrec{\wsig_{\texttt{tm}}'}{t}{"substCases"}}$ \\ \cline{2-3} 
+\lsti!FInductive ty += !\dadada. & 6        & ...                                                  \\ \cline{2-3} 
+\codecomment{Inherit "env"}   & 7        & $\InhInh{h_6}$
+  %with $\uparrow^s_6$
+  \\ \cline{2-3} 
+\codecomment{Inherit "empty"}   & 8        & $\InhInh{h_7}$
+  \\ \cline{2-3} 
+\dadada   & \dadada & \dadada
+  \\ \hline
 \end{tabular}
 \end{centered}
 
+
+\if 0
 
 We take \lsti!Family STLC_bool! extending \lsti!STLC! as an example, based on the example \cref{fig:stlc-linkage-typing} and \cref{fig:stlc-mechanized}. We list out the surface syntax and their translation into \TT. In our figure, $\lsig_i$ stands for the parent signature (the signature before the transformation); and $\lsig_i'$ stands for the signature after the transformation. We omit the information for $s_i$ and $A_i$
 
@@ -61,3 +93,5 @@ When sketching signature $\lsig$, we use curly bracket as a shorthand for signat
 
 
 Our final target is to construct a term $\goodInh{\cdot}{?}{\lsig_7}{\lsig_7'}$ using the four linkage transformers' rules. There are two upcasting operations $\goodTerm{A_3'}{\uparrow^s_3}{A_3}$ and $\goodTerm{A_6'}{\uparrow^s_6}{A_6}$ (omitting debruijn indices here) for checking the compatibility between the omitted $A_i$ and $A_i'$.
+
+\fi
