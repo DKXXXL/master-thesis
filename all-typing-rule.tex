@@ -590,10 +590,10 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \Rule[name=recl/proj]
 { \goodWSig{\Gm}{\wsig}{N}
-\\ \goodTerm{\Gm}{\lkg}{\TyLkg{(\RecSig{\wsig}{R})}}
+\\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
 \\ j < N
 }
-{\goodTerm{\Gm}{\Recproj{j}{\lkg}}{\sub{(\CaseSig{(\pi_1^j \wsig)}{(\pi_2^j \wsig)}{R})}{\pi_1}}}
+{\goodTerm{\Gm}{\Recproj{j}{\lkg}}{\sub{(\CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R})}{\pi_1}}}
 \\
 \\
 \Rule[name=tm/wrec]{
@@ -618,11 +618,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \\
 \Rule[name=recl/proj/defN]{}{
-  \goodTerm{\Gm}{\Recproj{n+1}{\lkg} \equiv \Recproj{n}{ \lkgproj{1}{\lkg}}}{...}
+  \goodTerm{\Gm}{\Recproj{n+1}{\lkg} \equiv \Recproj{n}{ \lkgproj{1}{\lkg}}}{\sub{(\CaseSig{\wsigproj{n+1}{1}{\wsig}}{\wsigproj{n+1}{2}{\wsig}}{R})}{\pi_1}}
 }
- 
+
 \Rule[name=recl/proj/def0]{}{
-  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{("id", \Tkg{\lkgproj{1}{\lkg}})}}{...}
+  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{("id", \Tkg{\lkgproj{1}{\lkg}})}}{\sub{(\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R})}{\pi_1}}
 }
 \\
 
