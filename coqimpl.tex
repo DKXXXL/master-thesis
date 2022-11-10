@@ -65,7 +65,7 @@ In \lsti{STLC}, it is translated to a top-level module type
 \lsti{STLC\_tm} that declares a \lsti{tm} type,
 its constructors (e.g., \lsti{tm_abs}) \EDJ{I am not sure if it is better we emphasize in the following way :`` that declares a tm type, its constructors (e.g. tmabs) as a normal function,.. '' i.e. emphasize it is a normal function in the module type},
 its partial recursor (\lsti{tm_prect_STLC}),
-and the propositional equalities on the partial recursor
+and the propositional equalities\EDJ{I propose to change this sentence to ``and the prop eq about computational behaviour on the partial recursor''. And thus in the other parts of the paper, we can use the word ``computational behaviour'' instead of prop eq. Because just saying prop eq seems a bit of lack of context/details.} on the partial recursor
 (e.g., \lsti{tm_abs_eq_STLC}; \cref{sec:prec}).
 
 Importantly,
@@ -89,7 +89,7 @@ the new constructor \lsti{tm_fix} and related equalities.
 An \lsti{FRecursion} definition is translated in two parts:
 first a module containing the definitions of all the case handlers,
 and then a module type declaring the existence of the recursive function as well as
-its propositional equalities.
+its propositional equalities.\EDJ{Simiarly, here I think using ``computational behaviour'' is more accurate than using the word ``prop eq''}
 
 Consider the translation of \lsti{subst} in family \lsti{STLC}.
 First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
