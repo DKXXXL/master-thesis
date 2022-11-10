@@ -1,9 +1,35 @@
+In this appendix, we typeset a more complete set of typing rules for \TT.
+For the definitive version containing all the rules, please refer to the
+Agda file mentioned in \cref{sec:agda-files}.
+
 Note that, in the main text we use $\SubstWeak{n}$ and $\var{n}$ to manipulate variables and context for readability. In our appendices, we use $\pi_1 \gm, \pi_2 \gm$ (for arbitrary substitution $\gm$) instead. These two representations are equivalent as $\SubstWeak{n}$ is just a consecutive application of $\pi_1$, $\var{n}$ is the consecutive application of $\pi_1$ follows by $\pi_2$.
 
 What's more, we use $\pi_1$ and $\pi_2$ (without argument) to represent $\pi_1~"id"$ and $\pi_2~"id"$.
 
 For the singleton type $\TyS{a}$, we formulate in a more readable way instead of using the explicit introduction and elimination rule (e.g. a more explicit introduction rule will have a `constructor', say "s": $\frac{\goodTerm{\Gm}{a}{A}}{\goodTerm{\Gm}{"s"~a}{\TyS{a}}}$).
 
+\renewcommand{\Rule}[3][]{
+    \pgfkeys{/Rule, default, #1}%
+    \ifthenelse{\equal{\inferrulevskip}{default}}{%
+        \mprset{vskip=}%
+    }{%
+        \mprset{vskip=\inferrulevskip}
+    }%
+    \ifthenelse{\equal{\inferrulesep}{default}}{%
+        \mprset{sep=3ex}%
+    }{%
+        \mprset{sep=\inferrulesep}
+    }%
+%   \ifthenelse{\equal{\inferrulename}{0}}{%
+        \ensuremath{\inferrule{#2}{#3}}%
+%   }{%
+%       \ifthenelse{\equal{\inferrulelabel}{0}}{\ensuremath{%
+%           \inferrule*[lab={\rulelbl{\inferrulename}}]{#2}{#3}
+%       }}{\ensuremath{%
+%           \inferrule*[lab={\rulelbl[\inferrulelabel]{\inferrulename}}]{#2}{#3}
+%       }}%
+%   }%
+}
 
 \begin{mathpar}
 \judgebox{\goodCtx{\Gm}{i}}
