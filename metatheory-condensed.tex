@@ -13,7 +13,7 @@ first before delving into the technical details.
 \noindentparagraph{Summary.}
 
 \TT is intended as a foundational model. So unlike our programmer-facing plugin,
-typing is structural rather than nominal\EDJ{I don't actually know what do you mean by structural here. I think surface syntax (Coq) is pretty structual as well.}, and
+%typing is structural rather than nominal\EDJ{I don't actually know what do you mean by structural here. I think surface syntax (Coq) is pretty structual as well.}, and
 fields automatically axiomatized by the plugin require explicit definitions in \TT.
 %
 \TT provides MLTT-style constructs that can be used to express families and
@@ -26,8 +26,9 @@ family polymorphism in an OO setting, but the technical details differ significa
 \begin{itemize}
 [labelsep=*,leftmargin=1pc,itemsep=3pt]
 \item 
-Linkages model families, so they are like tuples composed of the fields.
-But there is a twist: they support late binding.
+Linkages model families; they are like tuples composed of the fields,
+with field names represented by variable bindings.
+But there is a twist: linkages support late binding.
 Unlike dependent tuples where a later component is \emph{existentially}
 quantified over the earlier ones, a linkage component is \emph{universally}
 quantified over---and thus polymorphic to---components preceding it.
