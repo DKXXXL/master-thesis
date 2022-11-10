@@ -527,7 +527,7 @@ equalities are compatible with the late binding of "tm".
 Also note that within family "STLCFix", a second partial recursor
 (called "tm_prect_STLCFix") and its equalities are available,
 allowing properties about "tm_fix",
-such as \lsti{\neg(tm_var "x" = tm_fix "y" t)}, to be proved.\EDJ{Actually this one is provable using the first partial recursor because LHS is "Some sth" RHS is "None". An approrpiate example is STLC_bool where "tm_true = tm_false" because using first partial recursor both will reduced to "None", only the second partial recursor can distinguish them.}\YZreply{To avoid introducing another family, can we use \lsti{tm_fix x t = tm_fix x' t' -> t = t'} as an example?}
+such as \lsti{\neg(tm_var "x" = tm_fix "y" t)}, to be proved.\EDJ{Actually this one is provable using the first partial recursor because LHS is "Some sth" RHS is "None". An approrpiate example is STLC_bool where "tm_true = tm_false" because using first partial recursor both will reduced to "None", only the second partial recursor can distinguish them.}\YZreply{To avoid introducing another family, can we use \lsti{tm_fix x t = tm_fix x' t' -> t = t'} as an example?}\EDJreply{That is fine I think. I think you already declared the existence of ``finjection'' earlier.}
 
 %\noindentparagraph{Limitations.}
 
