@@ -118,7 +118,7 @@
 }{
     \goodSig{\Gm}{\LSigEmp}{0}
 }
-
+\hfill
 \Rule[name=lsig/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
@@ -128,14 +128,14 @@
 }{
     \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
 }
-
+\hfill
 \Rule[name=l/empty]{
 }{
     \goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}
 }
-
+\hfill
 \Rule[name=l/add]{
-    \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
+    \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}}
     \\
     \goodTerm{\Gm, A}{t}{T}
     \\\\
@@ -143,23 +143,23 @@
 }{
     \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
 }
-
-\Rule[name=l/proj/2]{
-    \goodSig{\Gm}{\lsig}{n+1}
-    \\
-    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}
-}{
-    \goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
-}
-
+\hfill
 \Rule[name=tm/inh]{
     \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
-    \\
+    \\\\
     \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
 }{
     \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
 }
 
+%\Rule[name=l/proj/2]{
+%    \goodSig{\Gm}{\lsig}{n+1}
+%    \\
+%    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}
+%}{
+%    \goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
+%}
+%
 %\Rule[name=tyeq/pk/empty]{
 %}{
 %    \goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{}

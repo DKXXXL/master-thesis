@@ -87,11 +87,11 @@
   {\small\textsc{\rulelblfont#2}}%
   \textnormal{)}%
   }
-  \ifthenelse{\isempty{#1}}{
-      \label{rule:#2}
-  }{
-      \label{rule:#1}
-  }
+  \ifthenelse{\isempty{#1}}{%
+      \label{rule:#2}%
+  }{%
+      \label{rule:#1}%
+  }%
 }
 \newcommand\judgebox[1]{
 % \begin{flushleft}
