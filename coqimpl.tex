@@ -61,20 +61,22 @@ discussion in \cref{sec:sound}.
 
 An \lsti{FInductive} definition is translated to a parameterized module type.
 Consider the inductive type \lsti{tm}.
-In \lsti{STLC}, it is translated to a top-level module type
+In \cref{fig:stlc-compiled}, it is translated to a top-level module type
 \lsti{STLC\_tm} that declares a \lsti{tm} type,
-its constructors (e.g., \lsti{tm_abs}) \EDJ{I am not sure if it is better we emphasize in the following way :`` that declares a tm type, its constructors (e.g. tmabs) as a normal function,.. '' i.e. emphasize it is a normal function in the module type},
-its partial recursor (\lsti{tm_prect_STLC}),
-and the propositional equalities\EDJ{I propose to change this sentence to ``and the prop eq about computational behaviour on the partial recursor''. And thus in the other parts of the paper, we can use the word ``computational behaviour'' instead of prop eq. Because just saying prop eq seems a bit of lack of context/details.} on the partial recursor
-(e.g., \lsti{tm_abs_eq_STLC}; \cref{sec:prec}).
+four functions standing for the constructors,
+%\EDJ{I am not sure if it is better we emphasize in the following way :`` that declares a tm type, its constructors (e.g. tmabs) as a normal function,.. '' i.e. emphasize it is a normal function in the module type},
+a partial recursor (\lsti{tm_prect_STLC}),
+and the computational behaviors of the partial recursor
+(e.g., \lsti{tm_abs_eq_STLC}). %\cref{sec:prec}.
+%\EDJ{I propose to change this sentence to ``and the prop eq about computational behaviour on the partial recursor''. And thus in the other parts of the paper, we can use the word ``computational behaviour'' instead of prop eq. Because just saying prop eq seems a bit of lack of context/details.}
 
 Importantly,
 \lsti{STLC\_tm} merely declares the existence of these names and their types;
 it does not specify their definitions.
 Having these names and their types available through the context parameters (\lsti{self})
 suffices for the translations of the subsequent fields to be type-checked by Coq.
-Leaving the definitions open enables \lsti{STLC} and \lsti{STLCFix}
-to instantiate \lsti{tm} differently upon \lsti{End}~\lsti{STLC} and \lsti{End}~\lsti{STLCFix}.
+Leaving the definitions unspecified enables \lsti{STLC} and \lsti{STLCFix}
+to instantiate \lsti{tm} differently upon \lsti{End}~\lsti{STLC} and upon \lsti{End}~\lsti{STLCFix}.
 
 The command \lsti{FInductive tm : Set += tm_fix : }\dadada~in family
 \lsti{STLCFix} is again translated to a module type \lsti{STLCFix\_tm} (\cref{fig:stlcfix-compiled}).
