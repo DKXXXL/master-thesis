@@ -8,7 +8,7 @@ TARGETS = $(DOC).pdf
 # TeX source files
 TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
 	acmart.cls formalisms.sty syntax.tex metatheory.tex standardmodel.tex canonicitymodel.tex coqimpl.tex introduction.tex syntactic-example.tex coq-example.tex lang-design.tex related-work.tex syn-translate.tex challenge.tex casestudies.tex conclusion.tex	\
-	ext-ind-type-compilation-example.tex all-typing-rule.tex metatheory-condensed.tex\
+	ext-ind-type-compilation-example.tex all-typing-rule.tex agda-files.tex metatheory-condensed.tex	\
 	stlc-nonmechanized.tex stlc-mechanized.tex stlc-isorec-prod.tex	\
 	stlc-compiled.tex stlcfix-compiled.tex stlc-linkage-typing.tex stlcfix-linkage-typing.tex stlc-venn.tex	stlc-linkTran-typing.tex\
 	mltt-selected.tex fmltt-selected.tex cc-condensed.tex	\
