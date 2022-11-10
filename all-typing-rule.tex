@@ -2,12 +2,19 @@ In this appendix, we typeset a more complete set of typing rules for \TT.
 For the definitive version containing all the rules, please refer to the
 Agda file mentioned in \cref{sec:agda-files}.
 
-Note that, in the main text we use $\SubstWeak{n}$ and $\var{n}$ to manipulate variables and context for readability. In our appendices, we use $\pi_1 \gm, \pi_2 \gm$ (for arbitrary substitution $\gm$) instead. These two representations are equivalent as $\SubstWeak{n}$ is just a consecutive application of $\pi_1$, $\var{n}$ is the consecutive application of $\pi_1$ follows by $\pi_2$.
+In the main text we use $\SubstWeak{n}$ and $\var{n}$ to manipulate
+variables and contexts for readability. In this appendix and in the
+complete formalization (in Agda syntax), we use $\pi_1 \gm, \pi_2 \gm$
+(for arbitrary substitution $\gm$) instead. These two representations
+are equivalent as $\SubstWeak{n}$ amounts to consecutive applications of
+$\pi_1$, and $\var{n}$ amounts to consecutive applications of $\pi_1$
+followed by $\pi_2$.
+We also abbreviate $\pi_1~"id"$ and $\pi_2~"id"$ as $\pi_1$ and $\pi_2$,
+where "id" is the identity substitution.
 
-What's more, we use $\pi_1$ and $\pi_2$ (without argument) to represent $\pi_1~"id"$ and $\pi_2~"id"$.
+%For the singleton type $\TyS{a}$, we formulate in a more readable way instead of using the explicit introduction and elimination rule (e.g. a more explicit introduction rule will have a `constructor', say "s": $\frac{\goodTerm{\Gm}{a}{A}}{\goodTerm{\Gm}{"s"~a}{\TyS{a}}}$).
 
-For the singleton type $\TyS{a}$, we formulate in a more readable way instead of using the explicit introduction and elimination rule (e.g. a more explicit introduction rule will have a `constructor', say "s": $\frac{\goodTerm{\Gm}{a}{A}}{\goodTerm{\Gm}{"s"~a}{\TyS{a}}}$).
-
+% Redefine \Rule to hide labels
 \renewcommand{\Rule}[3][]{
     \pgfkeys{/Rule, default, #1}%
     \ifthenelse{\equal{\inferrulevskip}{default}}{%
@@ -49,10 +56,11 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 
 \begin{mathparpagebreakable}
 \Rule[name=ctx/empty]{ "" }{\goodCtx{\cdot}{0}} 
+
 \Rule[name=ctx/ext]
 {\goodCtx{\Gm}{i} \\ \goodType{\Gm}{A}{j}}
 {\goodCtx{\Gm, A}{i \cup j}}  
-\\
+
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \Rule[name=ty/universe]
@@ -119,8 +127,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
   \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{j \cup k}
   \\   \goodType{\Gm}{ \sub{\TyS{a}}{\gm} \equiv \TyS{\sub{a}{\gm}} } {j \cup k}
 }
-
-
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
@@ -196,7 +202,6 @@ For the singleton type $\TyS{a}$, we formulate in a more readable way instead of
 {}
 {\goodTerm{\Gm}{\pair{\fst{t}}{\snd{t}} \equiv t}{\TySigma{A}{B}}
 }
-
 
 \Rule[name=tm/bool]
 {""}
