@@ -1,3 +1,60 @@
+In the ``Other supplemental material'' section of the submission, we
+include the complete formalization of \TT.
+It consists of four files in Agda syntax.
+%
+
+\begin{description}[
+    itemsep=.5ex,topsep=.6ex,
+    labelsep=1.5ex,
+    leftmargin=6.5ex,
+%   labelindent=3.5ex,
+    font=\ttfamily\bfseries,
+]
+
+\item[Syntax.agda]
+
+This file contains the syntactic typing rules of \TT.
+We use the style of intrinsically typed syntax \cite{chapman2009type},
+which allows only well typed \TT types and terms to be constructed.
+The use of intrinsically typed syntax puts our formalization on a more
+rigorous footing.
+
+\item[Semantic.agda]
+
+This file defines the standard model from which
+\cref{thm:consistency} (consistency) follows.
+
+\item[Canonicity.agda]
+
+This file defines the logical-relations model from which
+\cref{thm:canonicity} (canonicity) follows.
+
+\item[SynTranslation.agda]
+
+We also provide a third model that serves as a translation that ``compiles
+away'' the novel features---most notably, linkages---introduced by \TT.
+As is similar to the first two models, 
+a linkage is translated to a non-dependent pair where the
+second component is a dependent function (modeling late binding).
+
+\end{description}
+
+All the definitions contained in these files are stated in
+terms of a meta\-language supporting quotient inductive-inductive types
+(QIITs)~\cite{nordvall2010inductive,altkap2016}.
+QIITs support equality constructors, which facilitate the expression of
+conversion rules (e.g., \ruleref{tmeq/sub/id}).
+%
+We note that the current formalization is not checked by Agda because
+Agda does not support QIITs natively.
+An effort to mechanize the formalization is underway, using Agda's
+\lsti{REWRITE} pragma to replace the limited uses of equality reflection.
+
+
+\ifShowOldWriting
+
+\bigskip
+
 We provide four agda source code files in the ``other supplemental material'', and they include the corresponding QIIT syntax definition and models. 
 
 For syntax, please check "syntax.agda" in the ``other supplemental material''. This is done by mainly following the formulation \citet{altkap2016}. This is also very close to \citet{coquand2018canonicity} and \citet{sterling2019algebraic} but we formulate our syntax in a type-theoretic framework.
@@ -6,7 +63,7 @@ For syntactic translation, please check "SyntaxTranslation.agda" in the ``other 
 The essence here is to translate linkage into a sigma type  with dependent function inside---and the dependent function is simulating the nature of ``late-binding'' of each field.
 
 
-This is the first QIIT-model we give. A QIIT-model can be roughly consider as an arbitrary mapping from the QIIT data(our syntax in this case), also respecting the quotient(judgemental equality in this case). Here, the syntactic translation model is mapping to (a subpart of) the original QIIT data (itself). 
+This is the first QIIT-model we give. A QIIT-model can be roughly consider as an arbitrary mapping from the QIIT data (our syntax in this case), also respecting the quotient (judgmental equality in this case). Here, the syntactic translation model is mapping to (a subpart of) the original QIIT data (itself). 
 
 For consistency model, please check "semantic.agda" in the ``other supplemental material''. This is following the standard model from \citet{altkap2016,kaposi2017type,kaposi2019gluing}.
 
@@ -15,3 +72,5 @@ For canonicity model, please check "canonicity.agda" in the ``other supplemental
 For both consistency and canonicity model, the key part is still about handling the novel feature. Thanks to the insight from syntactic translation, we can always inspired by consistency and canonicity model of sigma type and dependent function in standard MLTT.
 
 We suggest using editors with proper syntax highlighting, e.g. VSCode with agda-code plugins, to read these source files.
+
+\fi
