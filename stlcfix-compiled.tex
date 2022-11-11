@@ -58,7 +58,7 @@ Include STLCFix\_subst\_Cases. [@\tanc{c-STLCFix-d-subst-start}@]
 Def subst := tm_rect _ subst\_tm_unit
 subst\_tm_var subst\_tm_abs subst\_tm_app[@\hfill\codecomment{reuse}@]
 subst\_tm_fix.
-Fact [@\textls[-40]{subst\_tm\_unit\_eq}@] : [@\dadada@]. [@\textls[-40]{{\color{dkblue}reflexivity}.}@] Qed.
+Fact [@\textls[-0]{subst\_tm\_unit\_eq}@] : [@\dadada@]. reflexivity. Qed.
 Fact [@\dadada@][@\tanc{c-STLCFix-d-subst-end}@][@\innersep@]
 [@\codecomment{\textls[-10]{Include\;\texttt{ty}, its constructors, partial recursor, etc.}}@] [@\dadada@][@\tanc{c-STLCFix-d-ty}@][@\innersep@]
 Include STLC\_env.[@\hfill\codecomment{reuse}@][@\tanc{c-STLCFix-d-env}@][@\innersep@]

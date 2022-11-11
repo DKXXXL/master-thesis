@@ -27,12 +27,12 @@ Axiom tm_prect_STLC : [@\dadada@].
 Axiom [@\textls[-30]{tm\_unit\_eq\_STLC}@][@\;:\;@][@\dadada@]. Axiom [@\textls[-30]{tm\_abs\_eq\_STLC}@][@\;:\;@][@\dadada@].
 Axiom [@\textls[-30]{tm\_abs\_eq\_STLC}@][@\;:\;@][@\dadada@].  Axiom [@\textls[-30]{tm\_app\_eq\_STLC}@][@\;:\;@][@\dadada@].
 [@\outdent@]End STLC\_tm.[@\tanc{c-STLC-tm-end}@][@\outersep@]
-[@\outdent@][@\codecomment{Code emitted upon definition of \texttt{subst} in family \texttt{STLC}}@][@\tanc{c-STLC-subst-start}@]
+[@\outdent@][@\codecomment{Code emitted for definition of \texttt{subst} in family \texttt{STLC}}@][@\tanc{c-STLC-subst-start}@]
 [@\outdent@]Module Type STLC\_subst\_Cases\_Ctx.
 Include STLC\_tm\_Ctx.  Include STLC\_tm.
 [@\outdent@]End STLC\_subst\_Cases\_Ctx.[@\innersep@]
 [@\outdent@]Module [@\textls[-30]{STLC}@]\_[@\textls[-30]{subst}@]\_[@\textls[-30]{Cases}@] (self[@\,@]:[@\,@][@\textls[-30]{STLC}@]\_[@\textls[-30]{subst}@]\_[@\textls[-30]{Cases}@]\_[@\textls[-30]{Ctx}@]).
-Def subst\_tm_unit :=
+Def subst\_tm_unit :=[@\codecomment{\textls[-20]{emmited upon definition of case}}@]
   \lambda (x : id) (t : self.tm), self.tm_unit.
 Def subst\_tm_var := [@\dadada@].
 Def subst\_tm_abs := [@\dadada@].  Def subst\_tm_app := [@\dadada@].
@@ -68,13 +68,13 @@ Inductive tm : Set :=
 | tm_abs : id -> tm -> tm | tm_app : tm -> tm -> tm.
 [@\codecomment{Instantiate \texttt{tm} partial recursor \& its computational behaviors}@]
 Def tm_prect_STLC := \lambda P, tm_rect (\lambda[@\,@]t, option (P t)).
-Fact [@\textls[-20]{tm\_unit\_eq\_STLC}@] : [@\dadada@]. [@\textls[-40]{{\color{dkblue}reflexivity}.}@] Qed.
+Fact [@\textls[-0]{tm\_unit\_eq\_STLC}@] : [@\dadada@]. reflexivity. Qed.
 Fact [@\dadada@][@\tanc{c-STLC-d-tm-end}@][@\innersep@]
 Include STLC\_subst\_Cases.[@\tanc{c-STLC-d-subst-start}@]
 [@\codecomment{Instantiate \texttt{subst} \& its computational behaviors}@]
 Def subst[@\,@] := tm_rect _ subst\_tm_unit
   subst\_tm_var subst\_tm_abs subst\_tm_app.
-Fact [@\textls[-40]{subst\_tm\_unit\_eq}@] : [@\dadada@]. [@\textls[-40]{{\color{dkblue}reflexivity}.}@] Qed.
+Fact [@\textls[-0]{subst\_tm\_unit\_eq}@] : [@\dadada@]. reflexivity. Qed.
 Fact [@\dadada@][@\tanc{c-STLC-d-subst-end}@][@\tanc{c-STLC-firstcol-end}@][@\innersep@]
 [@\codecomment{Instantiate \texttt{ty}, its constructors, partial recusor, etc.}@] [@\dadada@][@\tanc{c-STLC-d-ty}@][@\tanc{c-STLC-sndcol-start}@][@\innersep@]
 Include STLC\_env.[@\hfill\codecomment{Include \texttt{env}}@][@\tanc{c-STLC-d-env}@][@\innersep@]
