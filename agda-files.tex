@@ -50,6 +50,10 @@ Agda does not support QIITs natively.
 An effort to mechanize the formalization is underway, using Agda's
 \lsti{REWRITE} pragma to replace the limited uses of equality reflection.
 
+We suggest reading these files in an editor with syntax highlighting for Agda
+(e.g., \mbox{VS~Code} with the \textsf{language-agda}\footnote{\url{https://marketplace.visualstudio.com/items?itemName=j-mueller.agda}}
+extension enabled).
+
 
 \ifShowOldWriting
 
@@ -63,7 +67,7 @@ For syntactic translation, please check "SyntaxTranslation.agda" in the ``other 
 The essence here is to translate linkage into a sigma type  with dependent function inside---and the dependent function is simulating the nature of ``late-binding'' of each field.
 
 
-This is the first QIIT-model we give. A QIIT-model can be roughly consider as an arbitrary mapping from the QIIT data (our syntax in this case), also respecting the quotient (judgmental equality in this case). Here, the syntactic translation model is mapping to (a subpart of) the original QIIT data (itself). 
+This is the first QIIT-model we give. A QIIT-model can be roughly consider as an arbitrary mapping from the QIIT data(our syntax in this case), also respecting the quotient(judgemental equality in this case). Here, the syntactic translation model is mapping to (a subpart of) the original QIIT data (itself). 
 
 For consistency model, please check "semantic.agda" in the ``other supplemental material''. This is following the standard model from \citet{altkap2016,kaposi2017type,kaposi2019gluing}.
 
@@ -71,6 +75,6 @@ For canonicity model, please check "canonicity.agda" in the ``other supplemental
 
 For both consistency and canonicity model, the key part is still about handling the novel feature. Thanks to the insight from syntactic translation, we can always inspired by consistency and canonicity model of sigma type and dependent function in standard MLTT.
 
-We suggest using editors with proper syntax highlighting, e.g. VSCode with agda-code plugins, to read these source files.
+We suggest using editors with proper syntax highlighting to read these source files. e.g. VSCode with \textit{language-agda} plugin.\footnote{\url{https://marketplace.visualstudio.com/items?itemName=j-mueller.agda}} 
 
 \fi
