@@ -166,21 +166,24 @@ of $n$~terms, each representing a field of the family modeled by the linkage.
 
 In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, A}{t}{T}$ is
 responsible for late binding.
-Here, $A$ abstracts the fields preceding the current field~$t$
-(i.e., those recorded by the first premise $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$).
+Here, $A$ abstracts the context of the current field~$t$, controlling
+how the types of the fields prior to~$t$ are exposed to the typing of~$t$.
 Crucially, %unlike the second field in a dependent pair (\ruleref{tm/pair}),
 the premise $\goodTerm{\Gm, A}{t}{T}$ makes clear that
-the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified over
-how the fields in $t$'s context are defined.
-So a different linkage~$\ell'$ that overrides fields in $t$'s context (and thus models a derived family)
+the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified---%
+rather than \emph{existentially} quantified as is in \ruleref{tm/pair}---%
+over how the fields in $t$'s context are defined.
+Late binding enables reuse.
+A different linkage~$\ell'$ that overrides fields in $t$'s context (and thus models a derived family)
 can reuse~$t$---without retyping it---by first
 projecting~$t$ from $\LkgAdd{\lkg}{t}$ and then appending it to~$\lkg'$.
 %\EDJ{I suggest change this sentence to `by projecting it out of parent linkage and adding it in the derived linkage'}.
 
-This type~$A$ abstracting the context in \ruleref{l/add} and
-\ruleref{lsig/add} do not necessarily contain the same types of the prior fields as recorded by~$\TyLkg{\lsig}$,
+%recorded by the first premise $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$
+The type~$A$ in \ruleref{l/add} and \ruleref{lsig/add},
+abstracting the types of the prior fields, does not necessarily contain the same types as those recorded by~$\TyLkg{\lsig}$,
 %\EDJ{Suggest changing to ``not necessarily the same as those recorded by lsig in the prior fields''},
-because a field representing the code $\wcode{\wsig}$ of a W-type has to
+because a field defining the code $\wcode{\wsig}$ of a W-type has to
 expose different types to different fields that come after it.
 Later fields that invoke
 $\Wsup{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
@@ -196,7 +199,7 @@ in a different context where the W-type signature~$\wsig$ is replaced by an exte
 
 \input{stlc-linkage-typing.tex}
 
-We illustrate this with \cref{fig:stlc-linkage-typing}.
+We use \cref{fig:stlc-linkage-typing} to illustrate.
 On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
 is how the corresponding fields are modeled and typed in \TT.
 %

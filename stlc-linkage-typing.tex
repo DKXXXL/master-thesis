@@ -283,6 +283,21 @@
 }{\TyTkg{\lsig_{53}}}
 \end{tabular}
 
-\caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.}
+\caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.
+Each row $\goodTerm{\mathit{self}\!:\!
+\tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i-cap}(-0.02,-0.10)(-0.02,0.28)
+A_i%
+\tikzmarkend{A-i-cap}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-i-cap}(-0.02,-0.10)(-0.02,0.28)%
+t_i%
+\tikzmarkend{t-i-cap}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T-i-cap}(-0.02,-0.10)(-0.02,0.28)%
+T_i%
+\tikzmarkend{T-i-cap}%
+}$ types a field.
+The type $A_i$ controls how the typing of field $t_i$ sees the types of the fields prior to $t_i$.
+}
 \label{fig:stlc-linkage-typing}
 \end{figure}
