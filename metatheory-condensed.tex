@@ -329,7 +329,10 @@ signature~$\wsig'_{\texttt{tm}}$:
 \input{stlcfix-linkage-typing.tex}
 
 \noindent
-A supplemental appendix sketches how the other introduction forms of linkage transformers
+\ifreport \cref{sec:lt-in-action}
+\else A supplemental appendix
+\fi
+sketches how the other introduction forms of linkage transformers
 can be used to model the construction of a derived family as a linkage transformer.
 
 \noindentparagraph{The complete formalization.}
@@ -355,7 +358,10 @@ An effort to mechanize the formalization is underway, using Agda's
 %usage of equality reflection. 
 %
 We also typeset a more complete set of rules than the space allows and
-present it in a supplemental appendix.
+present it in
+\ifreport \cref{sec:more-rules}.
+\else a supplemental appendix.
+\fi
 
 \input{cc-condensed.tex}
 
