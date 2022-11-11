@@ -61,7 +61,7 @@ The current plugin implementation does not yet support
 mutually inductive types or mutual induction, which are
 useful for modeling languages much more complex than STLCs.
 However,
-we believe generalizing our design to mutually inductive types does
+we believe accommodating mutually inductive types does
 not pose theoretical challenges.
 
 
@@ -70,7 +70,7 @@ not pose theoretical challenges.
 Our second case study is a mechanization of abstract interpreters
 for simple imperative languages.
 In addition to the metatheories, this case study produces abstract
-interpreters that are directly ready for program extraction in Coq.
+interpreters that are directly ready for program extraction.
 
 The code is organized into four families.
 A base family, \lsti{Imp}, defines via \lsti{FInductive} the abstract
@@ -98,7 +98,7 @@ by the analysis:
 \end{minipage}
 \end{centered}
 
-\begin{wrapfigure}[13]{r}{0.13\textwidth}
+\begin{wrapfigure}[13]{r}{0.138\textwidth}
 \includegraphics[scale=.68]{graphics/ai-casestudy.pdf}
 \end{wrapfigure}
 
