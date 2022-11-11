@@ -1,5 +1,5 @@
 In this appendix, we sketch how to use the ``library'' of linkage
-transformers in \TT to inductively construct a linkage that models a
+transformers in \TT to inductively construct a linkage transformer that models a
 derived family of \lsti{STLC}.
 
 We use \lsti{STLCBool} as an example. \lsti{STLCBool} extends
@@ -13,6 +13,7 @@ using one of the introduction forms.
 The goal is to eventually construct a linkage transformer $h_n$ representing
 the entire family \lsti{STLCBool}.
 
+Most steps are self-explanatory.
 Of note is the two grayed rows. They are constructing a linkage transformer~$h_\beta$
 containing the case handlers for \lsti{subst}.
 This $h_\beta$ is then appended to $h_3$ as a nested linkage transformer.
@@ -60,7 +61,7 @@ This $h_\beta$ is then appended to $h_3$ as a nested linkage transformer.
 \hline
 \rowcolor[HTML]{FFFC9E} 
 surface-syntax program & $i$      & $\goodInh{\cdot}{h_i}{\lsig_i}{\lsig_i'}$             \\ \hline
-\lsti!Family STLCBool!   & 0        & $\InhId$                                             \\ \cline{2-3} 
+\lsti!Family STLCBool extends STLC.!   & 0        & $\InhId$                                             \\ \cline{2-3} 
 \lsti!FInductive tm += !       & 1        & $\InhOv{h_0}{\wcode{\wsig_{\texttt{tm}}'}}$                      \\ \cline{2-3} 
 \codecomment{existing constructors}   & 2        & $\InhOv{h_1}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$           \\ \cline{2-3} 
 \lsti!| tm_true |!\ \;\dadada    & 3        & $\InhExt{h_2}{\Wsup{\wsig_{\texttt{tm}}'}{\top}{\bot}}$          \\ \cline{2-3} 
