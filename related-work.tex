@@ -41,7 +41,7 @@ In particular, because data types have to be encoded (rather than expressed
 through natively supported inductive types), the resulting code is
 less readable and the resulting programming style inaccessible to non-experts.
 In addition, extra programmer effort may be required, such as
-having to manually prove additional well-formedness conditions on the algebras\EDJ{What is this `algebra'? I mean if it is a very frequent word to the audience  familiar with DTC then removing explanation is fine.}.
+having to manually prove additional well-formedness conditions. %on the algebras\EDJ{What is this `algebra'? I mean if it is a very frequent word to the audience  familiar with DTC then removing explanation is fine.}.
 
 \citet{forsta2020} introduce \emph{Coq à la carte}.
 It still follows DTC, but rather than embracing DTC's use of generic
@@ -49,9 +49,9 @@ fixed points, it considers specific instantiations instead.
 The resulting mechanism appears more streamlined than prior \emph{à la
 carte} approaches particularly for its extensive tool support for generating boilerplate code.
 %
-But even with the tool support, components of individually developed
-feature extensions (e.g., "substlem") have to be composed separately by
-invoking the tool.
+But even with the tool support, components (e.g., "substlem") of
+individually developed feature extensions have to be composed separately
+by invoking the tool.
 %
 %The approach does not seem to fully address the expression problem,
 %as \citet{liwei2022} observe, in that further extending a composed
@@ -102,7 +102,7 @@ useful tactics over soundness.
 While Pumpkin Pi focuses on refactoring existing proofs in response to
 changed definitions,
 our solution can be viewed as an effort to preempt refactoring by
-allowing the programmer to write code that has built-in hooks for
+enabling the programmer to write code that has built-in hooks for
 future extensions.
 
 \noindentparagraph{Solutions to the expression problem} \!abound.

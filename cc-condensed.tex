@@ -9,15 +9,18 @@ One of the most fundamental properties of a dependent type theory is consistency
 Consistency says that the type $\bot$ is not inhabited.
 Thus, it is safe to use the type theory for logical reasoning, as not
 every proposition is trivially provable.
+
 \cref{thm:consistency} is a consequence of a meta\-circular interpretation of all
 the well-formedness rules, which, in particular, interprets $\bot$ in
 \TT as an uninhabited type in the meta\-language.
 The construction of this interpretation follows the standard model of
 \citet{altkap2016}, extending it to handle linkages.
-Linkages~$\LkgAdd{\lkg}{t}$ can be interpreted into non-dependent products\EDJ{Suggesting changing to ``can be interpreted into non-dependent pair with dependent function for late-binding''},
+A linkage~$\LkgAdd{\lkg}{t}$ can be interpreted into a non-dependent pair where the
+second component is a dependent function (modeling late binding),
+%\EDJ{Suggesting changing to ``can be interpreted into non-dependent pair with dependent function for late-binding''}
 as rule \ruleref{l/add} indicates.
 %
-We refer the reader to a supplemental file (in Agda syntax) for the complete proof.
+We refer the reader to a supplemental file in Agda syntax for the complete proof.
 
 \noindentparagraph{Canonicity.}
 
@@ -32,12 +35,14 @@ A second property we prove is canonicity.
 This canonicity theorem says that every closed term of the ground
 type~$\cB$ is convertible to one of the canonical forms $\true$ and~$\false$.
 When the canonicity theorem is proved in a constructive meta\-logic, its proof
-amounts to a normalization function for closed terms of the ground type.\EDJ{Suggesting use "boolean type". Because natural number type can be also considered ground type in other context (but this theorem on boolean cannot ensure canonicity for nat). We also does specify what is ground type. }\YZreply{I think it is clear from the context and from the article 'the' that 'the ground type' refers to B.}
+amounts to a normalization function for closed terms of the ground type.
+%\EDJ{Suggesting use "boolean type". Because natural number type can be also considered ground type in other context (but this theorem on boolean cannot ensure canonicity for nat). We also does specify what is ground type. }\YZreply{I think it is clear from the context and from the article 'the' that 'the ground type' refers to B.}
 So canonicity serves to justify the computational nature of the type theory.
 
 We prove \cref{thm:canonicity} by constructing a logical-relations model
 for the well-formedness rules, following prior approaches~\cite{coquand2018canonicity,sterling2019algebraic,kaposi2019gluing}.
 In particular, a closed, well formed type $\goodType{\cdot}{T}{}$ is interpreted
 into a logical predicate on closed terms: the predicate includes all
-closed, ``reducible'' terms of type~$T$.\EDJ{I will add a quote around reducible here. it is my bad to introduce "reducible" without defining it first. But my intension is to give a feeling of the dynamic operational semantic for the reader (of course OS is not here in our setting)}\YZreply{Is there a more accurate way to say things here?}\EDJreply{Because in the operational semantic, using ``reducible'' is totally fine. But in declarative style, only ``canonicity'' this word is making sense. But this ``canonicity'' is not friendly to the audience not familar with declartive style.}
+closed, ``reducible'' terms of type~$T$.
+%\EDJ{I will add a quote around reducible here. it is my bad to introduce "reducible" without defining it first. But my intension is to give a feeling of the dynamic operational semantic for the reader (of course OS is not here in our setting)}\YZreply{Is there a more accurate way to say things here?}\EDJreply{Because in the operational semantic, using ``reducible'' is totally fine. But in declarative style, only ``canonicity'' this word is making sense. But this ``canonicity'' is not friendly to the audience not familar with declartive style.}
 The proof is available as a supplemental file in Agda syntax.
