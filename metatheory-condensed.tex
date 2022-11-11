@@ -64,19 +64,20 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 (and \cref{fig:fmltt-selected} \TT).
 %We briefly review the base MLTT fragment first.
 %
-As is the current trend~\cite{gratzer-sterling-birkedal-2019,altkap2016,coquand2018canonicity} with MLTT presentations, we use \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
+As is the current trend~\cite{coquand2018canonicity,altkap2016,gratzer-sterling-birkedal-2019}
+with MLTT presentations, we use \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
 substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
 of the syntax rather than meta-operations.
 %
-Variables are represented by de Bruijn indices:
+Variables are in the form of de~Bruijn indices:
 \var{n} is the variable bound by the $n$-th closest enclosing binder.
 For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
 %
-Typing judgments for substitutions have the form 
+Substitutions are typed with the form 
 %\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) }
 $\goodSub{\Gm}{\gm}{\Dl}$.
 The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
-yields terms valid in~$\Gm$ (e.g., rule \ruleref{tm/sub}).
+yields terms valid in~$\Gm$ (\ruleref{tm/sub} and \ruleref{ty/sub}).
 %
 The two main forms of substitutions are weakening (\ruleref{sub/wk}) and extension (\ruleref{sub/ext}):
 \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
