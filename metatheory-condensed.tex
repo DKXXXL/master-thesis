@@ -256,9 +256,10 @@ using $\texttt{Wrec}$.
 
 \item
 By contrast, $\wsig_{\texttt{tm}}$ is hidden from the typing of all other fields.
-Their typing depends on the knowledge that \lsti!tm! has type~$\cU$,
+Their typing should depend on the knowledge that \lsti!tm! has type~$\cU$,
 rather than \TyS{\wcode{\wsig_{\texttt{tm}}}},
-so they can be reused in a context where \lsti!tm! is defined as $\wcode{\wsig'_{\texttt{tm}}}$,
+so that they can be reused in a context where
+\lsti!tm! is defined as $\wcode{\wsig'_{\texttt{tm}}}$,
 where $\wsig'_{\texttt{tm}}$ extends~$\wsig_{\texttt{tm}}$ with additional constructors.
 %
 For example, in \cref{fig:stlc-linkage-typing}, the typing of the case handlers of
