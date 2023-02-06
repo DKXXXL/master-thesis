@@ -70,14 +70,28 @@ Comments for authors
 --------------------
 Sec 3.1: I did not fully understand the semantics and role of the motive declarations. For example, what is the difference between the use lambda-bound parameters vs arrows?
 
+<!-- In dependent type system, a function can return type/motive. "M = λ (_ : tm), id → tm → tm" is a constant function that returns constant motive/type.
+      So it is a type family. In other words, M is not a type but (M x) is a type. M x is the function type   "id → tm → tm"
+    In this example, this motive in constant function
+      -->
+
 Sec 5: I am not intimately familiar with the "current trend" of MLTT presentations, so I was thrown off a bit by some details of this formulation, esp application as a unary operator. I think I eventually understood how this is used in conjunction with explicit substitution, but wouldn't have minded a few more hints for readers like me.
 
 Fig. 7: In the conclusion of rule Tyeq/Casety, R should be T?
+<!-- Yes. That is correct. -->
 
 Why is W(t) a term and not a type?
 
 What are bold-W and bold-P needed for?
 
+<!-- This is the feature of tarski style universe, which is a good representation for formalization. (That will distinguish from)
+      To explain this in first principle, say we formalize a term judgement Γ ⊢ _₀ : _₁. in Agda-like. 
+      At the place of _₀ it has to be a term, at the place of _₁ it has to be a type. 
+      But for dependent type, W(t) is a type and also *is* a term of type 'type', but it cannot be place at both _₀ , _₁ in Agda-like (static type, you know it). The way out is to consider "type's term form" as a code and distinguish type from its code. 
+      W(t) is the code for inductive type (can be placed at _₀) and 𝕎(t) is the type (can be placed at _₁). There will be equations indicating they are referring to each other.
+
+    ℙ is another technical detail of the system. Its functionality is to transform a linkage(overridable/extensible) into a module(sigma type). The reason it is irreplacable is because, proper abstraction cannot happen  on linkage but only on a module.
+  -->
 
 
 Review #430B
