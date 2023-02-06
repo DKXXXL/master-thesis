@@ -107,7 +107,7 @@ One thing I don't really get from the rules/discussion (including the appendix) 
 
 <!-- 
   At the metatheory level, this A is decided by the programmer and not uniquely determined as you observed. 
-  In practice, the plugin implementation always choose a "default" one. We didn't formalize the "default" one as it is usually just making inductive type into an opauqe and other parts will stay the same (I.e. abstract {Nat : W(O, S); pred : Nat -> Nat} into {Nat : U; O : Nat; S : Nat -> Nat; pred : Nat -> Nat}).   
+  In practice, the plugin implementation always choose a "default" one. We didn't formalize the "default" one as it is usually just making inductive type into an opauqe and make sure other parts stay the "same" (I.e. abstract {Nat : W(O, S); pred : Nat -> Nat} into {Nat : U; O : Nat; S : Nat -> Nat; pred : Nat -> Nat}).   
 -->
 
 It seems the "linkage transformers" representing the common actions one can take in FPOP are definable in a smaller core which seems helpful in a formalization.  A partial formalization is provided in the form of Agda but using features (quotient inductive-inductive types) that cannot currently be checked by Agda.  It is mentioned in an appendix that the formalization also includes a translation-away of the new features down to plain MLTT but this isn't discussed further in the main body of the paper.  (Though if you then look at the actual agda files, the comments explain that they aren't real agda either, but have been modified to be easier to read with syntax highlighting.  So I'm not really sure how to interpret this --- even if we take for granted that it is correct, the formalization is at any rate not a direct proof of correctness of the plugin implementation.)
@@ -139,6 +139,8 @@ Overall my impression is that this paper makes a significant contribution to a r
 
 249: late binding of F constructs: does checking happen when these constructs are checked or when they are "concreted"?
 
+<!-- type checking of each handler is done during written down, at which . Sorry I am a bit confused about  -->
+
 380: discussion of mixins: so imagine we define a mixin for extending with polymorphism (e.g. Damas-Hindley-Milner type inference) and another mixin for extending with references, and we prove type soundness of each extension independently.  Now we compose them, getting a system that is known not to be sound.  If this is possible, where is the failure of the attempt to extend the proof detected?  If not, which part isn't possible?  I think, if this is possible, then the plugin would somehow have to work out what cases involving interaction between references and polymorphism aren't covered by existing proofs and ask for these cases to be filled in.
 
 <!-- 
@@ -152,9 +154,13 @@ Overall my impression is that this paper makes a significant contribution to a r
 
 663: though I have a vague recollection of W-types as a general approach to inductive types, there is a lot to unpack in this section and I suspect it will make no sense to someone not familiar with them at all.  Could be helped by showing how e.g. STLC or STLCFix is represented as a W-type (in addition to the example on page 15)?
 
+<!-- ok.... not actually, I don't think it is helpful but, rua :( -->
+
 666: for readability please add text between "T," and "Wsup"
 
 702: In Tywe/Casety, the metavariable R appears only once, was it meant to be T?  Also since T is applied to p^2, should T be checked to be well-formed in a context with two or more things (perhaps Gamma, A,B) rather than Gamma which could have 0 or more things?
+
+<!-- Yes.  and Yes. T[p^2] is located in BigPi, where BigPi creates the context of two more things -->
 
 910: define abbreviation DTC at first use?
 
@@ -269,6 +275,12 @@ This paper has contributions to both the theory and practice of programming lang
 
 That said, there are some deficiencies with both components that prevent me from strongly advocating for the paper. Since there are contributions in both directions, the current presentation must chose which to emphasize to fit within the page limit. The current authors chose to focus on the plugin and its interface-- probably the right choice, since these components are more easily appreciated by the general PLDI audience. Unfortunately, the presentation of the main conceptual contribution (family polymorphism in a dependent type theory) is incredibly terse. As a consequence, the section on the theoretical contributions is insufficiently self-contained.
 
+
+
+
+
+<!-- The following twos are targeted at the formalization -->
+
 The presentation of the calculus seems to be geared so that it closely mirrors an Agda formalization, in lieu of a more conventional presentation (e.g. substitutions are part of the syntax, and the calculus uses De Bruijn indices). Presumably due to space concerns, the formalization also lacks sufficient examples, which makes it hard to understand how things fit together: As one example, the description of the TM/WSUP rule does not mention the role of the signature $\tau$ in the rule, leaving the reader to figure out its purpose. It would be helpful to provide an concrete example of how this rule is used. I appreciate the effort to ground things via Figure 8's mapping from a few definitions of the STLC family to the core calculus. Unfortunately, this listing is effectively a partial definition, in that it contain several intermediate terms ($l_x$) whose definitions are not given. At the end of the day, I did not emerge from this section with a good intuition of how 'linkages' work and how they are used.
 
 
@@ -299,7 +311,7 @@ On the 'practice' side of the equation, the current plugin has some limitations 
 
 Since `denoteTy Nat` is no longer definitionally equal to `nat`, the definition of `eval` would not typecheck. The proposed solution of using axioms allows users to insert explicit 'casts' (eq_rect) into the definition of `eval`, but this complicates both writing and reading functions.
 
-<!-- Right. -->
+<!-- Right. Overridability/pins is required but I don't think in the paper it is something well-covered -->
 
 Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level. It is common practice in Coq proofs to prove intermediate facts by case analysis or induction 'inline', e.g. via the `destruct` tactic. Indeed, this is what happens under the hood with `injection` and `discriminate`, for which the authors have developed `finjection` and `fdiscriminate` variants. One would expect to (eventually) see a similar tactic for `destruct`, although this will undoubtedly involve more engineering work to in order to extract the necessary lemmas and add them to the family's interface. 
 
