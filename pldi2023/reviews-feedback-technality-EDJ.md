@@ -279,9 +279,18 @@ On the 'practice' side of the equation, the current plugin has some limitations 
 
 Since `denoteTy Nat` is no longer definitionally equal to `nat`, the definition of `eval` would not typecheck. The proposed solution of using axioms allows users to insert explicit 'casts' (eq_rect) into the definition of `eval`, but this complicates both writing and reading functions.
 
+<!-- Right. -->
+
 Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level. It is common practice in Coq proofs to prove intermediate facts by case analysis or induction 'inline', e.g. via the `destruct` tactic. Indeed, this is what happens under the hood with `injection` and `discriminate`, for which the authors have developed `finjection` and `fdiscriminate` variants. One would expect to (eventually) see a similar tactic for `destruct`, although this will undoubtedly involve more engineering work to in order to extract the necessary lemmas and add them to the family's interface. 
 
+<!-- Right. -->
+
 The purpose of the second case study was not immediately clear: why is the generic abstract interpreter defined separately from Imp? Is this to showcase support for adding new fields to families? In addition, it was unclear what it means for fields to be 'unspecified' or 'unproven'? Access to the case studies would help, but they are not available, and neither is the plugin. I understand that packaging everything up in a reusable way before the deadline may have been a bit too much, but it would have been nice to be able to examine the source code for these case studies.
+
+<!-- Yes. kind of. The reason abstract interpreter is defined separately simply because we want to emulate how in real world the things will be defined.
+       We imagine the PL speicfication to be standalone, then upon which we can define different stuff including abstract interrepters and lemma about type safety. 
+       Even for AbsInterpreter(static analyzer) itself, there can be multiple style, for example, forward and backward analysis framework is the other one we didn't prototype.
+    -->
 
 ## Minor questions / concerns:
 - (l903) What does it mean to have a decision procedure for context-free grammars? Does this mean membership checking?
@@ -290,16 +299,43 @@ The purpose of the second case study was not immediately clear: why is the gener
 - 'Family' should be given (at least) an english language definition early on.  The 'fields' of a family are mentioned at several points, suggesting that they can be thought of as records. If that is the intent of the authors, it should be explicitly stated.
 
 - (l188) What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? Can it be defined, but only works for STLC.tm? In the latter case, how does the plugin prevent other extensible definitions from referring to it?
+<!-- Recall every field is compiled into a functor, then after FInductive tm declaration, 
+    1. the default operation : the following field will consider  `FInductive tm` to be an opaque/arbitrary type. 
+        So it is not possible to pattern match `t` of a type tm when in the context we only know `t` is of an arbitrary type with certain (imposed) constructor but no eliminator.
+       In this case, it is rejected.
+    2. there is also an operation called `pins` we didn't cover in the paper, used together with overridable. The idea is a later overridable field can pins the earlier overridable field, and once they do so, the later overridable field can see transparently the definition of the earlier overridable field. The price is once the earlier overridable field is overriden, the later one also requires to be overriden as well. The pins among different fields form a chain, and an overriding can cause a chain of overriding. 
+        Extending constructor of an inductive type, in metatheory, is formalzied by overriding an existent inductive type with a new inductive type with more constructors. This is also how our plugin implementation do it.
+      This means, overridable version of tm_rect (with pattern matching) is accepted  but only works for STLC.tm. If other extensible definition refers to tm_rect using pins, then those extensible definition has to be overridable again; or not using pins, then it is fine. 
+        -->
 
 - (l26) There is no shortage of solutions to the EP in various languages, but there are no citations to those works.
 
+<!-- Don't know how to answer this, maybe TODO it  -->
+
 - (l35) The Coq à la Carte paper is arguably more than just a design pattern / encoding, given that it extends the surface syntax of the theorem prover. The same designation could ostensibly be applied to the plugin described in Sections 3-4. The difference, I suppose, is that the extended language in that work does not have a formal treatment. 
+
+<!-- Don't know how to answer this, maybe TODO it  -->
 
 - (l135) The line "... cannot equate references to the substitution to its definition..." was confusing -- the key idea is that when defining a field in a family, the definitions of all the other fields cannot be unfolded, since they may be redefined later on by an extended family.
 
+<!-- Don't know how to answer this -->
+
 - (l318) The discussion of overriding and the equality axioms you provided was initially quite alarming -- it wasn't clear that the proposed checking strategy couldn't lead to inconsistent assumptions. This concern was ameliorated with the discussion in Section 4, which explains how families are compiled into vanilla Coq terms. It would be nice to add an explicit comment about the trusted code bases of any developments using the plugin: if I understand correctly, the core theory is not extended, all introduced 'axioms' are checked when a family is closed, `Print Assumptions` can be used   to examine any lingering axioms, and definitions can be unfolded and examined by the end users.
 
+<!-- Yes. it is compiled to vanilla Coq -->
+
 - (l374) "In the event that fpop cannot infer where the programmer intends to place a new field, annotation is required." I did not understand what it means to 'place' a field-- when does this occur,  and what do these annotations look like?
+
+<!-- 
+For example
+Family A {Field a; Field b; Field c;}
+
+Family B extends A {
+  // Inherit a. // this command line will make a difference once uncommented. Because the fields are order sensitive, especially when a2's definition is dependent on a. This ``annotation`` require the programmer's effort. 
+  Field a2.
+}
+
+ -->
 
 - (l487) "First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?
 
@@ -307,7 +343,17 @@ The purpose of the second case study was not immediately clear: why is the gener
 
 - (l899) What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results?  What sorts of benchmarks did you use?
 
+<!-- 
+Yes. They do return correct results. Since we already prove our abstract interpreter is satisfying the specification, we didn't pay much effort on choosing the query/benchmark, but put some basic test there for sanity check.
+ -->
+
+
 - Out of curiosity, but how does your plugin integrate with universes? Could there be a situation where 'closing the loop' produces an inconsistent set of constraints?
+
+<!-- Current plugin implementation turns off all the features from universe polymorphism. But I expect it to have the same level of compatibility as Module/Functor. Because under the hood of `closing the family`, the plugin is just doing repeatedly module inclusion. 
+
+Though I have insufficient working experience about Coq's universe polymorphism to give a accurate answer.  
+-->
 
 ## Typos and detailed comments:
 
