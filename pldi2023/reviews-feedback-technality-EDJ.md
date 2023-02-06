@@ -128,11 +128,23 @@ Overall my impression is that this paper makes a significant contribution to a r
 103:  The definition of substitution here and for STLCFix is not capture avoiding.  This is fine since you restrict beta reduction to (closed) values as in a programming language, but is of course not sound in general, for example if you wanted to reason about arbitrary code transformations (e.g. inlining) using substitution.  This should be mentioned. 
  Would/does your approach also work in the presence of other approaches to binding, e.g. de Bruijn or locally nameless?
 
+ <!-- I have no idea 😭 -->
+
 244: looking at figure 2 this extension involves adding cases to the term language and adjusting the proofs, but not adding e.g. new things to the typing judgment.  Imagine we extend STLC to System F, using two type contexts, one for term variables, the other for type variables. Can such an extension be defined?
+
+<!-- This is the challenging problem we are facing right now as well. We managed to sort out the meta-theory but fail to see how proof-reuse can be achieved in general cases. This is basically trying to extend existent inductive type with new index to supprt stronger judgement.
+
+    I think from STLC to System F there are a bunch of code/proof reuse. 
+    but the story is not the same for from STLC to STLC+heap, where the step relation also requires non-trivial extension on the indices. What's more, some first class family might also needed in these two examples.  -->
 
 249: late binding of F constructs: does checking happen when these constructs are checked or when they are "concreted"?
 
 380: discussion of mixins: so imagine we define a mixin for extending with polymorphism (e.g. Damas-Hindley-Milner type inference) and another mixin for extending with references, and we prove type soundness of each extension independently.  Now we compose them, getting a system that is known not to be sound.  If this is possible, where is the failure of the attempt to extend the proof detected?  If not, which part isn't possible?  I think, if this is possible, then the plugin would somehow have to work out what cases involving interaction between references and polymorphism aren't covered by existing proofs and ask for these cases to be filled in.
+
+<!-- 
+  As above we have mentioned, currently we are awkward to extend the inductive type with new indices.
+  However, why polymorphism + references is (type-)unsound? (I suspect you are not talking about OCaml style reference? Currently we are aiming at that) 
+ -->
 
 505: "emmited" sp.
 
@@ -195,6 +207,14 @@ The pros and cons of the paper are
   FMLTT directly, couldn't you translate it to MLTT following the
   approach in FPOP?
 
+<!-- The technical detail here is that, FMLTT also has this unconventional Wtype formulation, which is closer to the inductive type
+        in the surface syntax for Coq and Agda. 
+        
+        Our translation doesn't translate the unconventional Wtype formulation back to the conventional one. So the core calculus after translation is MLTT + this unconventional Wtype.
+
+          We consider the formalized translation as an oversimplified fundation of the plugin implementation(because the unconventional Wtype is closer to the surface syntax so we believe it is legit), also act as a guidance of the plugin implementation, and hope it function as part of the supplementary text for the reader confused about the description in the main text.
+         -->
+
 Detailed Comments
 
 Abstract:
@@ -254,7 +274,7 @@ The presentation of the calculus seems to be geared so that it closely mirrors a
 
 In a similar vein, the proof of the key metatheoretic properties assumes that the reader is familiar with similar proofs, stating that the key technical device (an interpretation into a metalanguage) is largely similar to e.g. Altenkirch and Kaposi, without clearly explaining the extension. More worrisome, the full proof is *only* given in a notation heavy, Agda-style format, which is both unchecked by a machine and hard for humans to read.  While the formalization tries to rebut these concerns by acknowledging that the presentation will be dense to those 'without prior exposure to MLTT', but it would be more accurate to stipulate 'non-experts in MLTT'.
 
-<!-- ... -->
+<!-- ... not sure I want to fight back -->
 
 As one suggestion to free up some space, Figure 2 is currently taking up valuable real estate that could be better used on examples in Section 5. While I appreciate the effort to include a complete example, the authors could move this example to the appendix, and instead include a more canonical example of the expression problem (e.g., a DSL with boolean and numeric expressions), which still demonstrates the core of the problem. This would also allow for smaller versions of Figures 4 and 5, and (potentially) a more complete version of the correspondence shown in Figure 8. As a side note,
 
@@ -338,6 +358,10 @@ Family B extends A {
  -->
 
 - (l487) "First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?
+
+<!-- That sentence means, whenever one vernacular command is input, our plugin will translate and type-check. Basically type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking happens after a whole family is closed
+  Yes, modules/functors are generated in the background after each command is emitted.
+   -->
 
 - (l665-667): The description of TM/WSUP is inconsistent with respect to the premises of the rule which do not include a type B, and construct a term of type El(W($\tau$)).
 
