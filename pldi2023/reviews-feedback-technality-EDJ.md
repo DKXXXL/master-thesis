@@ -64,7 +64,7 @@ Currently at plugin level, we only support layout the subcases in a lemma forms.
 
 Finally, I note that a family has similarities with an ML-style module, including the fact that some of its members are opaque while others are abstract. This is modelled through the use of singleton types, just as dependent type theories for modules do (e.g., Dreyer, Crary, Harper, POPL 2003), which are also extensions of MLTT. Furthermore, there has been work on extending ML modules with mixin composition (Dreyer, Rossberg, ICFP 2008). ML-style modules are the basis of Coq's module system as well, so I would have expected some comparison with this line of work.
 
-<!--EDJ : TODO: Explore Module Mixin -->
+<!-- TODO: Explore Module Mixin -->
 
 Comments for authors
 --------------------
@@ -105,21 +105,19 @@ The section on the formalization FMLTT is (as the paper acknowledged) extremely 
 
 One thing I don't really get from the rules/discussion (including the appendix) is the exact mechanism for choosing the A in rules like TyEq/PK/Add and LSig/Add where A is supposed to abstract out the possibly-extensible types in deciding what to make available to later definitions.  Is A always going to be uniquely determinable from s? (or if not, does the nondeterminism matter?)  Is it up to the user (in this case, the plugin) to get this right, or do the rules somehow make sure that the right things are abstracted in a way I can't see?
 
-
-<!-- EDJ:
+<!-- 
   At the metatheory level, this A is decided by the programmer and not uniquely determined as you observed. 
   In practice, the plugin implementation always choose a "default" one. We didn't formalize the "default" one as it is usually just making inductive type into an opauqe and other parts will stay the same (I.e. abstract {Nat : W(O, S); pred : Nat -> Nat} into {Nat : U; O : Nat; S : Nat -> Nat; pred : Nat -> Nat}).   
 -->
 
 It seems the "linkage transformers" representing the common actions one can take in FPOP are definable in a smaller core which seems helpful in a formalization.  A partial formalization is provided in the form of Agda but using features (quotient inductive-inductive types) that cannot currently be checked by Agda.  It is mentioned in an appendix that the formalization also includes a translation-away of the new features down to plain MLTT but this isn't discussed further in the main body of the paper.  (Though if you then look at the actual agda files, the comments explain that they aren't real agda either, but have been modified to be easier to read with syntax highlighting.  So I'm not really sure how to interpret this --- even if we take for granted that it is correct, the formalization is at any rate not a direct proof of correctness of the plugin implementation.)
 
-<!-- EDJ: Correct. This formalization is really contrasting to writing a pen-and-paper proof in Latex, but writing in fake-Agda because we want to utilize the intrinsically typed syntax, where a classical latex layout is not easy for representing intrinsically typed syntax. This is also helpful for the mechanization. 
+<!-- Correct. This formalization is really contrasting to writing a pen-and-paper proof in Latex, but writing in fake-Agda because we want to utilize the intrinsically typed syntax, where a classical latex layout is not easy for representing intrinsically typed syntax. This is also helpful for the mechanization. 
 
     We consider the formalized translation as an oversimplified fundation of the plugin implementation, also act as a guidance of the plugin implementation, and hope it function as part of the supplementary text for the reader confused about the description in the main text.
  -->
 
 On the other hand I find it somewhat surprising that neither the FPOP plugin / implementation itself, nor the code of the case studies, is provided.  I would like to hear more about the implementation and how the case studies discussed look in practice (beyond the relatively simple examples in the paper).  I think the paper would also be improved by delineating the limitations of the current implementation / metatheory, particularly where alternatives may exist, such as for extensions that require changes to types which is considered by [15] but is unclear can be handled by FPOP.
-
 
 <!-- TODO : read [15] -->
 
@@ -197,14 +195,6 @@ The pros and cons of the paper are
   FMLTT directly, couldn't you translate it to MLTT following the
   approach in FPOP?
 
-
-<!-- EDJ:
-  There is a subtle technicality. Our translation doesn't handle the translation of Wtype back to 
-    MLTT's Wtype. Our formulation of Wtype is closer to the syntax of real Inductive type and thus require
-     complicated encoding into standard MLTT's Wtype. The translation will be a mess.
-  However, if using Agda as metalanguage to carry out the meta-theoretical proof, the proof is much more simpler and readable.
- -->
-
 Detailed Comments
 
 Abstract:
@@ -261,7 +251,10 @@ That said, there are some deficiencies with both components that prevent me from
 
 The presentation of the calculus seems to be geared so that it closely mirrors an Agda formalization, in lieu of a more conventional presentation (e.g. substitutions are part of the syntax, and the calculus uses De Bruijn indices). Presumably due to space concerns, the formalization also lacks sufficient examples, which makes it hard to understand how things fit together: As one example, the description of the TM/WSUP rule does not mention the role of the signature $\tau$ in the rule, leaving the reader to figure out its purpose. It would be helpful to provide an concrete example of how this rule is used. I appreciate the effort to ground things via Figure 8's mapping from a few definitions of the STLC family to the core calculus. Unfortunately, this listing is effectively a partial definition, in that it contain several intermediate terms ($l_x$) whose definitions are not given. At the end of the day, I did not emerge from this section with a good intuition of how 'linkages' work and how they are used.
 
+
 In a similar vein, the proof of the key metatheoretic properties assumes that the reader is familiar with similar proofs, stating that the key technical device (an interpretation into a metalanguage) is largely similar to e.g. Altenkirch and Kaposi, without clearly explaining the extension. More worrisome, the full proof is *only* given in a notation heavy, Agda-style format, which is both unchecked by a machine and hard for humans to read.  While the formalization tries to rebut these concerns by acknowledging that the presentation will be dense to those 'without prior exposure to MLTT', but it would be more accurate to stipulate 'non-experts in MLTT'.
+
+<!-- ... -->
 
 As one suggestion to free up some space, Figure 2 is currently taking up valuable real estate that could be better used on examples in Section 5. While I appreciate the effort to include a complete example, the authors could move this example to the appendix, and instead include a more canonical example of the expression problem (e.g., a DSL with boolean and numeric expressions), which still demonstrates the core of the problem. This would also allow for smaller versions of Figures 4 and 5, and (potentially) a more complete version of the correspondence shown in Figure 8. As a side note,
 
