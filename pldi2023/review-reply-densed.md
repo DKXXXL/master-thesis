@@ -100,10 +100,14 @@ We agree with Reviewer B's insight -- we will get consistency/canonicitiy when w
 
 
 
-* Reviewer A asks five questions in the "comments to authors" section;
-  optionally answer them towards the end of the response letter.
+* (Reviewer A) Why is W(t) a term and not a type? What are bold-W and bold-P needed for?
 
-* Reviewer B ask some questions as well
+In dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
+
+𝕎(t) is a typo and should be deleted. Thanks for pointing out.
+
+ℙ is another technical detail of the system. Its functionality is to transform a linkage(overridable/extensible) into a module(sigma type). The reason it is irreplacable is because, proper abstraction cannot happen on linkage (𝕃) but only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ : A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial `A₆`. 
+
 
 * (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't. 
 
@@ -111,4 +115,9 @@ We can expect our plugin will generate unprovable proof obligation under mixin, 
 
 Another exmaple would be extend *a family of STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
 
- * Reviewer D reviewer also has some minor questions. Optionally respond to them.
+
+* (Reviewer D) **What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?**
+
+Coq will reject on the pattern matching on `tm`. For example, Figure 4, Line 494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the given inductive `tm`. The following field definition will be type-checked based on this interface, and for Coq it will only consider `tm` as an arbitrary type and will fail to pattern match it.
+
+<!-- I am not sure if I want to mention overridable/pins  -->
