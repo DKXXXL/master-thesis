@@ -90,7 +90,7 @@ What are bold-W and bold-P needed for?
       But for dependent type, W(t) is a type and also *is* a term of type 'type', but it cannot be place at both _₀ , _₁ in Agda-like (static type, you know it). The way out is to consider "type's term form" as a code and distinguish type from its code. 
       W(t) is the code for inductive type (can be placed at _₀) and 𝕎(t) is the type (can be placed at _₁). There will be equations indicating they are referring to each other.
 
-    ℙ is another technical detail of the system. Its functionality is to transform a linkage(overridable/extensible) into a module(sigma type). The reason it is irreplacable is because, proper abstraction cannot happen  on linkage but only on a module.
+    ℙ is another technical detail of the system. Its functionality is to transform a linkage(overridable/extensible) into a module(sigma type). The reason it is irreplacable is because, proper abstraction cannot happen on linkage (𝕃) but only on a module (ℙ).
   -->
 
 
@@ -133,7 +133,7 @@ It seems the "linkage transformers" representing the common actions one can take
 
 On the other hand I find it somewhat surprising that neither the FPOP plugin / implementation itself, nor the code of the case studies, is provided.  I would like to hear more about the implementation and how the case studies discussed look in practice (beyond the relatively simple examples in the paper).  I think the paper would also be improved by delineating the limitations of the current implementation / metatheory, particularly where alternatives may exist, such as for extensions that require changes to types which is considered by [15] but is unclear can be handled by FPOP.
 
-<!-- TODO : read [15] -->
+<!-- TODO :  [15] is monadic modular meta theory -->
 
 Overall my impression is that this paper makes a significant contribution to a really challenging problem using a different approach than other proposals and deserves publication.  I think a case could be made for publication excluding the formalization, since the plugin implementation translates to Coq code that can be checked using the existing trusted base, so the ramifications of bugs in the plugin are limited to inconvenience/usability.  This is analogous to how some features (including inductive datatypes themselves) are handled in some other systems such as Isabelle/HOL: inductive definitions are translated to lower-level concepts checkable by the core logic, and so the implementation of datatypes doesn't need to be fully formalized and proved correct in order to trust specific proofs that use it; though any failures would still be inconvenient, of course.
 
@@ -325,7 +325,7 @@ On the 'practice' side of the equation, the current plugin has some limitations 
 
 Since `denoteTy Nat` is no longer definitionally equal to `nat`, the definition of `eval` would not typecheck. The proposed solution of using axioms allows users to insert explicit 'casts' (eq_rect) into the definition of `eval`, but this complicates both writing and reading functions.
 
-<!-- Right. Overridability/pins is required but I don't think in the paper it is something well-covered -->
+<!-- Right. Overridability/pins is required but I don't think in the paper it is something well-covered. Without overridability, it will require coe along type equality. -->
 
 Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level. It is common practice in Coq proofs to prove intermediate facts by case analysis or induction 'inline', e.g. via the `destruct` tactic. Indeed, this is what happens under the hood with `injection` and `discriminate`, for which the authors have developed `finjection` and `fdiscriminate` variants. One would expect to (eventually) see a similar tactic for `destruct`, although this will undoubtedly involve more engineering work to in order to extract the necessary lemmas and add them to the family's interface. 
 
@@ -345,6 +345,7 @@ The purpose of the second case study was not immediately clear: why is the gener
 - 'Family' should be given (at least) an english language definition early on.  The 'fields' of a family are mentioned at several points, suggesting that they can be thought of as records. If that is the intent of the authors, it should be explicitly stated.
 
 - (l188) What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? Can it be defined, but only works for STLC.tm? In the latter case, how does the plugin prevent other extensible definitions from referring to it?
+
 <!-- Recall every field is compiled into a functor, then after FInductive tm declaration, 
     1. the default operation : the following field will consider  `FInductive tm` to be an opaque/arbitrary type. 
         So it is not possible to pattern match `t` of a type tm when in the context we only know `t` is of an arbitrary type with certain (imposed) constructor but no eliminator.
@@ -390,6 +391,8 @@ Family B extends A {
    -->
 
 - (l665-667): The description of TM/WSUP is inconsistent with respect to the premises of the rule which do not include a type B, and construct a term of type El(W($\tau$)).
+
+<!-- Thanks! -->
 
 - (l899) What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results?  What sorts of benchmarks did you use?
 
