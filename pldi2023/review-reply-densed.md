@@ -3,46 +3,17 @@ Below we first address the main concerns, which might be paraphrased for the spa
 
 * (Reviewer A) "In terms of ergonomics, I wonder how powerful and usable" this is ... ; (Reviewer D) "Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level."
 
-<!-- I am not sure if the following respond is appropriate -->
 
+As Reviewer A/D points out, to inductiely eliminate data we currently only are equipped with `FInduction` at top level. We only have `fdiscriminate` and `finjection` for deducing intermediate fact. The key problem is the lack of certain nested pattern matching.
 
-<!-- 
-we hypothesize that nested induction can be lifted to the top level and then it will generate extra proof obligation balabla.
-
-requires significant engineering effort
-
+<!-- The idea is 
+    fill in the new hole once pattern matching needs to extend the clauses
+    lifting nested induction to top level is not necessary
  -->
 
-As Reviewer A/D points out, to inductiely eliminate data we currently only are equipped with `FInduction` at top level. We only have `fdiscriminate` and `finjection` for intermediate fact. We acknowledge this limitation of our current research and are trying to advance more in this future direction. 
+We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that code involving nested induction/pattern matching an be reused by fill in the hole after extension upon inductive type. The plugin will generate extra proof obligation to fill this hole. This certainly requires significant amount of engineering effort.
 
-<!-- 
-Doesn't seem very relevant for our paper rebuttal
 
-We believe the design challenge of making FInduction-alike structure inside proof script, is mainly how extension happens -- the plugin either needs to manipulate the proof term or manipulate the proof script itself. 
-A. The former idea needs either 
-    (1) extend the Coq's kernel (i.e. make the Coq's pattern matching facility extensible) or 
-    (2) maniuplate the AST of the proof term -> this will need to be shown at proof-script level
-B. the latter will manipulate the AST of the proof script
-  
-B will break incremental compilation "a bit more" (i.e. we cannot have incremental compilation for each recursor). We believe the promising future lies in the direction of A(1), by enhance proof assistants with native extensible pattern matching instead of this current encoding. As Reviewer D mentioned, there is much work to be done. -->
-
-<!-- Basically the generated proof term, we look at each pattern matching point
-      and trying to give further proof obligation
-    // concretize this idea
- -->
-
-<!-- 
-
-// the reviewer is actually asking nested pattern matching stuff here
-// I am not sure if I want to include the following
-
-Reviewer D points out the current lack of "fdestruct". In fact, we believe "fdestruct" doesn't exist. 
-
-Both "finjection" and "fdiscriminate" works on arbitrary extensible inductive type but "fdestruct" can only work on extensible inductive type with fixed number of constructors -- that is a contradiction because all the extensions right now are about extending with new constructors.
-
-One way to have destruct tactic usable is to use overridable/pins. This is not completely covered in Section 3.3, but this is used when we want overridable term to be transparent and thus an inductive type and "destruct"-able
-
- -->
 
 * "Seems related to type theories for modules, but doesn't discuss the connection"
   
@@ -61,13 +32,13 @@ expected some comparison with this line of work.
 
 * (Reviewer A/B/C/D) Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition  
 
-<!-- I love you chatgpt -->
 
-Thank you for your feedback. We will promptly reorganize the structure of Section 5 to improve accessibility
-<!-- sympethsize, dense ,hard to read, not giving too much
 
-    we will expand  it in the main text to clarify the question the reviewers have, and also use appendices to explain the  formalization  in greater details 
-         -->
+Thank you for your feedback. 
+We sympathize with the general impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the general understanding of the whole paper.
+
+We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization in greater details. 
+
 
 
 
@@ -129,34 +100,19 @@ Our translation doesn't translate this unconventional Wtype formulation back to 
 <!-- acknowledge the reviewer's  idea of translating unconventional Wtype into conventional Wtype -->
 
 <!-- We consider the formalized translation as an oversimplified fundation of the plugin implementation(because the unconventional Wtype is closer to the surface syntax so we believe it is legit), also act as a guidance of the plugin implementation, and hope it function as part of the supplementary text for the reader confused about the description in the main text. -->
-### Review D
-* (Reviewer D) 
-* > This expert reviewer's main concerns are (1) the incredible terseness of the theory
-  presentation and (2) a few current limitations (framed as future research challenges).
-  I don't think there are misunderstandings, so the strategy is to acknowledge them
-  and promise to somehow address them in the final revision.
+### Other questions
 
-<!-- I think 
-  terseness is already covered above
-  challenge:
-  1. the equality coerciion thing, covered above
-  2. the limitedness of the current tactics, covered in the first question
-  
-  // TBH I don't know what are other tactics people usually use can be added here... But it is future work. I think this question 
 
-  // so I think there is no big questions from Reviewer D anymore.
-
--->
-
-* Reviewer D reviewer also has some minor questions. Optionally respond to them.
 
 * Reviewer A asks five questions in the "comments to authors" section;
   optionally answer them towards the end of the response letter.
 
 * Reviewer B ask some questions as well
 
-* (Reviewer B) contradictory feature like polymorphism + heap causing unsoundness
-<!-- we can expect mixin will generate proof obligation that is not pluasible be proved
+* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with polymorphism and  STLC + references both enjoying principal typing under HM type inference, but their composition doesn't. 
 
-one fixpoint extension, the other termination, definitely will fail on the reducibility argument.
- -->
+We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
+
+Another exmaple would be extend *STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation for the reducibility argument.  
+
+ * Reviewer D reviewer also has some minor questions. Optionally respond to them.
