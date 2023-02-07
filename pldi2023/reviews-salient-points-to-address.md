@@ -26,6 +26,8 @@
   hope that this section can be expanded significantly in the final version."
 
   > Promise to do that
+  
+  > Actually all reviewers complained about it.
 
 * > This reviewer asks five questions in the "comments to authors" section;
   optionally answer them towards the end of the response letter.
@@ -54,6 +56,9 @@
   considered by [15] but is unclear can be handled by FPOP."
 
   > Related to Reviewer C's final comment on being upfront about limitations.
+  > Reviewer D also mentions some limitations or challenges for future research,
+  > and asks for explicitly listing the trusted code bases.
+  > Can address all these in one place.
 
 ### Review C
 
@@ -65,3 +70,10 @@
   > Respond to this
 
 ### Review D
+
+* > This expert reviewer's main concerns are (1) the incredible terseness of the theory
+  presentation and (2) a few current limitations (framed as future research challenges).
+  I don't think there are misunderstandings, so the strategy is to acknowledge them
+  and promise to somehow address them in the final revision.
+
+* > This expert reviewer also has some minor questions. Optionally respond to them.
