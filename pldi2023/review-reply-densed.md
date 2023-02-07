@@ -30,14 +30,14 @@ expected some comparison with this line of work.
 
 
 
-* (Reviewer A/B/C/D) Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition  
+* (Reviewer A/B/C/D) Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. Reviewer D: "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"
 
 
 
 Thank you for your feedback. 
 We sympathize with this impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the readers.
 
-We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization in greater details. 
+We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater details aiming for readability. 
 
 
 
