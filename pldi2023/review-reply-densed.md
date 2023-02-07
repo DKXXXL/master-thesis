@@ -86,19 +86,16 @@ In the final revision, we will also clarify that our plugin only translates code
   demonstrated by FPOP? Or put another way, instead of defining FMLTT directly,
   couldn't you translate it to MLTT following the approach in FPOP?"
 
-The technical detail here is that, FMLTT also has this unconventional Wtype formulation 
-<!-- explain how unconventional it is
-      what conventional about unconventional Wtype
- -->
-, which is closer to the inductive type in the surface syntax for Coq and Agda. 
+The technical detail here is that, FMLTT also has this unconventional Wtype formulation. While each classic Wtype is defined by a pair of type `A ⊢ B`, our unconventional Wtype is defined by a list of pair of types `Aᵢ ⊢ Bᵢ`, each pair corresponds to one constructor. 
 
-Our translation doesn't translate this unconventional Wtype formulation back to the conventional one. So the core calculus after translation is MLTT + this unconventional Wtype. In that case, translation function as a guide to the plugin implementation, and pedantically is not enough to show the consistency/canonicitiy for FMLTT.
+One way to interpret it is the classical formluation encoding this list using a big sum type. So the conventional and unconventional Wtype can be translated to each other. 
 
-<!-- make it clear that we have MLTT + unconventional Wtype as target calculus -->
+However, our translation doesn't translate this unconventional Wtype formulation back to the conventional one. So the target calculus after translation is **MLTT + this unconventional Wtype**. In that case, translation can only function as a guide to the plugin implementation, and **pedantically** is not enough to show the consistency/canonicitiy for FMLTT because **pedantically** target calculus is not proven to be consistency/canonicity.
 
-<!-- acknowledge the reviewer's  idea of translating unconventional Wtype into conventional Wtype -->
+We agree with Reviewer B's insight -- we will get consistency/canonicitiy when we translate unconventional Wtype into the conventional one. The reason we didn't choose to do so because we expect this translation a lot more verbose than the current proof because of the simplicity of Wtype itself compared to the rich functionality provided by (fake-)Agda's Inductive Facility. We only use the latter when constructing consistency/canonicity model.
 
-<!-- We consider the formalized translation as an oversimplified fundation of the plugin implementation(because the unconventional Wtype is closer to the surface syntax so we believe it is legit), also act as a guidance of the plugin implementation, and hope it function as part of the supplementary text for the reader confused about the description in the main text. -->
+
+
 ### Other questions
 
 
