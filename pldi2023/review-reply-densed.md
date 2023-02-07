@@ -93,7 +93,7 @@ Currently at plugin level, we only support layout the subcases in a lemma forms.
 
 * (Reviewer A) **Why is W(t) a term and not a type? What are bold-W and bold-P needed for?**
 
-bold-W is a typo. We forgot to delete it. 
+bold-W is a typo. We forgot to delete it. In dependent type, a type is also typable (thus need to appear in the term judgement). Thus `W(t)` is a term.
 
 ℙ is a technical device of the system mentioned on Line 788. Its functionality is to transform a linkage(overridable/extensible family) into a module(sigma type). The reason we need it is because, proper abstraction `A` cannot happen on linkage (𝕃) but only on a module (ℙ). (i.e. contrary to Line 788, the `Γ, 𝕃(𝜎) ⊢ s : A[p¹]` is usually unprovable for nontrivial `A`)
 
