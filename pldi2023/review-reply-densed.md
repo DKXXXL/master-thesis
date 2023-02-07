@@ -55,10 +55,12 @@ We plan to expand it in the main text to clarify the questions the reviewers hav
   see?"
 
 At the metatheory level, this A is decided by the programmer and not uniquely determined as you observed. 
-In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type opauqe (Line 791) and make sure other parts stay the "same".
+In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
 
-<!-- Use example on Pg 16. Concrete run it -->
-(I.e. s maps {Nat : W(O, S); pred : Nat -> Nat} into {Nat : U; O : Nat; S : Nat -> Nat; pred : Nat -> Nat}). It is possible to design an interface where the programmer can choose which `A` they would love to abstract to, but we haven't found any use case for this functionality yet.
+Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A` has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To show this explicitly at the plugin level, we look at Figure 4 (Line 494) `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term of type `tm : 𝕌` thus doing abstraction successfully.
+
+Generally speaking, all the (extensible) inductive type will be simply "wrapped" by a module type with its interface and only exposing the constructor (with no eliminators), just like how we generate `STLC°tm`.
+
 
 * (Reviewer B/D) "I find it somewhat surprising that neither the FPOP plugin / implementation
   itself, nor the code of the case studies, is provided."
@@ -106,7 +108,7 @@ Our translation doesn't translate this unconventional Wtype formulation back to 
 
 * Reviewer B ask some questions as well
 
-* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with (DHM-)polymorphism and  STLC + references both enjoying type soundness, but their composition doesn't. 
+* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't. 
 
 We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
 
