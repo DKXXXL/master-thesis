@@ -72,7 +72,7 @@ We will definitely make the FPOP plugin/implementation available.
 
 Thanks for the feedback! We will definitely explicitize the limitation of the current implementation and meta-theory in the final revision. Especially the problem concretized and emphasized by Reviewer D involving equality coercion (the pervasive propositional equality on extensible inductive family lead to unnecessary equality coercion e.g. when `denoteTy t` is not definitionally equal to `nat`). 
 
-We believe this can lead to exciting future work on both theory and practice -- a normaliation algorithm for an extended calculus admitting more property on extensible inductive type; and a proper proof assistant acknowledging native extensible inductive type instead of our current encoding by the plugin. 
+We believe this can lead to exciting future work on both theory and practice -- a normaliation algorithm for an extended calculus admitting more convertibility on elimination of the extensible inductive type; and a proper proof assistant acknowledging native extensible inductive type (instead of our current encoding by the plugin), and thus support the reduction of open terms properly.
 
 And yes, in the final revision we will explicitize the trusted codebase as our plugin only translate the code into the vanilla Coq term without expanding the trusted base.
 
