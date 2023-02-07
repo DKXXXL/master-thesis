@@ -35,7 +35,7 @@ expected some comparison with this line of work.
 
 
 Thank you for your feedback. 
-We sympathize with the general impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the general understanding of the whole paper.
+We sympathize with this impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the readers.
 
 We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization in greater details. 
 
@@ -68,14 +68,11 @@ We will certainly make the FPOP plugin/implementation available.
 * (Review B) "I think the paper would also be improved by delineating the limitations of the
   current implementation / metatheory.."; (Reviewer C) "Be upfront about this limitation instead of hiding it in the section on case studies."; (Reviewer D) "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."; (Reviewer D) "It would be nice to add an explicit comment about the trusted code bases of any developments"
 
-Thank you for your feedback. We will clearly state the limitations of the current implementation and meta-theory in the final revision. In particular, 
-
-1. we will emphasize the issue raised by Reviewer D regarding equality coercion and the pervasive propositional equality on extensible inductive families. This can result in unnecessary equality coercion when `denoteTy t` is not definitionally equal to `nat`.
+Thank you for your feedback. We will clearly state the limitations of the current implementation and meta-theory in the final revision. In particular, we will emphasize the issue raised by Reviewer D regarding equality coercion and the pervasive propositional equality on extensible inductive families. This can result in unnecessary equality coercion when `denoteTy t` is not definitionally equal to `nat`.
 
 We believe that this opens up new opportunities for future work in both theory and practice,
 (a). such as a normalization algorithm for an extended calculus that allows for more convertibility upon elimination of the extensible inductive type; 
 (b). and a proper proof assistant that supports native extensible inductive types instead of the current encoding via our plugin, thus allowing for proper reduction of open terms. This will change the kernel of proof assistant for sure. 
-
 
 In the final revision, we will also clarify that our plugin only translates code into vanilla Coq terms without expanding the trusted codebase.
 
@@ -109,10 +106,10 @@ Our translation doesn't translate this unconventional Wtype formulation back to 
 
 * Reviewer B ask some questions as well
 
-* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with polymorphism and  STLC + references both enjoying principal typing under HM type inference, but their composition doesn't. 
+* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with (DHM-)polymorphism and  STLC + references both enjoying type soundness, but their composition doesn't. 
 
 We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
 
-Another exmaple would be extend *STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation for the reducibility argument.  
+Another exmaple would be extend *a family of STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
 
  * Reviewer D reviewer also has some minor questions. Optionally respond to them.
