@@ -216,6 +216,13 @@ Below we address the main concerns, which might be paraphrased for space.
   the programmer need not wait until the entire `FRecursion` definition is completed to have
   their `Case` commands checked and translated by the plugin.
 
+* (D) __Out of curiosity, how does your plugin integrate with universes?__
+
+  We do not have intimate knowledge of Coq's universe polymorphism feature, but we expect
+  it to have the same level of compatibility with families as it does with Coq
+  modules—under the hood, upon closing a family, the plugin is just doing
+  repeated module inclusion and instantiation.
+
 
 We will address in our revision other reviewer comments not mentioned above.
 Again, we thank all the reviewers for their thoughtful and detailed comments, which will help improve the paper.
