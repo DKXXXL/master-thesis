@@ -45,79 +45,122 @@ We plan to expand it in the main text to clarify the questions the reviewers hav
 
 ### Review B
 
-* (Reviewer B)"One thing I don't really get from the rules/discussion (including the
+* *(Reviewer B)"One thing I don't really get from the rules/discussion (including the
   appendix) is the exact mechanism for choosing the A in rules like TyEq/PK/Add
   and LSig/Add where A is supposed to abstract out the possibly-extensible types
   in deciding what to make available to later definitions. Is A always going to
   be uniquely determinable from s? (or if not, does the nondeterminism matter?)
   Is it up to the user (in this case, the plugin) to get this right, or do the
   rules somehow make sure that the right things are abstracted in a way I can't
-  see?"
+  see?"*
+  
+  The typing rules do not commit to a particular choice of $A$, as the reviewer
+  points out.
+  In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
 
-At the metatheory level, this A is decided by the programmer and not uniquely determined as you observed. 
-In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
+  Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
+  has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To
+  show this explicitly at the plugin level, we look at Figure 4 (Line 494)
+  `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding
+  to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term
+  of type `tm : 𝕌` thus doing abstraction successfully.
 
-Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A` has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To show this explicitly at the plugin level, we look at Figure 4 (Line 494) `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term of type `tm : 𝕌` thus doing abstraction successfully.
+  Generally speaking, all the (extensible) inductive type will be simply
+  "wrapped" by a module type with its interface and only exposing the
+  constructor (with no eliminators), just like how we generate `STLC°tm`.
+  
 
-Generally speaking, all the (extensible) inductive type will be simply "wrapped" by a module type with its interface and only exposing the constructor (with no eliminators), just like how we generate `STLC°tm`.
+* *(Reviewer B/D) "I find it somewhat surprising that neither the FPOP plugin / implementation
+  itself, nor the code of the case studies, is provided."*
 
+  We will certainly make the FPOP plugin/implementation available.
 
-* (Reviewer B/D) "I find it somewhat surprising that neither the FPOP plugin / implementation
-  itself, nor the code of the case studies, is provided."
+* *(Review B) "I think the paper would also be improved by delineating the limitations of the
+  current implementation / metatheory.."; (Reviewer C) "Be upfront about this limitation instead of hiding it in the section on case studies."; (Reviewer D) "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."; (Reviewer D) "It would be nice to add an explicit comment about the trusted code bases of any developments"*
 
-We will certainly make the FPOP plugin/implementation available.
+  Thank you for your feedback. We will clearly state the limitations of the
+  current implementation and meta-theory in the final revision. In particular,
+  we will emphasize the issue raised by Reviewer D regarding equality coercion
+  and the pervasive propositional equality on extensible inductive families.
+  This can result in unnecessary equality coercion when `denoteTy t` is not
+  definitionally equal to `nat`.
 
-* (Review B) "I think the paper would also be improved by delineating the limitations of the
-  current implementation / metatheory.."; (Reviewer C) "Be upfront about this limitation instead of hiding it in the section on case studies."; (Reviewer D) "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."; (Reviewer D) "It would be nice to add an explicit comment about the trusted code bases of any developments"
+  We believe that this opens up new opportunities for future work in both theory
+  and practice, (a). such as a normalization algorithm for an extended calculus
+  that allows for more convertibility upon elimination of the extensible
+  inductive type; (b). and a proper proof assistant that supports native
+  extensible inductive types instead of the current encoding via our plugin,
+  thus allowing for proper reduction of open terms. This will change the kernel
+  of proof assistant for sure. 
 
-Thank you for your feedback. We will clearly state the limitations of the current implementation and meta-theory in the final revision. In particular, we will emphasize the issue raised by Reviewer D regarding equality coercion and the pervasive propositional equality on extensible inductive families. This can result in unnecessary equality coercion when `denoteTy t` is not definitionally equal to `nat`.
-
-We believe that this opens up new opportunities for future work in both theory and practice,
-(a). such as a normalization algorithm for an extended calculus that allows for more convertibility upon elimination of the extensible inductive type; 
-(b). and a proper proof assistant that supports native extensible inductive types instead of the current encoding via our plugin, thus allowing for proper reduction of open terms. This will change the kernel of proof assistant for sure. 
-
-In the final revision, we will also clarify that our plugin only translates code into vanilla Coq terms without expanding the trusted codebase.
-
+  In the final revision, we will also clarify that our plugin only translates
+  code into vanilla Coq terms without expanding the trusted codebase.
+  
 
 ### Review C
 
-* "The utility of the FMLTT formalization in this paper is unclear to me. Don't
+* *"The utility of the FMLTT formalization in this paper is unclear to me. Don't
   you already have consistency and canonicity via the translation to Coq
   demonstrated by FPOP? Or put another way, instead of defining FMLTT directly,
-  couldn't you translate it to MLTT following the approach in FPOP?"
+  couldn't you translate it to MLTT following the approach in FPOP?"*
 
-The technical detail here is that, FMLTT also has this unconventional Wtype formulation. While each classic Wtype is defined by a pair of type `A ⊢ B`, our unconventional Wtype is defined by a list of pair of types `Aᵢ ⊢ Bᵢ`, each pair corresponds to one constructor. 
+  The technical detail here is that, FMLTT also has this unconventional Wtype
+  formulation. While each classic Wtype is defined by a pair of type `A ⊢ B`,
+  our unconventional Wtype is defined by a list of pair of types `Aᵢ ⊢ Bᵢ`, each
+  pair corresponds to one constructor. 
 
-One way to interpret it is the classical formluation encoding this list using a big sum type. So the conventional and unconventional Wtype can be translated to each other. 
+  One way to interpret it is the classical formluation encoding this list using
+  a big sum type. So the conventional and unconventional Wtype can be translated
+  to each other. 
 
-However, our translation doesn't translate this unconventional Wtype formulation back to the conventional one. So the target calculus after translation is **MLTT + this unconventional Wtype**. In that case, translation can only function as a guide to the plugin implementation, and **pedantically** is not enough to show the consistency/canonicitiy for FMLTT because **pedantically** target calculus is not proven to be consistency/canonicity.
+  However, our translation doesn't translate this unconventional Wtype
+  formulation back to the conventional one. So the target calculus after
+  translation is **MLTT + this unconventional Wtype**. In that case, translation
+  can only function as a guide to the plugin implementation, and
+  **pedantically** is not enough to show the consistency/canonicitiy for FMLTT
+  because **pedantically** target calculus is not proven to be
+  consistency/canonicity.
 
-We agree with Reviewer B's insight -- we will get consistency/canonicitiy when we translate unconventional Wtype into the conventional one. The reason we didn't choose to do so because we expect this translation a lot more verbose than the current proof because of the simplicity of Wtype itself compared to the rich functionality provided by (fake-)Agda's Inductive Facility. We only use the latter when constructing consistency/canonicity model.
+  We agree with Reviewer B's insight -- we will get consistency/canonicitiy when
+  we translate unconventional Wtype into the conventional one. The reason we
+  didn't choose to do so because we expect this translation a lot more verbose
+  than the current proof because of the simplicity of Wtype itself compared to
+  the rich functionality provided by (fake-)Agda's Inductive Facility. We only
+  use the latter when constructing consistency/canonicity model.
 
 
 
 ### Other questions
 
+* *(Reviewer A) Why is W(t) a term and not a type? What are bold-W and bold-P needed for?*
+
+  In dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
+
+  𝕎(t) is a typo and should be deleted. Thanks for pointing out.
+
+  ℙ is another technical detail of the system. Its functionality is to transform
+  a linkage(overridable/extensible) into a module(sigma type). The reason it is
+  irreplacable is because, proper abstraction cannot happen on linkage (𝕃) but
+  only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
+  A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
+  `A₆`. 
 
 
-* (Reviewer A) Why is W(t) a term and not a type? What are bold-W and bold-P needed for?
+* *(Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.*
 
-In dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
-
-𝕎(t) is a typo and should be deleted. Thanks for pointing out.
-
-ℙ is another technical detail of the system. Its functionality is to transform a linkage(overridable/extensible) into a module(sigma type). The reason it is irreplacable is because, proper abstraction cannot happen on linkage (𝕃) but only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ : A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial `A₆`. 
-
-
-* (Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't. 
-
-We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
-
-Another exmaple would be extend *a family of STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
-
+  We can expect our plugin will generate unprovable proof obligation under
+  mixin, hindering qed'ed the proposition and thus closing the family.
+  
+  Another exmaple would be extend *a family of STLC and its termination proof*
+  with general recursion feature. Our plugin will generate unprovable proof
+  obligation inside the reducibility argument for the fixpoint feature.  
 
 * (Reviewer D) **What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?**
 
-Coq will reject on the pattern matching on `tm`. For example, Figure 4, Line 494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the given inductive `tm`. The following field definition will be type-checked based on this interface, and for Coq it will only consider `tm` as an arbitrary type and will fail to pattern match it.
+  Coq will reject on the pattern matching on `tm`. For example, Figure 4, Line
+  494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the
+  given inductive `tm`. The following field definition will be type-checked
+  based on this interface, and for Coq it will only consider `tm` as an
+  arbitrary type and will fail to pattern match it.
 
 <!-- I am not sure if I want to mention overridable/pins  -->
