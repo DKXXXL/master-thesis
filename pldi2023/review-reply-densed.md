@@ -132,7 +132,9 @@ We plan to expand it in the main text to clarify the questions the reviewers hav
 
 ### Other questions
 
-* *(Reviewer A) Why is W(t) a term and not a type? What are bold-W and bold-P needed for?*
+
+
+* (Reviewer A/B) Why is W(t) a term and not a type? What are bold-W and bold-P needed for?
 
   In dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
 
@@ -148,19 +150,43 @@ We plan to expand it in the main text to clarify the questions the reviewers hav
 
 * *(Reviewer B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.*
 
-  We can expect our plugin will generate unprovable proof obligation under
-  mixin, hindering qed'ed the proposition and thus closing the family.
-  
-  Another exmaple would be extend *a family of STLC and its termination proof*
-  with general recursion feature. Our plugin will generate unprovable proof
-  obligation inside the reducibility argument for the fixpoint feature.  
+<!-- I think we still need to clarify we doesn't support extending these -->
+We currently doesn't support extend STLC with polymorphism and reference, which requires extending existent inductive family with new indices. 
 
-* (Reviewer D) **What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?**
+Hypothetically speaking, We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
+
+Another exmaple would be extend *a family of STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
+
+
+* (Reviewer D) **"What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?"**
 
   Coq will reject on the pattern matching on `tm`. For example, Figure 4, Line
   494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the
   given inductive `tm`. The following field definition will be type-checked
   based on this interface, and for Coq it will only consider `tm` as an
   arbitrary type and will fail to pattern match it.
+ 
+
+* (Reviewer D) **""In the event that fpop cannot infer where the programmer intends to place a new field, annotation is required." I did not understand what it means to 'place' a field-- when does this occur,  and what do these annotations look like?"**
+
+For example
+```C
+Family A {Field a; Field b; Field c;}
+
+Family B extends A {
+  (* Inherit a. *) 
+  (* this vernacular command line will make a difference once uncommented. Before uncommented it, a2 will be the first field of the Family B.
+      The fields are order sensitive, especially when the definition of a2 dependent on a, placing a2 before a will cause program rejected. 
+      This ``annotation`` require the programmers effort. *) 
+  Field a2.
+}
+```
 
 <!-- I am not sure if I want to mention overridable/pins  -->
+
+
+* (Reviewer D) **"First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?**
+
+We should be more clear that we want to emphasize, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking happens after a whole family is closed
+
+Yes, modules/functors are generated in the background after each command is emitted.
