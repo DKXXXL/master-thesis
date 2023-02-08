@@ -61,15 +61,15 @@ Below we address the main concerns, which might be paraphrased for the space.
   it restricts the ways a field can be used if a wrong $A$ is chosen.
   
   <!--
-   In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
-
+  In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
+  ...
   Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
   has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To
   show this explicitly at the plugin level, we look at Figure 4 (Line 494)
   `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding
   to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term
   of type `tm : 𝕌` thus doing abstraction successfully.
-
+  ...
   Generally speaking, all the (extensible) inductive type will be simply
   "wrapped" by a module type only exposing the
   constructor (with no eliminators), just like how we generate `STLC°tm`.
@@ -147,23 +147,6 @@ Below we address the main concerns, which might be paraphrased for the space.
   -->
 
 
-* (A, B) __In the conclusion of rule Tyeq/Casety, R should be T?__
-
-  Yes. Thank you for noticing this typo.
-
-* (Review A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
-
-  In a dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
-
-  𝕎(t) is a typo and should be deleted. Thanks for pointing that out.
-
-  ℙ is another technical detail of the system. Its functionality is to transform
-  a linkage(overridable/extensible) into a module(sigma type). The reason it is
-  irreplaceable is that proper abstraction cannot happen on linkage (𝕃) but
-  only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
-  A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
-  `A₆`. 
-
 
 * (Review B) __How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.__
 
@@ -205,3 +188,22 @@ Family B extends A {
   We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically, type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where type-checking only happens after a whole family is closed.
 
   Yes, modules/functors are generated in the background after each command is emitted.
+
+
+* (A, B) __In the conclusion of rule Tyeq/Casety, R should be T?__
+
+  Yes. Thank you for noticing this typo.
+
+* (A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
+
+  In a dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
+
+  𝕎(t) is a typo and should be deleted. Thanks for pointing that out.
+
+  ℙ is another technical detail of the system. Its functionality is to transform
+  a linkage(overridable/extensible) into a module(sigma type). The reason it is
+  irreplaceable is that proper abstraction cannot happen on linkage (𝕃) but
+  only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
+  A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
+  `A₆`. 
+
