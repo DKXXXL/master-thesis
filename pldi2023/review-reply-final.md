@@ -1,5 +1,5 @@
 We thank all the reviewers for their critical and encouraging feedback.
-Below we address the main concerns, which might be paraphrased for space.
+Below we address the main concerns, which we may have paraphrased for space.
 
 * (A, B, C, D) __There are limitations with the current design and implementation, such as
   restricting induction to the top level and the awkwardness in handling terms like `denoteTy t`.__
@@ -94,10 +94,10 @@ Below we address the main concerns, which might be paraphrased for space.
   Family B extends A.
     Inherit a2.
     FDefinition b := ...
-  End B
+  End B.
   ```
 
-* (D) __Line 487 (__*a module named STLC◦subst◦Cases is generated interactively ...*__) is confusing.__
+* (D) __Line 487__ ("a module named `STLC◦subst◦Cases` is generated interactively ...") __is confusing.__
 
   We wanted to emphasize that programming is interactive even within an `FRecursion` definition:
   the programmer need not wait until the entire `FRecursion` definition is completed to have
@@ -108,7 +108,7 @@ Below we address the main concerns, which might be paraphrased for space.
   We do not have intimate knowledge of Coq's universe polymorphism feature, but we expect
   it to have the same level of compatibility with families as it does with Coq
   modules—under the hood, upon closing a family, the plugin is just doing
-  repeated module inclusion and instantiation.
+  module inclusion and instantiation repeatedly.
 
 
 We will address in our revision other reviewer comments not mentioned above.
