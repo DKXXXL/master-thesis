@@ -15,24 +15,15 @@ We acknowledge this limitation of our current research and are trying to advance
 
 
 
-* "Seems related to type theories for modules, but doesn't discuss the connection"
+* (Reviewer A) Some comparison between our work and [DCH 2003] [DR 2008]?
   
-Finally, I note that a family has similarities with an ML-style module,
-including the fact that some of its members are opaque while others are
-abstract. This is modelled through the use of singleton types, just as
-dependent type theories for modules do (e.g., Dreyer, Crary, Harper, POPL
-2003), which are also extensions of MLTT. Furthermore, there has been work on
-extending ML modules with mixin composition (Dreyer, Rossberg, ICFP 2008).
-ML-style modules are the basis of Coq's module system as well, so I would have
-expected some comparison with this line of work.
-
-  > We need to say something about "A type system for higher-order modules"
-
-Generally speaking, compared to ML-style module, Family focuses on overridability and code inheritance. The latter can be modeled by the functor in a verbose way. Module also has a clear distinction on the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to mundane classes. 
+Generally speaking, compared to ML-style module, Family focuses on overridability and code inheritance. The latter can be modeled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
 
 Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phase is acceptable.
 
-In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work.
+In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-modules.
+
+
 
 
 * (Reviewer A/B/C/D) Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. Reviewer D: "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"
