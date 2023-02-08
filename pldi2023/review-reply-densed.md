@@ -28,6 +28,11 @@ expected some comparison with this line of work.
 
   > We need to say something about "A type system for higher-order modules"
 
+Generally speaking, compared to ML-style module, Family focuses on overridability and code inheritance. The latter can be modeled by the functor in a verbose way. Module also has a clear distinction on the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to mundane classes. 
+
+Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phase is acceptable.
+
+In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work.
 
 
 * (Reviewer A/B/C/D) Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. Reviewer D: "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"
