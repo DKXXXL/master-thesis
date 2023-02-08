@@ -4,7 +4,7 @@ Below we address the main concerns, which might be paraphrased for the space.
 * (Review A) __"In terms of ergonomics, I wonder how powerful and usable" this is ... ; (Reviewer D) "Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level."__
 
 
-  As Reviewer A/D highlights, the current method for inductively eliminating data only involves using "FInduction" at the top level. We have "fdiscriminate" and "finjection" for deducing intermediate facts, but the key problem is the absence of proper nested pattern matching.
+  As Reviewer A/D highlighted, the current method for inductively eliminating data only involves using "FInduction" at the top level. We have "fdiscriminate" and "finjection" for deducing intermediate facts, but the key problem is the absence of proper nested pattern matching.
 
   <!-- The idea is 
       fill in the new hole once pattern matching needs to extend the clauses
@@ -45,7 +45,7 @@ Below we address the main concerns, which might be paraphrased for the space.
   W-type. Intuitively, the type system is sound without this algorithm because
   it restricts the ways a field can be used if a wrong $A$ is chosen.
   
-<!--
+  <!--
    In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
 
   Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
@@ -58,7 +58,7 @@ Below we address the main concerns, which might be paraphrased for the space.
   Generally speaking, all the (extensible) inductive type will be simply
   "wrapped" by a module type only exposing the
   constructor (with no eliminators), just like how we generate `STLC°tm`.
--->
+  -->
 
 * (Reviews-B&D) __The plugin implementation is not included as a supplement.__
 
