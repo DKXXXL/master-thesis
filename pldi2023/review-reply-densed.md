@@ -12,19 +12,19 @@ Below we address the main concerns, which might be paraphrased for the space.
       lifting nested induction to top level seems not necessary
   -->
 
-  We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that code involving nested induction/pattern matching can be reused by fill in the hole after extension happens upon inductive type. The plugin will generate extra proof obligation to fill this hole. This certainly requires significant amount of engineering effort.
+  We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that we can reuse code involving nested induction/pattern matching, by filling in the new matching clauses after extension happens upon the inductive type. The plugin will generate an extra proof obligation to fill this hole. It certainly requires a significant amount of engineering effort.
 
 
 
 * (Review A) __Some comparison between this paper and [DCH 2003] [DR 2008]?__
   
-  Generally speaking, compared to ML-style module, Family focuses on overridability and code inheritance. The latter can be modeled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
+  Generally speaking, compared to ML-style modules, families focus on overridability and code inheritance. The latter can be modelled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
 
-  Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phase is acceptable.
+  Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phases is acceptable.
 
-  In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-modules.
+  In fact, for plugin development, the family is compiled into modules/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-module.
 
-  Our module and mixin has the similar semantic of that from [DCH 2003] [DR 2008]. However, compared to their work, we mainly focus on the perspect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
+  Our module and mixin have similar semantics to that from [DCH 2003] and [DR 2008]. However, compared to their work, we mainly focus on the prospect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
 
 
 * (Review A/B/C/D) __Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"__
