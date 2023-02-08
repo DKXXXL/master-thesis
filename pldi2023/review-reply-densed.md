@@ -190,13 +190,11 @@ Below we address the main concerns, which might be paraphrased for the space.
   End B
   ```
 
+* (D) __Line 487 (__*a module named STLC◦subst◦Cases is generated interactively ...*__) is confusing.__
 
-
-* (Review D) __"First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?__
-
-  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically, type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where type-checking only happens after a whole family is closed.
-
-  Yes, modules/functors are generated in the background after each command is emitted.
+  We wanted to emphasize that programming is interactive even within an `FRecursion` definition:
+  the programmer need not wait until the entire `FRecursion` definition is completed to have
+  their `Case` commands checked and translated by the plugin.
 
 
 * (A, B) __In the conclusion of rule Tyeq/Casety, R should be T?__
