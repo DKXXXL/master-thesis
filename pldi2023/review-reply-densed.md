@@ -1,42 +1,51 @@
 We thank all the reviewers for their critical and encouraging feedback.
 Below we address the main concerns, which might be paraphrased for the space.
 
-* (Review A) __"In terms of ergonomics, I wonder how powerful and usable" this is ... ; (Reviewer D) "Another place where the current approach seems to be lacking is the restriction of induction / case analysis to the top level."__
-
+* (R-A, R-D) **Ergonomics is lacking because induction is allowed only at the top level.**
 
   As Reviewer A/D highlights, the current method for inductively eliminating data only involves using "FInduction" at the top level. We have "fdiscriminate" and "finjection" for deducing intermediate facts, but the key problem is the absence of proper nested pattern matching.
 
   <!-- The idea is 
       fill in the new hole once pattern matching needs to extend the clauses
-
       lifting nested induction to top level seems not necessary
   -->
-
+  
   We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that code involving nested induction/pattern matching can be reused by fill in the hole after extension happens upon inductive type. The plugin will generate extra proof obligation to fill this hole. This certainly requires significant amount of engineering effort.
 
 
 
-* (Review A) __Some comparison between this paper and [DCH 2003] [DR 2008]?__
+* (A) __Connection to work on ML-style modules [DCH 2003, DR 2008]?__
+
+  Thank you for the references.
+  Both ML-style modules and our families are modularity mechanisms.
+  ML-style modules are more about abstraction (caring about issues such as
+  signature ascription), while our families are more about extensibility.
+  Both use singletons to model and control the propagation of
+  definitions inside a module or family.
+  Work on mixin composition for ML-style modules focuses on making 
+  mixins play well with the peculiarities of ML-style modules,
+  while our work focuses on supporting mixins in the presence of extensible
+  inductive types.
   
+  <!--
   Generally speaking, compared to ML-style module, Family focuses on overridability and code inheritance. The latter can be modeled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
-
+  ...
   Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phase is acceptable.
-
+  ...
   In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-modules.
-
+  ...
   Our module and mixin has the similar semantic of that from [DCH 2003] [DR 2008]. However, compared to their work, we mainly focus on the perspect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
+  -->
 
 
-* (Review A/B/C/D) __Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"__
+* (A, B, D) **The presentation of FMLTT is tough. The Agda-looking scripts are not readable.**
+
+  We sympathize with the reviewers. We will expand the section to clarify things
+  in response to the reviewers' questions. We will also use an appendix to
+  explain the formalization and proofs in greater detail.
 
 
-  Thank you for your feedback. 
-  We sympathize with this impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the readers.
-
-  We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater details aiming for accessibility. 
-
-
-* (Review-B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
+* (B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
   
   The FMLTT typing rules do not commit to a particular choice of the context type $A$,
   though there exists a simple algorithm for picking the right $A$ (lines 785–787): a
@@ -60,7 +69,7 @@ Below we address the main concerns, which might be paraphrased for the space.
   constructor (with no eliminators), just like how we generate `STLC°tm`.
 -->
 
-* (Reviews-B&D) __The plugin implementation is not included as a supplement.__
+* (B, D) __The plugin implementation is not included as a supplement.__
 
   We will ensure the release of our research artifacts for public access.
 
@@ -86,17 +95,30 @@ Below we address the main concerns, which might be paraphrased for the space.
   code into vanilla Coq terms without expanding the trusted codebase.
   
 
-* (Review C) __The utility of the FMLTT formalization seems unclear since consistency and canonicity can already be deduced by the translation to MLTT following the approach in FPOP__
+* (B, C) __Consistency is already implied for FMLTT by a translation to MLTT, and for FPOP by a translation to Coq__.
 
-  The technical detail here is that, FMLTT also has this unconventional Wtype
-  formulation. While each classic Wtype is defined by a pair of type `A ⊢ B`,
-  our unconventional Wtype is defined by a list of pair of types `Aᵢ ⊢ Bᵢ`, each
-  pair corresponds to one constructor. 
+  We agree with the reviewers' insights.
 
-  One way to interpret it is the classical formluation encoding this list using
-  a big sum type. So the conventional and unconventional Wtype can be translated
-  to each other. 
-
+  We note that the effort required to prove consistency directly for FMLTT is
+  almost identical to that required to prove a translation to MLTT is
+  type-preserving: both proofs are structured as type-preserving, metacircular
+  interpretations.
+  
+  <!--
+  Our main excuse for doing the proofs is that we found it more
+  educational for ourselves to directly prove FMLTT consistent than doing the
+  translation.
+  ...
+  We decided to prove consistency and canonicity directly for FMLTT, because our
+  formulation of W-types, which are part of both FMLTT and our target MLTT, is
+  slightly unconventional.
+  We define a W-type as given by a list of pairs of types $A_i ⊢ B_i$; each pair
+  corresponds to one constructor.
+  The convention is to define a W-type as given by a single pair of types $A ⊢ B$,
+  which can be understood to encode multiple constructors using
+  using a big sum type. So the conventional and unconventional Wtype can be
+  translated to each other. 
+  ...
   However, our translation doesn't translate this unconventional Wtype
   formulation back to the conventional one. So the target calculus after
   translation is **MLTT + this unconventional Wtype**. In that case, translation
@@ -104,18 +126,19 @@ Below we address the main concerns, which might be paraphrased for the space.
   **pedantically** is not enough to show the consistency/canonicitiy for FMLTT
   because, **pedantically**, target calculus is not proven to be
   consistency/canonicity.
-
+  ...
   We agree with Reviewer B's insight -- we will get consistency/canonicitiy when
   we translate unconventional Wtype into the conventional one. The reason we
   didn't choose to do so is that we expect this translation a lot more verbose
   than the current proof because of the simplicity of Wtype itself compared to
   the rich functionality provided by (fake-)Agda's Inductive Facility. We only
   use the latter when constructing consistency/canonicity model.
+  -->
 
 
-* (Review A/B) __In the conclusion of rule Tyeq/Casety, R should be T?__
+* (A, B) __In the conclusion of rule Tyeq/Casety, R should be T?__
 
-Yes. Thank you for noticing this typo.
+  Yes. Thank you for noticing this typo.
 
 * (Review A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
 
