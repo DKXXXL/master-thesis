@@ -36,12 +36,17 @@ Below we address the main concerns, which might be paraphrased for the space.
   We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater details aiming for accessibility. 
 
 
-* (Review B) __The `A` of _TyEq/PK/Add_
-  and _LSig/Add_ where `A` decides what to make available to later definitions. Is `A` non-determinstic? How does plugin decides `A`?__
+* (Review-B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
   
-  The typing rules do not commit to a particular choice of $A$, as the reviewer
-  points out.
-  In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
+  The FMLTT typing rules do not commit to a particular choice of the context type $A$,
+  though there exists a simple algorithm for picking the right $A$ (lines 785–787): a
+  field is checked in a context of type $A$ that hides W-type signatures behind
+  $\mathbb{U}$, unless that field invokes a constructor or eliminator of some
+  W-type. Intuitively, the type system is sound without this algorithm because
+  it restricts the ways a field can be used if a wrong $A$ is chosen.
+  
+<!--
+   In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
 
   Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
   has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To
@@ -53,11 +58,11 @@ Below we address the main concerns, which might be paraphrased for the space.
   Generally speaking, all the (extensible) inductive type will be simply
   "wrapped" by a module type only exposing the
   constructor (with no eliminators), just like how we generate `STLC°tm`.
-  
+-->
 
-* (Review B/D) __"I find it somewhat surprising that neither the FPOP plugin / implementation itself, nor the code of the case studies, is provided."__
+* (Reviews-B&D) __The plugin implementation is not included as a supplement.__
 
-  We will certainly make the FPOP plugin/implementation available.
+  We will ensure the release of our research artifacts for public access.
 
 * (Review B) __"I think the paper would also be improved by delineating the limitations of the current implementation / metatheory.."__; (Review C) __"Be upfront about this limitation ..."__; (Review D)__ "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."__; (Review D) __"It would be nice to add an explicit comment about the trusted code bases of any developments"__
 
