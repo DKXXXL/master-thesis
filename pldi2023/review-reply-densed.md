@@ -31,10 +31,9 @@ Below we address the main concerns, which might be paraphrased for the space.
 
 
   Thank you for your feedback. 
-  We sympathize with this impression on Section 5, and we agree it is dense, hard to read and not giving too much inspiration for the readers.
+  We sympathize with this impression in Section 5, and we agree it is dense, hard to read and not giving too much inspiration to the readers.
 
-  We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater details aiming for accessibility. 
-
+  We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater detail aiming for accessibility. 
 
 * (Review-B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
   
@@ -76,11 +75,11 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   We believe that this opens up new opportunities for future work in both theory
   and practice, (a). such as a normalization algorithm for an extended calculus
-  that admits more conversion equation upon elimination of the extensible
+  that admits more conversion equations upon elimination of the extensible
   inductive type; (b). and a proper proof assistant that supports native
   extensible inductive types instead of the current encoding via our plugin,
   thus allowing for proper reduction of open terms. This will change the kernel
-  of proof assistant for sure. 
+  of the proof assistant for sure. 
 
   In the final revision, we will also clarify that our plugin only translates
   code into vanilla Coq terms without expanding the trusted codebase.
