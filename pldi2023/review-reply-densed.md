@@ -164,11 +164,11 @@ Below we address the main concerns, which might be paraphrased for the space.
   -->
 
 
-* (Review D) __"What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?"__
+* (D) __What happens if a user tries to use `tm_rect` with standard pattern matching?__
 
-  Coq will reject the pattern matching on `tm`. For example, Figure 4, Line 494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the given inductive `tm`. The following field definition will be type-checked
-  based on this interface. As for Coq, it will only consider `tm` as an
-  arbitrary type and will fail to pattern-match it.
+  The programmer is prevented from using `tm_rect` within the family in which `tm` is defined,
+  because the plugin makes `tm` appear in the typing context as an axiomatized
+  type without exposing its concrete definition (line 494).
  
 
 * (Review D) __""In the event that fpop cannot infer where the programmer intends to place a new field, annotation is required." I did not understand what it means to 'place' a field-- when does this occur,  and what do these annotations look like?"__
