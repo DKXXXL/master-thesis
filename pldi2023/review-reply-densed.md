@@ -166,6 +166,6 @@ Family B extends A {
 
 * (Review D) __"First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?__
 
-  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically, type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking only happens after a whole family is closed.
+  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically, type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where type-checking only happens after a whole family is closed.
 
   Yes, modules/functors are generated in the background after each command is emitted.
