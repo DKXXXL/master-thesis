@@ -76,7 +76,7 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   We believe that this opens up new opportunities for future work in both theory
   and practice, (a). such as a normalization algorithm for an extended calculus
-  that allows for more convertibility upon elimination of the extensible
+  that admits more conversion equation upon elimination of the extensible
   inductive type; (b). and a proper proof assistant that supports native
   extensible inductive types instead of the current encoding via our plugin,
   thus allowing for proper reduction of open terms. This will change the kernel
