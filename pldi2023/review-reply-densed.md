@@ -104,11 +104,15 @@ Below we address the main concerns, which might be paraphrased for the space.
   consistency/canonicity.
 
   We agree with Reviewer B's insight -- we will get consistency/canonicity when
-  we translate the unconventional Wtype into the conventional one. The reason we
+  we translate the unconventional Wtype into the conventional one. In fact, our consistency 
+  proof is structurally identical to the  type-preservation proof for a translation to MLTT, 
+  since consistency is proved via a type-preserving, metacircular interpretation.
+  
+  The reason we
   didn't choose to do so is that we expect this translation a lot more verbose
   than the current proof because of the simplicity of Wtype itself compared to
   the rich functionality provided by (fake-)Agda's Inductive Facility. We only
-  use the latter when constructing the consistency/canonicity model.
+  use the latter when constructing the consistency/canonicity model. 
 
 
 * (Review A/B) __In the conclusion of rule Tyeq/Casety, R should be T?__
