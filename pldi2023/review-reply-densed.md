@@ -87,29 +87,28 @@ Below we address the main concerns, which might be paraphrased for the space.
 
 * (Review C) __The utility of the FMLTT formalization seems unclear since consistency and canonicity can already be deduced by the translation to MLTT following the approach in FPOP__
 
-  The technical detail here is that, FMLTT also has this unconventional Wtype
-  formulation. While each classic Wtype is defined by a pair of type `A ⊢ B`,
-  our unconventional Wtype is defined by a list of pair of types `Aᵢ ⊢ Bᵢ`, each
+  The technical detail here is that FMLTT also has this unconventional Wtype
+  formulation. While each classic Wtype is defined by a pair of types `A |- B`,
+  our unconventional Wtype is defined by a list of pairs of types `A_i ⊢ B_i`, and each
   pair corresponds to one constructor. 
 
-  One way to interpret it is the classical formluation encoding this list using
-  a big sum type. So the conventional and unconventional Wtype can be translated
-  to each other. 
+  The conventional and unconventional Wtype can be translated
+  to each other because a list is also an inductive type.
 
   However, our translation doesn't translate this unconventional Wtype
   formulation back to the conventional one. So the target calculus after
   translation is **MLTT + this unconventional Wtype**. In that case, translation
   can only function as a guide to the plugin implementation, and
-  **pedantically** is not enough to show the consistency/canonicitiy for FMLTT
+  **pedantically** is not enough to show the consistency/canonicity for FMLTT
   because, **pedantically**, target calculus is not proven to be
   consistency/canonicity.
 
-  We agree with Reviewer B's insight -- we will get consistency/canonicitiy when
-  we translate unconventional Wtype into the conventional one. The reason we
+  We agree with Reviewer B's insight -- we will get consistency/canonicity when
+  we translate the unconventional Wtype into the conventional one. The reason we
   didn't choose to do so is that we expect this translation a lot more verbose
   than the current proof because of the simplicity of Wtype itself compared to
   the rich functionality provided by (fake-)Agda's Inductive Facility. We only
-  use the latter when constructing consistency/canonicity model.
+  use the latter when constructing the consistency/canonicity model.
 
 
 * (Review A/B) __In the conclusion of rule Tyeq/Casety, R should be T?__
@@ -118,13 +117,13 @@ Yes. Thank you for noticing this typo.
 
 * (Review A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
 
-  In dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
+  In a dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
 
-  𝕎(t) is a typo and should be deleted. Thanks for pointing out.
+  𝕎(t) is a typo and should be deleted. Thanks for pointing that out.
 
   ℙ is another technical detail of the system. Its functionality is to transform
   a linkage(overridable/extensible) into a module(sigma type). The reason it is
-  irreplacable is because, proper abstraction cannot happen on linkage (𝕃) but
+  irreplaceable is that proper abstraction cannot happen on linkage (𝕃) but
   only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
   A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
   `A₆`. 
@@ -133,18 +132,18 @@ Yes. Thank you for noticing this typo.
 * (Review B) __How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.__
 
   <!-- I think we still need to clarify we doesn't support extending these -->
-  We currently doesn't support extend STLC with polymorphism and reference, which requires extending existent inductive family with new indices. 
+  We currently don't support extending STLC with polymorphism and reference, which requires extending the existent inductive family with new indices. 
 
-  Hypothetically speaking, We can expect our plugin will generate unprovable proof obligation under mixin, hindering qed'ed the proposition and thus closing the family.
+  Hypothetically speaking, We can expect our plugin will generate unprovable proof obligation under mixin, hindering qeding the proposition and thus closing the family.
 
-  Another exmaple would be extend *a family of STLC and its termination proof* with general recursion feature. Our plugin will generate unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
+  Another example would be extending *a family of STLC and its termination proof* with the general recursion feature. Our plugin will generate an unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
 
 
 * (Review D) __"What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?"__
 
-  Coq will reject on the pattern matching on `tm`. For example, Figure 4, Line 494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the given inductive `tm`. The following field definition will be type-checked
-  based on this interface, and for Coq it will only consider `tm` as an
-  arbitrary type and will fail to pattern match it.
+  Coq will reject the pattern matching on `tm`. For example, Figure 4, Line 494 `Module Type STLC°tm` shows the abstraction/wrapped interface around the given inductive `tm`. The following field definition will be type-checked
+  based on this interface. As for Coq, it will only consider `tm` as an
+  arbitrary type and will fail to pattern-match it.
  
 
 * (Review D) __""In the event that fpop cannot infer where the programmer intends to place a new field, annotation is required." I did not understand what it means to 'place' a field-- when does this occur,  and what do these annotations look like?"__
@@ -155,9 +154,10 @@ Family A {Field a; Field b; Field c;}
 
 Family B extends A {
   (* Inherit a. *) 
-  (* this vernacular command line will make a difference once uncommented. Before uncommented it, a2 will be the first field of the Family B.
-      The fields are order sensitive, especially when the definition of a2 dependent on a, placing a2 before a will cause program rejected. 
-      This ``annotation`` require the programmers effort. *) 
+    (* this vernacular command line will make a difference once uncommented. 
+        Before uncommenting it, a2 will be the first field of Family B.
+        The fields are order sensitive, especially when the definition of a2 depends on a, placing a2 before a will fail the type-check. 
+      This ``annotation`` require the programmer`s effort. *) 
   Field a2.
 }
 ```
@@ -166,6 +166,6 @@ Family B extends A {
 
 * (Review D) __"First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?__
 
-  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking only happens after a whole family is closed.
+  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically, type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking only happens after a whole family is closed.
 
   Yes, modules/functors are generated in the background after each command is emitted.
