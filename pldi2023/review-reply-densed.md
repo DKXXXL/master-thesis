@@ -52,29 +52,6 @@ Below we address the main concerns, which might be paraphrased for space.
   code into vanilla Coq terms without expanding the trusted codebase.
   -->
 
-* (A) __Connection to work on ML-style modules [DCH 2003, DR 2008]?__
-
-  Thank you for the references.
-  Both ML-style modules and our families are modularity mechanisms.
-  ML-style modules are more about abstraction (caring about issues such as
-  signature ascription), while our families are more about extensibility.
-  Both use singletons to model and control the propagation of
-  definitions inside a module or family.
-  Work on mixin composition for ML-style modules focuses on making 
-  mixins play well with the peculiarities of ML-style modules,
-  while our work focuses on supporting mixins in the presence of extensible
-  inductive types.
-  
-  <!--
-  Generally speaking, compared to ML-style modules, families focus on overridability and code inheritance. The latter can be modelled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
-  ...
-  Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phases is acceptable.
-  ...
-  In fact, for plugin development, the family is compiled into modules/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-module.
-  ...
-  Our module and mixin have similar semantics to that from [DCH 2003] and [DR 2008]. However, compared to their work, we mainly focus on the prospect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
-  -->
-
 
 * (A, B, D) **The presentation of FMLTT is tough. The Agda-looking scripts are not readable.**
 
@@ -89,41 +66,13 @@ Below we address the main concerns, which might be paraphrased for space.
   We plan to expand it in the main text to clarify the questions the reviewers have, and also use appendices to explain the formalization and the proof in greater detail aiming for accessibility. 
   -->
 
-* (B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
-
-  The FMLTT typing rules do not commit to a particular choice of the context type $A$,
-  though there exists a simple algorithm for picking the right $A$ (lines 785–787): a
-  field is checked in a context of type $A$ that hides W-type signatures behind
-  $\mathbb{U}$, unless that field invokes a constructor or eliminator of some
-  W-type. Intuitively, the type system is sound without this algorithm because
-  it restricts the ways a field can be used if a wrong $A$ is chosen.
-  
-  <!--
-  In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
-  ...
-  Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
-  has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To
-  show this explicitly at the plugin level, we look at Figure 4 (Line 494)
-  `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding
-  to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term
-  of type `tm : 𝕌` thus doing abstraction successfully.
-  ...
-  Generally speaking, all the (extensible) inductive type will be simply
-  "wrapped" by a module type only exposing the
-  constructor (with no eliminators), just like how we generate `STLC°tm`.
-  -->
-
-* (B, D) __The plugin implementation is not included as a supplement.__
-
-  We will ensure the release of our research artifacts for public access.
-
 
 * (B, C) __Consistency is already implied for FMLTT by a translation to MLTT, and for FPOP by a translation to Coq__.
 
   We agree with the reviewers' insights.
 
   We note that the effort required to prove consistency directly for FMLTT is
-  almost identical to that required to prove a translation to MLTT is
+  similar to that required to prove a translation to MLTT
   type-preserving: both proofs are structured as type-preserving, metacircular
   interpretations.
   
@@ -161,6 +110,60 @@ Below we address the main concerns, which might be paraphrased for space.
   than the current proof because of the simplicity of Wtype itself compared to
   the rich functionality provided by (fake-)Agda's Inductive Facility. We only
   use the latter when constructing the consistency/canonicity model.
+  -->
+
+
+* (B, D) __The plugin implementation is not included as a supplement.__
+
+  We will ensure the release of our research artifacts for public access.
+
+
+* (A) __Connection to work on ML-style modules [DCH 2003, DR 2008]?__
+
+  Thank you for the references.
+  Both ML-style modules and our families are modularity mechanisms.
+  ML-style modules are more about abstraction (caring about issues such as
+  signature ascription), while our families are more about extensibility.
+  Both use singletons to model and control the propagation of
+  definitions inside a module or family.
+  Work on mixin composition for ML-style modules focuses on making 
+  mixins play well with the peculiarities of ML-style modules,
+  while our work focuses on supporting mixins in the presence of extensible
+  inductive types.
+  
+  <!--
+  Generally speaking, compared to ML-style modules, families focus on overridability and code inheritance. The latter can be modelled by the functor in a verbose way. Module also has a clear distinction between the implementation and its signature, while family doesn't -- a given family is usually fixed with one signature, closer to OO classes. 
+  ...
+  Compared to the paper [DCH 2003], their problem formulation is more mature and they gear towards real-life programming experience. For example, they aim at generativity (a feature for nominality and side effect); subtyping (happens during signature matching); and phase distinction (for compilation). Our current paper handles family in a structural style; doesn't relate different signatures at all; and we work in a full-dependent type setting where mixing static and dynamic phases is acceptable.
+  ...
+  In fact, for plugin development, the family is compiled into modules/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-module.
+  ...
+  Our module and mixin have similar semantics to that from [DCH 2003] and [DR 2008]. However, compared to their work, we mainly focus on the prospect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
+  -->
+
+
+* (B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
+
+  The FMLTT typing rules do not commit to a particular choice of the context type $A$,
+  though there exists a simple algorithm for picking the right $A$ (lines 785–787): a
+  field is checked in a context of type $A$ that hides W-type signatures behind
+  $\mathbb{U}$, unless that field invokes a constructor or eliminator of some
+  W-type. Intuitively, the type system is sound without this algorithm because
+  it restricts the ways a field can be used if a wrong $A$ is chosen.
+  
+  <!--
+  In practice, this A is decided by implementation. Our plugin always choose a "default" one which is just making all inductive type into an opaque type (Line 791) and make sure other parts stay the "same".
+  ...
+  Taking (Line 745) Figure. 8 as an example, `σ₅` has `tm : 𝕊(W(τₜₘ))` and `A`
+  has `tm : 𝕌` instead. `s` will make sure other fields stay the same type. To
+  show this explicitly at the plugin level, we look at Figure 4 (Line 494)
+  `Module Type STLC°tm` (corresponding to `A`), where `tm : Set` (corresponding
+  to `tm : 𝕌`). With this interface `STLC°tm` we cannot pattern match any term
+  of type `tm : 𝕌` thus doing abstraction successfully.
+  ...
+  Generally speaking, all the (extensible) inductive type will be simply
+  "wrapped" by a module type only exposing the
+  constructor (with no eliminators), just like how we generate `STLC°tm`.
   -->
 
 
@@ -214,20 +217,5 @@ Below we address the main concerns, which might be paraphrased for space.
   their `Case` commands checked and translated by the plugin.
 
 
-* (A, B) __In the conclusion of the rule TYEQ/CASETY, should $R$ be $T$?__
-
-  Yes. Thank you for noticing this typo.
-
-* (A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
-
-  In a dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
-
-  𝕎(t) is a typo and should be deleted. Thanks for pointing that out.
-
-  ℙ is another technical detail of the system. Its functionality is to transform
-  a linkage(overridable/extensible) into a module(sigma type). The reason it is
-  irreplaceable is that proper abstraction cannot happen on linkage (𝕃) but
-  only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
-  A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
-  `A₆`. 
-
+We will address in our revision other reviewer comments not mentioned above.
+Again, we thank all the reviewers for their thoughtful and detailed comments, which will help improve the paper.

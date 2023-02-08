@@ -84,6 +84,23 @@ Why is W(t) a term and not a type?
 
 What are bold-W and bold-P needed for?
 
+* (A, B) __In the conclusion of the rule TYEQ/CASETY, should $R$ be $T$?__
+
+  Yes. Thank you for noticing this typo.
+
+* (A) __"Why is W(t) a term and not a type? What are bold-W and bold-P needed for?"__
+
+  In a dependent type system, a type is also a term. i.e. we have to allow `Γ ⊢ W(t) : 𝕌`. 
+
+  𝕎(t) is a typo and should be deleted. Thanks for pointing that out.
+
+  ℙ is another technical detail of the system. Its functionality is to transform
+  a linkage(overridable/extensible) into a module(sigma type). The reason it is
+  irreplaceable is that proper abstraction cannot happen on linkage (𝕃) but
+  only on a module (ℙ). For example, Line 744 shows we can prove `ℙ(σ₅) ⊢ s₆ :
+  A₆[p¹]` but generally `𝕃(σ₅) ⊢ s₆ : A₆[p¹]` not provable for non-trivial
+  `A₆`. 
+
 <!-- This is the feature of tarski style universe, which is a good representation for formalization. (That will distinguish from)
       To explain this in first principle, say we formalize a term judgement Γ ⊢ _₀ : _₁. in Agda-like. 
       At the place of _₀ it has to be a term, at the place of _₁ it has to be a type. 
