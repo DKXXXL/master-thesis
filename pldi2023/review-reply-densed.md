@@ -24,7 +24,7 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   In fact, for plugin development, the family is compiled into module/functors. In meta-theory, we use sigma type as a conceptually simpler representation of modules. We also use singleton type to expose concrete type information in a family inspired by their work. So our work is heavily influenced by ML-modules.
 
-  Our mixin has the simialr semantic of that from [DR 2008]. Compared to their work, we focus on the consequent mixin of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. 
+  Our module and mixin has the similar semantic of that from [DCH 2003] [DR 2008]. However, compared to their work, we mainly focus on the perspect of the extensible inductive type and (exhaustiveness checking of) the corresponding recursors. Even in the case of mixin, we consider the consequent mixin of the inductive type and recursors.
 
 
 * (Review A/B/C/D) __Section 5 FMLTT is too dense, "incrediably terse" and inappropriately presented to give the audience enough intuition. "More worrisome, the full proof is *only* given in a notation heavy, Agda-style format"__
