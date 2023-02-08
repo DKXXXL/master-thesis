@@ -1,5 +1,5 @@
 We thank all the reviewers for their critical and encouraging feedback.
-Below we address the main concerns, which we may have paraphrased for space.
+Below we address the main concerns, which we may have paraphrased for brevity.
 
 * (A, B, C, D) __There are limitations with the current design and implementation, such as
   restricting induction to the top level and the awkwardness in handling terms like `denoteTy t`.__
@@ -15,7 +15,7 @@ Below we address the main concerns, which we may have paraphrased for space.
   We will also add a comment about the trusted base of any developments using the
   plugin, as the reviewers suggested.
   
-* (A, B, D) **The presentation of FMLTT is tough. The Agda-looking scripts are not readable.**
+* (A, B, D) **The presentation of FMLTT is tough.**
 
   We sympathize with the reviewers. We will expand the section to clarify things
   in response to the reviewers' questions. We will also use an appendix to
