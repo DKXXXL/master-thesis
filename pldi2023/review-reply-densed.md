@@ -1,18 +1,56 @@
 We thank all the reviewers for their critical and encouraging feedback.
-Below we address the main concerns, which might be paraphrased for the space.
+Below we address the main concerns, which might be paraphrased for space.
 
-* (A, D) **Ergonomics is lacking because induction is allowed only at the top level.**
+* (A, B, C, D) __There are limitations with the current design and implementation, such as
+  restricting induction to the top level and the awkwardness in handling terms like `denoteTy t`.__
 
+  We will clearly state the current limitations. We believe the limitations
+  identified by the reviewers represent interesting opportunities for future research.
+  For example, future work could explore a normalization algorithm for an
+  extended dependent type theory that admits more conversion equations on
+  elimination of extensible inductive types, as well as proof assistant
+  implementations that natively support extensible inductive types and thus
+  streamline normalization for open terms.
+
+  We will also add a comment about the trusted base of any developments using the
+  plugin, as the reviewers suggested.
+  
+  <!--
+  * (A, D) **Ergonomics is lacking because induction is allowed only at the top level.**
+  ...
   As Reviewer A/D highlighted, the current method for inductively eliminating data only involves using "FInduction" at the top level. We have "fdiscriminate" and "finjection" for deducing intermediate facts, but the key problem is the absence of proper nested pattern matching.
-
-  <!-- The idea is 
-      fill in the new hole once pattern matching needs to extend the clauses
-      lifting nested induction to top level seems not necessary
+  ...
+  The idea is 
+  - fill in the new hole once pattern matching needs to extend the clauses
+  - lifting nested induction to top level seems not necessary
+  ...
+  We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that we can reuse code involving nested induction/pattern matching, by filling in the new matching clauses after extension happens upon the inductive type. The plugin will generate an extra proof obligation to fill this hole. It certainly requires a significant amount of engineering effort.
   -->
 
-  We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that we can reuse code involving nested induction/pattern matching, by filling in the new matching clauses after extension happens upon the inductive type. The plugin will generate an extra proof obligation to fill this hole. It certainly requires a significant amount of engineering effort.
-
-
+  <!--
+  * (Review B) __"I think the paper would also be improved by delineating the limitations of the current implementation / metatheory.."__; (Review C) __"Be upfront about this limitation ..."__; (Review D)__ "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."__; (Review D) __"It would be nice to add an explicit comment about the trusted code bases of any developments"__
+  ...
+  Thank you for your feedback. We will clearly state the limitations of the
+  current implementation and meta-theory in the final revision. 
+  ...
+  do we want to mention overridability/pins?
+  ...
+  In particular, we will emphasize the issue raised by Review D regarding equality coercion
+  and the pervasive propositional equality on extensible inductive families.
+  This can result in unnecessary equality coercion when `denoteTy t` is not
+  definitionally equal to `nat`.
+  ...
+  We believe that this opens up new opportunities for future work in both theory
+  and practice, (a). such as a normalization algorithm for an extended calculus
+  that admits more conversion equations upon elimination of the extensible
+  inductive type; (b). and a proper proof assistant that supports native
+  extensible inductive types instead of the current encoding via our plugin,
+  thus allowing for proper reduction of open terms. This will change the kernel
+  of the proof assistant for sure. 
+  ...
+  In the final revision, we will also clarify that our plugin only translates
+  code into vanilla Coq terms without expanding the trusted codebase.
+  -->
 
 * (A) __Connection to work on ML-style modules [DCH 2003, DR 2008]?__
 
@@ -79,27 +117,6 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   We will ensure the release of our research artifacts for public access.
 
-* (Review B) __"I think the paper would also be improved by delineating the limitations of the current implementation / metatheory.."__; (Review C) __"Be upfront about this limitation ..."__; (Review D)__ "The biggest of these (which is not mentioned in the paper), is that the presence of open terms complicates typechecking dependently typed terms."__; (Review D) __"It would be nice to add an explicit comment about the trusted code bases of any developments"__
-
-  Thank you for your feedback. We will clearly state the limitations of the
-  current implementation and meta-theory in the final revision. 
-  <!-- do we want to mention overridability/pins? -->
-  In particular, we will emphasize the issue raised by Review D regarding equality coercion
-  and the pervasive propositional equality on extensible inductive families.
-  This can result in unnecessary equality coercion when `denoteTy t` is not
-  definitionally equal to `nat`.
-
-  We believe that this opens up new opportunities for future work in both theory
-  and practice, (a). such as a normalization algorithm for an extended calculus
-  that admits more conversion equations upon elimination of the extensible
-  inductive type; (b). and a proper proof assistant that supports native
-  extensible inductive types instead of the current encoding via our plugin,
-  thus allowing for proper reduction of open terms. This will change the kernel
-  of the proof assistant for sure. 
-
-  In the final revision, we will also clarify that our plugin only translates
-  code into vanilla Coq terms without expanding the trusted codebase.
-  
 
 * (B, C) __Consistency is already implied for FMLTT by a translation to MLTT, and for FPOP by a translation to Coq__.
 
@@ -197,7 +214,7 @@ Below we address the main concerns, which might be paraphrased for the space.
   their `Case` commands checked and translated by the plugin.
 
 
-* (A, B) __In the conclusion of rule Tyeq/Casety, R should be T?__
+* (A, B) __In the conclusion of the rule TYEQ/CASETY, should $R$ be $T$?__
 
   Yes. Thank you for noticing this typo.
 
