@@ -8,7 +8,8 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   <!-- The idea is 
       fill in the new hole once pattern matching needs to extend the clauses
-      lifting nested induction to top level is not necessary
+      
+      lifting nested induction to top level seems not necessary
   -->
 
   We acknowledge this limitation of our current research and are trying to advance more in this direction. We hypothesize that code involving nested induction/pattern matching can be reused by fill in the hole after extension happens upon inductive type. The plugin will generate extra proof obligation to fill this hole. This certainly requires significant amount of engineering effort.
