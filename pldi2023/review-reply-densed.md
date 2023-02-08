@@ -62,7 +62,7 @@ Below we address the main concerns, which might be paraphrased for the space.
 
   Thank you for your feedback. We will clearly state the limitations of the
   current implementation and meta-theory in the final revision. 
-  
+  <!-- do we want to mention overridability/pins? -->
   In particular, we will emphasize the issue raised by Review D regarding equality coercion
   and the pervasive propositional equality on extensible inductive families.
   This can result in unnecessary equality coercion when `denoteTy t` is not
@@ -125,7 +125,7 @@ Yes. Thank you for noticing this typo.
   `A₆`. 
 
 
-* *(Review B) How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.*
+* (Review B) __How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.__
 
   <!-- I think we still need to clarify we doesn't support extending these -->
   We currently doesn't support extend STLC with polymorphism and reference, which requires extending existent inductive family with new indices. 
@@ -158,11 +158,9 @@ Family B extends A {
 ```
 
 
-<!-- I am not sure if I want to mention overridable/pins  -->
-
 
 * (Review D) __"First, a module named STLC◦subst◦Cases is generated interactively: every time the programmer completes a..." This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?__
 
-  We should be more clear that we want to emphasize, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking happens after a whole family is closed
+  We should be clearer that, the point we want to emphasize is, whenever one vernacular command is emitted, our plugin will translate and type-check. Basically type-checking happens together with interactive theorem proving, as opposed to non-interactively -- where the type-checking only happens after a whole family is closed.
 
   Yes, modules/functors are generated in the background after each command is emitted.
