@@ -1,7 +1,7 @@
 We thank all the reviewers for their critical and encouraging feedback.
 Below we address the main concerns, which might be paraphrased for the space.
 
-* (R-A, R-D) **Ergonomics is lacking because induction is allowed only at the top level.**
+* (A, D) **Ergonomics is lacking because induction is allowed only at the top level.**
 
   As Reviewer A/D highlighted, the current method for inductively eliminating data only involves using "FInduction" at the top level. We have "fdiscriminate" and "finjection" for deducing intermediate facts, but the key problem is the absence of proper nested pattern matching.
 
@@ -147,15 +147,21 @@ Below we address the main concerns, which might be paraphrased for the space.
   -->
 
 
+* (B) __What happens if the programmer tries to mix contradictory language features?__
 
-* (Review B) __How will our plugin react when trying to mixin the contradictory features? For example, since STLC with eith polymorphism or references enjoy type soundness, but their composition doesn't.__
+  We expect mixing two contradictory developments to cause the plugin to
+  generate unprovable proof obligations (cf. line 386). One example is mixing
+  HM-style polymorphism and references, which the reviewer mentioned. Another
+  example is mixing fixpoints into a family that proves strong normalization for
+  STLC.
 
-  <!-- I think we still need to clarify we doesn't support extending these -->
+  <!--
   We currently don't support extending STLC with polymorphism and reference, which requires extending the existent inductive family with new indices. 
-
-  Hypothetically speaking, We can expect our plugin will generate unprovable proof obligation under mixin, hindering qeding the proposition and thus closing the family.
-
+  ...
+  Hypothetically speaking, we can expect our plugin will generate unprovable proof obligation under mixin, hindering qeding the proposition and thus closing the family.
+  ...
   Another example would be extending *a family of STLC and its termination proof* with the general recursion feature. Our plugin will generate an unprovable proof obligation inside the reducibility argument for the fixpoint feature.  
+  -->
 
 
 * (Review D) __"What goes wrong if a user tries to define a term with the `tm_rect` type using standard pattern matching? Is it rejected? In the latter case, how does the plugin prevent other extensible definitions from referring to it?"__
