@@ -171,21 +171,24 @@ Below we address the main concerns, which might be paraphrased for the space.
   type without exposing its concrete definition (line 494).
  
 
-* (Review D) __""In the event that fpop cannot infer where the programmer intends to place a new field, annotation is required." I did not understand what it means to 'place' a field-- when does this occur,  and what do these annotations look like?"__
+* (D) __What does it mean to place a new field using annotations?__
 
-  For example
-```C
-Family A {Field a; Field b; Field c;}
+  We clarify this using the following example.
+  The programmer uses the annotation `Inherit a2` to indicate that the new field
+  `b` should be placed immediately after the existing field `a2`.
 
-Family B extends A {
-  (* Inherit a. *) 
-    (* this vernacular command line will make a difference once uncommented. 
-        Before uncommenting it, a2 will be the first field of Family B.
-        The fields are order sensitive, especially when the definition of a2 depends on a, placing a2 before a will fail the type-check. 
-      This ``annotation`` require the programmer`s effort. *) 
-  Field a2.
-}
-```
+  ```C
+  Family A.
+    FDefinition a1 := ....
+    FDefinition a2 := ....
+    FDefinition c := ....
+  End A.
+  
+  Family B extends A.
+    Inherit a2.
+    FDefinition b := ...
+  End B
+  ```
 
 
 
