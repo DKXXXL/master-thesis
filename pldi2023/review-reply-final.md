@@ -27,9 +27,9 @@ Below we address the main concerns, which we may have paraphrased for brevity.
   We agree with the reviewers' insights.
 
   We note that the effort required to prove consistency directly for FMLTT is
-  similar to that required to prove type preservation for a translation to MLTT:
-  both proofs are structured as type-preserving interpretations.
-
+  similar to that required to prove a translation to MLTT
+  type-preserving: both proofs are structured as type-preserving interpretations
+  in another dependent type theory.
 
 * (B, D) __The plugin implementation is not included as a supplement.__
 
