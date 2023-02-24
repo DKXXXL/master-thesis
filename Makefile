@@ -1,4 +1,4 @@
-DOC = draft
+DOC = finaldraft
 
 # Name of the top-level TeX file sans .tex extension.
 CONF = paper
