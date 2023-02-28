@@ -311,3 +311,28 @@ ability of the host
 
 + l898: We put them to test over queries. --> and tested them on a set
 of benchmarks (describe the benchmarks).
+
+
+
+Review #430E
+===========================================================================
+
+Overall merit
+-------------
+5. Strong accept
+
+Reviewer expertise
+------------------
+1. No familiarity
+
+Paper summary
+-------------
+The reviewers are pleased to conditionally accept this paper. We ask that the authors make the following revisions:
+
+* Revise the paper to include the items in the author response.
+
+* Improve the presentation in Section 5. The following are some suggestions:
+    - Explain all the forms, such as bold-W and bold-P.
+    - Use more standard notations for substitution.
+    - Use named variables consistently instead of a mixture of named and DeBruijn.
+    - Include some small examples inline, next to the descriptions in Section 5, instead of waiting until the end of the section to discuss the big example in Figure 8.
