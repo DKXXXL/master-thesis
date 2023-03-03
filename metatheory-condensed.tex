@@ -34,12 +34,7 @@ quantified over the earlier ones, a linkage component is \emph{universally}
 quantified over---and thus polymorphic to---the components preceding it.
 
 \item
-\TT also features \emph{linkage transformers} modeling the inductive
-construction of families from other families.
-They allow a linkage to be created by inheriting or
-overriding components of an existing linkage, or by extending an existing
-linkage with new components.
-
+\TT also features \emph{linkage transformers}, used to model the features like inheritance, extending and overriding components in \Lang .
 \item
 Inductive types are modeled as W-types~\cite{martin1984intuitionistic} and their
 extension as overriding.
@@ -100,6 +95,8 @@ in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
 
 \noindentparagraph{Introducing and eliminating inductive types.}
 
+% TODO: Remove mentioning conventional Wtype here
+
 W-types~\cite{martin1984intuitionistic} are a succinct way to model
 inductive types in MLTT.
 Together with the identity type $\TyId{\cDot}{\cDot}$, they can express a
@@ -117,6 +114,8 @@ composed of $n$ pairs of types, each of which represents a constructor
 (rules \ruleref{wsig/empty} and \ruleref{wsig/add}),
 with $\wsigproj{i}{1}{\wsig}$ and $\wsigproj{i}{2}{\wsig}$ giving the
 $i$-th pair in~$\wsig$, and $\wcode{\wsig}$ giving the code of the W-type (\ruleref{tm/w}).
+
+% Add example for representing tm here
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
