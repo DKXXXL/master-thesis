@@ -111,7 +111,7 @@ future extensions.
 Almost all involve some form of either explicit or implicit parameterization
 as extensibility hooks.
 Our approach is the first that applies family polymorphism~\cite{ernst2001family},
-an idea from the context of OO languages,
+an idea from OO research,
 to the context of mechanized proofs.
 %Families in \Lang are second-class, in that they are not considered
 %terms by themselves.
@@ -120,13 +120,20 @@ to the context of mechanized proofs.
 %polymorphism as summarized before~\cite{cdnw07-tribe}.
 
 \citet{bac2006} address the expression problem for a core subset of Standard~ML
-by combining explicitly coded open recursion with a mechanism that
+by combining explicitly coded open recursion with a design that
 allows pattern-matching cases to be defined separately and combined
 later.
 Our \lsti{FRecursion} and \lsti{FInduction} commands achieve a similar
 functionality, with families making open recursion implicit and
 bestowing organizational power.
 
+\noindentparagraph{ML-style modules}\!\!, like families, are a modularity mechanism,
+but with a focus on abstraction rather than extensibility.
+Both \TT and the module system of \citet{stohar2000} use singletons to model and
+control the propagation of definitions.
+\mbox{MixML} \cite{rosdre2013} integrates mixins into ML and handles the
+idiosyncrasies of ML modules,
+while our work supports mixins in the presence of extensible inductive types.
 
 
 
