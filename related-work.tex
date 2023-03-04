@@ -22,7 +22,10 @@ The framework is implemented as a Coq library.
 class of functors that admit least fixed points.
 \citet{keuchel2013generic} use datatype-generic programming techniques
 for the underlying representation of type-level fixed points and
-avoid \lsti{Set} impredicativity.\YZ{What can we say about Intrinsically-Typed Definitional Interpreters a La Carte?}%\cite{vdr2022intrinsically}
+avoid \lsti{Set} impredicativity.\YZ{What can we say about Intrinsically-Typed Definitional Interpreters a La Carte?}\EDJreply{My understanding is,
+ it is really an intrinsic typed version of MTC. It uses different set of tools (like containers (a la altenkirch, can be considered as an alternative of W-type) and stuff) but it is still a design pattern paper.
+ But good news is, container is closer to Wtype(inductive type) than the endofunctor encoding (classic MTC approach).}
+%\cite{vdr2022intrinsically}
 
 All of these approaches are largely extra\-linguistic, in that they work
 within the confine of the language offered by a proof assistant, which

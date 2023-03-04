@@ -61,7 +61,7 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 (and \cref{fig:fmltt-selected} \TT).
 %We briefly review the base MLTT fragment first.
 %
-In keeping with the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}\YZ{Does coquand2018canonicity really use explicit subst?}
+In keeping with the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}\YZ{Does coquand2018canonicity really use explicit subst?}\EDJreply{Yes it is. Look at Section 2.1. When he starts reasoning, he actually deals with category with family (instead of the typing rules), where he consider morphism between contexts, which is substitution. But I agree it can be a bit ambiguous to see (because he literally show two version of MLTT without connecting them---one classical typing rule version, the other directly works on Category with Family (CwF)) but since his proof is mainly on Category with Family, so it counts as explicit substitution. But if you are concerned, we can change to Andras Kovacs "Generalized Universe Hierarchies and First-Class Universe Levels". or Andreas Abel's "Decidability of Conversion for Type Theory in Type Theory". The former one directly work on CwF, the latter one include substitution as part of the raw syntax.}
 in MLTT presentations, we use \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
 substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
 of the syntax rather than meta-operations.
