@@ -104,20 +104,21 @@ inductive types in MLTT.
 Together with the identity type $\TyId{\cDot}{\cDot}$, they can express a
 whole host of inductive types~\cite{hugunin2021not}.
 %
-A constructor is given by a pair of types
-$\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
-given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
-$\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
-we can constructs a term $\Wsup{\wsig}{t_1}{t_2}$ of type~$T$ (rule \ruleref{tm/wsup}). \rB{for readability please add text between "T," and "Wsup"}\EDJreply{changed, please review}
-As the rules suggest, our formulation additionally supports
-\emph{W-type signatures}.
-A well formed W-type signature \goodWSig{\Gm}{\wsig}{n} is
-composed of $n$ pairs of types, each of which represents a constructor
-(rules \ruleref{wsig/empty} and \ruleref{wsig/add}),
-with $\wsigproj{i}{1}{\wsig}$ and $\wsigproj{i}{2}{\wsig}$ giving the
-$i$-th pair in~$\wsig$, and $\wcode{\wsig}$ giving the code of the W-type (\ruleref{tm/w}).
-
-% Add example for representing tm here
+In the literature,
+a W-type is given by a pair of types $\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$,
+but our formulation of W-types additionally
+allows a W-type signature \goodWSig{\Gm}{\wsig}{n} to
+specify $n$ pairs of types (\ruleref{wsig/empty} and \ruleref{wsig/add}).
+Each pair models a constructor in an inductive type,
+with $\goodType{\Gm}{\wsigproj{i}{1}{\wsig}}{}$
+and $\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$
+identifying the $i$-th constructor, and $\wcode{\wsig}$ giving the code of the
+W-type (\ruleref{tm/w}).
+%
+Rule~\ruleref{tm/wsup} states that 
+given two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
+$\goodTerm{\Gm,\sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}$,
+we can construct a term $\Wsup{\wsig}{t_1}{t_2}$ of the W-type.
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
