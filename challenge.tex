@@ -1,6 +1,6 @@
 Integrating family polymorphism into a proof assistant presents challenges
-far beyond those found in an object-oriented setting~\cite{ncm2004,vc-calculus-2006,zm2017},
-because the underlying programming language is simultaneously
+far beyond those found in an object-oriented setting, %\cite{ncm2004,vc-calculus-2006,zm2017},
+as the underlying programming language is simultaneously
 functional, dependently typed, a logic, and an interactive tool.
 
 \noindentparagraph{%
@@ -30,12 +30,12 @@ the syntax and semantics of a fixpoint construct.
 However, there is a tension between extensibility of inductive types
 and exhaustivity of induction reasoning.\footnote{%
 The tension reflects a duality between variants and records.
-For record-like language constructs (e.g., classes and objects), it is
-safe for an extension to add more fields: existing fields can still be
-projected.
+With record-like language constructs (e.g., OO classes),
+it is safe for an extension to add new fields:
+existing fields can still be projected.
 But variant-like constructs (e.g., inductive types) do not automatically
 enjoy safe, modular addition of constructors:
-existing pattern matches could potentially become non-exhaustive.}
+existing pattern matches could become non-exhaustive.}
 In \cref{fig:stlc-nonmechanized}, all the lemmas and theorems, as well as
 the substitution function, require induction (i.e., elimination of inductive types).
 A language design must enforce that induction remains exhaustive in the
@@ -109,7 +109,7 @@ In particular, it should be possible in our system to
 incrementally navigate through vernacular commands and, moreover, construct proofs
 with common tactics while getting instant feedback on the proof state,
 even in the middle of a family definition.
-Last but not least, in addition to producing theorems,
+Last but not least, in addition to proving theorems,
 it should be possible for terms defined with families to possess computational content.
 
 \ifShowOldWriting
