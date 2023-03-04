@@ -16,20 +16,20 @@ the programmer faces a fundamental tension \cite{reynolds1975} between
 adding new constructors to a data type (e.g., new abstract syntax) and
 adding new functions over the data type (e.g., new compiler passes).
 
-The EP is well studied in the conventional setting of functional
+The EP is well studied in the setting of ordinary functional
 programming and object-oriented (OO) programming.
 Modern languages, such as Scala \cite{scala-oopsla05}, have a good
 supply of linguistic features that offer expressive power to solve the
-EP.\rD{There is no shortage of solutions to the EP in various
-languages, but there are no citations to those works.}
+EP. %\rD{There is no shortage of solutions to the EP in various
+%languages, but there are no citations to those works.}
 
-In contrast, proof assistants offer few linguistic solutions that
-address the EP.
-Yet, the challenge of writing extensible, type-safe code is
-as real, especially for metatheory mechanization.
-The programmer faces a tension between adding new constructors to an inductive data type
+In contrast, proof assistants offer few linguistic solutions to the EP.
+But the challenge of writing extensible, type-safe code is
+as real as in any other language.
+Metatheory mechanization epitomizes the difficulty:
+the programmer faces a tension between adding new constructors to an inductive type
 (e.g., new abstract syntax) and adding new functions and theorems over
-the data type (e.g., new meta\-theoretical results).
+the inductive type (e.g., new meta\-theoretical results).
 
 In the \citeauthor{coq} proof assistant, for instance, inductive types, as well as functions and
 theorems over inductive types, are closed to extension.
@@ -38,8 +38,11 @@ the common practice is still to copy code and proofs and then modify them in eac
 But having to maintain multiple copies is highly non-modular and
 antithetical to good software engineering.
 %
-The programmer could also turn to design patterns and encodings~\cite{delaware2011,delaware2013,schwaab2013modular,keuchel2013generic,forsta2020}.
-But they tend to require heavy lifting from the programmer to make code
+The programmer could also turn to design patterns for structuring developments
+and tool support for cutting down on boilerplate
+\cite{delaware2011,delaware2013,schwaab2013modular,keuchel2013generic,forsta2020}.
+%\rD{The Coq à la Carte paper is arguably more than just a design pattern / encoding, given that it extends the surface syntax of the theorem prover. The same designation could ostensibly be applied to the plugin described in Sections 3-4. The difference, I suppose, is that the extended language in that work does not have a formal treatment.}
+But these solutions tend to require heavy lifting from the programmer to make code
 extensible and often lead to non-idiomatic programming styles.
 
 We thus set out to answer the following question:
