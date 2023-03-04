@@ -5,7 +5,7 @@ functional, dependently typed, a logic, and an interactive tool.
 
 \noindentparagraph{%
 \headinglabel{C1}{chg:extensible-v-exhaustive}.\,
-Extensible inductive types vs.\ exhaustive inductive reasoning.\rD{induction reasoning changes to inductive reasoning}
+Extensible inductive types vs.\ exhaustive inductive reasoning.
 }
 
 Inductive types, generalizing algebraic data types found in
@@ -57,7 +57,8 @@ enclosing family.
 This flexibility, however, prevents \emph{definitional equality}
 that one takes for granted when programming in a proof assistant.
 In \cref{fig:stlc-nonmechanized}, a proof assistant supporting family
-polymorphism cannot unfold references to the substitution function into its definition (i.e., a pattern match against four cases), %Review D : l135
+polymorphism cannot unfold references to the substitution function into a
+pattern match against four cases,
 as a derived family may modify the definition of the function by adding
 new cases.
 Without the ability to unfold the substitution function, how can the

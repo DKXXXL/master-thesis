@@ -10,7 +10,8 @@ In this section, we focus on the language design of \Lang.
 
 \cref{fig:stlc-mechanized} shows how STLC and its extension with
 fixpoints can be mechanized using \Lang, in a style envisioned in
-\cref{fig:stlc-nonmechanized}, directly adopted from \citet{sf-pl}. \rB{mention non-capture avoiding}\EDJreply{SF is using non-capture avoiding. Is mentioning SF here enough?}
+\cref{fig:stlc-nonmechanized}.
+%directly adopted from \citet{sf-pl}. \rB{mention non-capture avoiding}\EDJreply{SF is using non-capture avoiding. Is mentioning SF here enough?}\YZreply{It's mentioned in Case Studies. I don't think we need to mention it here.}
 The base family "STLC" hosts the STLC metatheories, from abstract syntax
 to the type-safety theorem.
 Family "STLCFix", derived from "STLC", makes adjustments as needed by a fixpoints extension:
@@ -27,7 +28,8 @@ displays the type-safety theorem of the fixpoints extension.
 
 \noindentparagraph{Extending inductive types.}
 
-In family "STLCFix", the\rD{l175}\EDJreply{Then do we add definite article in front of family "STLCFix"?} inductive type "tm" \emph{further binds} the "tm" type
+In family "STLCFix", %\rD{l175}\EDJreply{Then do we add definite article in front of family "STLCFix"?}
+the \lsti{FInductive} "tm" \emph{further binds} the "tm" type
 in family "STLC". It has five constructors: four inherited from
 "STLC" and a fifth called "tm_fix".
 
@@ -82,8 +84,8 @@ handle the four cases corresponding to each constructor.
 The (dependent) return type~"P" is called the \emph{motive} of the recursion.
 %Exhaustivity of induction would follow, trivially.
 
-With inductive types made extensible, exhaustivity of induction becomes
-in jeopardy, however.\EDJ{``Becomes in jeopardy'' looks weird to me. how about changing to "is now in question"}
+With inductive types made extensible, exhaustivity of induction is now
+in question, however.
 In particular, the recursor "tm_rect" should no longer be allowed, because
 its type mentions "tm", whose meaning is late bound, yet
 "tm_rect" purports to claim \lsti{\forall t, P t} given only four case handlers.

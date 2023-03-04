@@ -93,9 +93,12 @@ and then a module type declaring the existence of the recursive function as well
 its computational behaviors.
 
 Consider the translation of \lsti{subst} in family \lsti{STLC}.
-First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
-every time the programmer completes a \lsti{Case}, the case handler (e.g., \lsti{Def subst\_tm_unit})
-is type-checked and added to the module. \rD{This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?}\EDJreply{changed to mention "type-checked" explicitly. please review}
+First, a module named \lsti{STLC\_subst\_Cases} is generated on the fly.
+%every time the programmer completes a \lsti{Case}, the case handler (e.g., \lsti{Def subst\_tm_unit})
+%is type-checked and added to the module. %\rD{This is also confusing-- why is the programmer involved in the translation? Is it that modules are being generated in the background, while commands are being processed?}\EDJreply{changed to mention "type-checked" explicitly. please review}
+Importantly, programming remains interactive, as the programmer need not wait until the
+entire \lsti{FRecursion} definition is completed to have a \lsti{Case} command
+type-checked.
 
 Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generated.
 %
