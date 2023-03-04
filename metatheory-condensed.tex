@@ -85,7 +85,7 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-In dependent type system, types are treated as terms, and should have a type. % Reviewer A : Why is W(t) a term and not a type?
+In dependent type system, types are treated as terms, and should have a type. \rA{Why is W(t) a term and not a type?}\EDJreply{changed, please review.}
 We use Tarski-style universes~\cite{hofmann1997syntax}: every type has a \emph{code}, inhabits in a universe~$\cU$,
 with $\El{t}$ decoding~$t$ (rule \ruleref{ty/el})
 and $\codety{T}$ encoding type~$T$ (rule \ruleref{tm/c}).
@@ -108,7 +108,7 @@ A constructor is given by a pair of types
 $\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
 given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
 $\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
-we can constructs a term $\Wsup{\wsig}{t_1}{t_2}$ of type~$T$ (rule \ruleref{tm/wsup}). % Reviewer B: Line 666
+we can constructs a term $\Wsup{\wsig}{t_1}{t_2}$ of type~$T$ (rule \ruleref{tm/wsup}). \rB{for readability please add text between "T," and "Wsup"}\EDJreply{changed, please review}
 As the rules suggest, our formulation additionally supports
 \emph{W-type signatures}.
 A well formed W-type signature \goodWSig{\Gm}{\wsig}{n} is
