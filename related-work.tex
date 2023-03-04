@@ -24,7 +24,7 @@ class of functors that admit least fixed points.
 for the underlying representation of type-level fixed points and
 avoid \lsti{Set} impredicativity.\YZ{What can we say about Intrinsically-Typed Definitional Interpreters a La Carte?}\EDJreply{My understanding is,
  it is really an intrinsic typed version of MTC. It uses different set of tools (like containers (a la altenkirch, can be considered as an alternative of W-type) and stuff) but it is still a design pattern paper.
- But good news is, container is closer to Wtype(inductive type) than the endofunctor encoding (classic MTC approach).}
+ But good news is, container is closer to Wtype(inductive type) than the endofunctor encoding (classic MTC approach)}\EDJreply{I also add one sentence after Coq a la carte. You can also check... I will add bib later. Interestingly, Intrinsic type doesn't refer Coq a la carte.}
 %\cite{vdr2022intrinsically}
 
 All of these approaches are largely extra\-linguistic, in that they work
@@ -54,7 +54,10 @@ carte} approaches particularly for its extensive tool support for generating boi
 %
 But even with the tool support, components (e.g., "substlem") of
 individually developed feature extensions have to be composed separately
-by invoking the tool.
+by invoking the tool. Alternatively, \citet{vdr2022intrinsically} uses 
+containers and signature to mechanize intrinsically-typed target language. 
+Combined with Agda's advanced unification mechanism, the authors get rid of 
+a large number of boilerplate code. 
 %
 %The approach does not seem to fully address the expression problem,
 %as \citet{liwei2022} observe, in that further extending a composed
