@@ -54,10 +54,9 @@ carte} approaches particularly for its extensive tool support for generating boi
 %
 But even with the tool support, components (e.g., "substlem") of
 individually developed feature extensions have to be composed separately
-by invoking the tool. Alternatively, \citet{vdr2022intrinsically} uses 
-containers and signature to mechanize intrinsically-typed target language. 
-Combined with Agda's advanced unification mechanism, the authors get rid of 
-a large number of boilerplate code. 
+by invoking the tool. \citet{vdr2022intrinsically} mechanize intrinsically-typed
+target language based on container and signature\cite{morris2009indexed}. 
+Thanks to the nature of intrinsically-typed abstract syntax trees (ASTs) and Agda's advanced unification mechanism, the authors were able to eliminate a significant amount of code that dealt with "impossible" cases.
 %
 %The approach does not seem to fully address the expression problem,
 %as \citet{liwei2022} observe, in that further extending a composed
