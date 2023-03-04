@@ -179,12 +179,12 @@ an inductive type \lsti{tm} is generated, instantiating the axiomatized
 The partial recursor \lsti{tm_prect_STLC} is defined
 %to \lsti{\lambda}\,\lsti{P, tm_rect (\lambda}\,\lsti{t, option (P t))},
 with the help of \lsti{tm_rect}, the recursor Coq generates for \lsti{tm}.
-Computational behaviors of \lsti{tm_prect_STLC} are immediate, by \lsti{reflexivity}.
+The computational behaviors of \lsti{tm_prect_STLC} are immediate, by \lsti{reflexivity}.
 
 \item
 Similarly, \lsti{subst} is instantiated by applying the recursor \lsti{tm_rect}
 to the (already included) case handlers. %(\lsti{subst\_tm_unit}, etc.).
-Computational behaviors of \lsti{subst} are then immediate, by \lsti{reflexivity}.
+The computational behaviors of \lsti{subst} are then immediate, by \lsti{reflexivity}.
 
 \end{itemize}
 

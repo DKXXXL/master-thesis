@@ -26,7 +26,7 @@ family polymorphism in an OO setting, but the technical details differ significa
 \begin{itemize}
 [labelsep=*,leftmargin=1pc,itemsep=3pt]
 \item 
-Linkages model families; they are like tuples composed of the fields,
+Linkages model families; they are like tuples composed of fields,
 with field names represented by variable bindings.
 But there is a twist: linkages support late binding.
 Unlike dependent tuples where a later component is \emph{existentially}
@@ -156,12 +156,12 @@ In \TT, families are expressed through linkages, and late binding of
 field references is achieved by requiring that typing be polymorphic to
 the definition of that field.
 
-Well-formedness judgments of \emph{linkage signatures} have form
+Well-formedness judgments of \emph{linkage signatures} have the form
 $\goodSig{\Gm}{\lsig}{n}$.
 As rules \ruleref{lsig/empty} and \ruleref{lsig/add} show, a linkage
 signature is a list of $n$~types.
 %
-Well-formedness judgments of \emph{linkages} have form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
+Well-formedness judgments of \emph{linkages} have the form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
 where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
 As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
 of $n$~terms, each representing a field of the family modeled by the linkage.

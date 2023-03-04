@@ -27,7 +27,7 @@ displays the type-safety theorem of the fixpoints extension.
 
 \noindentparagraph{Extending inductive types.}
 
-In family "STLCFix", inductive type "tm" \emph{further binds} the "tm" type
+In family "STLCFix", the inductive type "tm" \emph{further binds} the "tm" type
 in family "STLC". It has five constructors: four inherited from
 "STLC" and a fifth called "tm_fix".
 
@@ -83,8 +83,8 @@ The (dependent) return type~"P" is called the \emph{motive} of the recursion.
 %Exhaustivity of induction would follow, trivially.
 
 With inductive types made extensible, exhaustivity of induction becomes
-in jeopardy, however.
-In particular, recursor "tm_rect" should no longer be allowed, because
+in jeopardy, however.\EDJ{``Becomes in jeopardy'' looks weird to me. how about changing to "is now in question"}
+In particular, the recursor "tm_rect" should no longer be allowed, because
 its type mentions "tm", whose meaning is late bound, yet
 "tm_rect" purports to claim \lsti{\forall t, P t} given only four case handlers.
 
@@ -345,7 +345,7 @@ extension of STLC with iso-recursive types, where "tysubst" is
 introduced into the context of "hasty".
 %
 In the event that \Lang cannot infer where the programmer intends to place a new field,
-annotation is required. 
+an annotation is required. 
 
 \input{stlc-isorec-prod.tex}
 
