@@ -120,11 +120,11 @@ Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural number arithmetic,
 and further binds the generic abstract interpreter to perform constant propagation.
 
-Our implementation of family polymorphism retains the computation
-ability of the host proof assistant;
+Our implementation of family polymorphism retains the
+ability of program extraction in Coq;
 the two abstract interpreters in \lsti{ImpTI} and \lsti{ImpCP} are
 ready for program extraction to OCaml.
-We put the verified abstract interpreters to test over several simple queries. % Reviewer D : l899
+We put the verified abstract interpreters to test over several simple queries. \rD{What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results? What sorts of benchmarks did you use?}
 
 We note that our plugin cannot yet allow the expression of two derived abstract
 interpreters nested within the same family.
