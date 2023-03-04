@@ -85,8 +85,8 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-We use Tarski-style universes~\cite{hofmann1997syntax}: a universe~$\cU$
-is inhabited by the \emph{codes} of types,
+In dependent type system, types are treated as terms, and should have a type. % Reviewer A : Why is W(t) a term and not a type?
+We use Tarski-style universes~\cite{hofmann1997syntax}: every type has a \emph{code}, inhabits in a universe~$\cU$,
 with $\El{t}$ decoding~$t$ (rule \ruleref{ty/el})
 and $\codety{T}$ encoding type~$T$ (rule \ruleref{tm/c}).
 MLTT has an infinite hierarchy of universes;
@@ -108,7 +108,7 @@ A constructor is given by a pair of types
 $\goodType{\Gm}{A}{}$ and $\goodType{\Gm,A}{B}{}$ (rule \ruleref{wsig/add}):
 given two arguments $\goodTerm{\Gm}{t_1}{A}$ and
 $\goodTerm{\Gm,\sub{B}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{T}$,
-$\Wsup{\wsig}{t_1}{t_2}$ constructs a term of type~$T$ (rule \ruleref{tm/wsup}).
+we can constructs a term $\Wsup{\wsig}{t_1}{t_2}$ of type~$T$ (rule \ruleref{tm/wsup}). % Reviewer B: Line 666
 As the rules suggest, our formulation additionally supports
 \emph{W-type signatures}.
 A well formed W-type signature \goodWSig{\Gm}{\wsig}{n} is

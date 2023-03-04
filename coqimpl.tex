@@ -94,8 +94,8 @@ its computational behaviors.
 
 Consider the translation of \lsti{subst} in family \lsti{STLC}.
 First, a module named \lsti{STLC\_subst\_Cases} is generated interactively:
-every time the programmer completes a \lsti{Case}, a case handler (e.g., \lsti{Def subst\_tm_unit})
-is generated and added to the module.
+every time the programmer completes a \lsti{Case}, the case handler (e.g., \lsti{Def subst\_tm_unit})
+is type-checked and added to the module. % Reviewer D: l487
 
 Upon \lsti{End}~\lsti{subst}, a module type named \lsti{STLC\_subst} is generated.
 %
