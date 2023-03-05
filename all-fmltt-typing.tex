@@ -1,0 +1,488 @@
+\begin{mathpar}
+  \\
+  \judgebox{\goodWSig{\Gm}{\wsig}{n}}
+  
+  \judgebox{\goodSig{\Gm}{\lsig}{n} }
+  
+  \judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
+  \end{mathpar}
+
+\begin{mathparpagebreakable}
+\Rule[name=wsig/empty]
+{""}
+{\goodWSig{\Gm}{\WSigEmp}{0}}
+ 
+\Rule[name=wsigeq/empty/eta]
+{\goodWSig{\Gm}{\wsig}{0}}
+{\goodWSig{\Gm}{\wsig \equiv \WSigEmp}{0}}
+
+\Rule[name=wsig/add]{
+    \goodWSig{\Gm}{\wsig}{n}
+    \\\\
+    \goodType{\Gm}{A}{i}
+    \\
+    \goodType{\Gm, A}{B}{i}
+}{
+    \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
+}
+
+% \Rule[name=wsig/universe]
+% {\goodWSig{\Gm}{\wsig}{n}}
+% {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
+% \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
+% }
+%
+\Rule[name=wsigeq/proj/eta]
+{\goodWSig{\Gm}{\wsig}{n} \\ j < n}
+{\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
+}
+
+% \Rule[name=wsigeq/subst]
+% {\goodWSig{\Delta}{\wsig}{n}
+%   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
+% {\goodWSig{\Gm}{ \sub{\wsig}{\gm}}{n}
+%   \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
+% \\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
+%   }
+%
+\Rule[name=ty/wsig/proj]{
+  \goodSub{\Gm}{\gm}{\Theta}
+}{
+  \goodType{\Gm}{\wsigproj{j+1}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv \wsigproj{j}{1}{\wsig} }{i} 
+  \\ \goodType{\Gm, \wsigproj{j+1}{1}{\WSigAdd{\wsig}{A}{B}}}{\wsigproj{j+1}{2}{\WSigAdd{\wsig}{A}{B}} \equiv \wsigproj{j}{2}{\wsig}}{i}
+  \\\\ 
+  \goodType{\Gm}{\wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv A }{i} 
+  \\ \goodType{\Gm, \wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} }}{\wsigproj{j}{2}{ \WSigAdd{\wsig}{A}{B} } \equiv B}{i}
+}
+
+\Rule[name=wsig/sub]
+{\goodWSig{\Gm}{\wsig}{n+1}}
+{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
+
+\Rule[name=wsigeq/add/subst]
+{\goodSub{\Gm}{\gm}{\Theta}}
+{\goodWSig{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
+\\ \goodWSig{\Gm}{\sub{\WSigAdd{\wsig}{A}{B}}{\gm} \equiv \WSigAdd{\sub{\wsig}{\gm}}{\sub{A}{\gm}}{\sub{B}{\gm^\uparrow}} }{n+1}
+\\ \goodType{\Gm}{\sub{\wsigproj{j}{1}{\wsig}}{\gm} \equiv \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{i} 
+\\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
+}
+\\
+\Rule[name=tm/w]{
+    \goodWSig{\Gm}{\wsig}{n}
+}{
+    \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
+}
+
+\Rule[name=tm/wsup]{
+    \goodWSig{\Gm}{\wsig}{n}
+    \\
+    \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
+    \\\\
+    \goodTerm{\Gm, \sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}
+%   \\
+%   i \in \{1, ..., n\}
+}{
+    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
+}
+
+\Rule[name=tmeq/wsup/subst]
+{\goodSub{\Gm}{\gm}{\Theta}}
+{\goodTerm{\Gm}{\sub{(\Wsup{}{T}{a}{b})}{\gm} \equiv \Wsup{}{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
+
+\Rule[name=wsigeq/sub]{
+  \goodWSig{\Gm}{\wsig}{n}
+  \\ \goodType{\Gm}{A}{i}
+  \\ \goodType{\Gm, A}{B}{i}
+}{
+  \goodWSig{\Gm}{{\WSigSub{\WSigAdd{\wsig}{A}{B}}} \equiv \wsig}{n}
+}
+
+\Rule[name=wsigeq/sub/subst]{
+  \goodSub{\Gm}{\gm}{\Theta}
+}{
+  \goodWSig{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
+}
+
+
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
+\Rule[name=ty/lkg]
+{\goodSig{\Gm}{\lsig}{n}}
+{\goodType{\Gm}{\TyLkg{\lsig}}{i}
+\\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
+
+\Rule[name=ty/lsig/subst]
+{\goodSig{\Delta}{\lsig}{n}
+  \\ {\goodSub{\Gm}{\gm}{\Delta}}}
+{\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
+  \\ \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}
+  \\ \goodType{\Gm}{\TyTkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyTkg{\lsig})}{\gm}}{i}
+  }
+\\
+
+\\
+\Rule[name=lsig/empty]
+{""}
+{\goodSig{\Gm}{\LSigEmp}{0}}
+ 
+\Rule[name=lsigeq/empty/eta]
+{\goodSig{\Gm}{\lsig}{0}}
+{\goodSig{\Gm}{\lsig \equiv \LSigEmp}{0}}
+
+\Rule[name=lsig/add]{
+    \goodSig{\Gm}{\lsig}{n} 
+    \\
+    \goodType{\Gm, A}{T}{}
+    \\\\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
+}{
+    \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
+}
+\\
+
+\\ 
+\Rule[name=lsig/proj]
+{\goodSig{\Theta}{\lsig}{n+1} 
+\\ \goodSub{\Gm}{\gm}{\Theta}
+}
+{\goodSig{\Gm}{\lsigproj{1} {\lsig}}{n}
+\\ \goodType{\Gm}{\lsigprojT {\lsig}}{}
+\\ \goodSeal{\Gm}{\lsigproj{s}{\lsig}}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{} 
+\\ 
+\goodSig{\Gm}{\LSigAdd{\lsigproj{1} {\lsig}}{\lsigproj{s}{\lsig}}{\lsigproj{2}{\lsig}} \equiv \lsig }{n+1}
+}
+\\
+
+\\ 
+\Rule[name=lsigeq/proj/beta]
+{\goodSig{\Gm}{\lsig}{n} 
+\\ \goodType{\Gm}{A}{}
+\\ \goodSeal{\Gm}{\seal}{\lsig}{A}
+\\ \goodType{\Gm, A}{T}{i}}
+{\goodSig{\Gm}{\lsigproj{1} {\LSigAdd  {\lsig}  {\seal}  {T}} \equiv \lsig}{n}
+\\ \goodType{\Gm}{\lsigprojT {\LSigAdd  {\lsig} {\seal} {T}} \equiv A}{}
+\\ \goodSeal{\Gm}{\lsigproj{s}{\LSigAdd{\lsig} {\seal} {T}} \equiv \seal}{\lsig}{A}
+\\ \goodType{\Gm, A}{\lsigproj{2}{\LSigAdd {\lsig} {\seal}  {T}} \equiv T}{}
+}
+\\
+
+\\ 
+\Rule[name=lsig/add+proj/subst]
+{\goodSig{\Gm}{\gm}{\Theta}}
+{
+\goodSig{\Gm}{\sub{\LSigEmp}{\gm} \equiv \LSigEmp}{n}
+\\ \goodSig{\Gm}{\sub{(\LSigAdd {\lsig}{\seal}{T})}{\gm} \equiv 
+  \LSigAdd {\sub{\lsig}{\gm}}{\sub{\seal}{\gm^\uparrow}}{\sub{T}{\gm^\uparrow}}
+}{n+1}
+\\ \goodSig{\Gm}{ \sub{(\lsigproj{1}{\lsig})}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
+\\ \goodType{\Gm}{\sub{(\lsigprojT {\lsig})}{\gm} \equiv \lsigprojT {\sub{\lsig}{\gm}}}{}
+\\ \goodSeal{\Gm}{\sub{\lsigproj{s}{\lsig}}{\gm} \equiv {\lsigproj{s}{\sub{\lsig}{\gm}}} }{\lsig}{A}
+\\ \goodType{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{ \sub{(\lsigproj{2}{\lsig})}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
+}
+\\
+
+
+\\
+\Rule[name=l/empty]
+{""}
+{
+  \goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}
+}
+ 
+\Rule[name=l/empty/eta]
+{\goodTerm{\Gm}{\lkg}{\TyLkg {\LSigEmp}}}
+{\goodTerm{\Gm}{\lkg \equiv \LkgEmp}{\TyLkg {\LSigEmp}}}
+ 
+\Rule[name=tm/pk]
+{ \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
+}
+{
+  \goodTerm{\Gm}{\Tkg {\lkg}}{\TyTkg{\lsig}}
+}
+
+\Rule[name=tmeq/pk/subst]
+{ \goodSub{\Gm}{\gm}{\Theta}
+}
+{
+  \goodTerm{\Gm}{\sub{(\Tkg {\lkg})}{\gm} \equiv \Tkg {\sub{\lkg}{\gm}}}{\TyTkg{\lsig}}
+}
+\\
+
+\\
+\Rule[name=l/add]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
+    \\
+    \goodTerm{\Gm, A}{t}{T}
+    \\\\
+    \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
+}{
+    \goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{\seal}{T}}}
+}
+
+\Rule[name=lkgeq/add/eta]
+{\goodTerm{\Gm}{\lkg}{\TyLkg \lsig}}
+{\goodTerm{\Gm}{\LkgAdd{\lkgproj{1}{\lkg}}{\lkgproj{2}{\lkg}} \equiv \lkg }{\TyLkg{\lsig}}}
+\\
+
+
+\\
+\Rule[name=l/proj]
+{\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}}
+{\goodTerm{\Gm}{\lkgproj{1} {\lkg}}{\TyLkg {\lsigproj{1} {\lsig}}}
+\\ \goodTerm{\Gm, \lsigprojT {\lsig}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
+}
+\\
+
+\\ 
+\Rule[name=lkgeq/proj/beta]
+{\goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
+\\ \goodType{\Gm}{A}{}
+\\  \goodSeal{\Gm}{\seal}{\lsig}{A} 
+ \\ \goodTerm{\Gm, A}{t}{T}}
+{\goodTerm{\Gm}{\lkgproj{1} {\LkgAdd {\lkg} {t}} \equiv \lkg}{\TyLkg \lsig}
+\\ \goodTerm{\Gm, A}{\lkgproj{2}{\LkgAdd {\lkg}{t}} \equiv t}{T}
+}
+\\
+\\
+\Rule[name=lkgeq/add+proj/subst]
+{\goodSub{\Gm}{\gm}{\Theta}}
+{
+\goodTerm{\Gm}{\sub{\LkgEmp}{\gm} \equiv \LkgEmp}{\TyLkg {\LSigEmp}}
+\\ \goodTerm{\Gm}{\sub{(\LkgAdd {\lkg} {t}) }{\gm} \equiv \LkgAdd {\sub{\lkg}{\gm}} {\sub{t}{\gm^\uparrow}}}{\sub{\TyLkg{\LSigAdd {\lsig} {\seal} {T}}}{\gm}}
+\\ \goodTerm{\Gm}{ \sub{(\lkgproj{1} {\lkg})}{\gm} \equiv \lkgproj{1} {\sub{\lkg}{\gm}} }{\sub{\TyLkg {\lsigproj{1} {\lsig}}}{\gm}}
+\\ \goodTerm{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{\sub{(\lkgproj{2}{\lkg})}{\gm^\uparrow} \equiv \lkgproj{2}{\sub{\lkg}{\gm}}}{\lsigproj{2}{\lsig}}}
+\\
+
+
+\\
+\Rule[name=tmeq/pk/def]
+{}
+{\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
+\\
+\goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {\seal} {T}} \equiv 
+    \TySigma {(\TyTkg {\lsig})} {T[\SubstExt{\pi_1}{\seal} ]} }{}
+\\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
+\\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {\lkg} {t})} \equiv (\Tkg {\lkg}, t[\SubstExt{\pi_1}{\seal} ][(id, \Tkg {\lkg})]) }{}
+}
+
+\end{mathparpagebreakable}
+
+% \begin{mathparpagebreakable}
+% \judgebox{[\goodSeal{\Gm}{s}{\lsig}{A}] 
+% = [\goodTerm{\Gm, \TyTkg{\lsig}}{s}{A[\pi_1]}] }
+% \\
+% \Rule[name=seal/subst]
+% { \goodSeal{\Delta}{s}{\lsig}{A}
+%   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
+% {\goodSeal{\Gm}{ \sub{s}{\gm}}{ \sub{\lsig}{\gm}}{ \sub{A}{\gm}}}
+% \coloneq
+% \boxed{
+% \frac
+% { \newline \goodTerm{\Delta, \TyTkg{\lsig}}{s}{ \sub{A}{\pi_1}}
+%   \\  \goodSub{\Gm}{\gm}{\Delta}  }
+% {\goodTerm{\Gm,\TyTkg{\sub{\lsig}{\gm}}}{ \sub{s}{\gm^\uparrow}}{\sub{\sub{A}{\pi_1}}{\gm^\uparrow}\equiv \sub{\sub{A}{\gm}}{\pi_1}}}}
+% \\
+% \\
+% \Rule[name=seal/id]
+% {}
+% {\goodSeal{\Gm}{id_s}{\lsig}{\TyTkg {\lsig}}}
+% \coloneq \boxed{\goodTerm{\Gm, \TyTkg{\lsig}}{\pi_2}{\TyTkg{\sub{\lsig}{\pi_1}}}}
+% \\
+
+% \end{mathparpagebreakable}
+
+\begin{mathparpagebreakable}
+
+
+\\
+\Rule[name=tyeq/casety]{
+    \goodType{\Gm}{A}{}
+    \\
+    \goodType{\Gm, A}{B}{}
+    \\
+    \goodType{\Gm}{T}{}
+}{
+    \goodType{\Gm}{
+        \CaseSig{A}{B}{R}
+        \equiv
+        \TyPi{A}{\TyPi {\TyPi{B}{\sub{T}{\SubstWeak{2}}}} {\sub{T}{\SubstWeak{2}}}}
+    }{}
+}
+\\
+
+\\
+\Rule[name=recl/defN]
+{\goodWSig{\Gm}{\wsig}{n+1}
+}
+{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv 
+        \LSigAdd{\RecSig{\WSigSub{\wsig}}{R}}
+        {\pi_2}
+        {\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R}} }{n+1}}
+\\
+
+\\
+\Rule[name=recl/def0]
+{\goodWSig{\Gm}{\wsig}{0}
+}
+{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
+
+\Rule[name=recl/proj]
+{ \goodWSig{\Gm}{\wsig}{N}
+\\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
+\\ j < N
+}
+{\goodTerm{\Gm}{\Recproj{j}{\lkg}}{\sub{(\CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R})}{\pi_1}}}
+\\
+\\
+\Rule[name=tm/wrec]{
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
+    \\
+    \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
+}{
+    \goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}
+}
+\\
+
+\\
+\Rule[name=recl/proj/beta]{
+  \goodWSig{\Gm}{\wsig}{N}
+  \\ j < N
+  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
+}{
+  \goodTerm{\Gm}{\Recproj{j}{\lkg}}{
+    \CaseSig{\wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{R}}
+}
+\\
+
+\\
+\Rule[name=recl/proj/defN]{}{
+  \goodTerm{\Gm}{\Recproj{n+1}{\lkg} \equiv \Recproj{n}{ \lkgproj{1}{\lkg}}}{\sub{(\CaseSig{\wsigproj{n+1}{1}{\wsig}}{\wsigproj{n+1}{2}{\wsig}}{R})}{\pi_1}}
+}
+
+\Rule[name=recl/proj/def0]{}{
+  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{("id", \Tkg{\lkgproj{1}{\lkg}})}}{\sub{(\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R})}{\pi_1}}
+}
+\\
+
+\\
+\Rule[name=tmeq/rec/beta]
+{\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
+% \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}
+}
+{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{\Wsup{j}{\wsig}{a}{b}} \equiv 
+(\app{ (\app{\Recproj{j}{h}} )[("id", a)]} )[("id", \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
+}{R}}
+\end{mathparpagebreakable}
+\begin{mathparpagebreakable}
+\Rule[name=inh/id]
+{""}
+{\goodInh{\Gm}{\InhId}{\lsig}{\lsig}}
+
+\Rule[name=inh/ov]
+{
+\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
+\\ \goodType{\Gm, A_1}{T_1}{}
+\\ \goodType{\Gm, A_2}{T_2}{}
+  \\ \goodTerm{\Gm, A_2}{t}{T_2}}
+{\goodInh{\Gm}{\InhOv{h}{t}}{(\LSigAdd  {\lsig_1 } {\seal_1} {T_1})}{(\LSigAdd   {\lsig_2} {\seal_2} {T_2})}}
+\\
+
+\\
+\Rule[name=inh/ext]
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+  \\ \goodTerm{\Gm, A_2}{t}{T}}
+{\goodInh{\Gm}{\InhExt {h} {t}}{\lsig_1}{(\LSigAdd {\lsig_2} {\seal_2} { T})}}
+
+\Rule[name=inh/inh]
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+\\ \goodType{\Gm, A_1}{T}{}
+\\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
+}
+{\goodInh{\Gm}{\InhInh{h}}{\LSigAdd {\lsig_1} {\seal_1}  {T}}{\LSigAdd   {\lsig_2} {\seal_2} {T[(\pi_1, \uparrow^s)]}}}
+\\
+\\
+\Rule[name=tm/inh]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+}{
+    \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
+}
+
+\Rule[name=inh/nest]
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+\\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
+\\\\
+\goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+{\goodInh{\Gm}{\InhNest{h}{i}}{\LSigAdd {\lsig_1} {\seal_1}  {\TyLkg\tau_1}}{\LSigAdd   {\lsig_2} {\seal_2} {\TyLkg{\tau_2}}}}
+\\
+
+\\
+\Rule[name=tmeq/inhid/beta]
+{ \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig} }}
+{\goodTerm{\Gm}{\inh {\InhId} {\lkg} \equiv \lkg}{\TyLkg{\lsig}}}
+
+\Rule[name=tmeq/ext/beta]
+{
+  \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+  \\ \goodSeal{\Gm}{\seal_2}{\lsig_2}{A_2}
+  \\ \goodTerm{\Gm, A_2}{t}{T}
+  \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+}
+{\goodTerm{\Gm}{\inh {{\InhExt {h} {t}}} {\lkg}
+\equiv \LkgAdd{\inh {h}{\lkg}}{t}
+}{ \TyLkg{\LSigAdd{\lsig_1}{\seal_2}{T}} }}
+\\
+
+\\
+\Rule[name=tmeq/inh/beta]
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+  \\ \goodTerm{\Gm}{m}{\TyLkg {\lsig_1}}
+  \\ \goodTerm{\Gm, A_1}{t}{T}
+  \\ \goodSeal{\Gm}{\seal_2}{\lsig_2}{A_2}
+  \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
+}
+{\goodTerm{\Gm}{\inh {\InhInh{h}} {\LkgAdd{m}{t}} \newline  \equiv \LkgAdd{\inh {h} {m}}  {t[(\pi_1, \uparrow^s)]}}{\TyLkg{\LSigAdd{\lsig_2}{\seal_2}{\sub{T}{\SubstExt{\pi_1}{\uparrow^s}}}}}} 
+\\
+
+\\
+\Rule[name=tmeq/ov/beta]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+    \\\\
+    \goodTerm{\Gm, A_1}{t_1}{T_1}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_1}}{\seal_1}{\sub{A_1}{\SubstWeak{1}}}
+    \\
+    \goodTerm{\Gm, A_2}{t_2}{T_2}
+    \\
+    \goodTerm{\Gm, \TyTkg{\lsig_2}}{\seal_2}{\sub{A_2}{\SubstWeak{1}}}
+}{
+    \goodTerm{\Gm}{
+        \inh{\InhOv{h}{t_2}}{\LkgAdd{\lkg}{t_1}}
+        \equiv 
+        \LkgAdd{\inh{h}{\lkg}}{t_2}
+    }{
+        \TyLkg{\LSigAdd{\lsig_2}{\seal_2}{T_2}}
+    }
+}
+\\
+
+\\
+\Rule[name=tmeq/nest/beta]
+{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+\\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
+\\
+\goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+{
+\goodTerm{\Gm}
+{
+\inh{\InhNest{h}{i}}{\LkgAdd{\lkg}{t}} \equiv 
+\LkgAdd{\inh{h}{\lkg}}{\inh{i}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
+}
+{\TyLkg{\LSigAdd{\lsig_1}{\seal_2}{\TyLkg{\tau_2}}}}
+}
+
+\end{mathparpagebreakable}
