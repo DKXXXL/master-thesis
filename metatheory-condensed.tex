@@ -87,13 +87,15 @@ where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
 %In dependent type system, types are treated as terms, and should have a type.
 We use Tarski-style universes~\cite{hofmann1997syntax}:
-a universe~$\cU$ is not inhabited by types directly,
+a universe~$\cU$ is not inhabited by types directly\footnote{On the contrary, 
+Russel-style Universe is inhabited by types directly. 
+Tarski-style universe is ``semantically more fundamental''\cite{luo2012notes} thus more friendly for meta-theoretical reasoning.},
 but rather by the \emph{codes} of types:
 $\codety{T}$ encodes type~$T$ (rule \ruleref{tm/c}),
 and $\El{t}$ decodes~$t$ (rule \ruleref{ty/el}).
 MLTT has an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
-\rA{Why is W(t) a term and not a type?}\EDJreply{changed, please review.}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
+\rA{Why is W(t) a term and not a type?}\EDJreply{changed, please review.}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}\EDJ{changed again, please review.}
 
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
