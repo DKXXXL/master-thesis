@@ -12,7 +12,8 @@ TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
 	stlc-nonmechanized.tex stlc-mechanized.tex stlc-isorec-prod.tex	\
 	stlc-compiled.tex stlcfix-compiled.tex stlc-linkage-typing.tex stlcfix-linkage-typing.tex stlc-venn.tex	stlc-linkTran-typing.tex\
 	mltt-selected.tex fmltt-selected.tex cc-condensed.tex	\
-	stlc-intro.pdf ai-casestudy.pdf
+	stlc-intro.pdf ai-casestudy.pdf \
+	all-mltt-typing.tex all-fmltt-typing.tex
 
 # Included figures (usually .pdf files)
 FIGS = graphics

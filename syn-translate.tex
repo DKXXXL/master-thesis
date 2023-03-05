@@ -1,14 +1,14 @@
-The implementation described in \cref{sec:coqimpl} can be formalized in
-our metatheory. The described compilation strategy can be considered as
-a \textit{syntactic translation}, a function mapping from our syntactic
-(QIIT-)model to a ``subpart''\footnote{Not exactly subpart---the only
+The implementation described in \cref{sec:coqimpl} has hinted the fact that
+linkage can be translated into dependent tuple type.
+The described compilation strategy can be considered as
+a \textit{type preserving syntactic translation}, a function mapping from our syntactic
+model to a ``subpart''\footnote{Not exactly subpart---the only
 difference lies in "Wrec". In our metatheory, it is constructed
 using linkage; in ``subpart'', it will be using $\Sigma$-types (translation
-of the linkage).} of our syntactic (QIIT-)model \textit{without
-linkages}.\footnote{Here, syntactic QIIT-model can be roughly understood
-as just AST, with equational rules acting like quotient. So this mapping
-is mapping AST to AST, respecting quotient/judgemental equality.} This
-``subpart'' is the standard MLTT with inductive type signatures, an
+of the linkage).} of our syntactic model \textit{without
+linkages}.
+
+This ``subpart'' is the standard MLTT with an
 (unconventional) formulation of W-types,
 and recursors that use $\Sigma$-types to aggregate handlers.
 
@@ -21,13 +21,13 @@ corresponding $\Sigma$-types.
 % \newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
 % \newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
-We use $\denotesT{}$ as the translation. This translation behaves like identity\YZ{What does "invariant" mean?}\EDJreply{behaves like identity. Sorry I should have said "subpart is invariant under this translation" instead}
+We use $\denotesT{}$ as the translation. This translation behaves like identity
+\YZ{What does "invariant" mean?}\EDJreply{behaves like identity. Sorry I should have said "subpart is invariant under this translation" instead}
 under the subpart. Since we are in an intrinsic setting, everything here
 is well-typed (well-formed)including this translation. Thus
 $\denotesT{T}$ means the same as $\denotesT{\goodType{\Gamma}{T}{}}$
 (i.e. every type is tracking its context). In other words, every
-derivation of any judgement will track its ``context''. This will be
-clearer in the (pseudo-)Agda formalization.
+derivation of any judgement will track its ``context''. 
 
 
 \begin{align*}
