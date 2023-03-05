@@ -87,9 +87,9 @@ where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
 %In dependent type system, types are treated as terms, and should have a type.
 We use Tarski-style universes~\cite{hofmann1997syntax}:
-a universe~$\cU$ is not inhabited by types directly\footnote{On the contrary, 
-Russel-style Universe is inhabited by types directly. 
-Tarski-style universe is ``semantically more fundamental''\cite{luo2012notes} and more friendly for our meta-theoretical reasoning.},
+a universe~$\cU$ is not inhabited by types directly\footnote{By contrast, 
+Russel-style universes are inhabited by types directly. 
+Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.},
 but rather by the \emph{codes} of types:
 $\codety{T}$ encodes type~$T$ (rule \ruleref{tm/c}),
 and $\El{t}$ decodes~$t$ (rule \ruleref{ty/el}).
