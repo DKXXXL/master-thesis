@@ -20,7 +20,7 @@
     ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
     %\wsingle{\wsig} \mid
-    \wcode{\wsig} \mid \Wsup{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
+    \wcode{\wsig} \mid \Wsup{i}{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
     \\
     &&&
     \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
@@ -90,7 +90,7 @@
 %   \\
 %   i \in \{1, ..., n\}
 }{
-    \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
 }
 
 \Rule[name=tm/wrec]{

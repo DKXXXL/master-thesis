@@ -375,12 +375,12 @@ where "id" is the identity substitution.
 %   \\
 %   i \in \{1, ..., n\}
 }{
-    \goodTerm{\Gm}{\Wsup{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{t_2}}{\El{\wcode{\wsig}}}
 }
 
 \Rule[name=tmeq/wsup/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
-{\goodTerm{\Gm}{\sub{(\Wsup{T}{a}{b})}{\gm} \equiv \Wsup{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
+{\goodTerm{\Gm}{\sub{(\Wsup{}{T}{a}{b})}{\gm} \equiv \Wsup{}{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 
 \Rule[name=wsigeq/sub]{
   \goodWSig{\Gm}{\wsig}{n}
@@ -663,7 +663,7 @@ where "id" is the identity substitution.
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
 % \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}
 }
-{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{\Wsup{\wsig}{a}{b}} \equiv 
+{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{\Wsup{j}{\wsig}{a}{b}} \equiv 
 (\app{ (\app{\Recproj{j}{h}} )[("id", a)]} )[("id", \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
 }{R}}
 \end{mathparpagebreakable}

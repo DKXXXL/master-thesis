@@ -116,7 +116,7 @@ Rule~\ruleref{tm/wsup} states that the $i$-th pair $\goodType{\Gm}{\wsigproj{i}{
 $\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$ models the $i$-th constructor---given 
 two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
 $\goodTerm{\Gm,\sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}$,
-we can construct a term $\Wsup{\wsig}{t_1}{t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
+we can construct a term $\Wsup{i}{\wsig}{t_1}{t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
 W-type (\ruleref{tm/w}).
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
@@ -158,9 +158,9 @@ signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "ap
       $\tau$ &
       \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFC7}$\coloneqq\WSigAdd{\tau'}{\bbone}{\bbtwo}$} \\ \hline
     \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}\lsti!unit!} &
-      $\coloneqq \Wsup{\tau}{\unit}{"elim-"\bbzero}$ &
+      $\coloneqq \Wsup{1}{\tau}{\unit}{"elim-"\bbzero}$ &
       \cellcolor[HTML]{C0C0C0}\lsti!app unit unit! &
-      $\coloneqq\Wsup{\tau}{\unit}{"unit"}$
+      $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$
     \end{tabular}
 \end{figure}
 
@@ -171,7 +171,7 @@ its elimination must exhaustively handle all the constructors in
 its signature.
 
 In contrast, $\wsig$ should be hidden from the typing context of any
-term that does not invoke $\Wsup{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$, so that
+term that does not invoke $\Wsup{}{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$, so that
 the term can be reused---without being rechecked---for a different
 W-type signature~$\wsig'$ that extends~$\wsig$ with additional
 constructors.
@@ -223,7 +223,7 @@ abstracting the types of the prior fields, does not necessarily contain the same
 because a field defined as the code $\wcode{\wsig}$ of a W-type has to
 expose different types to different fields that come after it.
 Later fields that invoke
-$\Wsup{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
+$\Wsup{}{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
 should see the concrete signature~$\wsig$, as rules \ruleref{tm/wsup}
 and \ruleref{tm/wrec} stipulate.
 By contrast, $\wsig$ should be hidden
@@ -273,7 +273,7 @@ This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
 \item 
 The next four fields model the four constructors of~\lsti{tm}.
-Constructor \lsti{tm_unit} is modeled as $\Wsup{\wsig_{\texttt{tm}}}{\top}{\bot}$
+Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{\bot}$
 and typed with $\El{\mathit{self}.\texttt{tm}}$, where $\mathit{self}$ stands for
 the typing context containing the first field~\lsti{tm}.
 The W-type signature $\wsig_{\texttt{tm}}$ is exposed in
@@ -465,7 +465,7 @@ $$
 {{\goodWSig{\Gm}{\wsig}{n}}
   \\ \goodTerm{\Gm}{a}{\wsigproj{j}{1}{\wsig}}
   \\ \goodTerm{\Gm, \sub{\wsigproj{j}{2}{\wsig}}{(id, a)}}{b}{\El{(\wcode{\wsig})}}}
-{\goodTerm{\Gm}{\Wsup{T}{a}{b}}{\El{(\wcode{\wsig})}} }
+{\goodTerm{\Gm}{\Wsup{}{T}{a}{b}}{\El{(\wcode{\wsig})}} }
 $$
 $$
 \Rule[name=ty/casesig]
@@ -523,7 +523,7 @@ $$
 \Rule[name=tmeq/rec/beta]
 {\goodTerm{\Gamma}{h}{\cL(\RecSig{\tau}{R})} 
 \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}}
-{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{(\Wsup{\wsig}{a}{b})} \equiv 
+{\goodTerm{\Gamma}{\Wrec{\wsig}{h}{(\Wsup{}{\wsig}{a}{b})} \equiv 
 (\app{((\app{(\Recproj{j}{h})} )[("id", a)])} )[("id", \lam{(\Wrec{\wsig}{h[\pi_1]}{b})})]
 }{R}}\EDJ{"app" and "lam" are lambda application and abstraction}
 $$
