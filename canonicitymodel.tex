@@ -1,4 +1,6 @@
-We follow the reducibility argument from~\citet{coquand2018canonicity,sterling2019algebraic, kaposi2019gluing} to construct the canonicity model. We will first specify the formulation of the most basic canonicity theorem. 
+We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
+Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. However, our proof will still work directly on the earlier introdcued syntax for readability.
+We will first specify the formulation of the most basic canonicity theorem. 
 
 \begin{theorem}[Canonicity]
   For a closed boolean term $\goodTerm{\cdot}{t}{\cB}$, we have $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$ hold.
@@ -19,11 +21,8 @@ then by Curry-Howard Correspondence, this theorem provides a big-step interprete
   So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
 }
 
-Now we sketch out the big picture of the proof. The canonicity model $"Tm"^C~\Gamma^C~"T"^C$ will map each syntax piece $("t : Tm Γ T") \mapsto "(t, tₚ) :" "Tm"^C~\Gamma^C~"T"^C = \sum~("t : Tm Γ T")."Tm"_p~\Gamma^C~"T"^C~"t"$ to a dependent pair\footnote{This $"Tm"_p$ is usually called dependent model.}, of which the first part will be the same as the input syntax. Using this mapping on closed boolean term $"t : Tm ⋅ "\mathbb{B}$ will give us a proof of $"Tm"_p~\cdot^C~\mathbb{B}^C~"t"$, which will unfolds to our final goal $"t" \equiv "tt" + "t" \equiv "ff"$. Roughly, this can read as ``every closed boolean term is reducible''.  Thus once we can ``propagate'' $(\cdot)^C$ into every syntactic piece, and construct this model, we are done. In our (pseudo) Agda formulation, we use $(\cdot)_2$ to replace the notation of $(\cdot)^C$ because we consider most parts of this model are actually a dependent pair.
+Like most logical relation proof,  we interpret each judgement and prove compatibility lemma. 
 
-Another helpful analogy of the canonicity model is that $"Tm"_p~\Gamma^C~"T"^C~"t"$ can be understood as ``a reducible set'': $"t" \in \{$ Reducible Terms of type $T$ (and $T_p$) in context $\Gamma$ (and $\Gamma_p$) $\}$. The reformulation can be understood as an unfolding of the \textit{type-theoretic logical relation proof}.\footnote{We usually use predicate to encode ``belong to''/``is element of'' relation in type theory} If we use the terminology of the conventional formulation, this reducible set means if we apply its element $t$ with a substitution $\gamma$ from the set $\Gamma$ where we have $\Gamma_p$ witnesses the ``reducibility'' of $\Gamma$, then we will have $t[\gamma] \in T_p$ as a closed and \textbf{reducible} term. Now if $\Gamma$ is actually empty $\cdot$ and $T$ is $\cB$, we are done. 
-
-% $\Gamma_p$ witnesses the set of substitution $ \gamma \in \Gamma$ makes applied term $t[\gamma]$ closed and \textbf{reducible} of types $T_p$. Thus, we proved $t[\gamma] \in T_p$---the set of closed reducible term of type $T$---when $\gamma \in \Gamma_p$.
 
 % The proof can be found in appendix. 
 The intuition of the model is similar to that of the consistency model---use the canonicity model of sigma type (from the earlier work) for linkage type and using Agda's inductive facility to justify our W-type. 

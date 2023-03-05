@@ -1,10 +1,14 @@
 In this section, we start by introducing the complete formulation of the syntax of \TT, 
-and then we detail the proofs for syntactic translation (that translate away linkages), 
+and then we detail the models and proofs for syntactic translation (that translate away linkages), 
 consistency and canonicity. 
 
 \subsection{Warm Up: Review Declarative MLTT}
 We begin with a review of MLTT as \TT can be roughly considered as MLTT with linkages.
-We work in an intrinsic-typed setting, so there is no un-typed preterms.
+For our syntax, we work in an intrinsic-typed setting, so there is no un-typed preterms 
+(i.e. every terms are well-typed by construction). We introduce judgemental equality $\equiv$
+for derivations (of each judgements). In other words, we will have judgemental equality between terms, 
+contexts and explicits substitutions. 
+We will make sure all the introduced models and proofs respecting judgemental equality.
 
 \input{all-mltt-typing}
 
