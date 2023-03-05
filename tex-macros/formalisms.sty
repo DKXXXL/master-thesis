@@ -254,6 +254,8 @@
 
 \newcommand{\goodSeal}[4]{\ensuremath{ \goodTerm{{#1}, \TyTkg{#3}}{{#2}}{\sub{{#4}}{\pi_1}} }}
 
+
+% for standard model
 \newcommand{\goodCtxS}[2]{{ {#1} \ \models_S }}
 \newcommand{\goodTypeS}[3]{{ {#1} \models_S {#2} }}
 \newcommand{\goodTermS}[3]{{ {#1} \models_S {#2} : {#3} }}
@@ -265,4 +267,17 @@
 
 \newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
 \newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
+
+% for canonicity model
+\newcommand{\goodCtxC}[2]{{ {#1} \ \models_C }}
+\newcommand{\goodTypeC}[3]{{ {#1} \models_C {#2} }}
+\newcommand{\goodTermC}[3]{{ {#1} \models_C {#2} : {#3} }}
+\newcommand{\goodSubC}[3]{{ {#1} \models_C {#2} : {#3} }}
+\newcommand{\goodSigC}[3]{{ {#1} \models_C {#2} \ \  \texttt{LSig}^{#3} }}
+\newcommand{\goodWSigC}[3]{{ {#1} \models_C {#2} \ \ \texttt{WSig}^{#3} }}
+\newcommand{\goodSealC}[4]{{ {#1} \models_C {#2} : {#3} \  |\  {#4} }}
+\newcommand{\goodInhC}[4]{{ {#1} \models_C {#2} : {#3} \twoheadrightarrow {#4}}}
+
+\newcommand{\denotesC}[1]{{{\llbracket {#1} \rrbracket}_C}}
+
 

@@ -21,7 +21,20 @@ then by Curry-Howard Correspondence, this theorem provides a big-step interprete
   So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
 }
 
-Like most logical relation proof,  we interpret each judgement and prove compatibility lemma. 
+Like most logical relation proof,  we interpret each judgement, inductively interpret each syntax piece and prove compatibility lemma.
+
+\begin{align*}
+  \denotesC{\goodCtx{\Gm}{i}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
+  &\text{we define } \goodCtxS{\Gm}{i} :\iff \denotesS{\goodCtx{\Gm}{i}} \text{ is defined} \\
+  \denotesC{\goodType{\Gm}{T}{}} & \text{ is a function maps to Set s.t.} \\
+  & \text{for arbitrary } \gm \in \denotesC{\goodCtx{\Gm}{}}, \denotesC{\goodType{\Gm}{T}{}}(\gm) \text{ is a Set of closed terms } \goodTerm{\cdot}{\_}{\sub{T}{\gm}} \\ 
+  &\text{we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesS{\goodType{\Gm}{T}{i}} \text{ is defined }
+\end{align*}
+
+Now that we construct the above model, we can map an arbitrary closed term $\goodTerm{\cdot}{t}{\cB}$ to get the result 
+
+Then we extend the above model to \TT .
+
 
 
 % The proof can be found in appendix. 
