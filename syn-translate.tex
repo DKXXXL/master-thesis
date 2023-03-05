@@ -72,27 +72,26 @@ syntactic translation for $\goodSig{\Gamma}{\_}{n}$ and $\cL$. The
 syntactic translation for $\cC$ and $\cCt$ are decided by their
 $\beta$-rules. 
 
-We use the local morphism (the same one for encoding the Sealing
+We use the local morphism\cite{abbott2003category} (the same one for encoding the Sealing
 judgements) to translate inheritance judgement. This is mainly due to
-the existence of \ruleref{Inh} rule. Here we only typeset the overriding
-and inheritance rule, but all of the translation for inh judgment are
-induced by the $\beta$-rule of \ruleref{Inh}.
+the existence of \ruleref{Inh} rule. 
+% Here we only typeset the overriding
+% and inheritance rule, but all of the translation for inh judgment are
+% induced by the $\beta$-rule of \ruleref{Inh}.
 
 We omit all the equational rules ($\beta,\eta$ and substitution) here.
 However, for coherence, when we mutual recursively define
 $\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}} $, and
 $\denotesT{\cC}$ above, we actually have to prove the substitution laws
 $(\cC\sigma)[\tau]\equiv \cC(\sigma[\tau])$ and $\Sigr{\Delta}{n}[\tau]
-\equiv \Sigr{\Gamma}{n}$ together. The details (of all the equational
-rules) can be found in the appendices written in (pseudo-)Agda form. We
-encourage the reader to read that (pseudo-)Agda-style proof because it
-is more friendly to type theorists, easy to do type checking and
-validate the proof and it is clearer on the mathematical object each
-translation uses.
+\equiv \Sigr{\Gamma}{n}$ together. 
+% The details (of all the equational rules) can be found in the appendices written in (pseudo-)Agda form. We encourage the reader to read that (pseudo-)Agda-style proof because it is more friendly to type theorists, easy to do type checking and
+% validate the proof and it is clearer on the mathematical object each
+% translation uses.
 
 
-Ultimately, we have constructed a model for our QIIT-syntax using only a
-``subpart'' of our QIIT-syntax -- without these linkages. It is also
+Ultimately, we have constructed a model for our syntax using only a
+``subpart'' of our syntax -- without these linkages. It is also
 possible to compile our $\goodWSig{\Gamma}{w}{n}$ and W-type into a more
 conventional formulation, but the recursor will always require a sigma
 type as handler and thus the elimination rule for our W-type is still
@@ -108,5 +107,4 @@ canonicity \textit{if we assume the consistency and canonicity of the
 inductive type, it is better we don't impose such assumption and
 directly give a consistency and canonicity proof.
 
-% the link for syntactic translation
-% https://drive.google.com/file/d/1pMqn8DS4T4jiCubzk3HgMANjrfKpcGlI/view?usp=sharing
+

@@ -5,7 +5,7 @@ We follow the reducibility argument from~\citet{coquand2018canonicity,sterling20
 \end{theorem}
 
 Canonicity is one of the basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
-We can even argue that, if this theorem is proven in a computable meta-logic\footnote{QIIT does have computational content~\cite{altkap2016}}, 
+We can even argue that, if this theorem is proven in a computable meta-logic, 
 then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.\YZ{Can we say something about strong/weak normalization?}\EDJreply{
   No. \\
   1. In the declarative system, we cannot talk about strong/weak normalization (because we don't have operational semantic, if you recall the definition of strong/weak normalization, it based on reduction/path of steps/op semantic). So any review says strong/weak normalization to you, please stop them. \\ 
@@ -25,7 +25,8 @@ Another helpful analogy of the canonicity model is that $"Tm"_p~\Gamma^C~"T"^C~"
 
 % $\Gamma_p$ witnesses the set of substitution $ \gamma \in \Gamma$ makes applied term $t[\gamma]$ closed and \textbf{reducible} of types $T_p$. Thus, we proved $t[\gamma] \in T_p$---the set of closed reducible term of type $T$---when $\gamma \in \Gamma_p$.
 
-The proof can be found in appendix. The intuition of the model is similar to that of the consistency model---use the canonicity model of sigma type (from the earlier work) for linkage type and using Agda's inductive facility to justify our W-type. 
+% The proof can be found in appendix. 
+The intuition of the model is similar to that of the consistency model---use the canonicity model of sigma type (from the earlier work) for linkage type and using Agda's inductive facility to justify our W-type. 
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
 \begin{theorem}[Canonical Forms].
