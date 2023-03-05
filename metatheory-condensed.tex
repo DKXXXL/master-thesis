@@ -86,16 +86,16 @@ $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
 %In dependent type system, types are treated as terms, and should have a type.
-We use Tarski-style universes~\cite{hofmann1997syntax}:
-a universe~$\cU$ is not inhabited by types directly\footnote{By contrast, 
-Russel-style universes are inhabited by types directly. 
-Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.},
-but rather by the \emph{codes} of types:
-$\codety{T}$ encodes type~$T$ (rule \ruleref{tm/c}),
-and $\El{t}$ decodes~$t$ (rule \ruleref{ty/el}).
+We use Tarski-style universes \cite{hofmann1997syntax}.
+Unlike Russell-style universes, they
+are not inhabited by types directly but rather by the \emph{codes} of types
+and arguably behave better \cite{luo2012notes}.
+$\codety{T}$ encodes type~$T$ (rule \ruleref{tm/c}) and thus inhabits~$\cU$.
+$\El{t}$ decodes~$t$ (rule \ruleref{ty/el}).
+%\footnote{By contrast,  Russel-style universes are inhabited by types directly.  Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.}
 MLTT has an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
-\rA{Why is W(t) a term and not a type?}\EDJreply{changed, please review.}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}\EDJ{changed again, please review.}
+%\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
 
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
