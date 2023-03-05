@@ -130,15 +130,6 @@ by an \lsti{FRecursion} command in our plugin.
 We choose to type it with a linkage type $\TyLkg{\RecSig{\wsig}{T}}$
 to avoid introducing non-dependent $n$-tuples, which linkages generalize.
 
-We illustrate one concrete example of a "tm" with only two constructors, 
-also as a review for how W-type encodes a given inductive type. The key insight 
-is for a pair $(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})$, the non-recursive
-part of the given constructor stores in $\wsigproj{i}{1}{\wsig}$ and the ``arity'' of the 
-recursive part stores in $\wsigproj{i}{2}{\wsig}$. For example, $"app" : ("tm" \to "tm" \to "tm")$ 
-$\cong ((\bbtwo \to "tm") \to "tm")$, saying the ``arity'' of the recursive part is $\bbtwo$ 
-(or boolean type, as a type with two elements). Similarly, the ``arity'' of recursive part of "unit" is 0. 
-Both constructors don't store other information thus $\bbone$. We hightlight $\tau$ as the 
-signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "app~unit~unit". $"elim-"\bbzero$ indicates the elimination of the bottom type $\bbzero$ in the context. The key expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict-positivity of Inductive type.  
 
 
 \begin{figure}
@@ -162,7 +153,20 @@ signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "ap
       \cellcolor[HTML]{C0C0C0}\lsti!app unit unit! &
       $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$
     \end{tabular}
+  \caption{W-type encoding of "tm \{unit, app\}"}
+  \label{fig:Wtype-example}
 \end{figure}
+
+
+We illustrate one concrete example in \cref{fig:Wtype-example} of a "tm" with only two constructors, 
+also as a review for how W-type encodes a given inductive type. The key insight 
+is for a pair $(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})$, the non-recursive
+part of the given constructor stores in $\wsigproj{i}{1}{\wsig}$ and the ``arity'' of the 
+recursive part stores in $\wsigproj{i}{2}{\wsig}$. For example, $"app" : ("tm" \to "tm" \to "tm")$ 
+$\cong ((\bbtwo \to "tm") \to "tm")$, saying the ``arity'' of the recursive part is $\bbtwo$ 
+(or boolean type, as a type with two elements). Similarly, the ``arity'' of recursive part of "unit" is 0. 
+Both constructors don't store other information thus $\bbone$. We hightlight $\tau$ as the 
+signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "app~unit~unit". $"elim-"\bbzero$ indicates the elimination of the bottom type $\bbzero$ in the context. The expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict-positivity of Inductive type.
 
 
 Rules \ruleref{tm/wsup} and \ruleref{tm/wrec} require access to~$\wsig$:
