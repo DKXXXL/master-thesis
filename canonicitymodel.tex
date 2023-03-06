@@ -25,12 +25,12 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
 
 \begin{align*}
   \denotesC{\goodCtx{\Gm}{i}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
-  &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
+  % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
   \denotesC{\goodType{\Gm}{T}{}} & \text{ is a function maps to Set s.t.} \\
   & \text{for arbitrary } \gm \in \denotesC{\goodCtx{\Gm}{}}, \denotesC{\goodType{\Gm}{T}{}}(\gm) \text{ is a Set of closed terms } \goodTerm{\cdot}{\_}{\sub{T}{\gm}} \\ 
-  &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
+  % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
   \denotesC{\goodSub{\Gm}{\gm}{\Delta}} & \text{ is a function}: \denotesC{\goodCtx{\Gm}{i}} \to \denotesC{\goodCtx{\Delta}{i}} \text{ s.t. } \denotesC{\goodSub{\Gm}{\gm}{\Delta}}(\sigma) \coloneqq \SubstComp{\sigma}{\gm} \\
-  &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
+  % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} & \text{ is a dependent function}: \prod_{\gm \in \denotesC{\goodCtx{\Gm}{i}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)  \text{ s.t. } \denotesC{\goodTerm{\Gm}{t}{T}}(\gm) \coloneqq \sub{t}{\gm} \\
   \denotesC{\goodType{\Gm}{\top}{}}(\gm) &= \{t : t \equiv \unit \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm) &= \emptyset \\
@@ -53,13 +53,50 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
   \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
 \end{align*}
 
+\newcommand{\Glued}[1]{\ensuremath{{#1}^C}}
+\newcommand{\GSubstExt}[2]{\ensuremath{{#1},^c{#2}}}
+
+
+Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\Glued{\Pi}(A', B') = \denotesC{\TyPi{A}{B}}$. Using more type-theoretical language, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$ and $\GSubstExt{\gm}{t}$ for dependent tuple type and substitution extension. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT.
+
 Then we extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
 \begin{align*}
-  \denotesC{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigC{\Gm}{\sigma}{n}} :\iff \denotesC{\sigma} \in  \denotesC{\goodSig{\Gm}{\_}{n}} \\ 
-  \denotesC{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
-  & \text{ and we define } \goodWSigC{\Gm}{\tau}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \in \denotesC{\goodWSig{\Gm}{\_}{n}}
+  \denotesC{\goodSig{\Gm}{\lsig}{n}} & \text{ is a list of 3-tuple of length $n$  } \\
+  % & \text{ and we define  } {\goodSigC{\Gm}{\lsig}{n}} :\iff \denotesC{\goodSig{\Gm}{\lsig}{n}} \text{ is defined} \\ 
+  \denotesC{\goodWSig{\Gm}{\wsig}{n}} &\text{ is a list of 2-tuple of length $n$ } \\
+  % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
+  & \text{we define }\TyLkg{}, \TyTkg{} \text{ inductively on its input signature} \\ 
+  \mathit{\cL}("nil") &= \denotesC{\top} \\
+  \mathit{\cL}((A,s,T) :: tl)(\gm) &= {\mathit{\cL}(tl)}(\gm) \times \mathit{\Pi}(A,T)(\gm) \\
+  \mathit{\cP}("nil") &= \denotesC{\top}\\
+  \mathit{\cP}((A,s,T) :: tl) &= \mathit{\Sigma}(\mathit{\cP}(tl), \sub{T}{(p_1, s)})\\
+  \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= \mathit{\cL}(\denotesC{\lsig}) \\
+  \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \mathit{\cP}(\denotesC{\lsig}) \\
+  % 
+  \denotesC{\goodSig{\Gm}{\LSigEmp}{0}} &= "nil"\\ 
+  \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesC{A}, \denotesC{s}, \denotesC{T})::\denotesC{\lsig}\\ 
+  \denotesC{\goodSig{\Gm}{\lsigproj{1}{\lsig}}{n}} &= "tl"~\denotesC{\lsig}\\ 
+  \denotesC{\goodType{\Gm}{\lsigprojT{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[0]\\ 
+  \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= ("hd"~\denotesC{\lsig})[1]\\ 
+  \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[2]\\
+  \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &=  \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}} &= \\
+  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\ell}}{\TyTkg{\lsig}}} &= \\
+  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\ell}}{T}} &= \\
+  \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= \\
+  \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= \\
+  \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \\
+  \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \\
+  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{}} &= \\
+  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
+  \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= \\
+  \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= {\mathit{\Pi}{A}{\mathit{\Pi} {\mathit{\Pi}{B}{\sub{R}{\SubstWeak{2}}}} {\sub{R}{\SubstWeak{2}}}}}\\
+  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= \\
+  \denotesC{\Recproj{j}{\lkg}} &= \\
+  \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
 \end{align*}
 
 
