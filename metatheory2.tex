@@ -30,9 +30,9 @@ Since it is a syntactic sugar, we will not consider about the linkage transforme
 
 \input{syn-translate.tex}
 
-\subsection{Standard Model for Consistency}
+% \subsection{Standard Model for Consistency}
 
-\input{standardmodel.tex}
+% \input{standardmodel.tex}
 
 
 \subsection{Proof Relevant Logical Relation for Canonicity}
@@ -42,4 +42,4 @@ Since it is a syntactic sugar, we will not consider about the linkage transforme
 Observe the syntax, linkage transformer and its judgement is defined above 
 other parts. 
 
-So we can inductively define the syntax sugar $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ using constructors $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$. Then we define the $\inh{h}{\ell}$ and the explicit substitution for linkage transformer $\sub{h}{\gm}$ by induction on the structure of linkage transformer $h$, based on the equality given in the syntax. In that way, the explicit substituon for linkage transformer becomes meta-level substitution again; and $\inh{h}{\ell}$ is not itself a syntax but a meta-level computation that leads to a syntax.
+So we can inductively define the syntax sugar $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ using constructors $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$. Then we define the $\inh{h}{\ell}$ and the explicit substitution for linkage transformer $\sub{h}{\gm}$ by induction on the structure of linkage transformer $h$, based on the equality\EDJ{Add substitution equalities for linkage transformers} given in the syntax. In that way, the explicit substituon for linkage transformer becomes meta-level substitution again; and $\inh{h}{\ell}$ is not itself a syntax but a meta-level computation that leads to a syntax.

@@ -21,7 +21,7 @@ then by Curry-Howard Correspondence, this theorem provides a big-step interprete
   So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
 }
 
-Like most logical relation proof,  we interpret each judgement, inductively interpret each syntax piece and prove compatibility lemma. We are working on an intrinsic setting thus even we omit context for brevity, the syntax piece is still well-typed. We only specify part of the logical relation proof for MLTT part. For the complete version, please refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic}.
+Like most logical relation proof,  we interpret each judgement, inductively interpret each syntax piece. We are working on an intrinsic setting thus even we omit context for brevity, the syntax piece is still well-typed. We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
   \denotesC{\goodCtx{\Gm}{i}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
@@ -41,11 +41,11 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}} &= \\
   \denotesC{\goodCtx{\cdot}{}} &= \{\SubstEmp\} \text{  the singleton set with identity substitution} \\ 
   \denotesC{\goodCtx{\Gm, T}{}} &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}, t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}  \} \\
-  \denotesC{\goodTerm{\Gm}{\unit}{\top}} &= \\
-  \denotesC{\goodTerm{\Gm}{\true}{\cB}} &= \\
-  \denotesC{\goodTerm{\Gm}{\false}{\cB}} &= \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}} &= \\
-  \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}} &= \\
+  \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm) &= \unit\\
+  \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm) &= \true \\
+  \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm) &= \false \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm) &= \\
+  \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm) &= \eqrefl{\sub{t}{\gm}}\\
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}} &= \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}} &= \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &= \\
@@ -57,9 +57,9 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
 \newcommand{\GSubstExt}[2]{\ensuremath{{#1},^c{#2}}}
 
 
-Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\Glued{\Pi}(A', B') = \denotesC{\TyPi{A}{B}}$. Using more type-theoretical language, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$ and $\GSubstExt{\gm}{t}$ for dependent tuple type and substitution extension. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT.
+Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\Glued{\Pi}(A', B') = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$ and $\GSubstExt{\gm}{t}$ for dependent tuple type and substitution extension. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT.
 
-Then we extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
+Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
 \begin{align*}
@@ -82,17 +82,17 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= ("hd"~\denotesC{\lsig})[1]\\ 
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[2]\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &=  \\
-  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}} &= \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm) &= (\denotesC{\ell}(\gm), \lambda u . t (\gm, u)) \\
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \\
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\ell}}{\TyTkg{\lsig}}} &= \\
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\ell}}{T}} &= \\
-  \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= \\
-  \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= \\
-  \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \\
-  \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \\
-  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{}} &= \\
+  \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
+  \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesC{A} , \denotesC{B}) :: \denotesC{\wsig}\\
+  \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= (\text{ $j$-th element of }~\denotesC{\wsig})[0]\\
+  \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= (\text{ $j$-th element of }~\denotesC{\wsig})[1]\\
+  \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
+  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}} &= \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
-  \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= \\
   \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= {\mathit{\Pi}{A}{\mathit{\Pi} {\mathit{\Pi}{B}{\sub{R}{\SubstWeak{2}}}} {\sub{R}{\SubstWeak{2}}}}}\\
   \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= \\
   \denotesC{\Recproj{j}{\lkg}} &= \\
