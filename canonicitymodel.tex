@@ -1,4 +1,4 @@
-We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
+Now we prove the consistency and canonicity using canoncity model. We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
 Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. However, our proof will still work directly on the earlier introdcued syntax for readability.
 We will first specify the formulation of the most basic canonicity theorem. 
 
@@ -41,16 +41,29 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}} &= \\
   \denotesC{\goodCtx{\cdot}{}} &= \{\SubstEmp\} \text{  the singleton set with identity substitution} \\ 
   \denotesC{\goodCtx{\Gm, T}{}} &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}, t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}  \} \\
+  \denotesC{\goodTerm{\Gm}{\unit}{\top}} &= \\
+  \denotesC{\goodTerm{\Gm}{\true}{\cB}} &= \\
+  \denotesC{\goodTerm{\Gm}{\false}{\cB}} &= \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}} &= \\
+  \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}} &= \\
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}} &= \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}} &= \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &= \\
-  \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &=
+  \denotesC{\goodTerm{\Gm}{\fst{t}}{T}} &= \\
+  \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
 \end{align*}
 
 Then we extend the above model to \TT , we still start with the judgement.
 The intuition of the model is similar to that of the consistency model---use the canonicity model of sigma type (from the earlier work) for linkage type and using Agda's inductive facility to justify our W-type. 
 
-Now that we construct the above model, we can map an arbitrary closed term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \sub{\cB}{\SubstEmp} = \{\true, \false\}$, Thus $t \equiv \true \text{ or } t \equiv\false$.
+The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \denotesS{\bot}(\star) = \emptyset$, that is an element in an empty set, a contradiction.
+
+\begin{theorem}[Consistency]
+  We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
+\end{theorem}
+
+What's more, with the above model, we can map an arbitrary closed term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \sub{\cB}{\SubstEmp} = \{\true, \false\}$, Thus $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
+
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
 \begin{theorem}[Canonical Forms].
