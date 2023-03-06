@@ -53,10 +53,17 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
   \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
 \end{align*}
 
-Then we extend the above model to \TT , we still start with the judgement.
-The intuition of the model is similar to that of the consistency model---use the canonicity model of sigma type (from the earlier work) for linkage type and using Agda's inductive facility to justify our W-type. 
+Then we extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
+The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
-The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \denotesS{\bot}(\star) = \emptyset$, that is an element in an empty set, a contradiction.
+\begin{align*}
+  \denotesC{\goodSig{\Gm}{\_}{n}} & \text{ is a Set  and we define  } {\goodSigC{\Gm}{\sigma}{n}} :\iff \denotesC{\sigma} \in  \denotesC{\goodSig{\Gm}{\_}{n}} \\ 
+  \denotesC{\goodWSig{\Gm}{\_}{n}} &\text{ is a set of list of pairs of type interpretation of length } n \\
+  & \text{ and we define } \goodWSigC{\Gm}{\tau}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \in \denotesC{\goodWSig{\Gm}{\_}{n}}
+\end{align*}
+
+
+The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \denotesC{\bot}(\star) = \emptyset$, that is an element in an empty set, a contradiction.
 
 \begin{theorem}[Consistency]
   We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
