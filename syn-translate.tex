@@ -32,14 +32,15 @@ derivation of any judgement will track its ``context''.
 
 \begin{align*}
   \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
-  \denotesT{\goodSig{\Gamma}{\_}{n}},\ &({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ are mutually recursive, } \\
-  & \text{defined by induction on the signature length} \\  
-  \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
-  &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
+  \text{such that } &\goodTerm{\Gm}{\denotesT{\goodSig{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}} \\
+  \text{We make } & ({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ mutually recursive, } \\
+  & \text{defined by induction on $n$ and the signature length} \\  
+  % \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
+  % &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
   {\Sigr{\Gamma}{(n+1)}} &= 
     \Sigma~(\Sigr{\Gamma}{n})
           ~(\Sigma~\cU
-                  ~(\Sigma~(\Pi(\TyTkg {("var"_0[p^1])})(El~"var"_0[p^1]))~\cU)) \\
+                  ~(\Sigma~(\Pi(\denotesT{\TyTkg {("var"_0[p^1])}})(El~"var"_0[p^1]))~\cU)) \\
   \Sigr{\Gamma}{0} &= \top \\
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
   \text{ and inductively on the signature length} \\
@@ -50,13 +51,15 @@ derivation of any judgement will track its ``context''.
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
   \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(El~(\fst{(\snd{\denotesT{\sigma}})}))(El~(\app{("pjr"^3~\denotesT{\sigma})} )) \\
   &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
+  \denotesT{\goodSig{\Gamma}{\LSigEmp}{0}} &= \unit \\ 
   \denotesT{\goodSig{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
+  \denotesT{\goodTerm{\Gamma}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \unit \\ 
   \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{(\LSigAdd{\sigma}{s}{T})}}} &= (\denotesT{m}, \lam{t}) \\ 
   \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
   (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
-  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{(\snd{\denotesT{m}})}, f = p_f\nu~\sigma \\ 
-  \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}}
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{(\snd{\denotesT{m}})}, f = p_f\nu~\sigma 
 \end{align*}
 % \begin{align*}
 %   \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\
