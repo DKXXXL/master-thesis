@@ -419,6 +419,35 @@
 \\
 
 \\
+\Rule[name=inh/id/sub]
+{}
+{\goodType{\Gm}{\sub{\InhId}{\gm} \equiv \InhId}{}}
+
+\Rule[name=inh/ov/sub]
+{}
+{\goodType{\Gm}{\sub{\InhOv{h}{t}}{\gm} \equiv \InhOv{\sub{h}{\gm}}{\sub{t}{\gm^\uparrow}}}{}}
+\\
+
+\\
+\Rule[name=inh/ext/sub]
+{}
+{\goodType{\Gm}{\sub{\InhExt {h} {t}}{\gm} \equiv \InhExt{\sub{h}{\gm}}{\sub{t}{\gm^\uparrow}}}{}}
+
+\Rule[name=inh/inh/sub]
+{}
+{\goodType{\Gm}{\sub{\InhInh{h}}{\gm} \equiv \InhInh{\sub{h}{\gm}}}{}}
+\\
+\\
+\Rule[name=tm/inh/sub]{}{
+    \goodTerm{\Gm}{\subst{\inh{h}{\lkg}}{\gm} \equiv \inh{\sub{h}{\gm}}{\sub{\lkg}{\gm}}}{\sub{\TyLkg{\lsig_2}}{\gm}}
+}
+
+\Rule[name=inh/nest/sub]
+{}
+{\goodType{\Gm}{\sub{\InhNest{h}{i}}{\gm} \equiv \InhNest{\sub{h}{\gm}}{\sub{i}{\gm^\uparrow}} }{}}
+\\
+
+\\
 \Rule[name=tmeq/inhid/beta]
 { \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig} }}
 {\goodTerm{\Gm}{\inh {\InhId} {\lkg} \equiv \lkg}{\TyLkg{\lsig}}}
