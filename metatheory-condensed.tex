@@ -134,54 +134,54 @@ to avoid introducing non-dependent $n$-tuples, which linkages generalize.
 
 
 
-\begin{figure}
-  \begin{tabular}{llll}
-    \hline
-    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}surface syntax} &
-      \multicolumn{1}{l|}{Equivalent Type} &
-       &
-      \multicolumn{1}{l|}{} \\
-    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| unit : tm} &
-      \multicolumn{1}{l|}{$\bbone \times (\bbzero \to tm) \to tm$} &
-      \multicolumn{1}{c}{$\tau'$} &
-      \multicolumn{1}{l|}{$\coloneqq\WSigAdd{\WSigEmp}{\bbone}{\bbzero}$} \\
-    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| app  : tm -\textgreater tm -\textgreater tm} &
-      \multicolumn{1}{l|}{$\bbone \times (\bbtwo \to tm) \to tm$} &
-      \multicolumn{1}{c}{$\tau$} &
-      \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFC7}$\coloneqq\WSigAdd{\tau'}{\bbone}{\bbtwo}$} \\ \hline
-    \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}unit} &
-      $\coloneqq \Wsup{1}{\tau}{\unit}{"elim-"\bbzero}$ &
-      \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}app unit unit} &
-      $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$ \\ \hline
-    \cellcolor[HTML]{ECF4FF}$\lsig' = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau'}}}$ &
-      $o' = \LkgAdd{\LkgEmp}{\wcode{\tau'}}$ &
-      \cellcolor[HTML]{ECF4FF}$\lsig = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau}}}$ &
-      $o = \LkgAdd{\LkgEmp}{\wcode{\tau}}$ \\
-    \cellcolor[HTML]{ECF4FF}$\lsig'^+ = \LSigAdd{\lsig'}{s'}{..}$ &
-      $o'^+ = \LkgAdd{o'}{t}$ &
-      \cellcolor[HTML]{ECF4FF}$\lsig^+ = \LSigAdd{\lsig}{s}{..}$ &
-      $o^+ = \LkgAdd{o}{\lkgproj{2}{o'^+}}$ \\
-    \multicolumn{2}{l}{$A = \TySigma{\cU}{\El{\pi_2} \to \El{\pi_2}} $} &
-      \multicolumn{2}{l}{$t = \goodTerm{\cdot , A}{\snd{\pi_2}}{\El{\fst{\pi_2}} \to \El{\fst{\pi_2}} }$} \\
-    $\goodTerm{\cdot , \TyTkg{\lsig'}}{s'}{\sub{A}{\pi_1}}$ &
-       &
-      $\goodTerm{\cdot , \TyTkg{\lsig}}{s}{\sub{A}{\pi_1}}$ &
+% \begin{figure}
+%   \begin{tabular}{llll}
+%     \hline
+%     \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}surface syntax} &
+%       \multicolumn{1}{l|}{Equivalent Type} &
+%        &
+%       \multicolumn{1}{l|}{} \\
+%     \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| unit : tm} &
+%       \multicolumn{1}{l|}{$\bbone \times (\bbzero \to tm) \to tm$} &
+%       \multicolumn{1}{c}{$\tau'$} &
+%       \multicolumn{1}{l|}{$\coloneqq\WSigAdd{\WSigEmp}{\bbone}{\bbzero}$} \\
+%     \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| app  : tm -\textgreater tm -\textgreater tm} &
+%       \multicolumn{1}{l|}{$\bbone \times (\bbtwo \to tm) \to tm$} &
+%       \multicolumn{1}{c}{$\tau$} &
+%       \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFC7}$\coloneqq\WSigAdd{\tau'}{\bbone}{\bbtwo}$} \\ \hline
+%     \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}unit} &
+%       $\coloneqq \Wsup{1}{\tau}{\unit}{"elim-"\bbzero}$ &
+%       \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}app unit unit} &
+%       $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$ \\ \hline
+%     \cellcolor[HTML]{ECF4FF}$\lsig' = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau'}}}$ &
+%       $o' = \LkgAdd{\LkgEmp}{\wcode{\tau'}}$ &
+%       \cellcolor[HTML]{ECF4FF}$\lsig = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau}}}$ &
+%       $o = \LkgAdd{\LkgEmp}{\wcode{\tau}}$ \\
+%     \cellcolor[HTML]{ECF4FF}$\lsig'^+ = \LSigAdd{\lsig'}{s'}{..}$ &
+%       $o'^+ = \LkgAdd{o'}{t}$ &
+%       \cellcolor[HTML]{ECF4FF}$\lsig^+ = \LSigAdd{\lsig}{s}{..}$ &
+%       $o^+ = \LkgAdd{o}{\lkgproj{2}{o'^+}}$ \\
+%     \multicolumn{2}{l}{$A = \TySigma{\cU}{\El{\pi_2} \to \El{\pi_2}} $} &
+%       \multicolumn{2}{l}{$t = \goodTerm{\cdot , A}{\snd{\pi_2}}{\El{\fst{\pi_2}} \to \El{\fst{\pi_2}} }$} \\
+%     $\goodTerm{\cdot , \TyTkg{\lsig'}}{s'}{\sub{A}{\pi_1}}$ &
+%        &
+%       $\goodTerm{\cdot , \TyTkg{\lsig}}{s}{\sub{A}{\pi_1}}$ &
       
-    \end{tabular}
-  \caption{W-type encoding of "tm \{unit, app\}"}
-  \label{fig:Wtype-example}
-\end{figure}
+%     \end{tabular}
+%   \caption{W-type encoding of "tm \{unit, app\}"}
+%   \label{fig:Wtype-example}
+% \end{figure}
 
 
-We illustrate one concrete example in \cref{fig:Wtype-example} of a "tm" with only two constructors, 
-also as a review for how W-type encodes a given inductive type. The key insight 
-is, to encode one constructor into a pair $(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})$, the non-recursive part will be stored in $\wsigproj{i}{1}{\wsig}$ 
-while the ``arity'' of the  recursive part stores in $\wsigproj{i}{2}{\wsig}$. 
-For example, $"app" : ("tm" \to "tm" \to "tm")$ 
-$\cong ((\bbtwo \to "tm") \to "tm")$, saying the ``arity'' of the recursive part is $\bbtwo$ 
-(or boolean type, as a type with two elements). Similarly, the ``arity'' of recursive part of "unit" is 0. 
-Both constructors don't store other information thus $\bbone$. We hightlight $\tau$ as the 
-signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "app~unit~unit". $"elim-"\bbzero$ indicates the elimination of the bottom type $\bbzero$ in the context. Generally speaking, the expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict positivity of Inductive type.
+% We illustrate one concrete example in \cref{fig:Wtype-example} of a "tm" with only two constructors, 
+% also as a review for how W-type encodes a given inductive type. The key insight 
+% is, to encode one constructor into a pair $(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})$, the non-recursive part will be stored in $\wsigproj{i}{1}{\wsig}$ 
+% while the ``arity'' of the  recursive part stores in $\wsigproj{i}{2}{\wsig}$. 
+% For example, $"app" : ("tm" \to "tm" \to "tm")$ 
+% $\cong ((\bbtwo \to "tm") \to "tm")$, saying the ``arity'' of the recursive part is $\bbtwo$ 
+% (or boolean type, as a type with two elements). Similarly, the ``arity'' of recursive part of "unit" is 0. 
+% Both constructors don't store other information thus $\bbone$. We hightlight $\tau$ as the 
+% signature of our "tm" and showcase the meta-theoretic encoding of "unit" and "app~unit~unit". $"elim-"\bbzero$ indicates the elimination of the bottom type $\bbzero$ in the context. Generally speaking, the expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict positivity of Inductive type.
 
 
 Rules \ruleref{tm/wsup} and \ruleref{tm/wrec} require access to~$\wsig$:
@@ -290,6 +290,9 @@ and given the singleton type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$, where $\wsig_{
 is the W-type signature for \lsti{tm}.
 This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
+\item We illustrate the structure of W-type signature (as a list) here. $\wsig_{\texttt{tm}}^0, \wsig_{\texttt{tm}}^1$ are (the subparts of) the signatures of constructors \{"tm\_unit"\} and \{"tm\_unit","tm\_app"\} respectively. Each item in this W-type signature, having two types, corresponds to one constructor, where the first type stores the non-recursive part of the constructor and the second type stores the ``arity'' of the  recursive part. For example, the type of $"app" : ("tm" \to "tm" \to "tm")$ $\cong (\bbone \times (\bbtwo \to "tm") \to "tm")$, corresponds to the premise of rule \ruleref{tm/wsup} (where $\wsigproj{0}{1}{\wsig_{\texttt{tm}}^1} = \bbone, \wsigproj{0}{2}{\wsig_{\texttt{tm}}^1} = \bbtwo$). This type means there is no information on non-recursive part (thus use unit type $\bbone$) and the ``arity'' of the recursive part is $\bbtwo$ and thus $\wsig_{\texttt{tm}}^1 = \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\bbtwo}$.  The story is similar for $\wsig_{\texttt{tm}}^0$, where there is no recursive part at all and thus the ``arity'' is zero.
+
+Generally speaking, the expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict positivity of Inductive type.
 \item 
 The next four fields model the four constructors of~\lsti{tm}.
 Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{\bot}$
