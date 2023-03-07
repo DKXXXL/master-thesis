@@ -2,10 +2,10 @@ The implementation described in \cref{sec:coqimpl} has hinted the fact that
 linkage can be translated into dependent tuple type.
 The described compilation strategy can be considered as
 a \textit{type preserving syntactic translation}, a function mapping from our syntactic
-model to a ``subpart''\footnote{Not exactly subpart---the only
+model(typed Abstract Syntax Tree(AST)) to a ``subpart''\footnote{Not exactly subpart---the only
 difference lies in "Wrec". In our metatheory, it is constructed
 using linkage; in ``subpart'', it will be using $\Sigma$-types (translation
-of the linkage).} of our syntactic model \textit{without
+of the linkage).} of our syntactic model(typed AST) \textit{without
 linkages}.
 
 This ``subpart'' is the standard MLTT with an
@@ -72,12 +72,12 @@ The main idea of this syntactic translation is that, we make sure
 $\goodSig{\Gamma}{\nu^+ \_ }{n+1}$ and $\goodSig{\Gamma}{\mu^+ \_}{n+1}$
 wrapped into a dependent pair. These two definitions decide the
 syntactic translation for $\goodSig{\Gamma}{\_}{n}$ and $\cL$. The
-syntactic translation for $\cC$ and $\cCt$ are decided by their
+syntactic translation for $\cP$ are decided by their
 $\beta$-rules. 
 
-We use the local morphism\cite{abbott2003category} (the same one for encoding the Sealing
-judgements) to translate inheritance judgement. This is mainly due to
-the existence of \ruleref{Inh} rule. 
+% We use the local morphism\cite{abbott2003category} (the same one for encoding the Sealing
+% judgements) to translate inheritance judgement. This is mainly due to
+% the existence of \ruleref{Inh} rule. 
 % Here we only typeset the overriding
 % and inheritance rule, but all of the translation for inh judgment are
 % induced by the $\beta$-rule of \ruleref{Inh}.
@@ -85,8 +85,8 @@ the existence of \ruleref{Inh} rule.
 We omit all the equational rules ($\beta,\eta$ and substitution) here.
 However, for coherence, when we mutual recursively define
 $\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}} $, and
-$\denotesT{\cC}$ above, we actually have to prove the substitution laws
-$(\cC\sigma)[\tau]\equiv \cC(\sigma[\tau])$ and $\Sigr{\Delta}{n}[\tau]
+$\denotesT{\cP}$ above, we actually have to prove the substitution laws
+$\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n})}{\gm}
 \equiv \Sigr{\Gamma}{n}$ together. 
 % The details (of all the equational rules) can be found in the appendices written in (pseudo-)Agda form. We encourage the reader to read that (pseudo-)Agda-style proof because it is more friendly to type theorists, easy to do type checking and
 % validate the proof and it is clearer on the mathematical object each

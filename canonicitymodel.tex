@@ -1,12 +1,12 @@
 Now we prove the consistency and canonicity using canoncity model. We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
-Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. However, our proof will still work directly on the earlier introdcued syntax for readability.
+Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. Meanwhile, our proof will still work directly on the earlier introdcued syntax for readability.
 We will first specify the formulation of the most basic canonicity theorem. 
 
 \begin{theorem}[Canonicity]
   For a closed boolean term $\goodTerm{\cdot}{t}{\cB}$, we have $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$ hold.
 \end{theorem}
 
-Canonicity is one of the basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
+Canonicity is a basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
 We can even argue that, if this theorem is proven in a computable meta-logic, 
 then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.\YZ{Can we say something about strong/weak normalization?}\EDJreply{
   No. \\
