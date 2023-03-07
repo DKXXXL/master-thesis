@@ -63,6 +63,9 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
 \newcommand{\Gsub}[2]{\ensuremath{{#1}\!\left[{#2}\right]^c}}
 \newcommand{\Gapp}[1]{\ensuremath{\texttt{app}^c({#1})}}
 \newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^c)^{#1}}}
+\newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+c}({#1},{#2},{#3})}}
+\newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^c({#1},{#2},{#3})}}
+
 Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\GluedPi{A'}{B'} = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
 Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
@@ -89,7 +92,10 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[2]\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
   \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm) &= (\denotesC{\lkg}(\gm), \lambda u . t (\gm, u)) \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \\
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
+  \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{(\SubstId)}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}
+  \\ &\text{ when} \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyTkg{\lsig}}} &= \Gfst{\denotes{\lkg}} \\
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gapp{\Gsnd{\denotes{\lkg}}} \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
@@ -105,7 +111,7 @@ The intuition of the model is similar to that of the syntactic translation---use
   % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
   \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
   RS~"nil"~R &= \denotesC{\LSigEmp} \\
-  RS~((A, B) :: tl)~R &= \denotesC{\LSigEmp} \\
+  RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
   \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= RS~\denotesC{\tau}~\denotesC{R} \\
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
