@@ -63,7 +63,7 @@ Like most logical relation proof,  we interpret each judgement, inductively inte
 \newcommand{\Gsub}[2]{\ensuremath{{#1}\!\left[{#2}\right]^c}}
 \newcommand{\Gapp}[1]{\ensuremath{\texttt{app}^c({#1})}}
 \newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^c)^{#1}}}
-Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\GluedPi{A'}{B'} = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT.
+Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\GluedPi{A'}{B'} = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
 Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
@@ -88,10 +88,10 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= ("hd"~\denotesC{\lsig})[1]\\ 
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[2]\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm) &= (\denotesC{\ell}(\gm), \lambda u . t (\gm, u)) \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm) &= (\denotesC{\lkg}(\gm), \lambda u . t (\gm, u)) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \\
-  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\ell}}{\TyTkg{\lsig}}} &= \Gfst{\denotes{\ell}} \\
-  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\ell}}{T}} &= \Gapp{\Gsnd{\denotes{\ell}}} \\
+  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyTkg{\lsig}}} &= \Gfst{\denotes{\lkg}} \\
+  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gapp{\Gsnd{\denotes{\lkg}}} \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
   \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesC{A} , \denotesC{B}) :: \denotesC{\wsig}\\
   \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= (\text{ $j$-th element of }~\denotesC{\wsig})[0]\\
@@ -99,9 +99,15 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}} &= \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
-  \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}}\\
-  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= \\
-  \denotesC{\Recproj{j}{\lkg}} &= \\
+  % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
+  \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
+  {\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
+  % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
+  \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
+  RS~"nil"~R &= \denotesC{\LSigEmp} \\
+  RS~((A, B) :: tl)~R &= \denotesC{\LSigEmp} \\
+  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= RS~\denotesC{\tau}~\denotesC{R} \\
+  \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
 \end{align*}
 
