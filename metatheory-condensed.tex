@@ -135,25 +135,38 @@ to avoid introducing non-dependent $n$-tuples, which linkages generalize.
 
 
 \begin{figure}
-  \begin{tabular}{
-    >{\columncolor[HTML]{C0C0C0}}l lcl}
+  \begin{tabular}{llll}
     \hline
     \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}surface syntax} &
       \multicolumn{1}{l|}{Equivalent Type} &
-      \multicolumn{1}{l}{} &
+       &
       \multicolumn{1}{l|}{} \\
-    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}\lsti!| unit : tm!} &
+    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| unit : tm} &
       \multicolumn{1}{l|}{$\bbone \times (\bbzero \to tm) \to tm$} &
-      $\tau'$ &
+      \multicolumn{1}{c}{$\tau'$} &
       \multicolumn{1}{l|}{$\coloneqq\WSigAdd{\WSigEmp}{\bbone}{\bbzero}$} \\
-    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}\lsti!| app  : tm -> tm -> tm!} &
+    \multicolumn{1}{|l}{\cellcolor[HTML]{C0C0C0}| app  : tm -\textgreater tm -\textgreater tm} &
       \multicolumn{1}{l|}{$\bbone \times (\bbtwo \to tm) \to tm$} &
-      $\tau$ &
+      \multicolumn{1}{c}{$\tau$} &
       \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFC7}$\coloneqq\WSigAdd{\tau'}{\bbone}{\bbtwo}$} \\ \hline
-    \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}\lsti!unit!} &
+    \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}unit} &
       $\coloneqq \Wsup{1}{\tau}{\unit}{"elim-"\bbzero}$ &
-      \cellcolor[HTML]{C0C0C0}\lsti!app unit unit! &
-      $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$
+      \multicolumn{1}{c}{\cellcolor[HTML]{C0C0C0}app unit unit} &
+      $\coloneqq\Wsup{0}{\tau}{\unit}{"unit"}$ \\ \hline
+    \cellcolor[HTML]{ECF4FF}$\lsig' = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau'}}}$ &
+      $o' = \LkgAdd{\LkgEmp}{\wcode{\tau'}}$ &
+      \cellcolor[HTML]{ECF4FF}$\lsig = \LSigAdd{\LSigEmp}{\pi_2}{\TyS{\wcode{\tau}}}$ &
+      $o = \LkgAdd{\LkgEmp}{\wcode{\tau}}$ \\
+    \cellcolor[HTML]{ECF4FF}$\lsig'^+ = \LSigAdd{\lsig'}{s'}{..}$ &
+      $o'^+ = \LkgAdd{o'}{t}$ &
+      \cellcolor[HTML]{ECF4FF}$\lsig^+ = \LSigAdd{\lsig}{s}{..}$ &
+      $o^+ = \LkgAdd{o}{\lkgproj{2}{o'^+}}$ \\
+    \multicolumn{2}{l}{$A = \TySigma{\cU}{\El{\pi_2} \to \El{\pi_2}} $} &
+      \multicolumn{2}{l}{$t = \goodTerm{\cdot , A}{\snd{\pi_2}}{\El{\fst{\pi_2}} \to \El{\fst{\pi_2}} }$} \\
+    $\goodTerm{\cdot , \TyTkg{\lsig'}}{s'}{\sub{A}{\pi_1}}$ &
+       &
+      $\goodTerm{\cdot , \TyTkg{\lsig}}{s}{\sub{A}{\pi_1}}$ &
+      
     \end{tabular}
   \caption{W-type encoding of "tm \{unit, app\}"}
   \label{fig:Wtype-example}
