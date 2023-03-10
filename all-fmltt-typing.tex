@@ -1,3 +1,44 @@
+
+\definecolor{new}{HTML}{FFFFFF}
+\begin{gather*}
+  \begin{array}{@{}r@{\hspace{2ex}}c@{\ \ }c@{\ \ }l@{}}
+  \text{Types} & A, B, T  &\Coloneqq &
+      ... \mid
+  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
+  %   \TyWSingle{\wsig} \mid
+      \wsigproj{i}{1}{\wsig} \mid \wsigproj{i}{2}{\wsig} \mid
+      \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid %\lsigprojT{\lsig} \mid
+      \lsigproj{2}{\lsig} \mid \CaseSig{A}{B}{T}
+  \tikzmarkend{New2}
+      \\
+  \text{Terms} & t, s, \lkg &\Coloneqq &
+      ... \mid
+  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
+      %\wsingle{\wsig} \mid
+      \wcode{\wsig} \mid \Wsup{i}{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
+      \\
+      &&&
+      \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
+      \Recproj{i}{\lkg}
+  \tikzmarkend{New3}
+      \\
+  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
+  \text{W-type signatures} & \wsig & \Coloneqq &
+      \WSigEmp \mid \WSigAdd{\wsig}{A}{B} \mid \sub{\wsig}{\gm} \mid \WSigSub{\wsig}
+  \tikzmarkend{New1}
+      \\
+  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New5}(0.05,-0.15)(-0.10,0.30)
+  \text{Linkage signatures} & \lsig & \Coloneqq &
+      \LSigEmp \mid \LSigAdd{\lsig}{\seal}{T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} \mid \sub{\lsig}{\gm}
+  \tikzmarkend{New5}
+      \\
+  \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
+  \text{Linkage transformers} & h & \Coloneqq &
+      \InhId \mid \InhExt{h}{t} \mid \InhOv{h}{t} \mid \InhInh{h} \mid \InhNest{h}{h'}
+  \tikzmarkend{New4}
+  \end{array}
+  \end{gather*}
+
 \begin{mathpar}
   \\
   \judgebox{\goodWSig{\Gm}{\wsig}{n}}
