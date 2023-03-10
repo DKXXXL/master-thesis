@@ -6,9 +6,12 @@ with facilities to express family polymorphism
 while maintaining consistency and canonicity.
 %\NA{maybe you can give an overview of the salient points of the design and what they're trying to achieve? What is the core aspect modeled by the theory?}
 %
-We acknowledge that the presentation herein is dense for an audience
-unacquainted with MLTT or explicit substitutions, so we summarize the salient points
-first before delving into the technical details.
+
+For accessibility, we present MLTT using named variables and meta-level substitution,
+however we emphasize that in the meta-theoretic reasoning carried out in the appendix, 
+we will shift to debruijn indices and explicit substitution because it leads to clearer proof details.
+We summarize the salient points before delving into the technical details for audience
+unacquainted with MLTT.
 
 \noindentparagraph{Summary.}
 
@@ -52,53 +55,60 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 %the generation of propositional equalities and partial recursors,
 %but it is expressive enough to encode their definitions.
 
-\input{mltt-selected.tex}
+% \input{mltt-selected.tex}
+\input{mltt-selected-named.tex}
 \input{fmltt-selected.tex}
 
 \noindentparagraph{Brief review of MLTT.}
 
-\cref{fig:mltt-selected} presents the syntax and selected typing rules of MLTT
-(and \cref{fig:fmltt-selected} \TT).
+\cref{fig:mltt-selected} presents the syntax and selected typing rules of (predicative) MLTT
+(and \cref{fig:fmltt-selected} \TT). We formulate in an intrinsic style---every appearing syntax piece
+is well-typed in prior, and the premise judgement required for well-typed might be omitted for conciseness. 
+For example, the well-typed context $\goodCtx{\Gm}{}$ required by \ruleref{n/tm/lam} is omitted.  
+We also use round bracket to indicate substitution. 
+For each derivation (of each judgement) we introduce judgemental equality indicating convertibility 
+in MLTT.  
+We have dependent function and dependent tuple type equipped by standard dependent type theory.
 %We briefly review the base MLTT fragment first.
 %
-In keeping with the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}\YZ{Does coquand2018canonicity really use explicit subst?}\EDJreply{Yes it is. Look at Section 2.1. When he starts reasoning, he actually deals with category with family (instead of the typing rules), where he consider morphism between contexts, which is substitution. But I agree it can be a bit ambiguous to see (because he literally show two version of MLTT without connecting them---one classical typing rule version, the other directly works on Category with Family (CwF)) but since his proof is mainly on Category with Family, so it counts as explicit substitution. But if you are concerned, we can change to Andras Kovacs "Generalized Universe Hierarchies and First-Class Universe Levels". or Andreas Abel's "Decidability of Conversion for Type Theory in Type Theory". The former one directly work on CwF, the latter one include substitution as part of the raw syntax.}
-in MLTT presentations, we use \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
-substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
-of the syntax rather than meta-operations.
+% In keeping with the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}\YZ{Does coquand2018canonicity really use explicit subst?}\EDJreply{Yes it is. Look at Section 2.1. When he starts reasoning, he actually deals with category with family (instead of the typing rules), where he consider morphism between contexts, which is substitution. But I agree it can be a bit ambiguous to see (because he literally show two version of MLTT without connecting them---one classical typing rule version, the other directly works on Category with Family (CwF)) but since his proof is mainly on Category with Family, so it counts as explicit substitution. But if you are concerned, we can change to Andras Kovacs "Generalized Universe Hierarchies and First-Class Universe Levels". or Andreas Abel's "Decidability of Conversion for Type Theory in Type Theory". The former one directly work on CwF, the latter one include substitution as part of the raw syntax.}
+% in MLTT presentations, we use \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
+% substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}) are part
+% of the syntax rather than meta-operations.
 %
-Variables are in the form of \citeauthor{debruijn1964} indices:
-\var{n} is the variable bound by the $n$-th closest enclosing binder.
-For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
+% Variables are in the form of \citeauthor{debruijn1964} indices:
+% \var{n} is the variable bound by the $n$-th closest enclosing binder.
+% For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
 %
-Substitutions are typed with the form 
+% Substitutions are typed with the form 
 %\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) }
-$\goodSub{\Gm}{\gm}{\Dl}$.
-The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
-yields terms valid in~$\Gm$ (\ruleref{tm/sub} and \ruleref{ty/sub}).
-%
-The two main forms of substitutions are weakening (\ruleref{sub/wk}) and extension (\ruleref{sub/ext}):
-\sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
-\sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
-then applies~$\gm$.
-For example, rule \ruleref{tm/snd} states that if $t$ is a dependent pair
-that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
-$\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
-where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
+% $\goodSub{\Gm}{\gm}{\Dl}$.
+% The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
+% yields terms valid in~$\Gm$ (\ruleref{n/tm/sub} and \ruleref{n/ty/sub}).
+% %
+% The two main forms of substitutions are weakening (\ruleref{n/sub/wk}) and extension (\ruleref{n/sub/ext}):
+% \sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
+% \sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
+% then applies~$\gm$.
+% For example, rule \ruleref{n/tm/snd} states that if $t$ is a dependent pair
+% that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
+% $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
+% where $\SubstId$ is the identity substitution (\ruleref{n/sub/id}).
 
 %In dependent type system, types are treated as terms, and should have a type.
 We use Tarski-style universes \cite{hofmann1997syntax}.
 Unlike Russell-style universes, they
 are not inhabited by types directly but rather by the \emph{codes} of types
 and arguably behave better \cite{luo2012notes}.
-$\codety{T}$ encodes type~$T$ (rule \ruleref{tm/c}) and thus inhabits~$\cU$.
-$\El{t}$ decodes~$t$ (rule \ruleref{ty/el}).
+$\codety{T}$ encodes type~$T$ (rule \ruleref{n/tm/c}) and thus inhabits~$\cU$.
+$\El{t}$ decodes~$t$ (rule \ruleref{n/ty/el}).
 %\footnote{By contrast,  Russel-style universes are inhabited by types directly.  Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.}
-MLTT has an infinite hierarchy of universes;
+Our MLTT has an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
 %\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
 
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
-in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
+in its type (rule \ruleref{n/tm/s})~\cite{aspinall1995singleton,stone2000}.
 
 \noindentparagraph{Introducing and eliminating inductive types.}
 
@@ -227,7 +237,7 @@ how the types of the fields prior to~$t$ are exposed to the typing of~$t$.
 Crucially, %unlike the second field in a dependent pair (\ruleref{tm/pair}),
 the premise $\goodTerm{\Gm, A}{t}{T}$ makes clear that
 the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified---%
-rather than \emph{existentially} quantified as is in \ruleref{tm/pair}---%
+rather than \emph{existentially} quantified as is in \ruleref{n/tm/pair}---%
 over how the fields in $t$'s context are defined.
 Late binding enables reuse.
 A different linkage~$\ell'$ that overrides fields in $t$'s context (and thus models a derived family)
@@ -400,7 +410,19 @@ can be used to model the construction of a derived family as a linkage transform
 
 \noindentparagraph{The complete formalization.}
 
-The definitive version containing all the rules in \TT is stated in
+% The definitive version containing all the rules in \TT is stated in
+% terms of a meta\-language supporting quotient inductive-inductive types
+% (QIITs)~\cite{nordvall2010inductive,altkap2016}.
+% QIITs support equality constructors, which facilitate the expression of
+% conversion rules (e.g., \ruleref{tmeq/sub/id}).
+% The formalization is available as a supplemental file in Agda syntax,
+% though it is not checked by Agda because Agda does not support QIITs
+% natively.
+% An effort to mechanize the formalization is underway, using Agda's
+% \lsti{REWRITE} pragma to replace the limited uses of equality reflection.
+
+The definitive version containing all the rules in \TT is stated in the appendix 
+using debruijn indices and explicit substitution.
 terms of a meta\-language supporting quotient inductive-inductive types
 (QIITs)~\cite{nordvall2010inductive,altkap2016}.
 QIITs support equality constructors, which facilitate the expression of
@@ -408,8 +430,13 @@ conversion rules (e.g., \ruleref{tmeq/sub/id}).
 The formalization is available as a supplemental file in Agda syntax,
 though it is not checked by Agda because Agda does not support QIITs
 natively.
-An effort to mechanize the formalization is underway, using Agda's
-\lsti{REWRITE} pragma to replace the limited uses of equality reflection.
+An effort to mechanize the formalization is underway, by following  \citet{altkap2016} 
+to use quotient inductive-inductive types as 
+the logical framework to state the syntax and using Agda's
+\lsti{REWRITE} pragma to replace the limited uses of equality reflection appeared in 
+an extensional meta\-logic. 
+
+
 %a \textbf{pen-and-paper} formalization
 %assuming the facility of quotient inductive-inductive
 %types~\cite{nordvall2010inductive,altkap2016} and extensional equality
