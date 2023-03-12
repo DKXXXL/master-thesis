@@ -25,8 +25,8 @@ fields automatically axiomatized by the plugin require explicit definitions in \
 family polymorphism. %rather than building it in directly.
 %
 Most notably, it extends MLTT with what we call \emph{linkages}.
-(Linkages are a namesake of the theoretical device through which \citet{zm2017} model
-family polymorphism in an OO setting, but the technical details differ significantly from the prior work.)
+Linkages are a namesake of the theoretical device through which \citet{zm2017} model
+family polymorphism in an OO setting, but the technical details differ significantly from the prior work.
 
 \begin{itemize}
 [labelsep=*,leftmargin=1pc,itemsep=3pt]
@@ -63,14 +63,35 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 
 \noindentparagraph{Brief review of MLTT.}
 
-\cref{fig:mltt-selected} presents the syntax and selected typing rules of (predicative) MLTT
-(and \cref{fig:fmltt-selected} \TT). We formulate in an intrinsic style---every appearing syntax piece
-is well-typed in prior, and the premise judgement required for well-typed might be omitted for conciseness. 
-For example, the well-typed context $\goodCtx{\Gm}{}$ required by \ruleref{n/tm/lam} is omitted.  
-We also use square bracket to indicate substitution. 
-For each derivation (of each judgement) we introduce judgemental equality indicating convertibility 
-in MLTT.  
-We have dependent function and dependent tuple type equipped by standard dependent type theory.
+\cref{fig:mltt-selected} presents the syntax and selected typing rules of MLTT %(predicative) MLTT
+(and \cref{fig:fmltt-selected} \TT).
+Dependent function types \nTyPi{x}{A}{B},
+dependent product types \nTySigma{x}{A}{B}, and
+identity types \TyId{t_1}{t_2} are standard.
+So are their introduction and elimination forms.
+Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
+A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
+in its type (rule \ruleref{n/tm/s})~\cite{aspinall1995singleton,stone2000}.
+For each derivation (of each judgment) we introduce judgmental equality
+(of the form \goodTerm{\Gm}{t_1 \equiv t_2}{T})
+indicating convertibility.
+
+We use Tarski-style universes \cite{hofmann1997syntax},
+which, unlike Russell-style ones,
+are not inhabited by types directly but rather by the \emph{codes} of types
+and arguably behave better \cite{luo2012notes}.
+Term $\codety{T}$ encodes type~$T$ (\ruleref{n/tm/c}) and thus inhabits universe~$\cU$.
+Type $\El{t}$ decodes term~$t$ (\ruleref{n/ty/el}).
+%\footnote{By contrast,  Russel-style universes are inhabited by types directly.  Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.}
+There is an infinite hierarchy of universes;
+we omit universe levels in the presentation for conciseness.
+%\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
+
+We use intrinsically typed syntax \cite{church1940}---terms and types are well-formed by construction.
+For conciseness, typing rules omit obvious premises required for well-formedness.
+For example, \ruleref{n/tm/lam} implicitly requires that the context be well-typed
+($\goodCtx{\Gm}{}$).
+
 %We briefly review the base MLTT fragment first.
 %
 % In keeping with the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}\YZ{Does coquand2018canonicity really use explicit subst?}\EDJreply{Yes it is. Look at Section 2.1. When he starts reasoning, he actually deals with category with family (instead of the typing rules), where he consider morphism between contexts, which is substitution. But I agree it can be a bit ambiguous to see (because he literally show two version of MLTT without connecting them---one classical typing rule version, the other directly works on Category with Family (CwF)) but since his proof is mainly on Category with Family, so it counts as explicit substitution. But if you are concerned, we can change to Andras Kovacs "Generalized Universe Hierarchies and First-Class Universe Levels". or Andreas Abel's "Decidability of Conversion for Type Theory in Type Theory". The former one directly work on CwF, the latter one include substitution as part of the raw syntax.}
@@ -96,21 +117,6 @@ We have dependent function and dependent tuple type equipped by standard depende
 % that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 % $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 % where $\SubstId$ is the identity substitution (\ruleref{n/sub/id}).
-
-%In dependent type system, types are treated as terms, and should have a type.
-We use Tarski-style universes \cite{hofmann1997syntax}.
-Unlike Russell-style universes, they
-are not inhabited by types directly but rather by the \emph{codes} of types
-and arguably behave better \cite{luo2012notes}.
-$\codety{T}$ encodes type~$T$ (rule \ruleref{n/tm/c}) and thus inhabits~$\cU$.
-$\El{t}$ decodes~$t$ (rule \ruleref{n/ty/el}).
-%\footnote{By contrast,  Russel-style universes are inhabited by types directly.  Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.}
-Our MLTT has an infinite hierarchy of universes;
-we omit universe levels in the presentation for conciseness.
-%\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
-
-A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
-in its type (rule \ruleref{n/tm/s})~\cite{aspinall1995singleton,stone2000}.
 
 \noindentparagraph{Introducing and eliminating inductive types.}
 
