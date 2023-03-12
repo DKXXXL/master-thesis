@@ -13,14 +13,14 @@
 %   \TyWSingle{\wsig} \mid
     \wsigproj{i}{1}{\wsig} \mid \wsigproj{i}{2}{\wsig} \mid
     \TyLkg{\lsig} \mid \TyTkg{\lsig} \mid %\lsigprojT{\lsig} \mid
-    \lsigproj{2}{\lsig} \mid \CaseSig{A}{B}{T}
+    \lsigproj{2}{\lsig} \mid \CaseSig{A}{x.B}{T}
 \tikzmarkend{New2}
     \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
     ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
     %\wsingle{\wsig} \mid
-    \wcode{\wsig} \mid \Wsup{i}{\wsig}{t_1}{t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
+    \wcode{\wsig} \mid \Wsup{i}{\wsig}{t_1}{x.t_2} \mid \LkgEmp \mid \LkgAdd{\lkg}{x.t} \mid \inh{h}{\lkg} \mid \Wrec{\wsig}{\lkg}{t} \mid
     \\
     &&&
     \lkgproj{1}{\lkg} \mid \lkgproj{2}{\lkg} \mid \lsigproj{s}{\lsig} \mid \Tkg{\lkg} \mid
@@ -29,17 +29,17 @@
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New1}(0.05,-0.15)(-0.10,0.30)
 \text{W-type signatures} & \wsig & \Coloneqq &
-    \WSigEmp \mid \WSigAdd{\wsig}{A}{B} \mid \WSigSub{\wsig}
+    \WSigEmp \mid \WSigAdd{\wsig}{A}{x.B} \mid \WSigSub{\wsig}
 \tikzmarkend{New1}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New5}(0.05,-0.15)(-0.10,0.30)
 \text{Linkage signatures} & \lsig & \Coloneqq &
-    \LSigEmp \mid \LSigAdd{\lsig}{\seal}{T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} 
+    \LSigEmp \mid \LSigAdd{\lsig}{x.\seal}{a.T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} 
 \tikzmarkend{New5}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
 \text{Linkage transformers} & h & \Coloneqq &
-    \InhId \mid \InhExt{h}{t} \mid \InhOv{h}{t} \mid \InhInh{h} \mid \InhNest{h}{h'}
+    \InhId \mid \InhExt{h}{x.t} \mid \InhOv{h}{x.t} \mid \InhInh{h} \mid \InhNest{h}{h'}
 \tikzmarkend{New4}
 \end{array}
 \end{gather*}
@@ -86,11 +86,11 @@
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
     \\\\
-    \goodTerm{\Gm, x : {\wsigproj{i}{2}{\wsig}(t_1)}}{t_2}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm, a : {\wsigproj{i}{2}{\wsig}[t_1/x]}}{t_2}{\El{\wcode{\wsig}}}
 %   \\
 %   i \in \{1, ..., n\}
 }{
-    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{x.t_2}}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{a.t_2}}{\El{\wcode{\wsig}}}
 }
 
 \Rule[name=tm/wrec]{
@@ -198,7 +198,7 @@
     \goodTerm{\Gm, a: A}{t}{T}
 }{
     \goodTerm{\Gm}{
-        \Tkg{\LkgAdd{\lkg}{t}}
+        \Tkg{\LkgAdd{\lkg}{a.t}}
         \equiv
         \pair{\Tkg{\lkg}}{
             t[s[\Tkg{\lkg}/x]/a]
@@ -226,7 +226,7 @@
         \equiv 
         \LkgAdd{\inh{h}{\lkg}}{a_2 . t_2}
     }{
-        \TyLkg{\LSigAdd{\lsig_2}{\seal_2}{T_2}}
+        \TyLkg{\LSigAdd{\lsig_2}{x_2.\seal_2}{a_2.T_2}}
     }
 }
 
