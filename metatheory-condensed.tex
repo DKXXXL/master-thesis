@@ -127,8 +127,8 @@ modeling an inductive type of $n$ constructors.
 Rule~\ruleref{tm/wsup} states that the $i$-th pair $\goodType{\Gm}{\wsigproj{i}{1}{\wsig}}{}$ and 
 $\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$ models the $i$-th constructor---given 
 two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
-$\goodTerm{\Gm,\sub{\wsigproj{i}{2}{\wsig}}{\SubstExt{\SubstWeak{0}}{t_1}}}{t_2}{\El{\wcode{\wsig}}}$,
-we can construct a term $\Wsup{i}{\wsig}{t_1}{t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
+$\goodTerm{\Gm,{\wsigproj{i}{2}{\wsig}}[t_1/x]}{t_2}{\El{\wcode{\wsig}}}$,
+we can construct a term $\Wsup{i}{\wsig}{t_1}{a.t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
 W-type (\ruleref{tm/w}).
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
