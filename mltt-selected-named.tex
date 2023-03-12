@@ -42,7 +42,7 @@
     \goodTerm{\Gm}{t}{\nTyPi {x}{A} {B}} \\ 
     \goodTerm{\Gm}{t'}{A}
 }{
-    \goodTerm{\Gm}{\napp{t}{t'}}{B(t')}
+    \goodTerm{\Gm}{\napp{t}{t'}}{B[t'/x]}
 }
 
 \Rule[name=n/tm/pair]{
@@ -50,7 +50,7 @@
     \\
     \goodTerm{\Gm}{t_1}{A} 
     \\
-    \goodTerm{\Gm}{t_2}{B(t_1)}
+    \goodTerm{\Gm}{t_2}{B[t_1/x]}
 }{
     \goodTerm{\Gm}{(t_1,t_2)}{\nTySigma{x}{A}{B}}
 }
@@ -64,7 +64,7 @@
 \Rule[name=n/tm/snd]{
     \goodTerm{\Gm}{t}{\nTySigma x A B}
 }{
-    \goodTerm{\Gm}{\snd{t}}{B(\fst{t})}
+    \goodTerm{\Gm}{\snd{t}}{B[\fst{t}/x]}
 }
 
 \Rule[name=n/ty/el]{

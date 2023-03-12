@@ -57,7 +57,7 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 
 % \input{mltt-selected.tex}
 \input{mltt-selected-named.tex}
-\input{fmltt-selected.tex}
+\input{fmltt-selected-named.tex}
 
 \noindentparagraph{Brief review of MLTT.}
 
@@ -65,7 +65,7 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 (and \cref{fig:fmltt-selected} \TT). We formulate in an intrinsic style---every appearing syntax piece
 is well-typed in prior, and the premise judgement required for well-typed might be omitted for conciseness. 
 For example, the well-typed context $\goodCtx{\Gm}{}$ required by \ruleref{n/tm/lam} is omitted.  
-We also use round bracket to indicate substitution. 
+We also use square bracket to indicate substitution. 
 For each derivation (of each judgement) we introduce judgemental equality indicating convertibility 
 in MLTT.  
 We have dependent function and dependent tuple type equipped by standard dependent type theory.
@@ -230,12 +230,12 @@ where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
 As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
 of $n$~terms, each representing a field of the family modeled by the linkage.
 
-In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, A}{t}{T}$ is
+In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, a : A}{t}{T}$ is
 responsible for late binding.
 Here, $A$ abstracts the context of the current field~$t$, controlling
 how the types of the fields prior to~$t$ are exposed to the typing of~$t$.
 Crucially, %unlike the second field in a dependent pair (\ruleref{tm/pair}),
-the premise $\goodTerm{\Gm, A}{t}{T}$ makes clear that
+the premise $\goodTerm{\Gm, a : A}{t}{T}$ makes clear that
 the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified---%
 rather than \emph{existentially} quantified as is in \ruleref{n/tm/pair}---%
 over how the fields in $t$'s context are defined.
@@ -272,7 +272,7 @@ is how the corresponding fields are modeled and typed in \TT.
 $\lkg_i$ is the linkage that adds the $i$-th field~$t_i$ with the typing
 $\goodTerm{%
 \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i}(-0.02,-0.10)(-0.02,0.28)
-A_i%
+a_i : A_i%
 \tikzmarkend{A-i}%
 }{%
 \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-i}(-0.02,-0.10)(-0.02,0.28)%
@@ -337,7 +337,7 @@ the case handlers can be reused by a linkage modeling \lsti{STLCFix}.
 \end{itemize}
 
 The third premise
-$\goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}$
+$\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$
 in rules \ruleref{l/add} and \ruleref{lsig/add} is
 responsible for hiding W-type signatures.
 Here, $\TyTkg{\lsig}$ is a dependent tuple type (rule \ruleref{tyeq/pk/add})
