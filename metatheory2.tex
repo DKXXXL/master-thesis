@@ -1,19 +1,55 @@
-In this section, we start by introducing the complete formulation of the syntax of \TT, 
-and then we detail the models and proofs for syntactic translation (that translate away linkages), 
-consistency and canonicity. 
+In this section, we lay out the complete version of the syntax of \TT but in the style of \citeauthor{debruijn1964} indices and \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
+substitutions~$\gm$ and their applications (e.g., in the form of \sub{T}{\gm}) are part
+of the syntax rather than meta-operations. 
 
-\subsection{Warm Up: Review Declarative Syntax for MLTT}
-We begin with a review of MLTT as \TT can be roughly considered as MLTT with linkages.
-For our syntax, we work in an intrinsic-typed setting, so there is no un-typed preterms appearing anywhere. We introduce judgemental equality ($\equiv$)
+Other parts of the syntax remained the same as the main text.  
+
+We also work in an intrinsic-typed setting, so there is no un-typed preterms appearing anywhere. We introduce judgemental equality ($\equiv$)
 for derivations (of all kinds of judgements). In other words, we will have judgemental equality between terms, 
 contexts and explicits substitutions. 
+
+This style of syntax formulation has been carried out by the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019} dubbed as ``algebraic presentation'' of MLTT. 
+
+
+After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
+
 We will make sure all the introduced models and proofs respecting judgemental equality. In other words, we will consider our syntax as the result of taking quotient by these judgemental equality.
+
+
+\subsection{Review MLTT in Debruijn Indices and Explicit Subst}
+
+\TT can be roughly considered as MLTT with linkages so we still start with vanilla MLTT first.
+
 
 \input{all-mltt-typing}
 
+The change of the syntax formulation is important to the simplicity of our proof, as we want to handle the proof about substitutions and terms uniformly---thus making substitution as part of the syntax (explicit substitution) will be helpful. 
+
+Variables are in the form of \citeauthor{debruijn1964} indices:
+\var{n} is the variable bound by the $n$-th closest enclosing binder.
+For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
+%
+Substitutions are typed with the form 
+%\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) }
+$\goodSub{\Gm}{\gm}{\Dl}$.
+The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
+yields terms valid in~$\Gm$ (\ruleref{tm/sub} and \ruleref{ty/sub}).
+%
+The two main forms of substitutions are weakening (\ruleref{sub/wk}) and extension (\ruleref{sub/ext}):
+\sub{t}{\SubstWeak{n}} introduces $n$ free variables into the context of $t$, and
+\sub{t}{\SubstExt{\gm}{t'}} substitutes~$t'$ for~$\var{0}$ in~$t$ and
+then applies~$\gm$.
+For example, rule \ruleref{tm/snd} states that if $t$ is a dependent pair
+that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
+$\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
+where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
+
+
+
+
 % Copy and Paste Intuition of MLTT from other places to here
 \subsection{Declarative Syntax for \TT : an MLTT variant with Linkages}
-Compared to MLTT, \TT has 3 more judgements about signatures and linkage transformers. Moreover, the linkage transformer can be considered as a syntactic sugar (or library functions) (we will show why at the end). 
+Compared to MLTT, \TT has 3 more judgements about signatures and linkage transformers. Moreover, the linkage transformer can be considered as a syntactic sugar (or ``library functions'' in the main text) (we will show why at the end). 
 Since it is a syntactic sugar, we will not consider about the linkage transformers during meta-theoretic reasoning.
 
 

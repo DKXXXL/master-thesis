@@ -8,12 +8,12 @@ using linkage; in ``subpart'', it will be using $\Sigma$-types (translation
 of the linkage).} of our syntactic model(typed AST) \textit{without
 linkages}.
 
-This ``subpart'' is the standard MLTT with an
+This ``subpart'' is the standard MLTT with our
 (unconventional) formulation of W-types,
 and recursors that use $\Sigma$-types to aggregate handlers.
 
 Basically, we can compile away (the derivation of) judgement $\goodSig{\Gamma}{v}{n}$,
-the type $\cL$ and $\cC$, and related terms, by transforming them into
+the type $\cL$, $\cP$, and related terms, by transforming them into
 corresponding $\Sigma$-types.
 
  
@@ -82,8 +82,8 @@ $\beta$-rules.
 % and inheritance rule, but all of the translation for inh judgment are
 % induced by the $\beta$-rule of \ruleref{Inh}.
 
-We omit all the equational rules ($\beta,\eta$ and substitution) here.
-However, for coherence, when we mutual recursively define
+We omit all the validation of equational rules ($\beta,\eta$ and substitution) here.
+However, when we mutual recursively define
 $\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}} $, and
 $\denotesT{\cP}$ above, we actually have to prove the substitution laws
 $\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n})}{\gm}
