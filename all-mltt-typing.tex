@@ -75,11 +75,11 @@
   
 
 \begin{mathpar}
-\judgebox{\goodCtx{\Gm}{i}}
+\judgebox{\goodCtx{\Gm}{k}}
 
 \judgebox{\goodSub{\Gm}{\gm}{\Dl}}
 
-\judgebox{\goodType{\Gm}{T}{}}
+\judgebox{\goodType{\Gm}{T}{j}}
 
 \judgebox{\goodTerm{\Gm}{t}{T}}
 \end{mathpar}
@@ -88,14 +88,14 @@
 \Rule[name=ctx/empty]{ "" }{\goodCtx{\cdot}{0}} 
 
 \Rule[name=ctx/ext]
-{\goodCtx{\Gm}{i} \\ \goodType{\Gm}{A}{j}}
-{\goodCtx{\Gm, A}{i \cup j}}  
+{\goodCtx{\Gm}{k} \\ \goodType{\Gm}{A}{j}}
+{\goodCtx{\Gm, A}{k \lcup j}}  
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \Rule[name=ty/universe]
 { "" }
-{\goodType{\Gm}{\cU}{j + 1}}
+{\goodType{\Gm}{\cU_j}{j}}
 
 \Rule[name=ty/bool]
 { "" }
@@ -111,24 +111,24 @@
 
 \Rule[name=ty/function]
 {\goodType{\Gm}{A}{j} 
-  \\ \goodType{\Gm, A}{B}{k}}
-{\goodType{\Gm}{\TyPi{A}{B}}{j \cup k}}
+  \\ \goodType{\Gm, A}{B}{i}}
+{\goodType{\Gm}{\TyPi{A}{B}}{j \cup i}}
 
 \Rule[name=ty/pair]
 {\goodType{\Gm}{A}{j} 
-  \\ \goodType{\Gm, A}{B}{k}}
-{\goodType{\Gm}{\TySigma{A}{B}}{j \cup k}}
+  \\ \goodType{\Gm, A}{B}{i}}
+{\goodType{\Gm}{\TySigma{A}{B}}{j \cup i}}
 
 \Rule[name=ty/idty]
 {\goodType{\Gm}{A}{j} 
   \\ \goodTerm{\Gm}{x}{A}
   \\ \goodTerm{\Gm}{y}{A}}
-{\goodType{\Gm}{\TyId{x}{y}}{j \cup k}}
+{\goodType{\Gm}{\TyId{x}{y}}{j}}
 
 \Rule[name=ty/singleton]
 {\goodType{\Gm}{A}{j}
  \\ \goodTerm{\Gm}{a}{A}}
-{\goodType{\Gm}{\TyS{a}}{j \cup k}}
+{\goodType{\Gm}{\TyS{a}}{j}}
 
 \RuleWithName[name=ty/sub]
 {\goodType{\Delta}{T}{j} 
