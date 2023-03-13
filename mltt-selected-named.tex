@@ -31,7 +31,7 @@
 \judgebox{\goodTerm{\Gm}{t_1 \equiv t_2}{T}}
 \\
 
-\Rule[name=n/tm/lam]{
+\Rule[name=tm/lam]{
     \goodType{\Gm}{A}{}
     \\
     \goodTerm{\Gm, x : A}{t}{B}
@@ -39,14 +39,14 @@
     \goodTerm{\Gm}{\nlam{x}{t}}{\nTyPi {x}{A} {B}}
 }
 
-\Rule[name=n/tm/app]{
+\Rule[name=tm/app]{
     \goodTerm{\Gm}{t}{\nTyPi {x}{A} {B}} \\ 
     \goodTerm{\Gm}{t'}{A}
 }{
     \goodTerm{\Gm}{\napp{t}{t'}}{\nsub{B}{x}{t'}}
 }
 
-\Rule[name=n/tm/pair]{
+\Rule[name=tm/pair]{
     \goodType{\Gm , x : A}{B}{}
     \\
     \goodTerm{\Gm}{t_1}{A} 
@@ -56,55 +56,55 @@
     \goodTerm{\Gm}{(t_1,t_2)}{\nTySigma{x}{A}{B}}
 }
 
-\Rule[name=n/tm/fst]{
+\Rule[name=tm/fst]{
    \goodTerm{\Gm}{t}{\nTySigma x A B}
 }{
    \goodTerm{\Gm}{\fst{t}}{A}
 }
 
-\Rule[name=n/tm/snd]{
+\Rule[name=tm/snd]{
     \goodTerm{\Gm}{t}{\nTySigma x A B}
 }{
     \goodTerm{\Gm}{\snd{t}}{\nsub{B}{x}{\fst{t}}}
 }
 
-\Rule[name=n/ty/el]{
+\Rule[name=ty/el]{
     \goodTerm{\Gm}{t}{\cU}
 }{
     \goodType{\Gm}{\El{t}}{}
 }
 
-\Rule[name=n/tm/c]{
+\Rule[name=tm/c]{
     \goodType{\Gm}{T}{j}
 }{
     \goodTerm{\Gm}{\codety{T}}{\cU}
 }
 
-\Rule[name=n/tmeq/c]{
+\Rule[name=tmeq/c]{
     \goodTerm{\Gm}{t}{\cU}
 }{
     \goodTerm{\Gm}{\codety{\El t} \equiv t}{\cU}
 }
 
-\Rule[name=n/tyeq/el]{
+\Rule[name=tyeq/el]{
     \goodType{\Gm}{T}{j}
 }{
     \goodType{\Gm}{\El{\codety T} \equiv T}{}
 }
 
-\Rule[name=n/ty/s]{
+\Rule[name=ty/s]{
     \goodTerm{\Gm}{t}{T}
 }{
     \goodType{\Gm}{\TyS{t}}{}
 }
 
-\Rule[name=n/tm/s]{
+\Rule[name=tm/s]{
     \goodTerm{\Gm}{t}{T}
 }{
     \goodTerm{\Gm}{t}{\TyS{t}}
 }
 
-\Rule[name=n/tmeq/s/eta]{
+\Rule[name=tmeq/s/eta]{
     \goodTerm{\Gm}{t_1}{T}  
     \\
     \goodTerm{\Gm}{t_2}{\TyS{t_1}}

@@ -59,7 +59,7 @@
 \judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
 \\
 
-\Rule[name=n/tm/w]{
+\Rule[name=tm/w]{
     \goodWSig{\Gm}{\wsig}{n}
 }{
 %   \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
@@ -67,12 +67,12 @@
     \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
 
-\Rule[name=n/wsig/empty]{
+\Rule[name=wsig/empty]{
 }{
     \goodWSig{\Gm}{\WSigEmp}{0}
 }
 
-\Rule[name=n/wsig/add]{
+\Rule[name=wsig/add]{
     \goodWSig{\Gm}{\wsig}{n}
     \\\\
     \goodType{\Gm}{A}{}
@@ -82,7 +82,7 @@
     \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{x.B}}{n+1}
 }
 
-\Rule[name=n/tm/wsup]{
+\Rule[name=tm/wsup]{
     \goodWSig{\Gm}{\wsig}{n}
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
@@ -94,7 +94,7 @@
     \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{\mathit{self}.t_2}}{\El{\wcode{\wsig}}}
 }
 
-\Rule[name=n/tm/wrec]{
+\Rule[name=tm/wrec]{
     \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{T}}}
     \\
     \goodTerm{\Gm}{t}{\El{\wcode{\wsig}}}
@@ -102,7 +102,7 @@
     \goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}
 }
 
-\Rule[name=n/tyeq/casety]{
+\Rule[name=tyeq/casety]{
     \goodType{\Gm}{A}{}
     \\
     \goodType{\Gm, x : A}{B}{}
@@ -117,12 +117,12 @@
     }{}
 }
 
-\Rule[name=n/lsig/empty]{
+\Rule[name=lsig/empty]{
 }{
     \goodSig{\Gm}{\LSigEmp}{0}
 }
 \hfill
-\Rule[name=n/lsig/add]{
+\Rule[name=lsig/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
     \goodType{\Gm, \mathit{self} : A}{T}{}
@@ -132,12 +132,12 @@
     \goodSig{\Gm}{\LSigAdd{\lsig}{x.\seal}{\mathit{self}.T}}{n+1}
 }
 \hfill
-\Rule[name=n/l/empty]{
+\Rule[name=l/empty]{
 }{
     \goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}
 }
 \hfill
-\Rule[name=n/l/add]{
+\Rule[name=l/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}}
     \\
     \goodTerm{\Gm, \mathit{self} : A}{t}{T}
@@ -147,7 +147,7 @@
     \goodTerm{\Gm}{\LkgAdd{\lkg}{\mathit{self}.t}}{\TyLkg{\LSigAdd{\lsig}{x.\seal}{\mathit{self}.T}}}
 }
 \hfill
-\Rule[name=n/tm/inh]{
+\Rule[name=tm/inh]{
     \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
     \\\\
     \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
@@ -155,7 +155,7 @@
     \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
 }
 
-%\Rule[name=n/l/proj/2]{
+%\Rule[name=l/proj/2]{
 %    \goodSig{\Gm}{\lsig}{n+1}
 %    \\
 %    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}
@@ -163,12 +163,12 @@
 %    \goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lkgproj{2}{\lkg}}{\lsigproj{2}{\lsig}}
 %}
 %
-%\Rule[name=n/tyeq/pk/empty]{
+%\Rule[name=tyeq/pk/empty]{
 %}{
 %    \goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{}
 %}
 %
-%\Rule[name=n/tmeq/pk/empty]{
+%\Rule[name=tmeq/pk/empty]{
 %}{
 %    \goodTerm{\Gm}{
 %        \Tkg{\LkgEmp}
@@ -177,7 +177,7 @@
 %    }{\TyTkg{\LSigEmp}}
 %}
 %
-\Rule[name=n/tyeq/pk/add]{
+\Rule[name=tyeq/pk/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
@@ -191,7 +191,7 @@
     }{}
 }
 \hfill
-\Rule[name=n/tmeq/pk/add]{
+\Rule[name=tmeq/pk/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
@@ -209,7 +209,7 @@
     }
 }
 
-\Rule[name=n/tmeq/ov/beta]{
+\Rule[name=tmeq/ov/beta]{
     \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}  
     \\
     \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
