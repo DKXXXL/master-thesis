@@ -66,14 +66,14 @@ Consistency and canonicity of \TT are proved by giving semantic interpretations 
 \cref{fig:mltt-selected} presents the syntax and selected typing rules of MLTT %(predicative) MLTT
 (and \cref{fig:fmltt-selected} \TT).
 Dependent function types \nTyPi{x}{A}{B},
-dependent product types \nTySigma{x}{A}{B}, and
+dependent pair types \nTySigma{x}{A}{B}, and
 identity types \TyId{t_1}{t_2} are standard.
 So are their introduction and elimination forms.
 Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
-For each derivation (of each judgment) we introduce judgmental equality
-(of the form \goodTerm{\Gm}{t_1 \equiv t_2}{T})
+For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}
+we introduce judgmental equality (of the form \goodTerm{\Gm}{t_1 \equiv t_2}{T})
 indicating convertibility.
 
 We use Tarski-style universes \cite{hofmann1997syntax},
@@ -84,13 +84,13 @@ Term $\codety{T}$ encodes type~$T$ (\ruleref{tm/c}) and thus inhabits universe~$
 Type $\El{t}$ decodes term~$t$ (\ruleref{ty/el}).
 %\footnote{By contrast,  Russel-style universes are inhabited by types directly.  Tarski-style universes are ``semantically more fundamental'' \cite{luo2012notes} and friendlier to our meta-theoretical reasoning.}
 There is an infinite hierarchy of universes;
-we omit universe levels in the presentation for conciseness.
+we omit universe levels in the presentation to avoid clutter.
 %\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
 
 % We use intrinsically typed syntax \cite{church1940}---terms and types are well-formed by construction.
-For conciseness, typing rules omit obvious premises required for well-formedness.
-For example, \ruleref{tm/lam} implicitly requires that the context be well-typed
-($\goodCtx{\Gm}{}$).
+For concision, typing rules omit obvious premises required for well-formedness.
+For example, \ruleref{tm/lam} implicitly requires $\goodCtx{\Gm}{}$
+(i.e., that the context be well-typed).
 
 %We briefly review the base MLTT fragment first.
 %
@@ -124,7 +124,7 @@ For example, \ruleref{tm/lam} implicitly requires that the context be well-typed
 
 W-types~\cite{martin1984intuitionistic} are a succinct way to model
 inductive types in MLTT.
-Together with the identity type $\TyId{\cDot}{\cDot}$, they can express a
+Together with the identity type, they can express a
 whole host of inductive types~\cite{hugunin2021not}.
 %
 Our enhanced W-type is decided by a W-type signature $\goodWSig{\Gm}{\wsig}{n}$ 
@@ -133,11 +133,12 @@ types $\{(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})\}_i$,
 modeling an inductive type of $n$ constructors. 
 %
 Rule~\ruleref{tm/wsup} states that the $i$-th pair $\goodType{\Gm}{\wsigproj{i}{1}{\wsig}}{}$ and 
-$\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$ models the $i$-th constructor---given 
+$\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$\YZ{this is still in de Brujin}
+models the $i$-th constructor---given
 two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
 $\goodTerm{\Gm, \mathit{self} : \nsub{\wsigproj{i}{2}{\wsig}}{x}{t_1}}{t_2}{\El{\wcode{\wsig}}}$,
 we can construct a term $\Wsup{i}{\wsig}{t_1}{\mathit{self}.t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
-W-type (\ruleref{tm/w}).
+W-type (\ruleref{tm/w}).\YZ{What's the rationale behind naming the free variable 'self'?}
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
