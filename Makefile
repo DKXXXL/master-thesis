@@ -10,7 +10,7 @@ TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
 	acmart.cls formalisms.sty syntax.tex metatheory.tex standardmodel.tex canonicitymodel.tex coqimpl.tex introduction.tex syntactic-example.tex coq-example.tex lang-design.tex related-work.tex syn-translate.tex challenge.tex casestudies.tex conclusion.tex	\
 	ext-ind-type-compilation-example.tex all-typing-rule.tex agda-files.tex metatheory-condensed.tex metatheory2.tex	\
 	stlc-nonmechanized.tex stlc-mechanized.tex stlc-isorec-prod.tex	\
-	stlc-compiled.tex stlcfix-compiled.tex stlc-linkage-typing.tex stlcfix-linkage-typing.tex stlc-venn.tex	stlc-linkTran-typing.tex\
+	stlc-compiled.tex stlcfix-compiled.tex stlc-linkage-typing-named.tex stlcfix-linkage-typing.tex stlc-venn.tex	stlc-linkTran-typing.tex\
 	fmltt-selected-named.tex cc-condensed.tex	mltt-selected-named.tex\
 	stlc-intro.pdf ai-casestudy.pdf \
 	all-mltt-typing.tex all-fmltt-typing.tex

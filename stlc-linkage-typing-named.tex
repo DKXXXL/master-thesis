@@ -1,0 +1,305 @@
+\begin{figure}
+\small
+\renewcommand*{\arraystretch}{1.15}
+\setlength\tabcolsep{0pt}
+\newcolumntype{L}{>{$}l<{$}}
+\newcolumntype{C}{>{$}c<{$}}
+\newcolumntype{R}{>{$}r<{$}}
+%
+\colorlet{Bkg-color}{black!8}
+\colorlet{Bkg-color-2}{white}
+%
+\begin{tabular}{@{}l@{\ \ \ }L@{\quad}L@{\quad}L@{\quad}L@{}}
+\cellcolor{Bkg-color}
+\lsti!Family STLC.!
+&
+\lsig_0 \coloneqq \LSigEmp
+&
+\lkg_0 \coloneqq \LkgEmp
+&
+\goodTerm{\cdot}{\lkg_0}{\TyLkg{\lsig_0}}
+&
+\\
+\\[-8pt]
+\cellcolor{Bkg-color}
+&
+\lsig_1 \coloneqq \LSigAdd{\lsig_0}{\seal_1}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T1-a}(-0.02,-0.10)(-0.02,0.28)
+    T_1
+    \tikzmarkend{T1-a}
+}
+&
+\lkg_1 \coloneqq \LkgAdd{\lkg_0}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t1-a}(-0.02,-0.10)(-0.02,0.28)
+    t_1
+    \tikzmarkend{t1-a}
+}
+&
+\goodTerm{\cdot}{\lkg_1}{\TyLkg{\lsig_1}}
+&
+\goodTerm{\TyTkg{\lsig_0}}{\seal_1}{{
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A1-a}(-0.02,-0.10)(-0.05,0.28)
+    A_1
+    \tikzmarkend{A1-a}
+}{}}
+\\
+\cellcolor{Bkg-color}
+\multirow{-2}{*}{%
+\lsti!FInductive!\ \ 
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t1-c}(0.03,-0.10)(-0.02,0.28)%
+    \lsti!tm!%
+    \tikzmarkend{t1-c}%
+\ \;\lsti!:=!}
+&
+\multicolumn{4}{@{}l@{}}{
+\goodTerm{
+    \mathit{self} : 
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A1-b}(0.00,-0.15)(0.00,0.30)%
+    \big[\big]
+    \tikzmarkend{A1-b}%
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t1-b}(-0.02,-0.10)(-0.02,0.28)
+    \wcode{\wsig_{\texttt{tm}}}
+    \tikzmarkend{t1-b}
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T1-b}(-0.02,-0.10)(-0.02,0.28)
+    \TyS{\wcode{\wsig_{\texttt{tm}}}}
+    \tikzmarkend{T1-b}
+} 
+$\quad \{\wsig_{\texttt{tm}}^0 \coloneq \WSigAdd{\WSigEmp}{\bbone}{\bbzero},
+ \ \  \wsig_{\texttt{tm}}^1 \coloneq \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\bbtwo}\ \ ...,  \wsig_{\texttt{tm}}\}$
+}
+\\
+\\[-8pt]
+\cellcolor{Bkg-color}
+&
+\lsig_2 \coloneqq \LSigAdd{\lsig_1}{\seal_2}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T2-a}(-0.02,-0.10)(-0.02,0.28)
+    T_2
+    \tikzmarkend{T2-a}
+}
+&
+\lkg_2 \coloneqq \LkgAdd{\lkg_1}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t2-a}(-0.02,-0.10)(-0.02,0.28)
+    t_2
+    \tikzmarkend{t2-a}
+}
+&
+\goodTerm{\cdot}{\lkg_2}{\TyLkg{\lsig_2}}
+&
+\goodTerm{\TyTkg{\lsig_1}}{\seal_2}{{
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A2-a}(-0.02,-0.10)(-0.05,0.28)
+    A_2
+    \tikzmarkend{A2-a}
+}{}}
+\\
+\cellcolor{Bkg-color}
+\multirow{-2}{*}{%
+    \lsti!|!\ %
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t2-c}(0.01,-0.10)(-0.02,0.28)%
+    \lsti!tm_unit!%
+    \tikzmarkend{t2-c}%
+    \ \ \lsti!: tm!
+}
+&
+\multicolumn{4}{@{}l@{}}{
+\goodTerm{
+    \mathit{self} :
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A2-b}(0.00,-0.15)(0.00,0.30)%
+    \big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}}\big]
+    \tikzmarkend{A2-b}%
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t2-b}(-0.02,-0.10)(-0.02,0.28)
+    \Wsup{}{\wsig_{\texttt{tm}}}{\top}{\bot}
+    \tikzmarkend{t2-b}
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T2-b}(-0.02,-0.10)(-0.02,0.28)
+    \El{\mathit{self.}\texttt{tm}}
+    \tikzmarkend{T2-b}
+}
+}
+\\
+\cellcolor{Bkg-color-2}
+\lsti!| !\dadada\ \ \lsti!| !\dadada\ \ \lsti!| !\dadada\lsti!.!
+&
+\dadada
+\\[4pt]
+\cellcolor{Bkg-color-2}
+\lsti!FRecursion subst!\ \;\dadada\lsti!.!
+&
+\multicolumn{4}{@{}l@{}}{
+\textit{\color{codecomment-color}%
+    $\wcode{\wsig_{\texttt{tm}}}$ is abstracted into $\cU$ in the typing
+    context (i.e., $A_6$) of the case handler below:%
+}
+}
+\\
+\cellcolor{Bkg-color}
+&
+\lsig_6 \coloneqq \LSigAdd{\lsig_5}{\seal_6}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T6-a}(-0.02,-0.10)(-0.02,0.28)
+    T_6
+    \tikzmarkend{T6-a}
+}
+&
+\lkg_6 \coloneqq \LkgAdd{\lkg_5}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t6-a}(-0.02,-0.10)(-0.02,0.28)
+    t_6
+    \tikzmarkend{t6-a}
+}
+&
+\goodTerm{\cdot}{\lkg_6}{\TyLkg{\lsig_6}}
+&
+\goodTerm{\TyTkg{\lsig_5}}{\seal_6}{{
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A6-a}(-0.02,-0.10)(-0.05,0.28)
+    A_6
+    \tikzmarkend{A6-a}
+}}
+\\
+\cellcolor{Bkg-color}
+\multirow{-2}{*}{%
+    \lsti!Case tm_unit :=!\ \;%
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t6-c}(0.01,-0.10)(-0.02,0.28)%
+    \dadada%
+    \tikzmarkend{t6-c}%
+    \lsti!.!%
+}
+&
+\multicolumn{4}{@{}l@{}}{
+\goodTerm{
+    \mathit{self} :
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A6-b}(0.00,-0.15)(0.00,0.30)%
+    \big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+    \tikzmarkend{A6-b}%
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t6-b}(-0.02,-0.10)(-0.02,0.28)
+%   \lambda\_.\,\lambda\_.\,\lambda x.\,\lambda t.\,\mathit{self}.\texttt{tm\_unit}
+    \dadada
+    \tikzmarkend{t6-b}
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T6-b}(-0.02,-0.10)(-0.02,0.28)
+    \CaseSig{\top}{\bot}{
+        \fontsize{8.5}{10.2}\selectfont
+        \text{$\El{\mathit{self}.\texttt{tm}}\to\mathit{id}\to\El{\mathit{self}.\texttt{tm}}$}
+    }
+    \tikzmarkend{T6-b}
+}
+}
+\\
+\cellcolor{Bkg-color-2}
+\lsti!Case!\ \dadada\ \ 
+\lsti!Case!\ \dadada\ \ 
+\lsti!Case!\ \dadada%
+&
+\dadada
+\\
+\cellcolor{Bkg-color}
+&
+\lsig_{10} \coloneqq \LSigAdd{\lsig_9}{\seal_{10}}{
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T10-a}(-0.02,-0.10)(-0.02,0.28)
+    T_{10}
+    \tikzmarkend{T10-a}
+}
+&
+\lkg_{10} \coloneqq \LkgAdd{\lkg_9}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t10-a}(-0.02,-0.10)(-0.02,0.28)
+    t_{10}
+    \tikzmarkend{t10-a}
+}
+&
+\goodTerm{\cdot}{\lkg_{10}}{\TyLkg{\lsig_{10}}}
+&
+\goodTerm{\TyTkg{\lsig_9}}{\seal_{10}}{{
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A10-a}(-0.02,-0.10)(-0.05,0.28)%
+    A_{10}
+    \tikzmarkend{A10-a}
+}{}}
+\\
+\cellcolor{Bkg-color}
+\multirow{-2}{*}{%
+    \lsti!End!\ \ %
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t10-c}(0.01,-0.10)(-0.02,0.28)%
+    \lsti!subst!%
+    \tikzmarkend{t10-c}%
+    \lsti!.!%
+}
+&
+\multicolumn{4}{@{}l@{}}{
+\goodTerm{
+    \mathit{self} :
+    \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A10-b}(0.00,-0.32)(0.00,0.47)%
+    \!\left[{%
+    \begin{minipage}{.31\textwidth}%
+    \vspace{-7.5pt}%
+    \fontsize{8.0}{9.2}\selectfont%
+    \begin{gather*}
+    \begin{array}{@{}l@{}}
+        \texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ 
+        \texttt{tm\_unit} : \El{\texttt{tm}},\ 
+        \dadada,
+        \smallskip\\
+        \texttt{subst\_tm\_unit} : \CaseSig{\top}{\bot}{\dadada},\ 
+        \dadada
+    \end{array}
+    \end{gather*}
+    \end{minipage}
+    }\right]\!
+    \tikzmarkend{A10-b}%
+}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t10-b}(-0.02,-0.10)(-0.02,0.28)
+    \lambda t.\,\Wrec{\wsig_{\texttt{tm}}}{\dadada}{t}
+    \tikzmarkend{t10-b}
+}{
+    \begin{minipage}{.20\textwidth}%
+    \vspace{-7.5pt}%
+    \fontsize{8.0}{9.2}\selectfont%
+    \begin{gather*}
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T10-b}(-0.02,-0.26)(-0.02,0.40)
+    \begin{array}{@{}l@{}}
+        \El{\mathit{self}.\texttt{tm}} \to \El{\mathit{self}.\texttt{tm}}
+        \\
+        \to \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+    \end{array}
+    \tikzmarkend{T10-b}
+    \end{gather*}
+    \end{minipage}
+}
+}
+\\
+\cellcolor{Bkg-color-2}
+\dadada
+&
+\dadada
+\\
+\cellcolor{Bkg-color}
+\lsti!End !%
+\tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-STLC-c}(-0.02,-0.10)(-0.02,0.28)%
+\lsti!STLC!%
+\tikzmarkend{t-STLC-c}%
+\lsti!.!
+&
+\goodTerm{\cdot}{
+    \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-STLC-b}(-0.02,-0.10)(-0.02,0.28)%
+    \Tkg{\lkg_{53}}
+    \tikzmarkend{t-STLC-b}
+}{\TyTkg{\lsig_{53}}}
+\end{tabular}
+
+\caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.
+Each row $\goodTerm{\mathit{self}\!:\!
+\tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i-cap}(-0.02,-0.10)(-0.02,0.28)
+A_i%
+\tikzmarkend{A-i-cap}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-i-cap}(-0.02,-0.10)(-0.02,0.28)%
+t_i%
+\tikzmarkend{t-i-cap}%
+}{%
+\tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T-i-cap}(-0.02,-0.10)(-0.02,0.28)%
+T_i%
+\tikzmarkend{T-i-cap}%
+}$ types a field.
+The type $A_i$ controls how the typing of field $t_i$ sees the types of the fields prior to $t_i$.
+}
+\label{fig:stlc-linkage-typing}
+\end{figure}
