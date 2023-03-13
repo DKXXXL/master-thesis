@@ -146,14 +146,6 @@
 }{
     \goodTerm{\Gm}{\LkgAdd{\lkg}{\mathit{self}.t}}{\TyLkg{\LSigAdd{\lsig}{x.\seal}{\mathit{self}.T}}}
 }
-\hfill
-\Rule[name=tm/inh]{
-    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
-    \\\\
-    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
-}{
-    \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
-}
 
 %\Rule[name=l/proj/2]{
 %    \goodSig{\Gm}{\lsig}{n+1}
@@ -190,7 +182,7 @@
         \nTySigma{x}{\TyTkg {\lsig}}{\nsub{T}{\mathit{self}}{s}}
     }{}
 }
-\hfill
+
 \Rule[name=tmeq/pk/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
@@ -207,6 +199,14 @@
     }{
         \TyTkg {\LSigAdd {\lsig}{\seal}{T}}
     }
+}
+
+\Rule[name=tm/inh]{
+    \goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
+    \\
+    \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
+}{
+    \goodTerm{\Gm}{\inh{h}{\lkg}}{\TyLkg{\lsig_2}}
 }
 
 \Rule[name=tmeq/ov/beta]{
