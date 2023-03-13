@@ -16,6 +16,7 @@
     \lsigproj{2}{\lsig} \mid \CaseSig{A}{x.B}{T}
 \tikzmarkend{New2}
     \\
+\text{Variables} & x, x' &\Coloneqq &  ..., \mathit{self}, \mathit{self}_1, \mathit{self}_2, ... \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
     ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
@@ -34,7 +35,7 @@
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New5}(0.05,-0.15)(-0.10,0.30)
 \text{Linkage signatures} & \lsig & \Coloneqq &
-    \LSigEmp \mid \LSigAdd{\lsig}{x.\seal}{a.T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} 
+    \LSigEmp \mid \LSigAdd{\lsig}{x_1.\seal}{x_2.T} \mid \lsigproj{1}{\lsig} \mid \RecSig{\wsig}{T} 
 \tikzmarkend{New5}
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
@@ -86,11 +87,11 @@
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
     \\\\
-    \goodTerm{\Gm, a : {\wsigproj{i}{2}{\wsig}[t_1/x]}}{t_2}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm, a : \nsub{\wsigproj{i}{2}{\wsig}}{x}{t_1}}{t_2}{\El{\wcode{\wsig}}}
 %   \\
 %   i \in \{1, ..., n\}
 }{
-    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{a.t_2}}{\El{\wcode{\wsig}}}
+    \goodTerm{\Gm}{\Wsup{i}{\wsig}{t_1}{\mathit{self}.t_2}}{\El{\wcode{\wsig}}}
 }
 
 \Rule[name=tm/wrec]{
@@ -124,11 +125,11 @@
 \Rule[name=lsig/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
-    \goodType{\Gm, a : A}{T}{}
+    \goodType{\Gm, \mathit{self} : A}{T}{}
     \\\\
     \goodTerm{\Gm, x : \TyTkg{\lsig}}{\seal}{A}
 }{
-    \goodSig{\Gm}{\LSigAdd{\lsig}{x.\seal}{a.T}}{n+1}
+    \goodSig{\Gm}{\LSigAdd{\lsig}{x.\seal}{\mathit{self}.T}}{n+1}
 }
 \hfill
 \Rule[name=l/empty]{
@@ -139,11 +140,11 @@
 \Rule[name=l/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}}
     \\
-    \goodTerm{\Gm, a : A}{t}{T}
+    \goodTerm{\Gm, \mathit{self} : A}{t}{T}
     \\\\
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
 }{
-    \goodTerm{\Gm}{\LkgAdd{\lkg}{a.t}}{\TyLkg{\LSigAdd{\lsig}{x.\seal}{a.T}}}
+    \goodTerm{\Gm}{\LkgAdd{\lkg}{\mathit{self}.t}}{\TyLkg{\LSigAdd{\lsig}{x.\seal}{\mathit{self}.T}}}
 }
 \hfill
 \Rule[name=tm/inh]{
@@ -181,12 +182,12 @@
     \\
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
     \\
-    \goodType{\Gm, a : A}{T}{}
+    \goodType{\Gm, \mathit{self} : A}{T}{}
 }{
     \goodType{\Gm}{
         \TyTkg {\LSigAdd  {\lsig} {\seal} {T}}
         \equiv 
-        \nTySigma{x}{\TyTkg {\lsig}}{T[s/a]}
+        \nTySigma{x}{\TyTkg {\lsig}}{\nsub{T}{\mathit{self}}{s}}
     }{}
 }
 \hfill
@@ -195,13 +196,13 @@
     \\
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
     \\
-    \goodTerm{\Gm, a: A}{t}{T}
+    \goodTerm{\Gm, \mathit{self}: A}{t}{T}
 }{
     \goodTerm{\Gm}{
-        \Tkg{\LkgAdd{\lkg}{a.t}}
+        \Tkg{\LkgAdd{\lkg}{\mathit{self}.t}}
         \equiv
         \pair{\Tkg{\lkg}}{
-            t[s[\Tkg{\lkg}/x]/a]
+            \nsub{t}{\mathit{self}}{\nsub{s}{x}{\Tkg{\lkg}}}
         }
     }{
         \TyTkg {\LSigAdd {\lsig}{\seal}{T}}
@@ -213,20 +214,20 @@
     \\
     \goodTerm{\Gm}{\lkg}{\TyLkg{\lsig_1}}
     \\\\
-    \goodTerm{\Gm, a_1 : A_1}{t_1}{T_1}
+    \goodTerm{\Gm, \mathit{self}_1 : A_1}{t_1}{T_1}
     \\
     \goodTerm{\Gm, x_1 : \TyTkg{\lsig_1}}{\seal_1}{{A_1}}
     \\
-    \goodTerm{\Gm, a_2 : A_2}{t_2}{T_2}
+    \goodTerm{\Gm, \mathit{self}_2 : A_2}{t_2}{T_2}
     \\
     \goodTerm{\Gm, x_2 : \TyTkg{\lsig_2}}{\seal_2}{{A_2}}
 }{
     \goodTerm{\Gm}{
-        \inh{\InhOv{h}{a_2 . t_2}}{\LkgAdd{\lkg}{a_1 . t_1}}
+        \inh{\InhOv{h}{\mathit{self}_2 . t_2}}{\LkgAdd{\lkg}{\mathit{self}_1 . t_1}}
         \equiv 
-        \LkgAdd{\inh{h}{\lkg}}{a_2 . t_2}
+        \LkgAdd{\inh{h}{\lkg}}{\mathit{self}_2 . t_2}
     }{
-        \TyLkg{\LSigAdd{\lsig_2}{x_2.\seal_2}{a_2.T_2}}
+        \TyLkg{\LSigAdd{\lsig_2}{x_2.\seal_2}{\mathit{self}_2.T_2}}
     }
 }
 

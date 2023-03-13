@@ -11,7 +11,7 @@
 \text{Types} & A, B, T  &\Coloneqq &
     \cU \mid \cB \mid \bot \mid \top \mid \nTyPi{x}{A}{B} \mid \nTySigma{x}{A}{B} \mid \TyId{t_1}{t_2} \mid \TyS{t} \mid \El{t}
     \\
-\text{Variables} & x &\Coloneqq & x, x_1, x_2, a, a_1, a_2 ... \\
+\text{Variables} & x, x' &\Coloneqq & x, x', x_1, x_2, ... \\
 \text{Terms} & t &\Coloneqq &
     x \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \nlam{x}{t} \mid \napp{t_1}{t_2} \mid 
     \\ &&&
@@ -43,7 +43,7 @@
     \goodTerm{\Gm}{t}{\nTyPi {x}{A} {B}} \\ 
     \goodTerm{\Gm}{t'}{A}
 }{
-    \goodTerm{\Gm}{\napp{t}{t'}}{B[t'/x]}
+    \goodTerm{\Gm}{\napp{t}{t'}}{\nsub{B}{x}{t'}}
 }
 
 \Rule[name=n/tm/pair]{
@@ -51,7 +51,7 @@
     \\
     \goodTerm{\Gm}{t_1}{A} 
     \\
-    \goodTerm{\Gm}{t_2}{B[t_1/x]}
+    \goodTerm{\Gm}{t_2}{\nsub{B}{x}{t_1}}
 }{
     \goodTerm{\Gm}{(t_1,t_2)}{\nTySigma{x}{A}{B}}
 }
@@ -65,7 +65,7 @@
 \Rule[name=n/tm/snd]{
     \goodTerm{\Gm}{t}{\nTySigma x A B}
 }{
-    \goodTerm{\Gm}{\snd{t}}{B[\fst{t}/x]}
+    \goodTerm{\Gm}{\snd{t}}{\nsub{B}{x}{\fst{t}}}
 }
 
 \Rule[name=n/ty/el]{
