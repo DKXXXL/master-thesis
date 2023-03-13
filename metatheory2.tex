@@ -30,7 +30,6 @@ Variables are in the form of \citeauthor{debruijn1964} indices:
 For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
 %
 Substitutions are typed with the form 
-%\EDJ{It seems to me G |- g : D is a judgement not a rule. Rules usually have two parts (premises + conclusion). Judgment is a standard terminology invented by Martin Lof (https://ncatlab.org/nlab/show/judgment see reference here). I will suggest saying 'Formation rules for substitution lead to a judgement G |- g : D' sth like this. In pen-and-paper, the formation rule (corresponding to QIIT well-typed-ness of judgement) is called presuppose (can be found in Modal MLTT paper) }
 $\goodSub{\Gm}{\gm}{\Dl}$.
 The idea is that applying~$\gm$ to terms valid in the context~$\Dl$
 yields terms valid in~$\Gm$ (\ruleref{tm/sub} and \ruleref{ty/sub}).
@@ -44,7 +43,7 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-
+Finally, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
 
 
 % Copy and Paste Intuition of MLTT from other places to here
