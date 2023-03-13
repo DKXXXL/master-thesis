@@ -23,7 +23,7 @@
 \end{gather*}
 
 \begin{mathpar}
-\judgebox{\goodCtx{\Gm}{i}}
+\judgebox{\goodCtx{\Gm}{}}
 
 \judgebox{\goodSub{\Gm}{\gm}{\Dl}}
 
@@ -39,7 +39,7 @@
 \\
 
 \Rule[name=sub/id]{
-    \goodCtx{\Gm}{i}
+    \goodCtx{\Gm}{}
 }{
     \goodSub{\Gm}{\SubstWeak{0}}{\Gm}
 }
@@ -63,11 +63,11 @@
 }
 
 \Rule[name=ty/sub]{
-    \goodType{\Dl}{T}{j}
+    \goodType{\Dl}{T}{}
     \\\\
     \goodSub{\Gm}{\gm}{\Dl}
 }{
-    \goodType{\Gm}{T[\gm]}{j}
+    \goodType{\Gm}{T[\gm]}{}
 }
 
 \Rule[name=tm/sub]{
@@ -127,11 +127,11 @@
 \Rule[name=ty/el]{
     \goodTerm{\Gm}{t}{\cU}
 }{
-    \goodType{\Gm}{\El{t}}{j}
+    \goodType{\Gm}{\El{t}}{}
 }
 
 \Rule[name=tm/c]{
-    \goodType{\Gm}{T}{j}
+    \goodType{\Gm}{T}{}
 }{
     \goodTerm{\Gm}{\codety{T}}{\cU}
 }
@@ -143,7 +143,7 @@
 }
 
 \Rule[name=tyeq/el]{
-    \goodType{\Gm}{T}{j}
+    \goodType{\Gm}{T}{}
 }{
     \goodType{\Gm}{\El{\codety T} \equiv T}{}
 }
@@ -151,7 +151,7 @@
 \Rule[name=ty/s]{
     \goodTerm{\Gm}{t}{T}
 }{
-    \goodType{\Gm}{\TyS{t}}{j \cup k}
+    \goodType{\Gm}{\TyS{t}}{}
 }
 
 \Rule[name=tm/s]{

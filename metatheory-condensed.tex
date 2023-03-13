@@ -87,7 +87,7 @@ There is an infinite hierarchy of universes;
 we omit universe levels in the presentation for conciseness.
 %\rA{Why is W(t) a term and not a type?}\YZreply{I think the reviewer is wondering what is gained by encoding and decoding types, compared to types directly inhabiting universes.}
 
-We use intrinsically typed syntax \cite{church1940}---terms and types are well-formed by construction.
+% We use intrinsically typed syntax \cite{church1940}---terms and types are well-formed by construction.
 For conciseness, typing rules omit obvious premises required for well-formedness.
 For example, \ruleref{n/tm/lam} implicitly requires that the context be well-typed
 ($\goodCtx{\Gm}{}$).
@@ -468,9 +468,9 @@ Generally speaking, we \textbf{use each QIIT type to represent each kind of judg
 
 $$
 \Rule[name=Subst]
-{\goodType{\Delta}{T}{j} 
+{\goodType{\Delta}{T}{} 
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
-{\goodType{\Gamma}{T[\gamma]}{j}},
+{\goodType{\Gamma}{T[\gamma]}{}},
 \Rule[]
 {\goodTerm{\Delta}{t}{T}
   \quad {\goodSub{\Gamma}{\gamma}{\Delta}}}
@@ -503,13 +503,13 @@ $$
 \quad
 \Rule[name=wsig/add]
 {\goodWSig{\Gm}{\wsig}{n}
-  \quad \goodType{\Gm}{A}{i}
-  \quad \goodType{\Gm, A}{B}{i}}
+  \quad \goodType{\Gm}{A}{}
+  \quad \goodType{\Gm, A}{B}{}}
 {\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}}
 \quad
 \Rule[name=wsig/universe]
 {\goodWSig{\Gm}{\wsig}{n}}
-{\goodType{\Gm}{\TyWSingle {\wsig}}{i}
+{\goodType{\Gm}{\TyWSingle {\wsig}}{}
 \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
 }
 $$
@@ -609,7 +609,7 @@ $$
 \quad
 \Rule[name=ty/lkg]
 {\goodSig{\Gm}{\lsig}{n}}
-{\goodType{\Gm}{\TyLkg{\lsig}}{i}
+{\goodType{\Gm}{\TyLkg{\lsig}}{}
 \\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
 \quad
 \Rule[name=lnkg/pkg]
@@ -624,7 +624,7 @@ $$
 {\goodSig{\Gm}{\lsig}{n} 
  \quad \goodType{\Gm}{A}{}
  \quad \goodSeal{\Gm}{\seal}{\lsig}{A}
- \quad \goodType{\Gm, A}{T}{i}}
+ \quad \goodType{\Gm, A}{T}{}}
 {\goodSig{\Gm}{(\LSigAdd {\lsig}{\seal}{T})}{n+1}}
 \quad
 \Biggl( \boxed{\goodSeal{\Gamma}{s}{\sigma}{A}} 

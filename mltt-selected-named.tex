@@ -20,7 +20,7 @@
 \end{gather*}
 
 \begin{mathpar}
-\judgebox{\goodCtx{\Gm}{i}}
+\judgebox{\goodCtx{\Gm}{}}
 
 \judgebox{\goodType{\Gm}{T}{}}
 
@@ -71,7 +71,7 @@
 \Rule[name=n/ty/el]{
     \goodTerm{\Gm}{t}{\cU}
 }{
-    \goodType{\Gm}{\El{t}}{j}
+    \goodType{\Gm}{\El{t}}{}
 }
 
 \Rule[name=n/tm/c]{
@@ -95,7 +95,7 @@
 \Rule[name=n/ty/s]{
     \goodTerm{\Gm}{t}{T}
 }{
-    \goodType{\Gm}{\TyS{t}}{j \cup k}
+    \goodType{\Gm}{\TyS{t}}{}
 }
 
 \Rule[name=n/tm/s]{
