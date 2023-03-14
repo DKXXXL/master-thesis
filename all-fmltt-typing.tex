@@ -41,9 +41,9 @@
 
 \begin{mathpar}
   \\
-  \judgebox{\goodWSig{\Gm}{\wsig}{n}}
+  \judgebox{\goodWSigU{m}{\Gm}{\wsig}{n}}
   
-  \judgebox{\goodSig{\Gm}{\lsig}{n} }
+  \judgebox{\goodSigU{l}{\Gm}{\lsig}{n} }
   
   \judgebox{\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}}
   \end{mathpar}
@@ -51,37 +51,37 @@
 \begin{mathparpagebreakable}
 \Rule[name=wsig/empty]
 {""}
-{\goodWSig{\Gm}{\WSigEmp}{0}}
+{\goodWSigU{m}{\Gm}{\WSigEmp}{0}}
  
 \Rule[name=wsigeq/empty/eta]
-{\goodWSig{\Gm}{\wsig}{0}}
-{\goodWSig{\Gm}{\wsig \equiv \WSigEmp}{0}}
+{\goodWSigU{m}{\Gm}{\wsig}{0}}
+{\goodWSigU{m}{\Gm}{\wsig \equiv \WSigEmp}{0}}
 
 \Rule[name=wsig/add]{
-    \goodWSig{\Gm}{\wsig}{n}
+    \goodWSigU{m}{\Gm}{\wsig}{n}
     \\\\
-    \goodType{\Gm}{A}{i}
+    \goodType{\Gm}{A}{m}
     \\
-    \goodType{\Gm, A}{B}{i}
+    \goodType{\Gm, A}{B}{m}
 }{
-    \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
+    \goodWSigU{m}{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
 }
 
 % \Rule[name=wsig/universe]
-% {\goodWSig{\Gm}{\wsig}{n}}
+% {\goodWSigU{}{\Gm}{\wsig}{n}}
 % {\goodType{\Gm}{\TyWSingle {\wsig}}{i}
 % \\ \goodTerm{\Gm}{\wsingle{\wsig}}{\TyWSingle{\wsig}}
 % }
 %
 \Rule[name=wsigeq/proj/eta]
-{\goodWSig{\Gm}{\wsig}{n} \\ j < n}
-{\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{i} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{i}
+{\goodWSigU{m}{\Gm}{\wsig}{n} \\ j < n}
+{\goodType{\Gm}{\wsigproj{j}{1}{\wsig} }{m} \\ \goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{m}
 }
 
 % \Rule[name=wsigeq/subst]
-% {\goodWSig{\Delta}{\wsig}{n}
+% {\goodWSigU{}{\Delta}{\wsig}{n}
 %   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
-% {\goodWSig{\Gm}{ \sub{\wsig}{\gm}}{n}
+% {\goodWSigU{}{\Gm}{ \sub{\wsig}{\gm}}{n}
 %   \\ \goodTerm{\Gm}{\wcode{( \sub{\wsig}{\gm})} \equiv \sub{(\wcode{ \wsig})}{\gm}}{\cU}
 % \\\\ \goodTerm{\Gm}{\sub{\wsingle{\wsig}}{\gm} \equiv \wsingle{\wsig}}{\TyWSingle{\wsig}} 
 %   }
@@ -89,33 +89,33 @@
 \Rule[name=ty/wsig/proj]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
-  \goodType{\Gm}{\wsigproj{j+1}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv \wsigproj{j}{1}{\wsig} }{i} 
-  \\ \goodType{\Gm, \wsigproj{j+1}{1}{\WSigAdd{\wsig}{A}{B}}}{\wsigproj{j+1}{2}{\WSigAdd{\wsig}{A}{B}} \equiv \wsigproj{j}{2}{\wsig}}{i}
+  \goodType{\Gm}{\wsigproj{j+1}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv \wsigproj{j}{1}{\wsig} }{} 
+  \\ \goodType{\Gm, \wsigproj{j+1}{1}{\WSigAdd{\wsig}{A}{B}}}{\wsigproj{j+1}{2}{\WSigAdd{\wsig}{A}{B}} \equiv \wsigproj{j}{2}{\wsig}}{}
   \\\\ 
-  \goodType{\Gm}{\wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv A }{i} 
-  \\ \goodType{\Gm, \wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} }}{\wsigproj{j}{2}{ \WSigAdd{\wsig}{A}{B} } \equiv B}{i}
+  \goodType{\Gm}{\wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} } \equiv A }{} 
+  \\ \goodType{\Gm, \wsigproj{0}{1}{ \WSigAdd{\wsig}{A}{B} }}{\wsigproj{j}{2}{ \WSigAdd{\wsig}{A}{B} } \equiv B}{}
 }
 
 \Rule[name=wsig/sub]
-{\goodWSig{\Gm}{\wsig}{n+1}}
-{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}}
+{\goodWSigU{m}{\Gm}{\wsig}{n+1}}
+{\goodWSigU{m}{\Gm}{\WSigSub{\wsig}}{n}}
 
 \Rule[name=wsigeq/add/subst]
 {\goodSub{\Gm}{\gm}{\Theta}}
-{\goodWSig{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
-\\ \goodWSig{\Gm}{\sub{\WSigAdd{\wsig}{A}{B}}{\gm} \equiv \WSigAdd{\sub{\wsig}{\gm}}{\sub{A}{\gm}}{\sub{B}{\gm^\uparrow}} }{n+1}
-\\ \goodType{\Gm}{\sub{\wsigproj{j}{1}{\wsig}}{\gm} \equiv \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{i} 
+{\goodWSigU{}{\Gm}{\sub{\WSigEmp}{\gm} \equiv \WSigEmp}{0}
+\\ \goodWSigU{}{\Gm}{\sub{\WSigAdd{\wsig}{A}{B}}{\gm} \equiv \WSigAdd{\sub{\wsig}{\gm}}{\sub{A}{\gm}}{\sub{B}{\gm^\uparrow}} }{n+1}
+\\ \goodType{\Gm}{\sub{\wsigproj{j}{1}{\wsig}}{\gm} \equiv \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{} 
 \\ \goodType{\Gm, \wsigproj{j}{1}{\sub{\wsig}{\gm}}}{\sub{\wsigproj{j}{2}{\wsig} }{\gm^\uparrow} \equiv \wsigproj{j}{2}{\sub{\wsig}{\gm}}}{i}
 }
 \\
 \Rule[name=tm/w]{
-    \goodWSig{\Gm}{\wsig}{n}
+    \goodWSigU{m}{\Gm}{\wsig}{n}
 }{
-    \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
+    \goodTerm{\Gm}{\wcode{\wsig}}{\cU_{m+1}}
 }
 
 \Rule[name=tm/wsup]{
-    \goodWSig{\Gm}{\wsig}{n}
+    \goodWSigU{m}{\Gm}{\wsig}{n}
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
     \\\\
@@ -131,77 +131,77 @@
 {\goodTerm{\Gm}{\sub{(\Wsup{}{T}{a}{b})}{\gm} \equiv \Wsup{}{\sub{T}{\gm}}{\sub{a}{\gm}}{\sub{b}{\gm^\uparrow}} }{\El{(\wcode{\sub{\wsig}{\gm}})}} }
 
 \Rule[name=wsigeq/sub]{
-  \goodWSig{\Gm}{\wsig}{n}
-  \\ \goodType{\Gm}{A}{i}
-  \\ \goodType{\Gm, A}{B}{i}
+  \goodWSigU{m}{\Gm}{\wsig}{n}
+  \\ \goodType{\Gm}{A}{m}
+  \\ \goodType{\Gm, A}{B}{m}
 }{
-  \goodWSig{\Gm}{{\WSigSub{\WSigAdd{\wsig}{A}{B}}} \equiv \wsig}{n}
+  \goodWSigU{}{\Gm}{{\WSigSub{\WSigAdd{\wsig}{A}{B}}} \equiv \wsig}{n}
 }
 
 \Rule[name=wsigeq/sub/subst]{
   \goodSub{\Gm}{\gm}{\Theta}
 }{
-  \goodWSig{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
+  \goodWSigU{}{\Gm}{\sub{\WSigSub{\wsig}}{\gm} \equiv \WSigSub{\sub{\wsig}{\gm}}}{n}
 }
 
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \Rule[name=ty/lkg]
-{\goodSig{\Gm}{\lsig}{n}}
-{\goodType{\Gm}{\TyLkg{\lsig}}{i}
-\\ \goodType{\Gm}{\TyTkg{\lsig}}{}}
+{\goodSigU{l}{\Gm}{\lsig}{n}}
+{\goodType{\Gm}{\TyLkg{\lsig}}{l}
+\\ \goodType{\Gm}{\TyTkg{\lsig}}{l}}
 
 \Rule[name=ty/lsig/subst]
-{\goodSig{\Delta}{\lsig}{n}
+{\goodSigU{l}{\Delta}{\lsig}{n}
   \\ {\goodSub{\Gm}{\gm}{\Delta}}}
-{\goodSig{\Gm}{ \sub {\lsig}{\gm}}{n}
-  \\ \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{i}
-  \\ \goodType{\Gm}{\TyTkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyTkg{\lsig})}{\gm}}{i}
+{\goodSigU{l}{\Gm}{ \sub {\lsig}{\gm}}{n}
+  \\ \goodType{\Gm}{\TyLkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyLkg{\lsig})}{\gm}}{}
+  \\ \goodType{\Gm}{\TyTkg{ \sub{\lsig}{\gm}} \equiv \sub{(\TyTkg{\lsig})}{\gm}}{}
   }
 \\
 
 \\
 \Rule[name=lsig/empty]
 {""}
-{\goodSig{\Gm}{\LSigEmp}{0}}
+{\goodSigU{l}{\Gm}{\LSigEmp}{0}}
  
 \Rule[name=lsigeq/empty/eta]
-{\goodSig{\Gm}{\lsig}{0}}
-{\goodSig{\Gm}{\lsig \equiv \LSigEmp}{0}}
+{\goodSigU{l}{\Gm}{\lsig}{0}}
+{\goodSigU{l}{\Gm}{\lsig \equiv \LSigEmp}{0}}
 
 \Rule[name=lsig/add]{
-    \goodSig{\Gm}{\lsig}{n} 
+    \goodSigU{l}{\Gm}{\lsig}{n} 
     \\
-    \goodType{\Gm, A}{T}{}
+    \goodType{\Gm, A}{T}{l}
     \\\\
     \goodTerm{\Gm,\TyTkg{\lsig}}{\seal}{\sub{A}{\SubstWeak{1}}}
 }{
-    \goodSig{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
+    \goodSigU{l}{\Gm}{\LSigAdd{\lsig}{\seal}{T}}{n+1}
 }
 \\
 
 \\ 
 \Rule[name=lsig/proj]
-{\goodSig{\Theta}{\lsig}{n+1} 
+{\goodSigU{l}{\Theta}{\lsig}{n+1} 
 \\ \goodSub{\Gm}{\gm}{\Theta}
 }
-{\goodSig{\Gm}{\lsigproj{1} {\lsig}}{n}
-\\ \goodType{\Gm}{\lsigprojT {\lsig}}{}
+{\goodSigU{l}{\Gm}{\lsigproj{1} {\lsig}}{n}
+\\ \goodType{\Gm}{\lsigprojT {\lsig}}{l}
 \\ \goodSeal{\Gm}{\lsigproj{s}{\lsig}}{\lsigproj{1} {\lsig}}{\lsigprojT {\lsig}}
-\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{} 
+\\ \goodType{\Gm, \lsigprojT {\lsig}}{\lsigproj{2}{\lsig}}{l} 
 \\ 
-\goodSig{\Gm}{\LSigAdd{\lsigproj{1} {\lsig}}{\lsigproj{s}{\lsig}}{\lsigproj{2}{\lsig}} \equiv \lsig }{n+1}
+\goodSigU{}{\Gm}{\LSigAdd{\lsigproj{1} {\lsig}}{\lsigproj{s}{\lsig}}{\lsigproj{2}{\lsig}} \equiv \lsig }{n+1}
 }
 \\
 
 \\ 
 \Rule[name=lsigeq/proj/beta]
-{\goodSig{\Gm}{\lsig}{n} 
+{\goodSigU{}{\Gm}{\lsig}{n} 
 \\ \goodType{\Gm}{A}{}
 \\ \goodSeal{\Gm}{\seal}{\lsig}{A}
 \\ \goodType{\Gm, A}{T}{i}}
-{\goodSig{\Gm}{\lsigproj{1} {\LSigAdd  {\lsig}  {\seal}  {T}} \equiv \lsig}{n}
+{\goodSigU{}{\Gm}{\lsigproj{1} {\LSigAdd  {\lsig}  {\seal}  {T}} \equiv \lsig}{n}
 \\ \goodType{\Gm}{\lsigprojT {\LSigAdd  {\lsig} {\seal} {T}} \equiv A}{}
 \\ \goodSeal{\Gm}{\lsigproj{s}{\LSigAdd{\lsig} {\seal} {T}} \equiv \seal}{\lsig}{A}
 \\ \goodType{\Gm, A}{\lsigproj{2}{\LSigAdd {\lsig} {\seal}  {T}} \equiv T}{}
@@ -210,13 +210,13 @@
 
 \\ 
 \Rule[name=lsig/add+proj/subst]
-{\goodSig{\Gm}{\gm}{\Theta}}
+{\goodSigU{}{\Gm}{\gm}{\Theta}}
 {
-\goodSig{\Gm}{\sub{\LSigEmp}{\gm} \equiv \LSigEmp}{n}
-\\ \goodSig{\Gm}{\sub{(\LSigAdd {\lsig}{\seal}{T})}{\gm} \equiv 
+\goodSigU{}{\Gm}{\sub{\LSigEmp}{\gm} \equiv \LSigEmp}{n}
+\\ \goodSigU{}{\Gm}{\sub{(\LSigAdd {\lsig}{\seal}{T})}{\gm} \equiv 
   \LSigAdd {\sub{\lsig}{\gm}}{\sub{\seal}{\gm^\uparrow}}{\sub{T}{\gm^\uparrow}}
 }{n+1}
-\\ \goodSig{\Gm}{ \sub{(\lsigproj{1}{\lsig})}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
+\\ \goodSigU{}{\Gm}{ \sub{(\lsigproj{1}{\lsig})}{\gm} \equiv \lsigproj{1}{\sub{\lsig}{\gm}} }{n}
 \\ \goodType{\Gm}{\sub{(\lsigprojT {\lsig})}{\gm} \equiv \lsigprojT {\sub{\lsig}{\gm}}}{}
 \\ \goodSeal{\Gm}{\sub{\lsigproj{s}{\lsig}}{\gm} \equiv {\lsigproj{s}{\sub{\lsig}{\gm}}} }{\lsig}{A}
 \\ \goodType{\Gm, \lsigprojT {\sub{\lsig}{\gm}}}{ \sub{(\lsigproj{2}{\lsig})}{\gm^\uparrow} \equiv  \lsigproj{2}{ \sub{\lsig}{\gm} }  }{}
@@ -354,9 +354,9 @@
 
 \\
 \Rule[name=recl/defN]
-{\goodWSig{\Gm}{\wsig}{n+1}
+{\goodWSigU{}{\Gm}{\wsig}{n+1}
 }
-{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv 
+{\goodSigU{}{\Gm}{\RecSig{\wsig}{R} \equiv 
         \LSigAdd{\RecSig{\WSigSub{\wsig}}{R}}
         {\pi_2}
         {\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R}} }{n+1}}
@@ -364,12 +364,12 @@
 
 \\
 \Rule[name=recl/def0]
-{\goodWSig{\Gm}{\wsig}{0}
+{\goodWSigU{}{\Gm}{\wsig}{0}
 }
-{\goodSig{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
+{\goodSigU{}{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
 
 \Rule[name=recl/proj]
-{ \goodWSig{\Gm}{\wsig}{N}
+{ \goodWSigU{}{\Gm}{\wsig}{N}
 \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
 \\ j < N
 }
@@ -387,7 +387,7 @@
 
 \\
 \Rule[name=recl/proj/beta]{
-  \goodWSig{\Gm}{\wsig}{N}
+  \goodWSigU{}{\Gm}{\wsig}{N}
   \\ j < N
   \\ \goodTerm{\Gm}{\lkg}{\TyLkg{\RecSig{\wsig}{R}}}
 }{
