@@ -72,14 +72,14 @@ So are their introduction and elimination forms.
 Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
-For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}\EDJreply{(G |- t : T), which looks like (t : Tm G T) in QIIT/Agda is the derivation; so basically the term is the derivation (or proof), the types (Tm G T) is the judgement. It applies to each kind of judgement, for example, (G |- ), which looks like (G : Con), (G |-) is the derivation and (_ |- )is the judgement \\ 
-Note that without referring to QIIT/Agda, the definition of judgement and derivation is still clear -- (G |- _ : T) is a judgement and a concrete proof/derivation we get for t like (G |- t : T) is the derivation. Similar for ( _ |- ) vs. (G |-) and (G |- _ ) vs (G |- T). \\ 
-I think in intrinsic typing, knowing t and knowing (G |- t : T) is exactly the same (i.e. there are no two different derivations lead to the same t; for each t, there is only one derivation for it). This is not true for extrinsic typing. \\
-If this prequisite knowledge is too involved, feel free to delete this sentence, I think I just want to say there are equality/quotient everywhere between all kinds of derivations(proof?data?) -- equality between terms, types, substitutions, contexts, linkage signatures ...\\
-I think this is something standard from Martin Lof, since Martin Lof is the first guy talk about judgement.
-}
-we introduce judgmental equality (of the form \goodTerm{\Gm}{t_1 \equiv t_2}{T})
-indicating convertibility.
+Definitional equalities have the form
+\goodTerm{\Gm}{t_1 \equiv t_2}{T} and \goodType{\Gm}{T_1 \equiv T_2}{}.\YZ{should there be a convertibility rule?}\EDJreply{in this style, the quotient by judgemental equality is applied, so A is equal to B even in meta-logic, which means t : A is the same as t : B. Maybe this is something require emphasis? Because it is usually handled by LF (like QIIT) but now we are using bare hands so.... maybe we need to emphasize this}
+%For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}\EDJreply{(G |- t : T), which looks like (t : Tm G T) in QIIT/Agda is the derivation; so basically the term is the derivation (or proof), the types (Tm G T) is the judgement. It applies to each kind of judgement, for example, (G |- ), which looks like (G : Con), (G |-) is the derivation and (_ |- )is the judgement \\ 
+%Note that without referring to QIIT/Agda, the definition of judgement and derivation is still clear -- (G |- _ : T) is a judgement and a concrete proof/derivation we get for t like (G |- t : T) is the derivation. Similar for ( _ |- ) vs. (G |-) and (G |- _ ) vs (G |- T). \\ 
+%I think in intrinsic typing, knowing t and knowing (G |- t : T) is exactly the same (i.e. there are no two different derivations lead to the same t; for each t, there is only one derivation for it). This is not true for extrinsic typing. \\
+%If this prequisite knowledge is too involved, feel free to delete this sentence, I think I just want to say there are equality/quotient everywhere between all kinds of derivations(proof?data?) -- equality between terms, types, substitutions, contexts, linkage signatures ...\\
+%I think this is something standard from Martin Lof, since Martin Lof is the first guy talk about judgement.
+%}
 
 We use Tarski-style universes \cite{hofmann1997syntax},
 which, unlike Russell-style ones,
