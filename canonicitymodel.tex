@@ -36,19 +36,19 @@ We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in A
 \end{itemize}
 
 
-Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. 
+Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. 
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
-  \denotesC{\goodCtx{\Gm}{k}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
+  \denotesC{\goodCtx{\Gm}{k}} &= \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k} \quad \text{ i.e., sets indexed by closed substitution}\\
   % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
-  \denotesC{\goodType{\Gm}{T}{j}} & \text{ is a function maps to $\Set{j}$ s.t.} \\
-  & \text{for arbitrary } \gm \in \denotesC{\goodCtx{\Gm}{}}, \denotesC{\goodType{\Gm}{T}{}}(\gm) \text{ is a an element of } \Set{j}  \\ 
+  \denotesC{\goodType{\Gm}{T}{j}} & \text{ is a function maps to Set, s.t. for arbitrary } \goodSub{\cdot}{\gm}{\Gm} , \\
+  & \text{ and arbitrary } \goodTerm{\cdot}{t}{\sub{T}{\gm}}, \quad \text{ we have } \denotesC{\goodType{\Gm}{T}{}}(\gm)(t) \in \Set{j}  \\ 
   % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
   \denotesC{\goodSub{\Gm}{\gm}{\Delta}} & \text{ is a function}: \denotesC{\goodCtx{\Gm}{i}} \to \denotesC{\goodCtx{\Delta}{i}} \text{ s.t. } \denotesC{\goodSub{\Gm}{\gm}{\Delta}}(\sigma) \coloneqq \SubstComp{\sigma}{\gm} \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} & \text{ is a dependent function}: \prod_{\gm \in \denotesC{\goodCtx{\Gm}{i}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)  \text{ s.t. } \denotesC{\goodTerm{\Gm}{t}{T}}(\gm) \coloneqq \sub{t}{\gm} \\
-  \denotesC{\goodType{\Gm}{\top}{}}(\gm) &= \{t : t \equiv \unit \} \\
+  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(t) &= \{\star \ | \text{  when } t \equiv \unit \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm) &= \{t : t \equiv \true \text{ or } t \equiv\false \} \\
   \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm) &= \{t : t \equiv \eqrefl{\sub{a}{\gm}} \} \text{ when } \sub{a}{\gm} \equiv \sub{b}{\gm} \\ 
@@ -84,6 +84,9 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^c)^{#1}}}
 \newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+c}({#1},{#2},{#3})}}
 \newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^c({#1},{#2},{#3})}}
+
+The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\denotesC{\goodType{\Gm}{\top}{}} = $ $ \{\star \ | \text{  when } t \equiv \unit \}$ represents a singleton set when $t \equiv \unit$ or an empty set otherwise. However, not all the denotation of types are subsingleton---the salient counter-examples are $\denotes{\goodType{\Gm}{\cU}{}}$ and $\denotes{\goodType{\Gm}{\TyPi{A}{B}}{}}$. The non-trivial interpretation on these types is the main reason we use proof-relevant logical relations.
+
 
 Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\GluedPi{A'}{B'} = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
