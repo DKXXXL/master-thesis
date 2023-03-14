@@ -72,7 +72,12 @@ So are their introduction and elimination forms.
 Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
-For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}
+For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}\EDJreply{(G |- t : T), which looks like (t : Tm G T) in QIIT/Agda is the derivation; so basically the term is the derivation (or proof), the types (Tm G T) is the judgement. It applies to each kind of judgement, for example, (G |- ), which looks like (G : Con), (G |-) is the derivation and (_ |- )is the judgement \\ 
+Note that without referring to QIIT/Agda, the definition of judgement and derivation is still clear -- (G |- _ : T) is a judgement and a concrete proof/derivation we get for t like (G |- t : T) is the derivation. Similar for ( _ |- ) vs. (G |-) and (G |- _ ) vs (G |- T). \\ 
+I think in intrinsic typing, knowing t and knowing (G |- t : T) is exactly the same (i.e. there are no two different derivations lead to the same t; for each t, there is only one derivation for it). This is not true for extrinsic typing. \\
+If this prequisite knowledge is too involved, feel free to delete this sentence, I think I just want to say there are equality/quotient everywhere between all kinds of derivations(proof?data?) -- equality between terms, types, substitutions, contexts, linkage signatures ...\\
+I think this is something standard from Martin Lof, since Martin Lof is the first guy talk about judgement.
+}
 we introduce judgmental equality (of the form \goodTerm{\Gm}{t_1 \equiv t_2}{T})
 indicating convertibility.
 
@@ -133,12 +138,12 @@ types $\{(\wsigproj{i}{1}{\wsig}, \wsigproj{i}{2}{\wsig})\}_i$,
 modeling an inductive type of $n$ constructors. 
 %
 Rule~\ruleref{tm/wsup} states that the $i$-th pair $\goodType{\Gm}{\wsigproj{i}{1}{\wsig}}{}$ and 
-$\goodType{\Gm,\wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$\YZ{this is still in de Brujin}
+$\goodType{\Gm,x : \wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$\YZ{this is still in de Brujin}\EDJreply{Changed}
 models the $i$-th constructor---given
 two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
-$\goodTerm{\Gm, \mathit{self} : \nsub{\wsigproj{i}{2}{\wsig}}{x}{t_1}}{t_2}{\El{\wcode{\wsig}}}$,
-we can construct a term $\Wsup{i}{\wsig}{t_1}{\mathit{self}.t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
-W-type (\ruleref{tm/w}).\YZ{What's the rationale behind naming the free variable 'self'?}
+$\goodTerm{\Gm, x : \nsub{\wsigproj{i}{2}{\wsig}}{x}{t_1}}{t_2}{\El{\wcode{\wsig}}}$,
+we can construct a term $\Wsup{i}{\wsig}{t_1}{x.t_2}$ of the W-type. $\wcode{\wsig}$ gives the code of the
+W-type (\ruleref{tm/w}).\YZ{What's the rationale behind naming the free variable 'self'?}\EDJreply{Self is not making sense, changed sorry.}
 
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
