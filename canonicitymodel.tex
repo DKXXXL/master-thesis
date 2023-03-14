@@ -24,10 +24,12 @@ then by Curry-Howard Correspondence, this theorem provides a big-step interprete
 We first need the mathmatical setup to interpret universe level, following \citet{sterling2019algebraic}:
 
 \newcommand{\Set}[1]{\ensuremath{\texttt{Set}_{#1}}}
+\newtheorem{assumption}{Assumption}[section]
 
-{\textbf{Set-theoretic Universe Assumption.}} As a simplifying move, we assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our meta-logic.
+\begin{assumption}[Set-theoretic Universe Assumption] As a simplifying move, we assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our ambient meta-logic.
+\end{assumption}
 
-For people familiar with Agda, we can roughly consider Grothendieck Universe $\Set{i}$ as the $\Set{i}$ in Agda. In other words, each $\Set{i}$ is 
+We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in Agda. In other words, each $\Set{i}$ is 
 \begin{itemize}
   \item Closed under dependent function type and dependent tuple type. For example, later, for our interpretation of dependent function type, when we have $\denotesC{A}, \denotesC{B} \in \Set{i}$, we will have $\denotesC{\TyPi{A}{B}} \in \Set{i}$
   \item the hierarchy is cumulative as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$
@@ -38,10 +40,10 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
-  \denotesC{\goodCtx{\Gm}{i}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
+  \denotesC{\goodCtx{\Gm}{k}} & \text{ is a Set of closed substitution} \goodSub{\cdot}{\_}{\Gm} \\
   % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
-  \denotesC{\goodType{\Gm}{T}{}} & \text{ is a function maps to Set s.t.} \\
-  & \text{for arbitrary } \gm \in \denotesC{\goodCtx{\Gm}{}}, \denotesC{\goodType{\Gm}{T}{}}(\gm) \text{ is a Set of closed terms } \goodTerm{\cdot}{\_}{\sub{T}{\gm}} \\ 
+  \denotesC{\goodType{\Gm}{T}{j}} & \text{ is a function maps to $\Set{j}$ s.t.} \\
+  & \text{for arbitrary } \gm \in \denotesC{\goodCtx{\Gm}{}}, \denotesC{\goodType{\Gm}{T}{}}(\gm) \text{ is a an element of } \Set{j}  \\ 
   % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
   \denotesC{\goodSub{\Gm}{\gm}{\Delta}} & \text{ is a function}: \denotesC{\goodCtx{\Gm}{i}} \to \denotesC{\goodCtx{\Delta}{i}} \text{ s.t. } \denotesC{\goodSub{\Gm}{\gm}{\Delta}}(\sigma) \coloneqq \SubstComp{\sigma}{\gm} \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
@@ -66,6 +68,9 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &= \\
   \denotesC{\goodTerm{\Gm}{\fst{t}}{T}} &= \\
   \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
+  \denotesC{\goodType{\Gm}{\cU_j}{j}}(\gm) &= \{t : \goodTerm{\cdot}{t}{\El{T}}\} \quad \text{     for some } \goodTerm{\cdot}{T}{\cU_j}  \\
+  \denotesC{\goodTerm{\Gm}{\codety{T}}{\cU_j}}(\gm) &= \denotesC{T}(\gm) \\ 
+  \denotesC{\goodType{\Gm}{\El{T}}{j}}(\gm) &= \denotesC{T}(\gm) \\
 \end{align*}
 
 \newcommand{\Glued}[1]{\ensuremath{{#1}^c}}

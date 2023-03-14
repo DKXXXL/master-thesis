@@ -48,9 +48,9 @@ derivation of any judgement will track its ``context''.
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
       \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
-    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(\El{(\app{("pjr"^3~\denotesT{\sigma})})[(\SubstWeak{1}, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]}) \\
+    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(\El{(\app{("snd"^3~\denotesT{\sigma})})[(\SubstWeak{1}, \app{(\fst{("snd"^2~{\denotesT{\sigma}})})})]}) \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
-  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(\El{(\fst{(\snd{\denotesT{\sigma}})})})(\El{(\app{("pjr"^3~\denotesT{\sigma})} )}) \\
+  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(\El{(\fst{(\snd{\denotesT{\sigma}})})})(\El{(\app{("snd"^3~\denotesT{\sigma})} )}) \\
   &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
   \denotesT{\goodSigU{j}{\Gamma}{\LSigEmp}{0}} &= \unit \\ 
   \denotesT{\goodSigU{j}{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
