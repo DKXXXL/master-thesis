@@ -31,28 +31,29 @@ derivation of any judgement will track its ``context''.
 
 
 \begin{align*}
-  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
-  \text{such that } &\goodTerm{\Gm}{\denotesT{\goodSig{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}} \\
-  \text{We make } & ({\Sigr{\Gamma}{n}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ mutually recursive, } \\
+  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
+  \text{such that } &\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}} \\
+  \text{We make } & ({\Sigr{\Gamma}{n}{}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ mutually recursive, } \\
   & \text{defined by induction on $n$ and the signature length} \\  
   % \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
   % &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
-  {\Sigr{\Gamma}{(n+1)}} &= 
-    \Sigma~(\Sigr{\Gamma}{n})
-          ~(\Sigma~\cU
-                  ~(\Sigma~(\Pi(\denotesT{\TyTkg {("var"_0[p^1])}})(El~"var"_0[p^1]))~\cU)) \\
-  \Sigr{\Gamma}{0} &= \top \\
+  {\Sigr{\Gamma}{(n+1)}{j}} &= 
+    \Sigma~(\Sigr{\Gamma}{n}{})
+          ~(\Sigma~\cU_j \\
+          & \quad \quad ~(\Sigma~(\TyPi{\denotesT{\TyTkg {(\var{0}[\SubstWeak{1}])}}}{\El{\sub{\var{0}}{\SubstWeak{1}}}}) \\
+          & \quad \quad \quad \TyPi{\El{\sub{\var{0}}{\SubstWeak{1}}}}{\cU_j})) \\
+  \Sigr{\Gamma}{0}{j} &= \top \\
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
   \text{ and inductively on the signature length} \\
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
       \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
-    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(El \ (\app{("pjr"^3~\denotesT{\sigma})})[(p^1, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]) \\
+    \Sigma~\denotesT{\TyTkg {(\lsigproj{1}{\sigma})}}~(\El{(\app{("pjr"^3~\denotesT{\sigma})})[(\SubstWeak{1}, \app{(\fst{("pjr"^2~{\denotesT{\sigma}})})})]}) \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
-  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(El~(\fst{(\snd{\denotesT{\sigma}})}))(El~(\app{("pjr"^3~\denotesT{\sigma})} )) \\
+  \denotesT{\TyLkg{(\lsigproj{1}{\sigma})}} \times \Pi(\El{(\fst{(\snd{\denotesT{\sigma}})})})(\El{(\app{("pjr"^3~\denotesT{\sigma})} )}) \\
   &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
-  \denotesT{\goodSig{\Gamma}{\LSigEmp}{0}} &= \unit \\ 
-  \denotesT{\goodSig{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
+  \denotesT{\goodSigU{j}{\Gamma}{\LSigEmp}{0}} &= \unit \\ 
+  \denotesT{\goodSigU{j}{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{(\codety{T})}) \\ 
   \denotesT{\goodTerm{\Gamma}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \unit \\ 
   \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{(\LSigAdd{\sigma}{s}{T})}}} &= (\denotesT{m}, \lam{t}) \\ 
   \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
@@ -84,10 +85,10 @@ $\beta$-rules.
 
 We omit all the validation of equational rules ($\beta,\eta$ and substitution) here.
 However, when we mutual recursively define
-$\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}} $, and
+$\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}{}} $, and
 $\denotesT{\cP}$ above, we actually have to prove the substitution laws
-$\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n})}{\gm}
-\equiv \Sigr{\Gamma}{n}$ together. 
+$\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n}{})}{\gm}
+\equiv \Sigr{\Gamma}{n}{}$ together. 
 % The details (of all the equational rules) can be found in the appendices written in (pseudo-)Agda form. We encourage the reader to read that (pseudo-)Agda-style proof because it is more friendly to type theorists, easy to do type checking and
 % validate the proof and it is clearer on the mathematical object each
 % translation uses.
