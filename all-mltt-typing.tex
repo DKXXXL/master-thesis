@@ -297,11 +297,10 @@
   \goodSub{\Delta}{\delta}{\Theta}
   \\ \goodSub{\Gm}{\gm}{\Delta} 
 }{\goodSub{\Gm}{ \SubstComp{\delta}{\gm}}{\Theta}}
-
 \\
-
 \RuleWithName[name=sub/id]
 {""}{\goodSub{\Gm}{"id"}{\Gm}}
+
 \RuleWithName[name=sub/ext]
 {\goodSub{\Gm}{\gm}{\Delta} \\ \goodTerm{\Gm}{t}{ \sub{A}{\gm}}}
 {\goodSub{\Gm}{\SubstExt{\gm}{t}}{(\Delta, A)}}
@@ -313,12 +312,21 @@
 }{
     \goodSub{\Gm, A}{\SubstWeak{n+1} }{\Dl}
 }
+
 \RuleWithName[name=tm/var]{
     \goodCtx{\Gm, A_n, ..., A_1, A_0}{}
 }{
     \goodSub{\Gm, A_n, ..., A_1, A_0}{\var{n}}{\sub{A_n}{\SubstWeak{n+1}}}
 }
 
+\RuleWithName[name=sub/dbj/shift]{
+    \goodSub{\Gm}{\SubstWeak{n}}{\Dl}
+    \\
+    \goodType{\Dl}{A}{}
+}{
+    \goodSub{\Gm, \sub{A}{\gm}}{\gm^{\uparrow A} \equiv (\SubstExt{\gm \circ \SubstWeak{1}}{\var{0}}) }{\Dl , A}
+}
+\\
 \Rule[name=sub/wk]
 {\goodSub{\Gm}{\gm}{(\Delta, A)}}
 {\goodSub{\Gm}{\pi_1 \gm}{\Delta}}

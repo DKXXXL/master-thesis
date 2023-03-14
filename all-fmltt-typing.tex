@@ -338,25 +338,26 @@
 
 \\
 \Rule[name=tyeq/casety]{
-    \goodType{\Gm}{A}{}
+    \goodType{\Gm}{A}{i}
     \\
-    \goodType{\Gm, A}{B}{}
+    \goodType{\Gm, A}{B}{i}
     \\
-    \goodType{\Gm}{T}{}
+    \goodType{\Gm}{T}{j}
 }{
     \goodType{\Gm}{
         \CaseSig{A}{B}{R}
         \equiv
         \TyPi{A}{\TyPi {\TyPi{B}{\sub{R}{\SubstWeak{2}}}} {\sub{R}{\SubstWeak{2}}}}
-    }{}
+    }{i \lcup j}
 }
 \\
 
 \\
 \Rule[name=recl/defN]
-{\goodWSigU{}{\Gm}{\wsig}{n+1}
+{\goodWSigU{m}{\Gm}{\wsig}{n+1} \\
+ \goodType{\Gm}{R}{j}
 }
-{\goodSigU{}{\Gm}{\RecSig{\wsig}{R} \equiv 
+{\goodSigU{m \cup j}{\Gm}{\RecSig{\wsig}{R} \equiv 
         \LSigAdd{\RecSig{\WSigSub{\wsig}}{R}}
         {\pi_2}
         {\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R}} }{n+1}}
@@ -364,9 +365,10 @@
 
 \\
 \Rule[name=recl/def0]
-{\goodWSigU{}{\Gm}{\wsig}{0}
+{\goodWSigU{m}{\Gm}{\wsig}{0}\\
+\goodType{\Gm}{R}{j}
 }
-{\goodSigU{}{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
+{\goodSigU{m \cup j}{\Gm}{\RecSig{\wsig}{R} \equiv \LSigEmp}{0}}
 
 \Rule[name=recl/proj]
 { \goodWSigU{}{\Gm}{\wsig}{N}

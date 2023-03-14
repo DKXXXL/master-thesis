@@ -44,7 +44,9 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-Finally, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
+To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
+
+Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.
 
 \noindentparagraph{Explicit Universe Level.} Our treatment of universe level mainly follows that of \citet{altkap2016, kaposi2019gluing}. Universe level is mainly to get around the size issue---we cannot refer to(and thus quantifiy over) a set of all set (or a universe of all type). So everytime we want to quantify over a universe of types, we have to specify ``how large'' that universe is, that is basically what universe level is measuring. 
 
