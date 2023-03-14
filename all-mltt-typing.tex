@@ -95,7 +95,7 @@
 \begin{mathparpagebreakable}
 \Rule[name=ty/universe]
 { "" }
-{\goodType{\Gm}{\cU_j}{j}}
+{\goodType{\Gm}{\cU_j}{j + 1}}
 
 \Rule[name=ty/bool]
 { "" }
@@ -147,31 +147,31 @@
 {\goodSub{\Gm}{\gm}{\Delta}
 }
 {
-  \goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{j + 1} \\
-  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{0} \\ 
-  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{0} \\
-  \goodType{\Gm}{ \sub{(\TyPi {A} {B})}{\gm} \equiv \TyPi {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
+  \goodType{\Gm}{\sub{\cU}{\gm} \equiv \cU }{} \\
+  \goodType{\Gm}{\sub{\cB}{\gm} \equiv \cB}{} \\ 
+  \goodType{\Gm}{ \sub{\bot}{\gm} \equiv \bot}{} \\
+  \goodType{\Gm}{ \sub{(\TyPi {A} {B})}{\gm} \equiv \TyPi {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{}
   \\ 
-  \goodType{\Gm}{ \sub{(\TySigma{A}{B})}{\gm} \equiv \TySigma {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{j \cup k}
+  \goodType{\Gm}{ \sub{(\TySigma{A}{B})}{\gm} \equiv \TySigma {\sub{A}{\gm}} {\sub{B}{\gm^\uparrow}} }{}
   \\ 
-  \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{j \cup k}
-  \\   \goodType{\Gm}{ \sub{\TyS{a}}{\gm} \equiv \TyS{\sub{a}{\gm}} } {j \cup k}
+  \goodType{\Gm}{ \sub{(\TyId{a}{b})}{\gm} \equiv \TyId{\sub{a}{\gm}}{\sub{b}{\gm}} }{}
+  \\   \goodType{\Gm}{ \sub{\TyS{a}}{\gm} \equiv \TyS{\sub{a}{\gm}} } {}
 }
 
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
 \Rule[name=tm/code]
 {\goodType{\Gm}{T}{j}}
-{\goodTerm{\Gm}{\codety{T}}{\cU}
+{\goodTerm{\Gm}{\codety{T}}{\cU_j}
 }
 
 \Rule[name=ty/el]
-{\goodTerm{\Gm}{T}{\cU}}
+{\goodTerm{\Gm}{T}{\cU_j}}
 {\goodType{\Gm}{\El{T}}{j}}
 
 \Rule[name=tmeq/U/beta]
 {""}
-{\goodType{\Gm}{\El{\codety{T}} \equiv T}{j}}
+{\goodType{\Gm}{\El{\codety{T}} \equiv T}{}}
 
 \Rule[name=tmeq/U/eta]
 {""}

@@ -55,7 +55,9 @@ Finally, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a s
 
 % For people familiar with Agda, we can consider $\Set{i}$ as the one in Agda. In other words, each $\Set{i}$ is (1). closed under dependent function type and dependent tuple type, (2). cumulative as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$
 
-Now we will need to attach syntax pieces with natural number indicating universe level. The explicit universe level $i$ now will attach to each context and type judgement $\goodCtx{\Gm}{i}$ and $\goodType{\Gm}{T}{i}$ basically indicating the context $\Gm$ and $T$ inhabits at what universe. Apparently, universe level will also attach to $\cU$. For two universe level $i,j$ (as natural number), we use $i \lcup j$ to denotes $\max(i,j)$.
+Now we will need to some attach syntax pieces with natural number indicating universe level. The explicit universe level $i$ now will attach to each context and type judgement $\goodCtx{\Gm}{i}$ and $\goodType{\Gm}{T}{i}$ basically indicating the context $\Gm$ and $T$ inhabits at what universe. Apparently, universe level will also be attached to $\cU$. For two universe level $i,j$ (as natural number), we use $i \lcup j$ to denotes $\max(i,j)$.
+
+Since we work in an intrinsic-typed setting, some required premises can be omitted without ambiguity. For omitted context judgement $\goodCtx{\Gm}{k}$, the universe level is always $k$, hinted at the figure of judgement specification. Similar for type judgement $\goodType{\Gm}{T}{j}$.
 
 
 
