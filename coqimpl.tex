@@ -1,9 +1,6 @@
 We implement our language design as a Coq plugin.
-Rather than modifying the Coq kernel, a prototypical implementation as a
-plugin allows a clearly defined trusted base and
-improved compatibility with different versions of Coq.
-
-The implementation works by translating programs in \Lang syntax into
+%
+It works by translating programs in \Lang syntax into
 programs that can be checked and evaluated by Coq.
 The translation is compatible with interactive theorem proving (\ref{chg:tooling}), in that
 a family is translated piece by piece, allowing each field to be defined
@@ -212,7 +209,16 @@ Finally, the reference \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a family
 can simply be translated to \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a Coq module),
 as the last line of \cref{fig:stlcfix-compiled} shows.
 
-\noindentparagraph{Trusted base.} Finally, we emphasize that our compilation can make sure the trusted code base is restricted to the Coq's kernel, as all the feature supported by our plugin has been compiled into Coq's surface syntax/Vernacular commands.
+\noindentparagraph{Trusted base.}
+
+Rather than modifying the Coq kernel to extend its core theory, a translation to
+Coq conveniently reduces the trusted base of any development using \Lang to Coq.
+%and improves compatibility with different versions of Coq.
+In particular, once a family is closed, \lsti{Print Assumptions} can be used
+to verify that there are no lingering \lsti{Axiom}s introduced by the translation.
+Ramifications of possible bugs in the \Lang implementation are limited to
+the usability of the plugin.
+%Finally, we emphasize that our compilation can make sure the trusted code base is restricted to the Coq's kernel, as all the feature supported by our plugin has been compiled into Coq's surface syntax/Vernacular commands.
 
 \ifShowOldWriting
 
