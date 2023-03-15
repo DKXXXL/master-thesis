@@ -152,10 +152,10 @@ composed of $n$ pairs of types (\ruleref{wsig/empty} and \ruleref{wsig/add}) dir
 Each pair models a constructor of the inductive type.
 The $i$-th pair, projected from the signature~$\wsig$ using the forms
 $\goodType{\Gm}{\wsigproj{i}{1}{\wsig}}{}$ and
-$\goodType{\Gm,x : \wsigproj{i}{1}{\wsig}}{\wsigproj{i}{2}{\wsig}}{}$,
+$\goodTerm{\Gm}{\wsigproj{i}{2}{\wsig}}{\wsigproj{i}{1}{\wsig} \to \cU}$,
 defines the $i$-th constructor.
 That is, given two arguments $\goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}$ and
-$\goodTerm{\Gm, x : \nsub{\wsigproj{i}{2}{\wsig}}{x}{t_1}}{t_2}{\El{\wcode{\wsig}}}$,
+$\goodTerm{\Gm, x : \El{\wsigproj{i}{2}{\wsig}(t_1)} }{t_2}{\El{\wcode{\wsig}}}$,
 we can construct a term $\Wsup{i}{\wsig}{t_1}{x.t_2}$ of the W-type (\ruleref{tm/wsup}).
 $\wcode{\wsig}$ gives the code of the
 W-type (\ruleref{tm/w}).
@@ -329,7 +329,7 @@ and given the singleton type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$, where $\wsig_{
 is the W-type signature for \lsti{tm}.
 This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
-\item We illustrate the structure of W-type signature (as a list) here. $\wsig_{\texttt{tm}}^0, \wsig_{\texttt{tm}}^1$ are (the subparts of) the signatures of constructors \{"tm\_unit"\} and \{"tm\_unit","tm\_app"\} respectively. Each item in this W-type signature, having two types, corresponds to one constructor, where the first type stores the non-recursive part of the constructor and the second type stores the ``arity'' of the  recursive part. For example, the type of $"app" : ("tm" \to "tm" \to "tm")$ $\cong (\bbone \times (\bbtwo \to "tm") \to "tm")$, corresponds to the premise of rule \ruleref{tm/wsup} (where $\wsigproj{0}{1}{\wsig_{\texttt{tm}}^1} = \bbone, \wsigproj{0}{2}{\wsig_{\texttt{tm}}^1} = \bbtwo$). This type means there is no information on non-recursive part (thus use unit type $\bbone$) and the ``arity'' of the recursive part is $\bbtwo$ and thus $\wsig_{\texttt{tm}}^1 = \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\bbtwo}$.  The story is similar for $\wsig_{\texttt{tm}}^0$, where there is no recursive part at all and thus the ``arity'' is zero.
+\item We illustrate the structure of W-type signature (as a list) here. $\wsig_{\texttt{tm}}^0, \wsig_{\texttt{tm}}^1$ are (the subparts of) the signatures of constructors \{"tm\_unit"\} and \{"tm\_unit","tm\_app"\} respectively. Each item in this W-type signature, having two types, corresponds to one constructor, where the first type stores the non-recursive part of the constructor and the second type stores the ``arity'' of the  recursive part. For example, the type of $"app" : ("tm" \to "tm" \to "tm")$ $\cong (\bbone \times (\bbtwo \to "tm") \to "tm")$, corresponds to the premise of rule \ruleref{tm/wsup} (where $\wsigproj{0}{1}{\wsig_{\texttt{tm}}^1} = \bbone, \wsigproj{0}{2}{\wsig_{\texttt{tm}}^1} = \lambda \_ . \bbtwo$). This type means there is no information on non-recursive part (thus use unit type $\bbone$) and the ``arity'' of the recursive part is $\bbtwo$ and thus $\wsig_{\texttt{tm}}^1 = \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\lambda \_ .\bbtwo}$.  The story is similar for $\wsig_{\texttt{tm}}^0$, where there is no recursive part at all and thus the ``arity'' is zero.
 
 Generally speaking, the expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict positivity of Inductive type.
 \item 
