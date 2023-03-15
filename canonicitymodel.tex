@@ -34,6 +34,7 @@ We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in A
 \begin{itemize}
   \item Closed under dependent function type and dependent tuple type. For example, later, for our interpretation of dependent function type, when we have $\denotesC{A}, \denotesC{B} \in \Set{i}$, we will have $\denotesC{\TyPi{A}{B}} \in \Set{i}$
   \item the hierarchy is cumulative as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$
+  \item Thus if $\denotesC{A} \in \Set{i}, \denotesC{B} \in \Set{j}$, we will have $\denotesC{\TyPi{A}{B}} \in \Set{i} \cup \Set{j} = \Set{i \lcup j}$
 \end{itemize}
 
 
@@ -53,20 +54,20 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
   \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \\
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
-  \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')} \\
+  \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_2 \gm_t)  \} \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
   \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm)(\gm') &= \star^2 \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{a}(\gm) \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{a}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
   \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm)(\gm') &= \star\\
-  \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}} &= \\
-  \denotesC{\goodTerm{\Gm}{\app{t}}{B}} &= \\
-  \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &= \\
-  \denotesC{\goodTerm{\Gm}{\fst{t}}{T}} &= \\
-  \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
+  \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) ((\gm' , u')) \\
+  \denotesC{\goodTerm{\Gm}{\app{t}}{B}}(\gm)(\gm') &= \denotesC{t}(\pi_1 \gm)(\gm'[0])(\pi_2 \gm)(\gm'[1]) \\
+  \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}}(\gm)(\gm') &= (\denotesC{a}(\gm)(\gm') , \denotesC{b}(\gm)(\gm') )\\
+  \denotesC{\goodTerm{\Gm}{\fst{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[0] \\
+  \denotesC{\goodTerm{\Gm}{\snd{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[1]\\
   \denotesC{\goodType{\Gm}{\cU_j}{j+1}}(\gm)(\gm')(T) &= \{t : \goodTerm{\cdot}{t}{\El{T}}\}  \to \Set{j} \\
   \denotesC{\goodTerm{\Gm}{\codety{T}}{\cU_j}}(\gm)(\gm') &= \denotesC{T}(\gm)(\gm') \\ 
   \denotesC{\goodType{\Gm}{\El{T}}{j}}(\gm)(\gm')(t) &= \denotesC{T}(\gm)(\gm')(t) \\
@@ -87,7 +88,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
 
 
-The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\denotesC{\goodType{\Gm}{\top}{}} = $ $ \{\star \ | \text{  when } t \equiv \unit \}$ represents a singleton set when $t \equiv \unit$ or an empty set otherwise. However, not all the denotation of types are subsingleton---the salient counter-examples are $\denotes{\goodType{\Gm}{\cU}{}}$ and $\denotes{\goodType{\Gm}{\TyPi{A}{B}}{}}$. The non-trivial interpretation on these types is the main reason we use proof-relevant logical relations.
+The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set.
 
 
 Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm}{B}{}$. 
