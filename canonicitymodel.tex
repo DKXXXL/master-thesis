@@ -1,5 +1,6 @@
 Now we prove the consistency and canonicity using canoncity model. We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
-Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. Meanwhile, our proof will still work directly on the earlier introdcued syntax for readability.
+Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. Meanwhile, our proof will still work directly on the earlier introduced syntax for readability\footnote{We still take quotient, so ultimately our syntax should be considered as an instance of any of the above logical framework, without exposing the reader too many technical details}.
+
 We will first specify the formulation of the most basic canonicity theorem. 
 
 \begin{theorem}[Canonicity]
@@ -36,7 +37,7 @@ We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in A
 \end{itemize}
 
 
-Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. 
+Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. Our canonicity model at MLTT part is basically the same as shown in \citet{coquand2018canonicity}.
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
@@ -51,8 +52,8 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
   \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \\
-  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}} &= \\
-  \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}} &= \\
+  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
+  \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')} \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_2 \gm_t)  \} \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
