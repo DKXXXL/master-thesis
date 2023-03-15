@@ -144,7 +144,7 @@ The first observation is that, with this model, we know our system is consistent
   We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
 \end{theorem}
 
-What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \sub{\cB}{\SubstEmp} = \{\true, \false\}$, Thus $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
+What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$, witnessing $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
 
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
