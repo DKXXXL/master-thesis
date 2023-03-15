@@ -78,3 +78,5 @@ non-further-bindables
 CEK
 foci
 well-typedness
+quotiented
+Quotienting

@@ -72,8 +72,18 @@ So are their introduction and elimination forms.
 Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
-Definitional equalities (for each judgement) have the form
-\goodTerm{\Gm}{t_1 \equiv t_2}{T},\goodType{\Gm}{T_1 \equiv T_2}{},\goodCtx{\Gm_1 \equiv \Gm_2}{} ..., etc. Following \citet{altkap2016}, we consider our syntax to be quotiented by these equalities, and thus each syntax piece is actually one (equivalent) class of syntax. Doing such quotient gives us convertibility for free---when we have definitionally equal $A \equiv B$, thanks to the quotient, the derivation of $t : A$ is the same as the derivation of $t : B$.\YZ{Since you are talking about quotienting, should you mention that the underlying logical framework is QIIT?}
+Definitional equalities have the forms %(for each judgement)
+\goodCtx{\Gm_1 \equiv \Gm_2}{},
+\goodType{\Gm}{T_1 \equiv T_2}{},
+\goodTerm{\Gm}{t_1 \equiv t_2}{T},
+etc.
+Following \citet{altkap2016}, we regard our (intrinsically typed) syntax
+as being quotiented by these equalities.
+Quotienting facilitates coercion along equalities---given
+\goodCtx{\Gm_1 \equiv \Gm_2}{} and
+\goodType{\Gm_1}{T_1 \equiv T_2}{},
+the derivation of \goodTerm{\Gm_1}{t}{T_1} is considered definitionally equal to
+a derivation of \goodTerm{\Gm_2}{t}{T_2}.\YZ{Is this accurate?}
 %\YZ{should there be a convertibility rule?}\EDJreply{in this style, the quotient by judgemental equality is applied, so A is equal to B even in meta-logic, which means t : A is the same as t : B. Maybe this is something require emphasis? Because it is usually handled by LF (like QIIT) but now we are using bare hands so.... maybe we need to emphasize this}
 %For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}\EDJreply{(G |- t : T), which looks like (t : Tm G T) in QIIT/Agda is the derivation; so basically the term is the derivation (or proof), the types (Tm G T) is the judgement. It applies to each kind of judgement, for example, (G |- ), which looks like (G : Con), (G |-) is the derivation and (_ |- )is the judgement \\ 
 %Note that without referring to QIIT/Agda, the definition of judgement and derivation is still clear -- (G |- _ : T) is a judgement and a concrete proof/derivation we get for t like (G |- t : T) is the derivation. Similar for ( _ |- ) vs. (G |-) and (G |- _ ) vs (G |- T). \\ 
