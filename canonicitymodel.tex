@@ -48,7 +48,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodSub{\Gm}{\delta}{\Delta}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)} \denotesC{\goodCtx{\Dl}{}}(\delta \circ \gm) \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
-  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \ | \text{  when } t \equiv \unit \} \\
+  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
   \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \\
@@ -72,22 +72,28 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodType{\Gm}{\El{T}}{j}}(\gm)(\gm')(t) &= \denotesC{T}(\gm)(\gm')(t) \\
 \end{align*}
 
-\newcommand{\Glued}[1]{\ensuremath{{#1}^c}}
-\newcommand{\GluedPi}[2]{\ensuremath{\Pi^c({#1},{#2})}}
-\newcommand{\GSubstExt}[2]{\ensuremath{{#1},^c{#2}}}
-\newcommand{\Gpair}[2]{\ensuremath{({#1},^c{#2})}}
-\newcommand{\Gfst}[1]{\ensuremath{\texttt{fst}^c~{#1}}}
-\newcommand{\Gsnd}[1]{\ensuremath{\texttt{snd}^c~{#1}}}
-\newcommand{\Gsub}[2]{\ensuremath{{#1}\!\left[{#2}\right]^c}}
-\newcommand{\Gapp}[1]{\ensuremath{\texttt{app}^c({#1})}}
-\newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^c)^{#1}}}
-\newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+c}({#1},{#2},{#3})}}
-\newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^c({#1},{#2},{#3})}}
+\newcommand{\Glued}[1]{\ensuremath{{#1}^\bullet}}
+\newcommand{\GluedPi}[2]{\ensuremath{\Pi^\bullet({#1},{#2})}}
+\newcommand{\GSubstExt}[2]{\ensuremath{{#1},^\bullet{#2}}}
+\newcommand{\Gpair}[2]{\ensuremath{({#1},^\bullet{#2})}}
+\newcommand{\Gfst}[1]{\ensuremath{\texttt{fst}^\bullet~{#1}}}
+\newcommand{\Gsnd}[1]{\ensuremath{\texttt{snd}^\bullet~{#1}}}
+\newcommand{\Gsub}[2]{\ensuremath{{#1}\!\left[{#2}\right]^\bullet}}
+\newcommand{\Glam}[1]{\ensuremath{\lambda^\bullet({#1})}}
+\newcommand{\Gapp}[1]{\ensuremath{\texttt{app}^\bullet({#1})}}
+\newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^\bullet)^{#1}}}
+\newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+\bullet}({#1},{#2},{#3})}}
+\newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^\bullet({#1},{#2},{#3})}}
+\newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
+
 
 The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\denotesC{\goodType{\Gm}{\top}{}} = $ $ \{\star \ | \text{  when } t \equiv \unit \}$ represents a singleton set when $t \equiv \unit$ or an empty set otherwise. However, not all the denotation of types are subsingleton---the salient counter-examples are $\denotes{\goodType{\Gm}{\cU}{}}$ and $\denotes{\goodType{\Gm}{\TyPi{A}{B}}{}}$. The non-trivial interpretation on these types is the main reason we use proof-relevant logical relations.
 
 
-Once we have above model for MLTT, we can notice that we have a function $\Glued{\Pi}$ s.t. if $A' = \denotesC{A}, B' = \denotesC{B}$ then $\GluedPi{A'}{B'} = \denotesC{\TyPi{A}{B}}$. Type-theoretical speaking, this $\Glued{\Pi}$ is using the \emph{internal dependent function type} of the above model. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions. These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
+Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm}{B}{}$. 
+
+Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, that will return the syntax piece $S$ as well. Thus we can have a function $\Glued{\Pi}$ s.t. $\GluedPi{\denotesCC{A}}{\denotesCC{B}} = \denotesCC{\TyPi{A}{B}}$ now that syntax is also provided. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions.  What's more, given $\Glued{S}$ a pair of syntax and model , we denote $\Gmodel{\Glued{S}}$ as getting the (canonicity) model part (the second element in that pair).  
+% These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
 Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
@@ -98,42 +104,42 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodWSig{\Gm}{\wsig}{n}} &\text{ is a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
   & \text{we define }\TyLkg{}, \TyTkg{} \text{ inductively on its input signature} \\ 
-  \mathit{L}("nil") &= \denotesC{\top} \\
-  \mathit{L}((A,s,T) :: tl)(\gm) &= {\mathit{L}(tl)}(\gm) \times \GluedPi{A}{T}(\gm) \quad \text{($\times$ is a special case for $\Glued{\Sigma}$)}  \\
-  \mathit{P}("nil") &= \denotesC{\top}\\
-  \mathit{P}((A,s,T) :: tl) &= \Glued{\Sigma}(\mathit{P}(tl), \Gsub{T}{\GSubstExt{\Glued{\pi_1}}{s}}) \quad \text{(doing substitution on $T$)} \\
-  \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= \mathit{L}(\denotesC{\lsig}) \\
-  \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \mathit{P}(\denotesC{\lsig}) \\
+  \Glued{\mathit{L}}("nil") &= ( \TyLkg{\LSigEmp} , \denotesC{\top} ) \\
+  \Glued{\mathit{L}}((A,s,T) :: tl) &= {\Glued{\mathit{L}}(tl)}(\gm) \times^\bullet \GluedPi{A}{T} \quad \text{($\times^\bullet$ is a special case for $\Glued{\Sigma}$)}  \\
+  \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
+  \Glued{\mathit{P}}((A,s,T) :: tl) &= \Glued{\Sigma}(\Glued{\mathit{P}}(tl), \Gsub{T}{\GSubstExt{\Glued{\pi_1}}{s}}) \quad \text{(doing substitution on $T$)} \\
+  \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{L}}(\denotesC{\lsig})} \quad \text{ discard syntax info} \\
+  \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{P}}(\denotesC{\lsig})} \\
   % 
   \denotesC{\goodSig{\Gm}{\LSigEmp}{0}} &= "nil"\\ 
-  \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesC{A}, \denotesC{s}, \denotesC{T})::\denotesC{\lsig}\\ 
+  \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesCC{A}, \denotesCC{s}, \denotesCC{T})::\denotesC{\lsig}\\ 
   \denotesC{\goodSig{\Gm}{\lsigproj{1}{\lsig}}{n}} &= "tl"~\denotesC{\lsig}\\ 
-  \denotesC{\goodType{\Gm}{\lsigprojT{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[0] \quad \text{ take the first element in the tuple}\\ 
-  \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= ("hd"~\denotesC{\lsig})[1]\\ 
-  \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= ("hd"~\denotesC{\lsig})[2]\\
+  \denotesC{\goodType{\Gm}{\lsigprojT{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[0]} \quad \text{ take the first element in the tuple,...}\\ 
+  \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= \Gmodel{("hd"~\denotesC{\lsig})[1]} \quad \text{  ... and discard syntax}\\ 
+  \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[2]}\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm) &= (\denotesC{\lkg}(\gm), \lambda u . t (\gm, u)) \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}} &= \Gmodel{\Gpair{\denotesCC{\lkg}}{\Glam{\denotesCC{t}}}} \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{(\SubstId)}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{(\SubstId)}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}}
   \\ &\text{ when} \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
-  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyTkg{\lsig}}} &= \Gfst{\denotes{\lkg}} \\
-  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gapp{\Gsnd{\denotes{\lkg}}} \\
+  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gfst{\denotesCC{\lkg}}} \\
+  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gmodel{\Gapp{\Gsnd{\denotesCC{\lkg}}}} \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
-  \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesC{A} , \denotesC{B}) :: \denotesC{\wsig}\\
-  \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= (\text{ $j$-th element of }~\denotesC{\wsig})[0]\\
-  \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= (\text{ $j$-th element of }~\denotesC{\wsig})[1]\\
+  \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesCC{A} , \denotesCC{B}) :: \denotesC{\wsig}\\
+  \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[0]}\\
+  \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}} &= \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
-  {\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
+  \Gmodel{\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
   % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
   \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
-  RS~"nil"~R &= \denotesC{\LSigEmp} \\
+  RS~"nil"~R &= \denotesCC{\LSigEmp} \\
   RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
-  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= RS~\denotesC{\tau}~\denotesC{R} \\
+  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{R}} \\
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
 \end{align*}
