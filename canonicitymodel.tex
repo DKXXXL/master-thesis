@@ -40,37 +40,35 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
-  \denotesC{\goodCtx{\Gm}{k}} &= \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k} \quad \text{ i.e., sets indexed by closed substitution}\\
+  \denotesC{\goodCtx{\Gm}{k}} \text{ is a function }&: \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k} \quad \text{ (also sets indexed by closed substitution)}\\
   % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
-  \denotesC{\goodType{\Gm}{T}{j}} & \text{ is a function maps to Set, s.t. for arbitrary } \goodSub{\cdot}{\gm}{\Gm} , \\
-  & \text{ and arbitrary } \goodTerm{\cdot}{t}{\sub{T}{\gm}}, \quad \text{ we have } \denotesC{\goodType{\Gm}{T}{}}(\gm)(t) \in \Set{j}  \\ 
+  \denotesC{\goodType{\Gm}{T}{j}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} \\
   % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
-  \denotesC{\goodSub{\Gm}{\gm}{\Delta}} & \text{ is a function}: \denotesC{\goodCtx{\Gm}{i}} \to \denotesC{\goodCtx{\Delta}{i}} \text{ s.t. } \denotesC{\goodSub{\Gm}{\gm}{\Delta}}(\sigma) \coloneqq \SubstComp{\sigma}{\gm} \\
+  \denotesC{\goodSub{\Gm}{\delta}{\Delta}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)} \denotesC{\goodCtx{\Dl}{}}(\delta \circ \gm) \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
-  \denotesC{\goodTerm{\Gm}{t}{T}} & \text{ is a dependent function}: \prod_{\gm \in \denotesC{\goodCtx{\Gm}{i}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)  \text{ s.t. } \denotesC{\goodTerm{\Gm}{t}{T}}(\gm) \coloneqq \sub{t}{\gm} \\
-  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(t) &= \{\star \ | \text{  when } t \equiv \unit \} \\
-  \denotesC{\goodType{\Gm}{\bot}{}}(\gm) &= \emptyset \\
-  \denotesC{\goodType{\Gm}{\cB}{}}(\gm) &= \{t : t \equiv \true \text{ or } t \equiv\false \} \\
-  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm) &= \{t : t \equiv \eqrefl{\sub{a}{\gm}} \} \text{ when } \sub{a}{\gm} \equiv \sub{b}{\gm} \\ 
-  &= \emptyset \text{ otherwise } \\ 
+  \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
+  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \ | \text{  when } t \equiv \unit \} \\
+  \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
+  \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
+  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \\
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}} &= \\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}} &= \\
-  \denotesC{\goodCtx{\cdot}{}} &= \{\SubstEmp\} \text{  the singleton set with identity substitution} \\ 
-  \denotesC{\goodCtx{\Gm, T}{}} &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}, t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}  \} \\
-  \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm) &= \unit\\
-  \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm) &= \true \\
-  \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm) &= \false \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm) &= \denotesC{a}(\gm) \text{ if } \denotes{c}(\gm) \equiv \true \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm) &= \denotesC{b}(\gm) \text{ if } \denotes{c}(\gm) \equiv \false \\
-  \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm) &= \eqrefl{\sub{t}{\gm}}\\
+  \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
+  \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_2 \gm_t)  \} \\
+  \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
+  \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
+  \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm)(\gm') &= \star^2 \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{a}(\gm) \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
+  \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}} &= \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}} &= \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}} &= \\
   \denotesC{\goodTerm{\Gm}{\fst{t}}{T}} &= \\
   \denotesC{\goodTerm{\Gm}{\snd{t}}{T}} &= \\
-  \denotesC{\goodType{\Gm}{\cU_j}{j}}(\gm) &= \{t : \goodTerm{\cdot}{t}{\El{T}}\} \quad \text{     for some } \goodTerm{\cdot}{T}{\cU_j}  \\
-  \denotesC{\goodTerm{\Gm}{\codety{T}}{\cU_j}}(\gm) &= \denotesC{T}(\gm) \\ 
-  \denotesC{\goodType{\Gm}{\El{T}}{j}}(\gm) &= \denotesC{T}(\gm) \\
+  \denotesC{\goodType{\Gm}{\cU_j}{j+1}}(\gm)(\gm')(T) &= \{t : \goodTerm{\cdot}{t}{\El{T}}\}  \to \Set{j} \\
+  \denotesC{\goodTerm{\Gm}{\codety{T}}{\cU_j}}(\gm)(\gm') &= \denotesC{T}(\gm)(\gm') \\ 
+  \denotesC{\goodType{\Gm}{\El{T}}{j}}(\gm)(\gm')(t) &= \denotesC{T}(\gm)(\gm')(t) \\
 \end{align*}
 
 \newcommand{\Glued}[1]{\ensuremath{{#1}^c}}
@@ -140,13 +138,13 @@ The intuition of the model is similar to that of the syntactic translation---use
 \end{align*}
 
 
-The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \denotesC{\bot}(\star) = \emptyset$, that is an element in an empty set, a contradiction.
+The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, that is an element in an empty set, a contradiction.
 
 \begin{theorem}[Consistency]
   We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
 \end{theorem}
 
-What's more, with the above model, we can map an arbitrary closed term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \sub{\cB}{\SubstEmp} = \{\true, \false\}$, Thus $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
+What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp) = \sub{t}{\SubstEmp} \in \sub{\cB}{\SubstEmp} = \{\true, \false\}$, Thus $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
 
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
