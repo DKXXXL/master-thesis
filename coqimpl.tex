@@ -212,7 +212,7 @@ Finally, the reference \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a family
 can simply be translated to \lsti{STLCFix.typesafe} (where \lsti{STLCFix} is a Coq module),
 as the last line of \cref{fig:stlcfix-compiled} shows.
 
-\noindentparagraph{Trusted Code Base.} Finally we emphasize that our compilation can make sure the trusted code base is restricted to the Coq's kernel, as all the feature supported by our plugin has been compiled into Coq's surface syntax/Vernacular commands.
+\noindentparagraph{Trusted base.} Finally, we emphasize that our compilation can make sure the trusted code base is restricted to the Coq's kernel, as all the feature supported by our plugin has been compiled into Coq's surface syntax/Vernacular commands.
 
 \ifShowOldWriting
 
@@ -1176,13 +1176,16 @@ EndFamily.
 
 \fi
 
-\subsection{Implementation Limitation}
+\section{Limitations}
+\label{sec:limitations}
+
 We list some of the current limitation of our implementation. We believe some of these limitations can be remedied by more engineering efforts.
 \begin{itemize}
-  \item We don't support the full power of inductive facility in Coq for extensible inductive type---concretely, we don't support mutual inductive type, syntax extensions for inductive type and parameters in the inductive type (we only support indexed inductive type right now)
+  \item We don't support the full power of inductive facility in Coq for extensible inductive type---concretely, we don't support mutual inductive type, syntax extensions for inductive type and parameters in the inductive type (we only support indexed inductive type right now)\YZ{Can parameterized inductive types always be encoded as indexed inductive types?}
   \item We don't support mutual fixpoint definition
   \item We don't support incorporating "Hint" Vernacular commands, and thus the users cannot specify the database hints
   \item Unicode (i.e. "Require Import Coq.Unicode.Utf8.") is not compatible with our plugin 
   \item We don't consider the compatibility of universe polymorphism mechanism with our plugin
   \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
+  \item ...\YZ{We should mention the limitations mentioned in Review D and in our response. All these limitations can be split into two categories: (1) those that we believe can be fixed with more engineering effort, and (2) those that are more research-y.}
 \end{itemize}
