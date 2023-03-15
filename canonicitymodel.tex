@@ -56,7 +56,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
-  \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma , t) : \gamma \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_2 \gm_t)  \} \\
+  \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma' , t') : \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  \} \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
   \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm)(\gm') &= \star^2 \\
@@ -88,10 +88,10 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
 
 
-The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set.
+The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set. Here $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
 
 
-Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm}{B}{}$. 
+Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm, A}{B}{}$. 
 
 Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, that will return the syntax piece $S$ as well. Thus we can have a function $\Glued{\Pi}$ s.t. $\GluedPi{\denotesCC{A}}{\denotesCC{B}} = \denotesCC{\TyPi{A}{B}}$ now that syntax is also provided. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions.  What's more, given $\Glued{S}$ a pair of syntax and model , we denote $\Gmodel{\Glued{S}}$ as getting the (canonicity) model part (the second element in that pair).  
 % These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
@@ -152,7 +152,7 @@ The first observation is that, with this model, we know our system is consistent
   We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
 \end{theorem}
 
-What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$, witnessing $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
+What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$, witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
 
 
 With the logical relation and the help of eta rule, we figure out the following canonical form
