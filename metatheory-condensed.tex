@@ -236,12 +236,12 @@ In \TT, families are expressed through linkages, and late binding of
 field references is achieved by requiring that typing be polymorphic to
 the definition of that field.
 
-Well-formedness judgments of \emph{linkage signatures} have the form
+Well-formed \emph{linkage signatures} have the judgment form
 $\goodSig{\Gm}{\lsig}{n}$.
 As rules \ruleref{lsig/empty} and \ruleref{lsig/add} show, a linkage
 signature is a list of $n$~types.
 %
-Well-formedness judgments of \emph{linkages} have the form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
+Well-formed \emph{linkages} have the judgment form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
 where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
 As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
 of $n$~terms, each representing a field of the family modeled by the linkage.
@@ -441,7 +441,7 @@ The definitive version containing all the rules in \TT is stated in
 \ifreport \cref{sec:complete-fmltt}.
 \else a supplemental appendix.
 \fi
-using debruijn indices and explicit substitution.
+using de Bruijn indices and explicit substitution.
 An effort to mechanize the formalization is underway, by following  \citet{altkap2016} 
 to use quotient inductive-inductive types as 
 the logical framework to state the syntax and using Agda's
