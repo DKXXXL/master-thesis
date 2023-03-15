@@ -22,10 +22,13 @@ The framework is implemented as a Coq library.
 class of functors that admit least fixed points.
 \citet{keuchel2013generic} use datatype-generic programming techniques
 for the underlying representation of type-level fixed points and
-avoid \lsti{Set} impredicativity.\YZ{What can we say about Intrinsically-Typed Definitional Interpreters a La Carte?}\EDJreply{My understanding is,
- it is really an intrinsic typed version of MTC. It uses different set of tools (like containers (a la altenkirch, can be considered as an alternative of W-type) and stuff) but it is still a design pattern paper.
- But good news is, container is closer to Wtype(inductive type) than the endofunctor encoding (classic MTC approach)}\EDJreply{I also add one sentence after Coq a la carte. You can also check... I will add bib later. Interestingly, Intrinsic type doesn't refer Coq a la carte.}
-%\cite{vdr2022intrinsically}
+avoid \lsti{Set} impredicativity.
+%\Citet{vdr2022intrinsically} mechanize intrinsically-typed
+%target language based on container and signature \cite{altenkirch2015container}. 
+%Thanks to the nature of intrinsically-typed abstract syntax trees (ASTs) and Agda's advanced unification mechanism, the authors were able to eliminate a significant amount of code that dealt with "impossible" cases.
+%\YZ{What can we say about Intrinsically-Typed Definitional Interpreters a La Carte?}\EDJreply{My understanding is,
+% it is really an intrinsic typed version of MTC. It uses different set of tools (like containers (a la altenkirch, can be considered as an alternative of W-type) and stuff) but it is still a design pattern paper.
+% But good news is, container is closer to Wtype(inductive type) than the endofunctor encoding (classic MTC approach)}\EDJreply{I also add one sentence after Coq a la carte. You can also check... I will add bib later. Interestingly, Intrinsic type doesn't refer Coq a la carte.}
 
 All of these approaches are largely extra\-linguistic, in that they work
 within the confine of the language offered by a proof assistant, which
@@ -34,9 +37,9 @@ On the one hand,
 they can be conveniently distributed as libraries, and the encoding can
 be more easily adapted for new purposes.
 For example, MTC~\cite{delaware2013} has been applied to implementing
-composable program adverbs~\cite{liwei2022} and been adapted to support
+composable program adverbs~\cite{liwei2022} and been adapted to allow
 unanticipated feature extensions that require type changes
-\cite{delaware2013b}.
+\cite{delaware2013b,vdr2022intrinsically}.
 
 On the other hand, the extra\-linguistic nature of the approaches tend
 to lead to non-idiomatic code and offset their user-friendliness.
@@ -54,10 +57,7 @@ carte} approaches particularly for its extensive tool support for generating boi
 %
 But even with the tool support, components (e.g., "substlem") of
 individually developed feature extensions have to be composed separately
-by invoking the tool. \citet{vdr2022intrinsically} mechanize intrinsically-typed
-target language based on container and signature \cite{morris2009indexed}. 
-Thanks to the nature of intrinsically-typed abstract syntax trees (ASTs) and Agda's advanced unification mechanism, the authors were able to eliminate a significant amount of code that dealt with "impossible" cases.
-%
+by invoking the tool.
 %The approach does not seem to fully address the expression problem,
 %as \citet{liwei2022} observe, in that further extending a composed
 %mechanization causes (a small amount of) boilerplate code that glues definitions
@@ -110,12 +110,12 @@ our solution can be viewed as an effort to preempt refactoring by
 enabling the programmer to write code that has built-in hooks for
 future extensions.
 
-\noindentparagraph{Solutions to the expression problem} \!abound.
+\noindentparagraph{The expression problem.} Solutions abound.
 % \EDJ{I have been meaning to ask but is this ``abound'' you intentionally put outside of the boldfont?}\YZreply{Yes}
 Almost all involve some form of either explicit or implicit parameterization
 as extensibility hooks.
 Our approach is the first that applies family polymorphism~\cite{ernst2001family},
-an idea from OO research,
+mostly seen in OO languages,
 to the context of mechanized proofs.
 %Families in \Lang are second-class, in that they are not considered
 %terms by themselves.
