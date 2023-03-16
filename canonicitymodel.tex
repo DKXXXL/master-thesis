@@ -38,7 +38,7 @@ We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in A
 \end{itemize}
 
 
-Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. Our canonicity model at MLTT part is basically the same as shown in \citet{coquand2018canonicity}.
+Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. Our canonicity model at MLTT part is very close to the one shown in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
@@ -121,8 +121,8 @@ Now we can extend the above model to \TT , we still start with the judgement. Si
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
 \newcommand{\CWmodel}{\ensuremath{\mathit{W}^C}}
-\newcommand{\CWsup}{\ensuremath{\mathit{Wsup}^C}}
-\newcommand{\CWrec}{\ensuremath{\mathit{Wrec}^C}}
+\newcommand{\CWsup}{\ensuremath{\mathit{W^Csup}}}
+\newcommand{\CWrec}{\ensuremath{\mathit{W^Crec}}}
 
 \begin{align*}
   \denotesC{\goodSig{\Gm}{\lsig}{n}} & \text{ is a list of 3-tuple of length $n$  } \\
@@ -166,9 +166,15 @@ The intuition of the model is similar to that of the syntactic translation---use
   \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
   RS~"nil"~R &= \denotesCC{\LSigEmp} \\
   RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
-  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{R}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{R}} \\
+  \denotesC{\goodType{\Gm}{\RecSig{\wsig}{"R"}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{"R"}} \\
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
-  \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
+  \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}}(\gm)(\gm') &= \CWrec~(\lambda w. \denotesC{"R"}(\gm)(\gm')(\Wrec{\wsig}{\sub{\lkg}{\gm'}}{w}))~f^r~\sub{t}{\gm'}~(\denotesC{t}(\gm)(\gm')) \\
+  \text{ where } \quad f^r~j~\Glued{a}~b~b^C &= 
+  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{} 
+  \\
+  & \ \texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
+  & \quad 
+   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} & \quad ,\Glued{R} = \denotesCC{"R"}
 \end{align*}
 together and mutual recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$) ....
 
@@ -179,7 +185,7 @@ together and mutual recursively defined with the following inductively defined i
 \end{align*}
 ... and its eliminator principle $\CWrec$. 
 \begin{align*}
-  \CWrec &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
+  \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
     & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
@@ -187,10 +193,10 @@ together and mutual recursively defined with the following inductively defined i
     & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
-  \CWrec & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda )
+  \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
 \end{align*}
 
-Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of $\denotesC{\wcode{\wsig}}$, which after unfolding, will refers to $\CWmodel$ again and in strictly positive position. So it is a well-founded definition.
+Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of $\denotesC{\wcode{\wsig}}$, which after unfolding, will refers to $\CWmodel$ again and in strictly positive position. So it is a well-founded definition. We also don't distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity.
 
 
 The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, that is an element in an empty set, a contradiction.
