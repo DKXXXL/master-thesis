@@ -93,16 +93,35 @@ The counter-intuitive part of the proof-relevant logical relation is the treatme
 
 Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm, A}{B}{}$. 
 
-Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, that will return the syntax piece $S$ as well. Thus we can have a function $\Glued{\Pi}$ s.t. $\GluedPi{\denotesCC{A}}{\denotesCC{B}} = \denotesCC{\TyPi{A}{B}}$ now that syntax is also provided. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions.  What's more, given $\Glued{S}$ a pair of syntax and model , we denote $\Gmodel{\Glued{S}}$ as getting the (canonicity) model part (the second element in that pair).  
+Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, that will return the syntax piece $S$ as well.\footnote{This is also called glued interpretation in \citet{sterling2019algebraic}} Thus we can have a function $\Glued{\Pi}$ s.t. $\GluedPi{\denotesCC{A}}{\denotesCC{B}} = \denotesCC{\TyPi{A}{B}}$ now that syntax is also provided. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions.  What's more, given $\Glued{S}$ a pair of syntax and model , we denote $\Gmodel{\Glued{S}}$ as getting the (canonicity) model part (the second element in that pair).  
 % These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
+
+\newcommand{\GTy}[2]{\ensuremath{\Glued{\texttt{Ty}}_{#1}~{#2}}}
+\newcommand{\GCon}[1]{\ensuremath{\Glued{\texttt{Con}}_{#1}}}
+\newcommand{\GMWSig}[3]{\ensuremath{{\texttt{WSig}^C}_{#1}^{#3}~{#2}}}
+\newcommand{\GWSig}[3]{\ensuremath{{\Glued{\texttt{WSig}}}_{#1}^{#3}~{#2}}}
+
+
+There are actually more \emph{internal} type-theoretic construction to explore, and we need them to define the model for \TT as well. 
+
+We denote $\GCon{k} \coloneq \sum_{\goodCtx{\Gm}{k}} \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k}$ 
+
+and $\GTy{j}{\Glued{\Gm}} \coloneq \sum_{\goodType{\Gm}{T}{j}} \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} $ for $\Glued{\Gm} \in \GCon{k}$. 
+
+Basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$.
+
+Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A} \in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for $\Glued{\Gm} \in \GCon{k}$, which is basically a list of a pair of types of length $n$. As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n} \coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgement for W-type signature.
+
 
 Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
+
 \begin{align*}
   \denotesC{\goodSig{\Gm}{\lsig}{n}} & \text{ is a list of 3-tuple of length $n$  } \\
   % & \text{ and we define  } {\goodSigC{\Gm}{\lsig}{n}} :\iff \denotesC{\goodSig{\Gm}{\lsig}{n}} \text{ is defined} \\ 
-  \denotesC{\goodWSig{\Gm}{\wsig}{n}} &\text{ is a list of 2-tuple of length $n$ } \\
+  \denotesC{\goodWSigU{j}{\Gm}{\wsig}{n}} &: \GMWSig{j}{\denotesCC{\Gm}}{n} \\ 
+    &\text{ i.e., a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
   & \text{we define }\TyLkg{}, \TyTkg{} \text{ inductively on its input signature} \\ 
   \Glued{\mathit{L}}("nil") &= ( \TyLkg{\LSigEmp} , \denotesC{\top} ) \\
@@ -144,6 +163,13 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
 \end{align*}
+together with the following inductively defined indexed set and its eliminator principle. These can be directly translated into Agda but we use a more conventional math notation
+\begin{align*}
+  "Inductive"~CW_p : (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
+    "CWsup"_p : n < N \to 
+\end{align*}
+
+
 
 
 The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, that is an element in an empty set, a contradiction.
