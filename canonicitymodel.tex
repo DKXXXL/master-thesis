@@ -89,8 +89,9 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\GEl}[1]{\ensuremath{\Glued{\texttt{El}}({#1})}}
 \newcommand{\Gwcode}[1]{\ensuremath{\Glued{\texttt{W}}({#1})}}
 \newcommand{\GSubstId}{\ensuremath{\GSubstWeak{0}}}
-\newcommand{\Gwsigproj}[3]{\ensuremath{{\Glued{\texttt{w}\pi}}^{#1}_{\texttt{#2}}({#3})}}
-\newcommand{\GRecproj}[2]{\ensuremath{{\Glued{\texttt{R}\pi}}^{#1}({#2})}}
+\newcommand{\Gwsigproj}[3]{\ensuremath{\Glued{{\texttt{w}\pi^{#1}_{\texttt{#2}}}}({#3})}}
+\newcommand{\GRecproj}[2]{\ensuremath{\Glued{{\texttt{R}\pi^{#1}}}({#2})}}
+
 
 
 The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set. Here $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
@@ -180,7 +181,7 @@ The intuition of the model is similar to that of the syntactic translation---use
   \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
   \\
   & \ \texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
-  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\Recproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
+  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
    \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
