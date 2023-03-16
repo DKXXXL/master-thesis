@@ -86,6 +86,9 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+\bullet}({#1},{#2},{#3})}}
 \newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^\bullet({#1},{#2},{#3})}}
 \newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
+\newcommand{\GEl}[1]{\ensuremath{\Glued{\texttt{El}}({#1})}}
+\newcommand{\Gwcode}[1]{\ensuremath{\Glued{\texttt{W}}({#1})}}
+\newcommand{\GSubstId}{\ensuremath{\GSubstWeak{0}}}
 
 
 The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set. Here $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
@@ -112,7 +115,9 @@ and $\GTy{j}{\Glued{\Gm}} \coloneq \sum_{\goodType{\Gm}{T}{j}} \prod_{\goodSub{\
 
 and $\GTm{\Glued{\Gm}}{\Glued{T}} \coloneq \sum_{\goodTerm{\Gm}{t}{T}} \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in\Gmodel{\Glued{\Gm}}} \Gmodel{\Glued{T}}(\gm)(\gm')(\sub{t}{\gm})$
 
-Basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$. Bascially the four sets are collecting the glued interpretation.
+These four sets are collecting the glued interpretation:
+basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$. 
+
 
 Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A} \in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for $\Glued{\Gm} \in \GCon{k}$, which is basically a list of a pair of types of length $n$. As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n} \coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgement for W-type signature.
 
@@ -170,18 +175,19 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}}(\gm)(\gm') &= \CWrec~(\lambda w. \denotesC{"R"}(\gm)(\gm')(\Wrec{\wsig}{\sub{\lkg}{\gm'}}{w}))~f^r~\sub{t}{\gm'}~(\denotesC{t}(\gm)(\gm')) \\
   \text{ where } \quad f^r~j~\Glued{a}~b~b^C &= 
-  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{} 
+  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
   \\
   & \ \texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
+  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\Recproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
-   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} & \quad ,\Glued{R} = \denotesCC{"R"}
+   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \wsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
 together and mutual recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$) ....
 
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
-    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \sub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) }{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
+    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\wsig}}}{\GSubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
 ... and its eliminator principle $\CWrec$. 
 \begin{align*}
