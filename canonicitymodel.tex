@@ -89,6 +89,8 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 \newcommand{\GEl}[1]{\ensuremath{\Glued{\texttt{El}}({#1})}}
 \newcommand{\Gwcode}[1]{\ensuremath{\Glued{\texttt{W}}({#1})}}
 \newcommand{\GSubstId}{\ensuremath{\GSubstWeak{0}}}
+\newcommand{\Gwsigproj}[3]{\ensuremath{{\Glued{\texttt{w}\pi}}^{#1}_{\texttt{#2}}({#3})}}
+\newcommand{\GRecproj}[2]{\ensuremath{{\Glued{\texttt{R}\pi}}^{#1}({#2})}}
 
 
 The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set. Here $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
@@ -180,23 +182,23 @@ The intuition of the model is similar to that of the syntactic translation---use
   & \ \texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
   & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\Recproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
-   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \wsigproj{j}{2}{\Glued{\wsig}}
+   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
 together and mutual recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$) ....
 
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
-    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\wsig}}}{\GSubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
+    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
 ... and its eliminator principle $\CWrec$. 
 \begin{align*}
   \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
-    & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\ 
+    & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
-    b \in (\GTm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{\SubstId}{{a}}}) }{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}) \\ 
-    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
+    \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{\SubstId}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
+    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
