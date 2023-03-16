@@ -98,17 +98,21 @@ Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, tha
 
 \newcommand{\GTy}[2]{\ensuremath{\Glued{\texttt{Ty}}_{#1}~{#2}}}
 \newcommand{\GCon}[1]{\ensuremath{\Glued{\texttt{Con}}_{#1}}}
+\newcommand{\GTm}[2]{\ensuremath{\Glued{\texttt{Tm}}~{#1}~{#2}}}
 \newcommand{\GMWSig}[3]{\ensuremath{{\texttt{WSig}^C}_{#1}^{#3}~{#2}}}
 \newcommand{\GWSig}[3]{\ensuremath{{\Glued{\texttt{WSig}}}_{#1}^{#3}~{#2}}}
 
 
-There are actually more \emph{internal} type-theoretic construction to explore, and we need them to define the model for \TT as well. 
+There are actually more \emph{internal} type-theoretic construction to we need:
 
 We denote $\GCon{k} \coloneq \sum_{\goodCtx{\Gm}{k}} \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k}$ 
 
-and $\GTy{j}{\Glued{\Gm}} \coloneq \sum_{\goodType{\Gm}{T}{j}} \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} $ for $\Glued{\Gm} \in \GCon{k}$. 
 
-Basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$.
+and $\GTy{j}{\Glued{\Gm}} \coloneq \sum_{\goodType{\Gm}{T}{j}} \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} $ for $\Glued{\Gm} \in \GCon{k}$
+
+and $\GTm{\Glued{\Gm}}{\Glued{T}} \coloneq \sum_{\goodTerm{\Gm}{t}{T}} \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in\Gmodel{\Glued{\Gm}}} \Gmodel{\Glued{T}}(\gm)(\gm')(\sub{t}{\gm})$
+
+Basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$. Bascially the four sets are collecting the glued interpretation.
 
 Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A} \in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for $\Glued{\Gm} \in \GCon{k}$, which is basically a list of a pair of types of length $n$. As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n} \coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgement for W-type signature.
 
@@ -116,6 +120,9 @@ Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A} \
 Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
 The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
 
+\newcommand{\CWmodel}{\ensuremath{\mathit{W}^C}}
+\newcommand{\CWsup}{\ensuremath{\mathit{Wsup}^C}}
+\newcommand{\CWrec}{\ensuremath{\mathit{Wrec}^C}}
 
 \begin{align*}
   \denotesC{\goodSig{\Gm}{\lsig}{n}} & \text{ is a list of 3-tuple of length $n$  } \\
@@ -163,13 +170,27 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}} &= \\
 \end{align*}
-together with the following inductively defined indexed set and its eliminator principle. These can be directly translated into Agda but we use a more conventional math notation
+together and mutual recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$) ....
+
 \begin{align*}
-  "Inductive"~CW_p : (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
-    "CWsup"_p : n < N \to 
+  "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
+    \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
+    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \sub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) }{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
+\end{align*}
+... and its eliminator principle $\CWrec$. 
+\begin{align*}
+  \CWrec &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
+    (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
+    & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\ 
+    & \quad \quad \to 
+    b \in (\GTm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{\SubstId}{{a}}}) }{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}) \\ 
+    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
+    & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \\
+    & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
+  \CWrec & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda )
 \end{align*}
 
-
+Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of $\denotesC{\wcode{\wsig}}$, which after unfolding, will refers to $\CWmodel$ again and in strictly positive position. So it is a well-founded definition.
 
 
 The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, that is an element in an empty set, a contradiction.
