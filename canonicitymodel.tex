@@ -124,6 +124,8 @@ and $\GSub{\Glued{\Gm}}{\Glued{\Dl}} \coloneq \sum_{\goodSub{\Gm}{\delta}{\Dl}} 
 These four sets are collecting the glued interpretation:
 basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$, and etc.
 
+
+Note that, we have $\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$ prefix in $\GTy{}{}$, $\GTm{}{}$,$\GSub{}{}$. The interesting fact is, given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$ and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$. Thus we consider $(\gm, \gm') ~ \Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
 % Note that, for arbitrary $\Glued{\Gm} \in \GCon{k}$, we can consider it as $\Glued{\gm}$ as an element of $\GSub{\Glued{\cdot}}{}$
 
 
@@ -170,7 +172,7 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[0]}\\
   \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
-  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}} &= \\
+  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm') &= \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
@@ -205,7 +207,7 @@ together and mutual recursively defined with the following inductively defined i
     & \quad \quad \to 
     \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{\SubstId}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
     & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
-    & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \\
+    & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \quad \text{ (square bracket here just to make things readable)} \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
 \end{align*}
