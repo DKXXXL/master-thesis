@@ -1185,7 +1185,7 @@ EndFamily.
 \section{Limitations}
 \label{sec:limitations}
 
-The \Lang implementation currently does not support the full set of the Coq
+The \Lang implementation currently does not support Coq's full
 facility for inductive types and fixpoints;
 in particular, mutually inductive types and mutual fixpoints are not supported.
 The plugin supports indexed inductive types but not parameterized ones, though
@@ -1203,7 +1203,7 @@ addressed with more engineering effort of the same kind that went into \Lang.
 %  \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
 %\end{itemize}
 
-However, there are also limitations we believe require more research effort, including but not limited to: 
+However, there are also limitations we believe require more research effort or more thought from a language-design perspective, including but not limited to: 
 \begin{itemize}
   \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.\YZ{Is this really a limitation at all? Do we have to mention it?}
   \item ... \YZ{mention restricting induction to the top level}
