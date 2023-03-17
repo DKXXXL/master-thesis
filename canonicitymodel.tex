@@ -172,8 +172,8 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[0]}\\
   \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
-  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm') &= \\
-  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}} &= \\
+  \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm')(t) &= \CWmodel~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~t \\
+  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~(\Gsub{\denotesCC{a}}{\Glued{\gm}})~(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}}) \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
   \Gmodel{\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
