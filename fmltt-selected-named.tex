@@ -66,12 +66,12 @@
 %   \\
     \goodTerm{\Gm}{\wcode{\wsig}}{\cU}
 }
-
+\hfill
 \Rule[name=wsig/empty]{
 }{
     \goodWSig{\Gm}{\WSigEmp}{0}
 }
-
+\hfill
 \Rule[name=wsig/add]{
     \goodWSig{\Gm}{\wsig}{n}
     \\\\
@@ -81,14 +81,13 @@
 }{
     \goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}
 }
-
+\hfill
 \Rule[name=tm/wsup]{
     \goodWSig{\Gm}{\wsig}{n}
     \\
     \goodTerm{\Gm}{t_1}{\wsigproj{i}{1}{\wsig}}
     \\\\
-    \goodTerm{\Gm, x : \El{\napp{\wsigproj{i}{2}{\wsig}}{t_1}} }{t_2}{\El{\wcode{\wsig}}}\YZ{Is 'a' a typo?}\EDJreply{Yes. Fixed.}\YZreply{Two x's serving different purposes is a little confusing. The real cause you have to have two x's is that the projection does not return the free variable's name. Write this rule by induction on n (rater than projection)?}\EDJreply{Right. In intrinsic setting returning variable name is not making sense.  \\ I don't know what do you mean by writing by induction on n. Different B all needs to have an 'x' here. I don't see why induction on n is helpful for this. \\ Because this one can be written in debruijn without induction on n, so it also should be able to written in named without induction on n. I will conventionally make x : A (when appearing in B) into xA : B (when appearing in B) if you are okay with this? I changed two places for a look.}
-    \YZreply{The syntax for application is app(t1, t2), according to Figure 6}\EDJreply{Thanks. Fixed.}\YZreply{Doesn't seem fixed to me. I think you are not using app in the named syntax.}
+    \goodTerm{\Gm, x : \El{\napp{\wsigproj{i}{2}{\wsig}}{t_1}} }{t_2}{\El{\wcode{\wsig}}}
 %   \\
 %   i \in \{1, ..., n\}
 }{
