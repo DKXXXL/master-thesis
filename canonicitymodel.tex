@@ -49,6 +49,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodSub{\Gm}{\delta}{\Delta}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)} \denotesC{\goodCtx{\Dl}{}}(\delta \circ \gm) \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
+  \denotesC{\goodType{\Gm}{\sub{T}{\sigma}}{}}(\gm)(\gm') &= \\
   \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
@@ -125,7 +126,7 @@ These four sets are collecting the glued interpretation:
 basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$, and etc.
 
 
-Note that, we have $\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$ prefix in $\GTy{}{}$, $\GTm{}{}$,$\GSub{}{}$. The interesting fact is, given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$ and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$. Thus we consider $(\gm, \gm') ~ \Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
+Note that, we have $\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$ prefix in $\GTy{}{}$, $\GTm{}{}$,$\GSub{}{}$. The interesting fact is, given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$ and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$. Thus we consider the pair $(\gm, \gm')$ as $\Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
 % Note that, for arbitrary $\Glued{\Gm} \in \GCon{k}$, we can consider it as $\Glued{\gm}$ as an element of $\GSub{\Glued{\cdot}}{}$
 
 

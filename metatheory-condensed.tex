@@ -298,6 +298,18 @@ in a different context where the W-type signature~$\wsig$ is replaced by an exte
 
 \input{stlc-linkage-typing-named.tex}
 
+\begin{figure}
+  \begin{tabular}{|
+    >{\columncolor[HTML]{FFFFFF}}l |l|l|l|}
+    \hline
+    $\wsig_{\texttt{tm}}^{\texttt{unit}} \coloneq \WSigAdd{\WSigEmp}{\bbone}{\lambda \_ . \bbzero}$ 
+    & $\wsig_{\texttt{tm}}^{\texttt{var}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{unit}}}{"id"}{\lambda \_ . \bbzero}$
+    & $\wsig_{\texttt{tm}}^{\texttt{abs}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{var}}}{"id"}{\lambda \_ .\bbone} $ 
+    & $\wsig_{\texttt{tm}}^{\texttt{app}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{abs}}}{\bbone}{\lambda \_ .\bbtwo}$  \\ \hline
+    \end{tabular}
+\end{figure}
+
+
 We use \cref{fig:stlc-linkage-typing} to illustrate.
 On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
 is how the corresponding fields are modeled and typed in \TT.
