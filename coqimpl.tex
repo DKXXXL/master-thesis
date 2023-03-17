@@ -1185,19 +1185,28 @@ EndFamily.
 \section{Limitations}
 \label{sec:limitations}
 
-We list some of the current limitation of our implementation. We believe the following limitation can be rememdied by more engineering effort:
-\begin{itemize}
-  \item We don't support the full power of inductive facility in Coq for extensible inductive type---concretely, we don't support mutual inductive type, syntax extensions for inductive type and parameters in the inductive type (we only support indexed inductive type right now)\YZ{Can parameterized inductive types always be encoded as indexed inductive types?}\EDJreply{Yes. but practically the dependent elimination principle is different when using encoding.}
-  \item We don't support mutual fixpoint definition
-  \item We don't support incorporating "Hint" Vernacular commands, and thus the users cannot specify the database hints
-  \item Unicode (i.e. "Require Import Coq.Unicode.Utf8.") is not compatible with our plugin 
-  \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
-  \item ...\YZ{We should mention the limitations mentioned in Review D and in our response. All these limitations can be split into two categories: (1) those that we believe can be fixed with more engineering effort, and (2) those that are more research-y.}
-\end{itemize}
+The \Lang implementation currently does not support the full set of the Coq
+facility for inductive types and fixpoints;
+in particular, mutually inductive types and mutual fixpoints are not supported.
+The plugin supports indexed inductive types but not parameterized ones, though
+the latter can be encoded via the former.
+Partial recursors are automatically generated only for non-indexed inductive types.
+We believe that these limitations do not pose conceptual challenges and can be
+addressed with more engineering effort of the same kind that went into \Lang.
+
+%We list some of the current limitation of our implementation. We believe the following limitation can be rememdied by more engineering effort:
+%\begin{itemize}
+%  \item We don't support the full power of inductive facility in Coq for extensible inductive type---concretely, we don't support mutual inductive type, syntax extensions for inductive type and parameters in the inductive type (we only support indexed inductive type right now)\YZ{Can parameterized inductive types always be encoded as indexed inductive types?}\EDJreply{Yes. but practically the dependent elimination principle is different when using encoding.}
+%  \item We don't support mutual fixpoint definition
+%  \item We don't support incorporating "Hint" Vernacular commands, and thus the users cannot specify the database hints
+%  \item Unicode (i.e. "Require Import Coq.Unicode.Utf8.") is not compatible with our plugin 
+%  \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
+%\end{itemize}
 
 However, there are also limitations we believe require more research effort, including but not limited to: 
 \begin{itemize}
-  \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.  
+  \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.\YZ{Is this really a limitation at all? Do we have to mention it?}
+  \item ... \YZ{mention restricting induction to the top level}
   \item We don't support normalization of the open term using extensible inductive type. When applying recursor $Rec$ to open terms $t$ using extensible inductive type, the computation cannot be done by the Coq's kernel, thus the computation result of $Rec(t)$ is only propositionally equal (but not judgementally equal) to $Rec(t)$. It will complicate typechecking of the dependently typed terms. 
 \end{itemize}
 
