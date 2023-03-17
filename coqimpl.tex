@@ -1185,13 +1185,13 @@ EndFamily.
 \section{Limitations}
 \label{sec:limitations}
 
-The \Lang implementation currently does not support Coq's full
-facility for inductive types and fixpoints;
-in particular, mutually inductive types and mutual fixpoints are not supported.
-The plugin supports indexed inductive types but not parameterized ones, though
-the latter can be encoded via the former.
+The \Lang implementation currently does not yet bring extensibility to Coq's full
+facility for inductive types.
+Mutually inductive types and parameterized inductive types are not yet extensible,
+though indexed inductive types are supported and can be used to encode parameterized ones.
 Partial recursors are automatically generated only for non-indexed inductive types.
-We believe that these limitations do not pose conceptual challenges and can be
+The case studies in \cref{sec:casestudies} do not exercise these features.
+We believe that they do not pose conceptual challenges and can be
 addressed with more engineering effort of the same kind that went into \Lang.
 
 %We list some of the current limitation of our implementation. We believe the following limitation can be rememdied by more engineering effort:
@@ -1203,10 +1203,21 @@ addressed with more engineering effort of the same kind that went into \Lang.
 %  \item We only support automatic generation of partial recursor and the computation information for non-indexed inductive type 
 %\end{itemize}
 
-However, there are also limitations we believe require more research effort or more thought from a language-design perspective, including but not limited to: 
-\begin{itemize}
-  \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.\YZ{Is this really a limitation at all? Do we have to mention it?}
-  \item The current recursion mechanism supported by "FRecursion" and "FInduction" only works at top level. Further research efforts are necessary to enable the appearance of recursion handlers at any location while facilitating extensibility of the handlers at said locations. Additionally, a suitable Coq tactic is required to accompany this functionality. \YZ{mention restricting induction to the top level}
-  \item We don't support normalization of the open term using extensible inductive type. When applying recursor $Rec$ to open terms $t$ using extensible inductive type, the computation cannot be done by the Coq's kernel, thus the computation result of $Rec(t)$ is only propositionally equal (but not judgementally equal) to $Rec(t)$. It will complicate typechecking of the dependently typed terms. 
-\end{itemize}
+What seems to require more thought from a language-design perspective is the
+restriction that recursion and induction (on extensible types) cannot be nested.
+%and must be at the top level through the \lsti{FRecursion} and \lsti{FInduction}
+%commands.
+A possible solution is to make the plugin generate proof obligations for
+nested pattern matches when the inductive types acquire new constructors.
+%
+Also limiting (and interesting for future research) is
+that generated propositional equalities cannot be used by Coq to automatically
+reduce terms to definitionally equal forms, which causes inconveniences for
+developments using intrinsically typed syntax.
+
+%\begin{itemize}
+%  \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.\YZ{Is this really a limitation at all? Do we have to mention it?}
+%  \item The current recursion mechanism supported by "FRecursion" and "FInduction" only works at top level. Further research efforts are necessary to enable the appearance of recursion handlers at any location while facilitating extensibility of the handlers at said locations. Additionally, a suitable Coq tactic is required to accompany this functionality.
+%  \item We don't support normalization of the open term using extensible inductive type. When applying recursor $Rec$ to open terms $t$ using extensible inductive type, the computation cannot be done by the Coq's kernel, thus the computation result of $Rec(t)$ is only propositionally equal (but not judgementally equal) to $Rec(t)$. It will complicate typechecking of the dependently typed terms. 
+%\end{itemize}
 
