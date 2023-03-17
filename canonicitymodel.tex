@@ -49,7 +49,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodSub{\Gm}{\delta}{\Delta}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)} \denotesC{\goodCtx{\Dl}{}}(\delta \circ \gm) \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
-  \denotesC{\goodType{\Gm}{\sub{T}{\sigma}}{}}(\gm)(\gm') &= \\
+  \denotesC{\goodType{\Gm}{\sub{T}{\sigma}}{}}(\gm)(\gm')(t) &= \denotesC{T}(\sigma \circ \gm)(\denotes{\sigma}(\gm)(\gm'))(t)\\
   \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= \{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \} \quad \text{disjoint union} \\
@@ -58,6 +58,7 @@ Like most logical relation proof,  we interpret each judgement and inductively i
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \{ (\gamma' , t') : \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  \} \\
+  \denotesC{\goodTerm{\Gm}{\sub{t}{\sigma}}{\sub{T}{\sigma}}}(\gm)(\gm') &= \denotesC{t}(\sigma \circ \gm)(\denotesC{\sigma}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
   \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm)(\gm') &= \star^2 \\
@@ -156,6 +157,7 @@ The intuition of the model is similar to that of the syntactic translation---use
   % 
   \denotesC{\goodSig{\Gm}{\LSigEmp}{0}} &= "nil"\\ 
   \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesCC{A}, \denotesCC{s}, \denotesCC{T})::\denotesC{\lsig}\\ 
+  \denotesC{\goodSig{\Gm}{\sub{\lsig}{\gm}}{n}} & \text{ is done by point-wise/component-wise substitution} \\
   \denotesC{\goodSig{\Gm}{\lsigproj{1}{\lsig}}{n}} &= "tl"~\denotesC{\lsig}\\ 
   \denotesC{\goodType{\Gm}{\lsigprojT{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[0]} \quad \text{ take the first element in the tuple,...}\\ 
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= \Gmodel{("hd"~\denotesC{\lsig})[1]} \quad \text{  ... and discard syntax}\\ 
@@ -170,6 +172,7 @@ The intuition of the model is similar to that of the syntactic translation---use
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gmodel{\Gapp{\Gsnd{\denotesCC{\lkg}}}} \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
   \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesCC{A} , \denotesCC{B}) :: \denotesC{\wsig}\\
+  \denotesC{\goodWSig{\Gm}{\sub{\wsig}{\gm}}{n}} & \text{ is done by point-wise/component-wise substitution} \\
   \denotesC{\goodType{\Gm}{\wsigproj{j}{1}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[0]}\\
   \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
