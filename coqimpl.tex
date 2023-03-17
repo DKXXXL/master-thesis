@@ -1206,7 +1206,7 @@ addressed with more engineering effort of the same kind that went into \Lang.
 However, there are also limitations we believe require more research effort or more thought from a language-design perspective, including but not limited to: 
 \begin{itemize}
   \item We didn't considered the compatibility of universe polymorphism mechanism of Coq with our plugin except we know our plugin elaborate families into modules. Thus our implementation is supposed to be as compatible with universe polymorphism as Coq's Module.\YZ{Is this really a limitation at all? Do we have to mention it?}
-  \item ... \YZ{mention restricting induction to the top level}
+  \item The current recursion mechanism supported by "FRecursion" and "FInduction" only works at top level. Further research efforts are necessary to enable the appearance of recursion handlers at any location while facilitating extensibility of the handlers at said locations. Additionally, a suitable Coq tactic is required to accompany this functionality. \YZ{mention restricting induction to the top level}
   \item We don't support normalization of the open term using extensible inductive type. When applying recursor $Rec$ to open terms $t$ using extensible inductive type, the computation cannot be done by the Coq's kernel, thus the computation result of $Rec(t)$ is only propositionally equal (but not judgementally equal) to $Rec(t)$. It will complicate typechecking of the dependently typed terms. 
 \end{itemize}
 
