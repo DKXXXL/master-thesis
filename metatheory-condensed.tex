@@ -83,7 +83,7 @@ Quotienting facilitates coercion along equalities---given
 \goodCtx{\Gm_1 \equiv \Gm_2}{} and
 \goodType{\Gm_1}{T_1 \equiv T_2}{},
 the derivation of \goodTerm{\Gm_1}{t}{T_1} is considered definitionally equal to
-a derivation of \goodTerm{\Gm_2}{t}{T_2}.\YZ{Is this accurate??}
+a derivation of \goodTerm{\Gm_2}{t}{T_2}.\YZ{Is this accurate??}\EDJreply{Yes. In QIIT model, it looks like `t : Tm G1 T1' and  `t : Tm G2 T2'. In extenional Agda, because ``G1 = G2'', ``T1 = T2'', thus the two types `Tm G2 T2 = Tm G1 T1'. So they are the same derivation in QIIT. In our setup, we have the same idea, because after quotient, G1 refers to same object as G2, so the derivation is the same.}
 %\YZ{should there be a convertibility rule?}\EDJreply{in this style, the quotient by judgemental equality is applied, so A is equal to B even in meta-logic, which means t : A is the same as t : B. Maybe this is something require emphasis? Because it is usually handled by LF (like QIIT) but now we are using bare hands so.... maybe we need to emphasize this}
 %For each derivation (of each judgment)\YZ{I don't get what 'each derivation' or 'each judgment' means}\EDJreply{(G |- t : T), which looks like (t : Tm G T) in QIIT/Agda is the derivation; so basically the term is the derivation (or proof), the types (Tm G T) is the judgement. It applies to each kind of judgement, for example, (G |- ), which looks like (G : Con), (G |-) is the derivation and (_ |- )is the judgement \\ 
 %Note that without referring to QIIT/Agda, the definition of judgement and derivation is still clear -- (G |- _ : T) is a judgement and a concrete proof/derivation we get for t like (G |- t : T) is the derivation. Similar for ( _ |- ) vs. (G |-) and (G |- _ ) vs (G |- T). \\ 
