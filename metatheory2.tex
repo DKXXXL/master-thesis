@@ -35,10 +35,16 @@ judgmental equalities by construction.
 We review the base MLTT fragment of \TT first.
 \input{all-mltt-typing}
 
-\noindentparagraph{Debruijn Indices and Explicit Substitution.}  The change of the syntax formulation is important to the simplicity of our proof, as we want to handle the proof about substitutions and terms uniformly---thus making substitution as part of the syntax (explicit substitution) will be helpful. 
+\noindentparagraph{De Bruijn Indices and Explicit Substitution.}
 
-Variables are in the form of \citeauthor{debruijn1964} indices:
-\var{n} is the variable bound by the $n$-th closest enclosing binder.
+\Citeauthor{debruijn1964} indices and explicit substitutions make details about
+binders and substitutions explicit.
+%The change of the syntax formulation is important to the simplicity of our
+%proof, as we want to handle the proof about substitutions and terms
+%uniformly---thus making substitution as part of the syntax (explicit
+%substitution) will be helpful. 
+
+The form \var{n} represents a variable bound by the $n$-th closest enclosing binder.
 For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
 %
 Substitutions are typed with the form 
@@ -55,9 +61,9 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
+To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.\YZ{$\pi_1$ and $\pi_2$ should be added to the syntax figure}
 
-Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.
+Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.\YZ{The shift rule has bugs: premise says n, conclusion says 1.}
 
 
 
