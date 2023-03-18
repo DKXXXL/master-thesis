@@ -223,12 +223,12 @@ We use the inductive facility of the meta\-logic to justify our W-types.
     &\text{ i.e., a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
   & \text{we define }\TyLkg{}, \TyTkg{} \text{ inductively on its input signature} \\ 
-  \Glued{\mathit{L}}("nil") &= ( \TyLkg{\LSigEmp} , \denotesC{\top} ) \\
-  \Glued{\mathit{L}}((A,s,T) :: tl) &= {\Glued{\mathit{L}}(tl)}(\gm) \times^\bullet \GluedPi{A}{T} \quad \text{($\times^\bullet$ is a special case for $\Glued{\Sigma}$)}  \\
+  \mathit{L}("nil") &=  \denotesC{\top}  \\
+  \mathit{L}((A,s,T) :: tl)(\gm)(\gm')(t) &= {\mathit{L}(tl)}(\gm)(\gm')(\lkgproj{1}{t}) \times \Gmodel{\GluedPi{A}{T}}(\gm)(\gm')(\lam{\lkgproj{2}{t}})   \\
   \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
   \Glued{\mathit{P}}((A,s,T) :: tl) &= \Glued{\Sigma}(\Glued{\mathit{P}}(tl), \Gsub{T}{\GSubstExt{\Glued{\pi_1}}{s}}) \quad \text{(doing substitution on $T$)} \\
-  \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{L}}(\denotesC{\lsig})} \quad \text{ discard syntax info} \\
-  \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{P}}(\denotesC{\lsig})} \\
+  \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= {\mathit{L}(\denotesC{\lsig})} \\
+  \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{P}}(\denotesC{\lsig})} \quad \text{ discard syntax info}  \\
   % 
   \denotesC{\goodSig{\Gm}{\LSigEmp}{0}} &= "nil"\\ 
   \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesCC{A}, \denotesCC{s}, \denotesCC{T})::\denotesC{\lsig}\\ 
@@ -238,13 +238,13 @@ We use the inductive facility of the meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= \Gmodel{("hd"~\denotesC{\lsig})[1]} \quad \text{  ... and discard syntax}\\ 
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[2]}\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}} &= \Gmodel{\Gpair{\denotesCC{\lkg}}{\Glam{\denotesCC{t}}}} \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{(\SubstId)}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}}
   \\ &\text{ when} \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
-  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gfst{\denotesCC{\lkg}}} \\
-  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}} &= \Gmodel{\Gapp{\Gsnd{\denotesCC{\lkg}}}} \\
+  \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
+  \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}}(\gm_+)(\gm_+') &= ((\denotesC{\ell}(\pi_1{\gm_+})(\gm_+'[0]))[1])(\pi_2{\gm_+})(\gm_+'[1]) \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
   \denotesC{\goodWSig{\Gm}{\WSigAdd{\wsig}{A}{B}}{n+1}} &= (\denotesCC{A} , \denotesCC{B}) :: \denotesC{\wsig}\\
   \denotesC{\goodWSig{\Gm}{\sub{\wsig}{\gm}}{n}} & \text{ is done by point-wise/component-wise substitution} \\
