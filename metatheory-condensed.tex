@@ -164,9 +164,9 @@ one can construct a term $\Wsup{i}{\wsig}{t_1}{x.t_2}$ of the W-type \El{\wcode{
 $\wcode{\wsig}$ gives the code of the
 W-type (\ruleref{tm/w}).
 
-For each pair of types identifying a constructor, the first type may be thought of
-as the non-inductive part of the constructor, and the second type as the arity
-of the inductive part.
+For each pair of types identifying a constructor, the first type models
+the non-inductive arguments of the constructor, and the second type models the \emph{arity}
+of the inductive arguments.
 For example, the signature~$\wsig_{\texttt{tm}}$ of the W-type modeling
 the inductive type~\lsti{tm} (\cref{fig:stlc-mechanized})
 is constructed as follows,
@@ -192,7 +192,9 @@ $\wsig_{\texttt{tm}}^0 \coloneq \WSigAdd{\WSigEmp}{\bbone}{\lambda \_ . \bbzero}
 \end{align*}
 
 \noindent
-Thus, the encoding of \lsti{tm_abs} has type
+While \lsti{tm_unit} and \lsti{tm_var} have no inductive arguments,
+\lsti{tm_abs} has one and \lsti{tm_app} has two.
+The encoding of \lsti{tm_abs} has type
 $T_{\texttt{id}} \to (\bbone \to \El{\wcode{\wsig_{\texttt{tm}}}}) \to \El{\wcode{\wsig_{\texttt{tm}}}}$,
 and that of \lsti{tm_app} has type
 $\bbone \to (\bbtwo \to \El{\wcode{\wsig_{\texttt{tm}}}}) \to \El{\wcode{\wsig_{\texttt{tm}}}}$.
