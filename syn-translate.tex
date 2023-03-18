@@ -1,12 +1,18 @@
-The implementation described in \cref{sec:coqimpl} has hinted the fact that
-linkage can be translated into dependent tuple type.
-The described compilation strategy can be considered as
-a \textit{type preserving syntactic translation}, a function mapping from our syntactic
-model(typed Abstract Syntax Tree(AST)) to a ``subpart''\footnote{Not exactly subpart---the only
-difference lies in "Wrec". In our metatheory, it is constructed
-using linkage; in ``subpart'', it will be using $\Sigma$-types (translation
-of the linkage).} of our syntactic model(typed AST) \textit{without
-linkages}.
+We present a translation from the \TT syntax to the fragment of \TT without
+linkage signatures or linkages.
+The translation echoes how the \Lang plugin is implemented (\cref{sec:coqimpl})
+as a translation to Coq without facilities for family polymorphism.
+In \Lang, families are compiled to Coq modules; similarly, in this appendix
+we translate linkages in \TT to dependent tuples.
+The translation is type-preserving by construction, as we work in an
+intrinsically typed setting.
+%The described compilation strategy can be considered as
+%a \textit{type preserving syntactic translation}, a function mapping from our syntactic
+%model(typed Abstract Syntax Tree(AST)) to a ``subpart''\footnote{Not exactly subpart---the only
+%difference lies in "Wrec". In our metatheory, it is constructed
+%using linkage; in ``subpart'', it will be using $\Sigma$-types (translation
+%of the linkage).} of our syntactic model(typed AST) \textit{without
+%linkages}.
 
 This ``subpart'' is the standard MLTT with our
 (unconventional) formulation of W-types,
@@ -22,7 +28,6 @@ corresponding $\Sigma$-types.
 % \newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
 We use $\denotesT{}$ as the translation. This translation behaves like identity
-\YZ{What does "invariant" mean?}\EDJreply{behaves like identity. Sorry I should have said "subpart is invariant under this translation" instead}
 under the subpart. Since we are in an intrinsic setting, everything here
 is well-typed (well-formed)including this translation. Thus
 $\denotesT{T}$ means the same as $\denotesT{\goodType{\Gamma}{T}{}}$
