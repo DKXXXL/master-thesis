@@ -31,6 +31,7 @@ judgmental equalities by construction.
 
 
 \subsection{MLTT with Explicit Substitutions and Universe Levels}
+\label{sec:mltt-full}
 
 We review the base MLTT fragment of \TT first.
 \input{all-mltt-typing}
@@ -86,10 +87,11 @@ The notation $i \lcup j$ denotes $\max(i,j)$.
 
 
 % Copy and Paste Intuition of MLTT from other places to here
-\subsection{Declarative Syntax for \TT : an MLTT variant with Linkages}
-Compared to MLTT, \TT has 3 more judgements about signatures and linkage transformers. Moreover, the linkage transformer can be considered as a syntactic sugar (or ``library functions'' in the main text) (we will show why at the end). 
-Since it is a syntactic sugar, we will not consider about the linkage transformers during meta-theoretic reasoning.
+\subsection{\TT}
+\label{sec:fmltt-full}
 
+\TT extends the MLTT in \cref{sec:mltt-full} with W-type signatures and W-types,
+linkage signatures and linkages, and linkage transformers.
 
 \input{all-fmltt-typing}
 
@@ -98,9 +100,33 @@ Since it is a syntactic sugar, we will not consider about the linkage transforme
 
 % Deal with intuition
 
+\noindentparagraph{Linkage transformers as syntactic sugar.}
 
+%Moreover, the linkage transformer can be considered as a syntactic sugar (or
+%``library functions'' in the main text) (we will show why at the end).
+%Since it is a syntactic sugar, we will not consider about the linkage
+%transformers during meta-theoretic reasoning.
+
+%Observe the syntax, linkage transformer and its judgement is defined above 
+%other parts. 
+%
+%So we can inductively define the syntax sugar $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ using constructors $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$. Then we define the $\inh{h}{\ell}$ and the explicit substitution for linkage transformer $\sub{h}{\gm}$ by induction on the structure of linkage transformer $h$, based on the equality
+%%\EDJ{Add substitution equalities for linkage transformers} 
+%given in the syntax. In that way, the explicit substituon for linkage transformer becomes meta-level substitution again; and $\inh{h}{\ell}$ is not itself a syntax but a meta-level computation that leads to a syntax.
+
+As mentioned in \cref{sec:metatheory2}, the five forms of linkage transformers can be
+thought of a library of functions that are used to construct linkages from other
+linkages.
+In particular, their typing rules are defined in terms of the rest of the typing
+rules in \TT.
+Thus, linkage transformers $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ can be defined
+as syntactic sugar via an inductive type with constructors\YZ{I reinterpreted what you wrote, but this sentence doesn't sound right to me. If linkage transformers are meta-level inductive types, aren't they just part of the syntax?}
+$\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$, and
+the syntax $\inh{h}{\ell}$ and $\sub{h}{\gm}$ can be defined by induction on
+this inductive type.
 
 \subsection{Syntactic Translation to get rid of Linkages}
+
 
 \input{syn-translate.tex}
 
@@ -112,10 +138,3 @@ Since it is a syntactic sugar, we will not consider about the linkage transforme
 \subsection{Proof Relevant Logical Relation for Canonicity}
 \input{canonicitymodel.tex}
 
-\subsection{Linkage Transformer as Syntax Sugar}
-Observe the syntax, linkage transformer and its judgement is defined above 
-other parts. 
-
-So we can inductively define the syntax sugar $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ using constructors $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$. Then we define the $\inh{h}{\ell}$ and the explicit substitution for linkage transformer $\sub{h}{\gm}$ by induction on the structure of linkage transformer $h$, based on the equality
-%\EDJ{Add substitution equalities for linkage transformers} 
-given in the syntax. In that way, the explicit substituon for linkage transformer becomes meta-level substitution again; and $\inh{h}{\ell}$ is not itself a syntax but a meta-level computation that leads to a syntax.
