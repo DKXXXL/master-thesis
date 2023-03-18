@@ -62,9 +62,9 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.\YZ{$\pi_1$ and $\pi_2$ should be added to the syntax figure}
+To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.\YZ{$\pi_1$ and $\pi_2$ should be added to the syntax figure}\EDJreply{I added it, it is right after sub/dbj/shift.}
 
-Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.\YZ{The shift rule has bugs: premise says n, conclusion says 1.}
+Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.\YZ{The shift rule has bugs: premise says n, conclusion says 1.}\EDJreply{Thanks, fixed.}
 
 
 
@@ -117,10 +117,10 @@ linkage signatures and linkages, and linkage transformers.
 As mentioned in \cref{sec:metatheory2}, the five forms of linkage transformers can be
 thought of a library of functions that are used to construct linkages from other
 linkages.
-In particular, their typing rules are defined in terms of the rest of the typing
+In particular, their typing rules is defined in terms of the rest of the typing
 rules in \TT.
-Thus, linkage transformers $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ can be defined
-as syntactic sugar via an inductive type with constructors\YZ{I reinterpreted what you wrote, but this sentence doesn't sound right to me. If linkage transformers are meta-level inductive types, aren't they just part of the syntax?}
+Thus, linkage transformers $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ can be defined as syntactic sugar via an inductive type with constructors
+\YZ{I reinterpreted what you wrote, but this sentence doesn't sound right to me. If linkage transformers are meta-level inductive types, aren't they just part of the syntax?}\EDJreply{I think the reason that they are syntactic sugar is because they can be interpreted using FMLTT syntax(without them), it is fine either the syntactic sugar is defined via inductive type (and then interpreted), or directly interpreted. Maybe I should remove this misleading sentence? \\ What's more, the specification/definition of syntactic sugar itself, is inductive type. Because a linkage transformer looks inductive. Maybe I should directly separate the typing rules for linkage transformer as another figure to emphasize it as an inductive construction on the rest FMLTT syntax?}
 $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$, and
 the syntax $\inh{h}{\ell}$ and $\sub{h}{\gm}$ can be defined by induction on
 this inductive type.
