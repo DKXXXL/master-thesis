@@ -164,6 +164,42 @@ one can construct a term $\Wsup{i}{\wsig}{t_1}{x.t_2}$ of the W-type \El{\wcode{
 $\wcode{\wsig}$ gives the code of the
 W-type (\ruleref{tm/w}).
 
+\medskip
+
+\begin{tabular}{|
+>{\columncolor[HTML]{FFFFFF}}l |l|l|l|}
+\hline
+$\wsig_{\texttt{tm}}^{\texttt{unit}} \coloneq \WSigAdd{\WSigEmp}{\bbone}{\lambda \_ . \bbzero}$ 
+& $\wsig_{\texttt{tm}}^{\texttt{var}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{unit}}}{"id"}{\lambda \_ . \bbzero}$
+& $\wsig_{\texttt{tm}}^{\texttt{abs}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{var}}}{"id"}{\lambda \_ .\bbone} $ 
+& $\wsig_{\texttt{tm}}^{\texttt{app}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{abs}}}{\bbone}{\lambda \_ .\bbtwo}$  \\ \hline
+\end{tabular}
+
+We illustrate the structure of W-type signature (as a list) here.
+$\wsig_{\texttt{tm}}^0, \wsig_{\texttt{tm}}^1$ are (the subparts of) the
+signatures of constructors \{"tm\_unit"\} and \{"tm\_unit","tm\_app"\}
+respectively. Each item in this W-type signature, having two types, corresponds
+to one constructor, where the first type stores the non-recursive part of the
+constructor and the second type stores the ``arity'' of the  recursive part. For
+example, the type of $"app" : ("tm" \to "tm" \to "tm")$ $\cong (\bbone \times
+(\bbtwo \to "tm") \to "tm")$, corresponds to the premise of rule
+\ruleref{tm/wsup} (where $\wsigproj{0}{1}{\wsig_{\texttt{tm}}^1} = \bbone,
+\wsigproj{0}{2}{\wsig_{\texttt{tm}}^1} = \lambda \_ . \bbtwo$). This type means
+there is no information on non-recursive part (thus use unit type $\bbone$) and
+the ``arity'' of the recursive part is $\bbtwo$ and thus $\wsig_{\texttt{tm}}^1
+= \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\lambda \_ .\bbtwo}$.  The story is
+similar for $\wsig_{\texttt{tm}}^0$, where there is no recursive part at all and
+thus the ``arity'' is zero.\YZ{Feels like it's more straightforward to just list
+the encodings of the four constructors of tm in a table, assuming an encoding of
+the identifier type. And this paragraph should be moved to the earlier paragraph
+on W-types. I'll take a stab at this.}
+
+Generally speaking, the expressiveness of W-types comes from the ``arity'', as
+it encodes the case when recursive structure stores as the output of a function,
+mirroring the strict positivity of Inductive type.
+
+\medskip
+
 W-types are eliminated with the form $\Wrec{\wsig}{\lkg}{t}$, where $t$ is of a
 W-type $\El{\wcode{\wsig}}$, and $\lkg$ is essentially an $n$-tuple of
 case handlers for the $n$ constructors in~$\wsig$ (\ruleref{tm/wrec}).
@@ -298,18 +334,6 @@ in a different context where the W-type signature~$\wsig$ is replaced by an exte
 
 \input{stlc-linkage-typing-named.tex}
 
-\begin{figure}
-  \begin{tabular}{|
-    >{\columncolor[HTML]{FFFFFF}}l |l|l|l|}
-    \hline
-    $\wsig_{\texttt{tm}}^{\texttt{unit}} \coloneq \WSigAdd{\WSigEmp}{\bbone}{\lambda \_ . \bbzero}$ 
-    & $\wsig_{\texttt{tm}}^{\texttt{var}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{unit}}}{"id"}{\lambda \_ . \bbzero}$
-    & $\wsig_{\texttt{tm}}^{\texttt{abs}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{var}}}{"id"}{\lambda \_ .\bbone} $ 
-    & $\wsig_{\texttt{tm}}^{\texttt{app}} \coloneq \WSigAdd{\wsig_{\texttt{tm}}^{\texttt{abs}}}{\bbone}{\lambda \_ .\bbtwo}$  \\ \hline
-    \end{tabular}
-\end{figure}
-
-
 We use \cref{fig:stlc-linkage-typing} to illustrate.
 On the left is code excerpted from \cref{fig:stlc-mechanized}, and on the right
 is how the corresponding fields are modeled and typed in \TT.
@@ -347,9 +371,6 @@ and given the singleton type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$, where $\wsig_{
 is the W-type signature for \lsti{tm}.
 This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
-\item We illustrate the structure of W-type signature (as a list) here. $\wsig_{\texttt{tm}}^0, \wsig_{\texttt{tm}}^1$ are (the subparts of) the signatures of constructors \{"tm\_unit"\} and \{"tm\_unit","tm\_app"\} respectively. Each item in this W-type signature, having two types, corresponds to one constructor, where the first type stores the non-recursive part of the constructor and the second type stores the ``arity'' of the  recursive part. For example, the type of $"app" : ("tm" \to "tm" \to "tm")$ $\cong (\bbone \times (\bbtwo \to "tm") \to "tm")$, corresponds to the premise of rule \ruleref{tm/wsup} (where $\wsigproj{0}{1}{\wsig_{\texttt{tm}}^1} = \bbone, \wsigproj{0}{2}{\wsig_{\texttt{tm}}^1} = \lambda \_ . \bbtwo$). This type means there is no information on non-recursive part (thus use unit type $\bbone$) and the ``arity'' of the recursive part is $\bbtwo$ and thus $\wsig_{\texttt{tm}}^1 = \WSigAdd{\wsig_{\texttt{tm}}^0}{\bbone}{\lambda \_ .\bbtwo}$.  The story is similar for $\wsig_{\texttt{tm}}^0$, where there is no recursive part at all and thus the ``arity'' is zero.\YZ{Feels like it's more straightforward to just list the encodings of the four constructors of tm in a table, assuming an encoding of the identifier type. And this paragraph should be moved to the earlier paragraph on W-types. I'll take a stab at this.}
-
-Generally speaking, the expressiveness of W-types comes from the ``arity'', as it encodes the case when recursive structure stores as the output of a function, mirroring the strict positivity of Inductive type.
 \item 
 The next four fields model the four constructors of~\lsti{tm}.
 Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{\bot}$
