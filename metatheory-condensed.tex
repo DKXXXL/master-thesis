@@ -9,8 +9,8 @@ while maintaining consistency and canonicity.
 
 For accessibility of the main text, \cref{sec:metatheory2} presents \TT using
 named variables and meta-level substitution.
-For clarity of proof details, the technical appendix supplementing
-\cref{sec:metatheory2} instead uses de Bruijn indices and explicit substitution.
+For clarity of proof details, a technical appendix supplementing
+\cref{sec:metatheory2} instead uses \citeauthor{debruijn1964} indices and explicit substitution \cite{abadi1989subst}.
 %
 We acknowledge that the presentation is dense for an audience
 unacquainted with MLTT, so we summarize the salient points first.
@@ -514,14 +514,15 @@ can be used to model the construction of a derived family as a linkage transform
 
 The definitive version containing all the rules in \TT is stated in
 \ifreport \cref{sec:complete-fmltt}.
-\else a supplemental appendix.
+\else a technical appendix.
 \fi
-using de Bruijn indices and explicit substitution.
-An effort to mechanize the formalization is underway, by following  \citet{altkap2016} 
-to use quotient inductive-inductive types as 
-the logical framework to state the syntax and using Agda's
-\lsti{REWRITE} pragma to replace the limited uses of equality reflection appeared in 
-an extensional meta\-logic. 
+This definitive version uses de Bruijn indices and explicit substitution.
+An effort to mechanize the formalization is underway. It follows \citet{altkap2016}
+in using quotient inductive-inductive types (QIITs) as 
+the logical framework to state intrinsically typed syntax (and also
+in using Agda's \lsti{REWRITE} pragma to replace the limited uses of equality
+reflection, as Agda does not support QIITs natively).
+%in the extensional meta\-logic. 
 
 
 %a \textbf{pen-and-paper} formalization
