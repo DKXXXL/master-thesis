@@ -48,17 +48,17 @@ defined by induction on $n$ and the signature length.
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}}, \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\sigma} 
   \text{ and inductively on the signature length} \\
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} = \top \quad
-      \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\ 
+      \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
   \denotesT{\goodType{\Gamma}{\TyTkg {\sigma}}{}} &= 
     \Sigma~\denotesT{\TyTkg {\lsigproj{1}{\sigma}}}~(\El{\app{"snd"^3~\denotesT{\sigma}}[(\SubstWeak{1}, \app{\fst{("snd"^2~{\denotesT{\sigma}})}})]}) \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
   \denotesT{\TyLkg{\lsigproj{1}{\sigma}}} \times \Pi(\El{\fst{(\snd{\denotesT{\sigma}})}})(\El{\app{"snd"^3~\denotesT{\sigma}}}) \\
   &\text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}} \\
-  \denotesT{\goodSigU{j}{\Gamma}{\LSigEmp}{0}} &= \unit \\ 
-  \denotesT{\goodSigU{j}{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{\codety{T}}) \\ 
-  \denotesT{\goodTerm{\Gamma}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \unit \\ 
-  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{\LSigAdd{\sigma}{s}{T}}}} &= (\denotesT{m}, \lam{t}) \\ 
-  \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\ 
+  \denotesT{\goodSigU{j}{\Gamma}{\LSigEmp}{0}} &= \unit \\
+  \denotesT{\goodSigU{j}{\Gamma}{\LSigAdd{\sigma}{f}{T}}{n+1}} &= (\denotesT{\sigma}, \codety{A}, \lam{f}, \lam{\codety{T}}) \\
+  \denotesT{\goodTerm{\Gamma}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \unit \\
+  \denotesT{\goodTerm{\Gamma}{\mu^+~m~t}{\TyLkg{\LSigAdd{\sigma}{s}{T}}}} &= (\denotesT{m}, \lam{t}) \\
+  \denotesT{\goodTerm{\Gamma}{\Tkg{m}}{\TyTkg {\sigma}}} & \text{ is defined upon } \denotesT{m} \text{ and inductively on the signature length} \\
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
   (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
@@ -71,12 +71,15 @@ defined by induction on $n$ and the signature length.
 
 
 
-The main idea of this syntactic translation is that, we make sure
-$\goodSig{\Gamma}{\nu^+ \_ }{n+1}$ and $\goodSig{\Gamma}{\mu^+ \_}{n+1}$
-wrapped into a dependent pair. These two definitions decide the
-syntactic translation for $\goodSig{\Gamma}{\_}{n}$ and $\cL$. The
-syntactic translation for $\cP$ are decided by their
-$\beta$-rules. 
+The main idea is that
+%$\goodSig{\Gamma}{\nu^+ \_ }{n+1}$
+a linkage $\goodSig{\Gamma}{\mu^+ \_}{n+1}$
+is translated to a non-dependent tuple while introducing explicit universal
+quantification to the second component of the tuple;
+the universal quantification achieves late binding.
+%These two definitions decide the syntactic translation for
+%$\goodSig{\Gamma}{\_}{n}$ and $\cL$.
+The translation for $\cP$ is given by the relevant $\beta$-rules.
 
 % We use the local morphism\cite{abbott2003category} (the same one for encoding the Sealing
 % judgements) to translate inheritance judgement. This is mainly due to
@@ -85,8 +88,8 @@ $\beta$-rules.
 % and inheritance rule, but all of the translation for inh judgment are
 % induced by the $\beta$-rule of \ruleref{Inh}.
 
-We omit all the validation of equational rules ($\beta,\eta$ and substitution) here.
-However, when we mutual recursively define
+We omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
+However, when we mutually recursively define
 $\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}{}} $, and
 $\denotesT{\cP}$ above, we actually have to prove the substitution laws
 $\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n}{})}{\gm}
@@ -96,21 +99,22 @@ $\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\De
 % translation uses.
 
 
-Ultimately, we have constructed a model for our syntax using only a
-``subpart'' of our syntax -- without these linkages. It is also
-possible to compile our $\goodWSig{\Gamma}{w}{n}$ and W-type into a more
-conventional formulation, but the recursor will always require a sigma
-type as handler and thus the elimination rule for our W-type is still
-non-conventional.
-
-This translation justifies the intuition -- a linkage is actually a
-module \textbf{with universal quantification wrapping its fields to
-achieve late binding}. 
-
-After syntactic translation, we can directly have consistency and
-canonicity \textit{if we assume the consistency and canonicity of the
-``subpart''}. However, due to our non-conventional formulation of the
-inductive type, it is better we don't impose such assumption and
-directly give a consistency and canonicity proof.
+We have constructed a model for the \TT syntax using
+only the linkage-irrelevant fragment of the syntax.
+%It is also
+%possible to compile our $\goodWSig{\Gamma}{w}{n}$ and W-type into a more
+%conventional formulation, but the recursor will always require a sigma
+%type as handler and thus the elimination rule for our W-type is still
+%non-conventional.
+%
+%This translation justifies the intuition -- a linkage is actually a
+%module \textbf{with universal quantification wrapping its fields to
+%achieve late binding}. 
+%
+We would have consistency and canonicity for \TT immediately, if we could assume
+the consistency and canonicity of the linkage-irrelevant fragment.
+However, because our formulation of W-types is unconventional,
+we choose not to take such an assumption for granted and choose to directly prove
+consistency and canonicity for \TT.
 
 
