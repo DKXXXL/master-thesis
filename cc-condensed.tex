@@ -30,6 +30,10 @@ So canonicity serves to justify the computational nature of the type theory.
 We prove \cref{thm:consistency,thm:canonicity} by constructing a logical-relations model
 for the well-formedness rules, following prior approaches~\cite{coquand2018canonicity,kaposi2019gluing,sterling2019algebraic}.
 %
+The model interprets a linkage~$\LkgAdd{\lkg}{t}$ as a pair where the
+second component is a function (modeling late binding),
+as rule \ruleref{l/add} indicates.
+%
 The model interprets the bottom type~$\bot$ as an empty set, from which
 \cref{thm:consistency} follows.
 A closed, well-formed type $\goodType{\cdot}{T}{}$ is interpreted as
