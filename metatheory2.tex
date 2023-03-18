@@ -1,20 +1,34 @@
-In this section, we lay out the complete version of the syntax of \TT but in the style of \citeauthor{debruijn1964} indices and \emph{explicit substitutions}~\cite{substcalculus,abadi1989subst}:
-substitutions~$\gm$ and their applications (e.g., in the form of \sub{T}{\gm}) are part
-of the syntax rather than meta-operations. What's more, we also make universe level explicit for completeness.
+This appendix supplements \cref{sec:metatheory2} with the details of the syntax
+and the proofs of the main results.
 
-Other parts of the syntax remained the same as the main text.  
+Unlike in \cref{sec:metatheory2}, which uses named binders, in this appendix we
+use \citeauthor{debruijn1964} indices and \emph{explicit
+substitutions}~\cite{abadi1989subst,substcalculus}:
+substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}, which
+applies~$\gm$ to the type~$T$) are part of the syntax rather than
+meta-operations. 
+We work in an intrinsically typed setting: terms are well typed by construction.
+This style of syntax formulation follows a recent
+trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}
+known as the ``algebraic presentation'' of MLTT.
+%We introduce judgmental equality ($\equiv$)
+%for derivations (of all kinds of judgements). In other words, we will have judgemental equality between terms, 
+%contexts, explicits substitutions, and etc. 
+%This style of syntax formulation has been carried out by the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019} dubbed as ``algebraic presentation'' of MLTT. 
+Moreover, universe levels are explicit in this appendix.
 
-We also work in an intrinsic-typed setting, so there is no un-typed preterms appearing anywhere. We introduce judgemental equality ($\equiv$)
-for derivations (of all kinds of judgements). In other words, we will have judgemental equality between terms, 
-contexts, explicits substitutions, and etc. 
+Other aspects of the syntax remain the same as in \cref{sec:metatheory2}.
+In particular,
+%following \citet{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019},
+the syntax is still considered as being quotiented by the judgmental equalities.
+Quotienting facilitates coercion along equalities.
+Furthermore, the semantic model we develop in this appendix respects these
+judgmental equalities by construction.
+%This means 
+%(1) our model have to respect the judgemental equalities to be a legitimate model for the quotiented syntax, and (2) we have convertibility for free---when we have definitionally equal $A \equiv B$, thanks to the quotient syntax, the derivation of $t : A$ is the same as the derivation of $t : B$.
 
-This style of syntax formulation has been carried out by the recent trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019} dubbed as ``algebraic presentation'' of MLTT. 
+%After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
 
-
-After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
-
-Again, following \citet{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}, we consider our syntax as the result of taking quotient by all of these judgemental equalities. This means 
-(1) our model have to respect the judgemental equalities to be a legitimate model for the quotiented syntax, and (2) we have convertibility for free---when we have definitionally equal $A \equiv B$, thanks to the quotient syntax, the derivation of $t : A$ is the same as the derivation of $t : B$.
 
 
 \subsection{Review MLTT in Debruijn Indices, Explicit Subst, and Explicit Universe Level}
