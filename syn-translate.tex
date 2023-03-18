@@ -14,34 +14,31 @@ intrinsically typed setting.
 %of the linkage).} of our syntactic model(typed AST) \textit{without
 %linkages}.
 
-This ``subpart'' is the standard MLTT with our
-(unconventional) formulation of W-types,
-and recursors that use $\Sigma$-types to aggregate handlers.
-
-Basically, we can compile away (the derivation of) judgement $\goodSig{\Gamma}{v}{n}$,
-the type $\cL$, $\cP$, and related terms, by transforming them into
-corresponding $\Sigma$-types.
-
+%This ``subpart'' is the standard MLTT with our
+%(unconventional) formulation of W-types,
+%and recursors that use $\Sigma$-types to aggregate handlers.
+%
+%Basically, we can compile away (the derivation of) judgement $\goodSig{\Gamma}{v}{n}$,
+%the type $\cL$, $\cP$, and related terms, by transforming them into
+%corresponding $\Sigma$-types.
  
 
 % \newcommand{\denotesT}[1]{{{\llbracket {#1} \rrbracket}_T}}
 % \newcommand{\Sigr}[2]{{ "Sig"^r~{#1}~{#2} }}
 
-We use $\denotesT{}$ as the translation. This translation behaves like identity
-under the subpart. Since we are in an intrinsic setting, everything here
-is well-typed (well-formed)including this translation. Thus
-$\denotesT{T}$ means the same as $\denotesT{\goodType{\Gamma}{T}{}}$
-(i.e. every type is tracking its context). In other words, every
-derivation of any judgement will track its ``context''. 
+We define the translation $\denotesT{}$ below; the fragment of the syntax
+irrelevant to linkages is translated using the identity function and is thus elided.
+When the context~$\Gm$ is clear, we use $\denotesT{T}$ to mean $\denotesT{\goodType{\Gamma}{T}{}}$.
 
+We first define a new type $\goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}$  when
+$\goodCtx{\Gamma}{}$  is well-formed and $n \in \mathbb{N}$
+such that $\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}}$.
+We make $({\Sigr{\Gamma}{n}{}})$ and $\denotesT{\TyTkg {-}}$ mutually recursive,
+defined by induction on $n$ and the signature length.
+% \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
+% &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\
 
 \begin{align*}
-  \text{We first define a new type }& \goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}  \text{ when } \goodCtx{\Gamma}{}  \text{ is well-formed and } n \in \mathbb{N} \\
-  \text{such that } &\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}} \\
-  \text{We make } & ({\Sigr{\Gamma}{n}{}}), \text{ and } \ \denotesT{\TyTkg {-}} \text{ mutually recursive, } \\
-  & \text{defined by induction on $n$ and the signature length} \\  
-  % \denotesT{\goodSig{\Gamma}{\_}{n}} &= (\goodTerm{\Gamma}{\_}{\Sigr{\Gamma}{n}}) \\ 
-  % &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\ 
   {\Sigr{\Gamma}{(n+1)}{j}} &= 
     \Sigma~(\Sigr{\Gamma}{n}{})
           ~(\Sigma~\cU_j \\

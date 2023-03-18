@@ -1,44 +1,63 @@
-Now we prove the consistency and canonicity using canoncity model. We follow the reducibility argument from~\cite{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} to construct the canonicity model.
+Now we prove consistency and canonicity using a canoncity model.
+We follow the reducibility argument of
+\citet{kaposi2019gluing,coquand2018canonicity,sterling2019algebraic}
+to construct this canonicity model.
+%
 Each of their proof is based on QIIT, Category with Family\cite{dybjer1995internal} and Generalized Algebraic Theory \cite{cartmell1986generalised} as the syntax. Meanwhile, our proof will still work directly on the earlier introduced syntax for readability\footnote{We still take quotient, so ultimately our syntax should be considered as an instance of any of the above logical framework, without exposing the reader too many technical details}.
 
 We will first specify the formulation of the most basic canonicity theorem. 
 
 \begin{theorem}[Canonicity]
-  For a closed boolean term $\goodTerm{\cdot}{t}{\cB}$, we have $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$ hold.
+\label{thm:canonicity-appendix}
+  If $\goodTerm{\cdot}{t}{\cB}$, then either $\goodTerm{\cdot}{t \equiv \true}{\cB}$ or $\goodTerm{\cdot}{t \equiv \false}{\cB}$.
 \end{theorem}
 
-Canonicity is a basic criteria to consider a dependent type theory to be ``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
-We can even argue that, if this theorem is proven in a computable meta-logic, 
-then by Curry-Howard Correspondence, this theorem provides a big-step interpreter for closed term of boolean type.\YZ{Can we say something about strong/weak normalization?}\EDJreply{
-  No. \\
-  1. In the declarative system, we cannot talk about strong/weak normalization (because we don't have operational semantic, if you recall the definition of strong/weak normalization, it based on reduction/path of steps/op semantic). So any review says strong/weak normalization to you, please stop them. \\ 
-  2. In declarative system, we only say ``normalization'' directly, which means, we construct a function that \\
-      for arbitrary class of (judgemental-equivalent) terms, it will return one syntax representation (called normal-form) for each class \\
-    (apparently most people will make the normal form  without beta redex, however, interestingly, they may do eta expansion instead of eta reduction because theoretically easier) \\ 
-  3. So translation won't work because it compiles away the normal form of linkage (the $\mu^+$). This part requires a direct proof which construct normal form and neutral form for our calculus, and a normalization model from which we extract a runnable interpreter for open terms \\
-  4. Of course we can conjecture we have that normalization function \\
-  5. Also we do have close term normalization, which is canonicity. Or more operationally speaking, we have termination (a runnable interpreter) for close term (since QIIT is runnable, the canoncity model itself is the runnable interpreter), \\
-  but we don't have termination (a runnable interpreter) for open terms.  \\ 
-  So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
-}
+Canonicity is a basic criterion that must be satisfied by a dependent type theory serving as
+``a programming language or as a computational foundation for mathematics''.\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
+We can even argue that, if this theorem is proven in a computable meta\-logic, 
+then by Curry–Howard Correspondence, the canonicity theorem provides a big-step
+interpreter for closed term of boolean type.%\YZ{Can we say something about
+%strong/weak normalization?}\EDJreply{
+%  No. \\
+%  1. In the declarative system, we cannot talk about strong/weak normalization (because we don't have operational semantic, if you recall the definition of strong/weak normalization, it based on reduction/path of steps/op semantic). So any review says strong/weak normalization to you, please stop them. \\ 
+%  2. In declarative system, we only say ``normalization'' directly, which means, we construct a function that \\
+%      for arbitrary class of (judgemental-equivalent) terms, it will return one syntax representation (called normal-form) for each class \\
+%    (apparently most people will make the normal form  without beta redex, however, interestingly, they may do eta expansion instead of eta reduction because theoretically easier) \\ 
+%  3. So translation won't work because it compiles away the normal form of linkage (the $\mu^+$). This part requires a direct proof which construct normal form and neutral form for our calculus, and a normalization model from which we extract a runnable interpreter for open terms \\
+%  4. Of course we can conjecture we have that normalization function \\
+%  5. Also we do have close term normalization, which is canonicity. Or more operationally speaking, we have termination (a runnable interpreter) for close term (since QIIT is runnable, the canoncity model itself is the runnable interpreter), \\
+%  but we don't have termination (a runnable interpreter) for open terms.  \\ 
+%  So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
+%}
 
-We first need the mathmatical setup to interpret universe level, following \citet{sterling2019algebraic}:
+We first need the mathematical setup to interpret universe levels, following \citet{sterling2019algebraic}:
 
 \newcommand{\Set}[1]{\ensuremath{\texttt{Set}_{#1}}}
 \newtheorem{assumption}{Assumption}[section]
 
-\begin{assumption}[Set-theoretic Universe Assumption] As a simplifying move, we assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our ambient meta-logic.
+\begin{assumption}[Set-theoretic Universe Assumption] As a simplifying move, we assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our ambient meta\-logic.
 \end{assumption}
 
-We can roughly consider each Grothendieck Universe $\Set{i}$ as a $\Set{i}$ in Agda. In other words, each $\Set{i}$ is 
+We can roughly consider each Grothendieck universe $\Set{i}$ as the $\Set{i}$ in Agda. 
 \begin{itemize}
-  \item Closed under dependent function type and dependent tuple type. For example, later, for our interpretation of dependent function type, when we have $\denotesC{A}, \denotesC{B} \in \Set{i}$, we will have $\denotesC{\TyPi{A}{B}} \in \Set{i}$
-  \item the hierarchy is cumulative as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$
-  \item Thus if $\denotesC{A} \in \Set{i}, \denotesC{B} \in \Set{j}$, we will have $\denotesC{\TyPi{A}{B}} \in \Set{i} \cup \Set{j} = \Set{i \lcup j}$
+  \item Each $\Set{i}$ is closed under dependent function types and dependent
+  pair types. For example, later, for our interpretation of dependent function
+  types, when we have $\denotesC{A}, \denotesC{B} \in \Set{i}$, we will have
+  $\denotesC{\TyPi{A}{B}} \in \Set{i}$.
+  \item The universe hierarchy is cumulative, as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$.
+  \item Thus if $\denotesC{A} \in \Set{i}, \denotesC{B} \in \Set{j}$, we will
+  have $\denotesC{\TyPi{A}{B}} \in \Set{i} \cup \Set{j} = \Set{i \lcup j}$.
 \end{itemize}
 
 
-Like most logical relation proof,  we interpret each judgement and inductively interpret each syntax piece. We are working on an intrinsic setting thus even if we omit context for brevity, the syntax piece is still well-typed. However, unlike most logical relation proof, we are having a proof-relevant logical realtion, essential for modeling universes properly~\cite{coquand2018canonicity}. Our canonicity model at MLTT part is very close to the one shown in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
+Like most logical-relations proofs, we interpret each judgment and inductively
+interpret each syntax piece. We are working in an intrinsic setting; thus, even if
+we omit contexts for brevity, the syntax piece is still well-typed. However,
+unlike most logical-relations proofs, our logical-relations model is proof-relevant,
+which is essential for modeling universes
+properly~\cite{coquand2018canonicity}.
+Our canonicity model for the base MLTT fragment is close to the ones
+in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
@@ -96,12 +115,40 @@ Like most logical relation proof,  we interpret each judgement and inductively i
 
 
 
-The counter-intuitive part of the proof-relevant logical relation is the treatment of proposition---a proposition is encoded as a subsingleton data. For example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \ | \text{ when } t \equiv \false  \}$ represents a disjoint union of two subsingleton set. The former one will be a singleton if we have a proof $t \equiv \true$ or an empty set otherwise, same as the later one.  In other words, $\star^1$ witness a proof that $t \equiv true$. The same idea applies to the latter set. Here $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
+%The difficult part of the proof-relevant logical-relations model is the
+%treatment of propositions---
+A proposition is encoded as a subsingleton data. For
+example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \
+| \text{ when } t \equiv \false  \}$ represents a disjoint union of two
+subsingleton sets, where the first one is either a singleton if we have a proof of
+$t \equiv \true$ or an empty set otherwise.
+In other words,
+$\star^1$ witnesses a proof that $t \equiv true$.
+Here, $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
 
 
-Given above model for MLTT, we should have such a function ${\Pi}^c$ s.t. ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We want to reuse this function when defining the rest of the model of \TT, because as syntactic translation hinted, \TT reuses a lot from MLTT. Type-theoretical speaking, this ${\Pi}^c$ is using the \emph{internal dependent function type} of the above model. However this is not possible because the definition $\denotesC{\TyPi{A}{B}}$ is not solely based on the $\denotesC{A}$ and $\denotesC{B}$, but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm, A}{B}{}$. 
+Given the above model for MLTT, there should be a function ${\Pi}^c$ such
+that ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We will
+use this function when defining the logical-relations model for the rest of \TT,
+Type-theoretically speaking, this ${\Pi}^c$ uses the \emph{internal dependent
+function type} of
+the above model.
+However, such a function $\Pi^c$ is not yet possible because the definition
+$\denotesC{\TyPi{A}{B}}$ is not based solely on $\denotesC{A}$ and
+$\denotesC{B}$,
+but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm, A}{B}{}$. 
 
-Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, that will return the syntax piece $S$ as well.\footnote{This is also called glued interpretation in \citet{sterling2019algebraic}} Thus we can have a function $\Glued{\Pi}$ s.t. $\GluedPi{\denotesCC{A}}{\denotesCC{B}} = \denotesCC{\TyPi{A}{B}}$ now that syntax is also provided. Similarly, we can have $\Glued{\Sigma}$, $\Gpair{a}{b}$  and $\GSubstExt{\gm}{t}$  for dependent tuple type, depende tuple construction and substitution extension, and also all other constructions.  What's more, given $\Glued{S}$ a pair of syntax and model , we denote $\Gmodel{\Glued{S}}$ as getting the (canonicity) model part (the second element in that pair).  
+Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$
+that returns the syntax piece $S$ as well.\footnote{This is also called
+glued interpretation in \citet{sterling2019algebraic}.}
+Thus, we can have a
+function $\Glued{\Pi}$ such that $\GluedPi{\denotesCC{A}}{\denotesCC{B}} =
+\denotesCC{\TyPi{A}{B}}$ now that the syntax is available.
+Similarly, there are functions $\Glued{\Sigma}$, $\Gpair{a}{b}$  and
+$\GSubstExt{\gm}{t}$ for dependent pair types, dependent pairs, and
+substitution extension (and more for other constructions).
+Furthermore, given $\Glued{S}$ (i.e., the syntax and its semantic interpretation),
+we use $\Gmodel{\Glued{S}}$ to mean the latter of the two.\YZ{why not just $\denotesC{S}$?}
 % These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
 \newcommand{\GTy}[2]{\ensuremath{\Glued{\texttt{Ty}}_{#1}~{#2}}}
@@ -112,9 +159,9 @@ Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$, tha
 \newcommand{\GWSig}[3]{\ensuremath{{\Glued{\texttt{WSig}}}_{#1}^{#3}~{#2}}}
 
 
-There are actually more \emph{internal} type-theoretic construction that we need:
+We need more \emph{internal} type-theoretic constructions:
 
-We denote $\GCon{k} \coloneq \sum_{\goodCtx{\Gm}{k}} \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k}$ 
+We define $\GCon{k} \coloneq \sum_{\goodCtx{\Gm}{k}} \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k}$ 
 
 
 and $\GTy{j}{\Glued{\Gm}} \coloneq \sum_{\goodType{\Gm}{T}{j}} \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} $ for $\Glued{\Gm} \in \GCon{k}$
@@ -123,19 +170,38 @@ and $\GTm{\Glued{\Gm}}{\Glued{T}} \coloneq \sum_{\goodTerm{\Gm}{t}{T}} \prod_{\g
 
 and $\GSub{\Glued{\Gm}}{\Glued{\Dl}} \coloneq \sum_{\goodSub{\Gm}{\delta}{\Dl}} \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)} \Gmodel{\Glued{\Dl}}(\delta \circ \gm) $
 
-These four sets are collecting the glued interpretation:
-basically the point is, for each well-typed type $\goodType{\Gm}{T}{j}$,  we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$; and for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$, and etc.
+These four sets are collecting the glued interpretation.
+For each well-formed type $\goodType{\Gm}{T}{j}$, we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$;
+for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$;
+etc.
 
 
-Note that, we have $\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$ prefix in $\GTy{}{}$, $\GTm{}{}$,$\GSub{}{}$. The interesting fact is, given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$ and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$. Thus we consider the pair $(\gm, \gm')$ as $\Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
+Notice that
+$\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$
+is part of $\GTy{\!}{\!}$, $\GTm{\!}{\!}$, and $\GSub{\!}{\!}$.
+The interesting fact is that, given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$
+and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an
+element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
+Thus, we consider the pair $(\gm,
+\gm')$ as $\Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
 % Note that, for arbitrary $\Glued{\Gm} \in \GCon{k}$, we can consider it as $\Glued{\gm}$ as an element of $\GSub{\Glued{\cdot}}{}$
 
 
-Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A} \in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for $\Glued{\Gm} \in \GCon{k}$, which is basically a list of a pair of types of length $n$. As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n} \coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgement for W-type signature.
+Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A}
+\in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for
+$\Glued{\Gm} \in \GCon{k}$, a length-$n$ list of pairs of types.
+As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n}
+\coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times
+\GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgments for
+W-type signatures.
 
 
-Now we can extend the above model to \TT , we still start with the judgement. Since linkage transformers are just syntactic sugar, we will not interpret it.
-The intuition of the model is similar to that of the syntactic translation---use the canonicity model of sigma type (from the earlier work) for linkage type and using inductive facility in the meta-logic to justify our W-type. 
+Now we can extend the model above to include \TT constructs.
+%We still start with the judgments.
+%Since linkage transformers are just syntactic sugar, we will not interpret it.
+The key idea of this extension is similar to that of the syntactic translation:
+we interpret linkage types using the canonicity model of sigma types (developed in the prior work).
+We use the inductive facility of the meta\-logic to justify our W-types.
 
 \newcommand{\CWmodel}{\ensuremath{\mathit{W}^C}}
 \newcommand{\CWsup}{\ensuremath{\mathit{W^Csup}}}
@@ -196,14 +262,16 @@ The intuition of the model is similar to that of the syntactic translation---use
   & \quad 
    \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
-together and mutual recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$) ....
 
+The semantic interpretations above are 
+mutually recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
+%
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
     & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
-... and its eliminator principle $\CWrec$. 
+and its eliminator $\CWrec$
 \begin{align*}
   \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
@@ -216,19 +284,28 @@ together and mutual recursively defined with the following inductively defined i
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
 \end{align*}
 
-Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of $\denotesC{\wcode{\wsig}}$, which after unfolding, will refers to $\CWmodel$ again and in strictly positive position. So it is a well-founded definition. We also don't distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity.
+Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of
+$\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmodel$
+in a strictly positive position. %So it is a well-founded definition.
+We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity.
 
-
-The first observation is that, with this model, we know our system is consistent---we cannot derive $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we have $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, that is an element in an empty set, a contradiction.
+The first consequence of this model is the consistency of \TT---we cannot derive
+$\goodTerm{\cdot}{t}{\bot}$. Otherwise, we would have an element in the empty set,
+$\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in
+\denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, a contradiction.
 
 \begin{theorem}[Consistency]
-  We cannot derive a closed term of bottom type, i.e. ,$\cdot \not \vdash t : \bot$ for arbitrary $t$.
+  The typing judgment $\goodTerm{\cdot}{t}{\bot}$ is not derivable for any term~$t$.
 \end{theorem}
 
-What's more, with the above model, we can map an arbitrary closed boolean term $\goodTerm{\cdot}{t}{\cB}$ to get the result $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$, witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$, arriving at the basic canonicity result.
+Next, with the logical-relations model, we can map an arbitrary closed boolean
+term $\goodTerm{\cdot}{t}{\cB}$ to get the result
+$\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$,
+witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$, arriving at
+\cref{thm:canonicity-appendix}.
 
 
-With the logical relation and the help of eta rule, we figure out the following canonical form
+Further, with the help of eta rules, we have the following canonical forms
 \begin{theorem}[Canonical Forms].
   \begin{itemize}
     \item if $\goodTerm{\cdot}{t}{El~(\wcode{\tau})}$ with $\goodWSig{\cdot}{\tau}{n}$, then $\goodTerm{\cdot}{t \equiv "Wsup"~j~a~b}{El~(\wcode{\tau})}$ for some $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot, B[(id, a)]}{b}{El~(\wcode{\tau})}$ and $j < n$
