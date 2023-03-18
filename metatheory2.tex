@@ -117,15 +117,16 @@ linkage signatures and linkages, and linkage transformers.
 As mentioned in \cref{sec:metatheory2}, the five forms of linkage transformers can be
 thought of a library of functions that are used to construct linkages from other
 linkages.
-In particular, their typing rules is defined in terms of the rest of the typing
+In particular, their typing rules are defined in terms of the rest of the typing
 rules in \TT.
-Thus, linkage transformers $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ can be defined as syntactic sugar via an inductive type with constructors
-\YZ{I reinterpreted what you wrote, but this sentence doesn't sound right to me. If linkage transformers are meta-level inductive types, aren't they just part of the syntax?}\EDJreply{I think the reason that they are syntactic sugar is because they can be interpreted using FMLTT syntax(without them), it is fine either the syntactic sugar is defined via inductive type (and then interpreted), or directly interpreted. Maybe I should remove this misleading sentence? \\ What's more, the specification/definition of syntactic sugar itself, is inductive type. Because a linkage transformer looks inductive. Maybe I should directly separate the typing rules for linkage transformer as another figure to emphasize it as an inductive construction on the rest FMLTT syntax?}
+Thus, linkage transformers $\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}$ can be defined
+as syntactic sugar via an \TT inductive type with constructors
+%\YZ{I reinterpreted what you wrote, but this sentence doesn't sound right to me. If linkage transformers are meta-level inductive types, aren't they just part of the syntax?}\EDJreply{I think the reason that they are syntactic sugar is because they can be interpreted using FMLTT syntax(without them), it is fine either the syntactic sugar is defined via inductive type (and then interpreted), or directly interpreted. Maybe I should remove this misleading sentence? \\ What's more, the specification/definition of syntactic sugar itself, is inductive type. Because a linkage transformer looks inductive. Maybe I should directly separate the typing rules for linkage transformer as another figure to emphasize it as an inductive construction on the rest FMLTT syntax?}
 $\InhExt{}{}$, $\InhOv{}{}$, $\InhInh{}$, $\InhNest{}{}$, and
 the syntax $\inh{h}{\ell}$ and $\sub{h}{\gm}$ can be defined by induction on
 this inductive type.
 
-\subsection{Syntactic Translation to get rid of Linkages}
+\subsection{A Translation that Compiles Away Linkages}
 
 
 \input{syn-translate.tex}
