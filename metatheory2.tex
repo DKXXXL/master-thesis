@@ -30,12 +30,9 @@ judgmental equalities by construction.
 %After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
 
 
+\subsection{MLTT with Explicit Substitutions and Universe Levels}
 
-\subsection{Review MLTT in Debruijn Indices, Explicit Subst, and Explicit Universe Level}
-
-\TT can be roughly considered as MLTT with linkages so we still start with vanilla MLTT first.
-
-
+We review the base MLTT fragment of \TT first.
 \input{all-mltt-typing}
 
 \noindentparagraph{Debruijn Indices and Explicit Substitution.}  The change of the syntax formulation is important to the simplicity of our proof, as we want to handle the proof about substitutions and terms uniformly---thus making substitution as part of the syntax (explicit substitution) will be helpful. 
@@ -64,13 +61,21 @@ Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \rul
 
 
 
-\noindentparagraph{Explicit Universe Level.} Our treatment of universe level mainly follows that of \citet{altkap2016, kaposi2019gluing}. Universe level is mainly to get around the size issue---we cannot refer to(and thus quantifiy over) a set of all set (or a universe of all type). So everytime we want to quantify over a universe of types, we have to specify ``how large'' that universe is, that is basically what universe level is measuring. 
+\noindentparagraph{Universe levels.}
 
+Universe levels address the size issue---it is unsound to have a set of all sets
+(or a universe of all types).
+The level of a universe specifies ``how large'' that universe is.
+%that is basically what universe level is measuring. 
 
+%The treatment of universe levels follows \citet{altkap2016, kaposi2019gluing}.
+The judgment form $\goodType{\Gm}{T}{i}$ indicates that (the code of) the type $T$
+inhabits universe~$\cU_i$.
+Similarly, $\goodCtx{\Gm}{i}$ indicates that (the codes of) the types in $\Gm$
+inhabit universe~$\cU_i$.
+The notation $i \lcup j$ denotes $\max(i,j)$.
 
-Now we will need to some attach syntax pieces with natural number indicating universe level. The explicit universe level $i$ now will attach to each context and type judgement $\goodCtx{\Gm}{i}$ and $\goodType{\Gm}{T}{i}$ basically indicating the context $\Gm$ and $T$ inhabits at what universe. Apparently, universe level will also be attached to $\cU$. For two universe level $i,j$ (as natural number), we use $i \lcup j$ to denotes $\max(i,j)$.
-
-Since we work in an intrinsic-typed setting, some required premises can be omitted without ambiguity. For omitted context judgement $\goodCtx{\Gm}{k}$, the universe level is always $k$, hinted at the figure of judgement specification. Similar for type judgement $\goodType{\Gm}{T}{j}$.
+%Since we work in an intrinsic-typed setting, some required premises can be omitted without ambiguity. For omitted context judgement $\goodCtx{\Gm}{k}$, the universe level is always $k$, hinted at the figure of judgement specification. Similar for type judgement $\goodType{\Gm}{T}{j}$.
 
 
 
