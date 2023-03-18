@@ -80,3 +80,4 @@ foci
 well-typedness
 quotiented
 Quotienting
+arity
