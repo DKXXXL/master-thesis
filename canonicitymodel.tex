@@ -6,7 +6,7 @@ The meta\-languages of these prior models are based on QIITs, categories with
 families \cite{dybjer1995internal}, and the generalized algebraic theory
 \cite{cartmell1986generalised}, respectively.
 Without exposing the reader to too many technical details, our meta\-language
-should be understood an instance of any of the above logical frameworks.
+should be understood an instance of any of the above logical frameworks---the difference is our formulation did quotient manually but if we use their framework, quotient is done automatically.
 %Our model works directly on the earlier introduced syntax for readability\footnote{We still
 %take quotient, so ultimately our syntax should be considered as an instance of
 %any of the above logical framework, without exposing the reader too many
@@ -23,9 +23,10 @@ We state the canonicity theorem first:
 Canonicity is a basic criterion that should be met by a dependent type theory serving as
 a programming language or as a computational foundation for mathematics.
 %\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
-We can even argue that, if this theorem is proven in a computable meta\-logic, 
-then by the Curry–Howard correspondence, the canonicity theorem provides a big-step
-interpreter for closed terms of the boolean type.%\YZ{Can we say something about
+% We can even argue that, if this theorem is proven in a computable meta\-logic, 
+% then by the Curry–Howard correspondence, the canonicity theorem provides a big-step
+% interpreter for closed terms of the boolean type.
+%\YZ{Can we say something about
 %strong/weak normalization?}\EDJreply{
 %  No. \\
 %  1. In the declarative system, we cannot talk about strong/weak normalization (because we don't have operational semantic, if you recall the definition of strong/weak normalization, it based on reduction/path of steps/op semantic). So any review says strong/weak normalization to you, please stop them. \\ 
@@ -44,10 +45,10 @@ We first need the mathematical setup to interpret universe levels, following \ci
 \newcommand{\Set}[1]{\ensuremath{\texttt{Set}_{#1}}}
 \newtheorem{assumption}{Assumption}[section]
 
-\begin{assumption}[Set-theoretic Universe Assumption] As a simplifying move, we assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our ambient meta\-logic.
+\begin{assumption}[Set-theoretic Universe Assumption] We assume an infinite hierarchy of Grothendieck universes $\Set{i}$ for $i \in \mathbb{N}$ in our ambient meta\-logic.
 \end{assumption}
 
-We can roughly consider each Grothendieck universe $\Set{i}$ as the $\Set{i}$ in Agda. 
+We can roughly consider each Grothendieck universe $\Set{i}$ as the $\Set{i}$ in Agda: 
 \begin{itemize}
   \item Each $\Set{i}$ is closed under dependent function types and dependent
   pair types. For example, later, for our interpretation of dependent function
@@ -126,22 +127,23 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 
 %The difficult part of the proof-relevant logical-relations model is the
 %treatment of propositions---
-A proposition is encoded as a subsingleton data. For
+Proof-relevant model treats proposition in a special way : \EDJ{Without this first sentence, this paragraph seems unmotivated.}
+a proposition is encoded as a subsingleton data. For
 example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \
 | \text{ when } t \equiv \false  \}$ represents a disjoint union of two
 subsingleton sets, where the first one is either a singleton if we have a proof of
-$t \equiv \true$ or an empty set otherwise.
+$t \equiv \true $ or an empty set otherwise.
 In other words,
-$\star^1$ witnesses a proof that $t \equiv true$.
+$\star^1$ witnesses a proof that $t \equiv \true$.
 Here, $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
 
 
 Given the above model for MLTT, there should be a function ${\Pi}^c$ such
-that ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. We will
-use this function when defining the logical-relations model for the rest of \TT,
+that ${\Pi}^c({\denotesC{A}},{\denotesC{B}}) = \denotesC{\TyPi{A}{B}}$. 
 Type-theoretically speaking, this ${\Pi}^c$ uses the \emph{internal dependent
 function type} of
-the above model.
+the above model. We hope to
+use this function when defining the logical-relations model for the rest of \TT.
 However, such a function $\Pi^c$ is not yet possible because the definition
 $\denotesC{\TyPi{A}{B}}$ is not based solely on $\denotesC{A}$ and
 $\denotesC{B}$,
@@ -157,7 +159,7 @@ Similarly, there are functions $\Glued{\Sigma}$, $\Gpair{a}{b}$  and
 $\GSubstExt{\gm}{t}$ for dependent pair types, dependent pairs, and
 substitution extension (and more for other constructions).
 Furthermore, given $\Glued{S}$ (i.e., the syntax and its semantic interpretation),
-we use $\Gmodel{\Glued{S}}$ to mean the latter of the two.\YZ{why not just $\denotesC{S}$?}
+we use $\Gmodel{\Glued{S}}$ to mean the latter of the two.\YZ{why not just $\denotesC{S}$?}\EDJreply{Using superscript C is shorter and more precise -- we are not "reconstructing the C model from the syntax, but taken out the C model directly from the pair". Look at the canonicity model where superscript c is used, if change to $\denotesC{-}$ on them, it is not really well-founded recursion, technically speaking (only equivalent to one).}
 % These will be useful in our \TT model because as syntactic translation hinted, \TT reuses a lot from MLTT. What's more, during the construction of the model for \TT, we will use $\Glued{(\cdot)}$ when we can.
 
 \newcommand{\GTy}[2]{\ensuremath{\Glued{\texttt{Ty}}_{#1}~{#2}}}

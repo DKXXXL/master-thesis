@@ -44,7 +44,7 @@ binders and substitutions explicit.
 %proof, as we want to handle the proof about substitutions and terms
 %uniformly---thus making substitution as part of the syntax (explicit
 %substitution) will be helpful. 
-
+\EDJ{Why comment out this sentence?}
 The form \var{n} represents a variable bound by the $n$-th closest enclosing binder.
 For example, $\lambda x.\,\lambda y.\,x$ is $\lam{\lam{\var{1}}}$.
 %
@@ -71,7 +71,7 @@ Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \rul
 \noindentparagraph{Universe levels.}
 
 Universe levels address the size issue---it is unsound to have a set of all sets
-(or a universe of all types).
+(or a universe of all types)~\cite{hurkens1995simplification}\EDJ{Why remove this citation?}.
 The level of a universe specifies ``how large'' that universe is.
 %that is basically what universe level is measuring. 
 

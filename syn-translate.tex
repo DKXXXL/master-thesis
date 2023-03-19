@@ -46,9 +46,9 @@ mutually inductively on $n$, the signature length.
           & \quad \quad ~(\Sigma~(\TyPi{{\mathscr{P}({\sub{\var{0}}{\SubstWeak{1}}})}}{\El{\sub{\var{0}}{\SubstWeak{1}}}}) \\
           & \quad \quad \quad \TyPi{\El{\sub{\var{0}}{\SubstWeak{1}}}}{\cU_j})) \\
   \Sigr{\Gamma}{0}{j} &= \top \\
-  \mathscr{P}(\lsig') &=  \top \quad \text{ when } \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{0}{j}}  \\
   \mathscr{P}(\lsig') &=  
     \Sigma~(\fst{\lsig'})~(\El{\app{"snd"^3~\lsig'}[(\SubstWeak{1}, \app{\fst{("snd"^2~{\lsig'})}})]}) \\ & \text{ when } \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n+1}{j}} \\
+  \mathscr{P}(\lsig') &=  \top \quad \text{ when } \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{0}{j}}  \\
 \end{align*}
 
 % We make $({\Sigr{\Gamma}{n}{}})$ and 
@@ -105,9 +105,9 @@ The translation for $\cP$ is given by the relevant $\beta$-rules.
 % induced by the $\beta$-rule of \ruleref{Inh}.
 
 We omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
-However, when we mutually recursively define
-$\denotesT{\goodSig{\Gamma}{\_}{n}}$, ${\Sigr{\Gamma}{n}{}} $, and
-$\denotesT{\cP}$ above, we actually have to prove the substitution laws
+Note that, when we mutually recursively define the type
+${\Sigr{\Gamma}{n}{}}$ (of signatures $\denotesT{\goodSig{\Gamma}{t}{n}}$), and
+$\denotesT{\cP} = \mathscr{P}$ above, we actually have to prove the two substitution laws
 $\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n}{})}{\gm}
 \equiv \Sigr{\Gamma}{n}{}$ together. 
 % The details (of all the equational rules) can be found in the appendices written in (pseudo-)Agda form. We encourage the reader to read that (pseudo-)Agda-style proof because it is more friendly to type theorists, easy to do type checking and
