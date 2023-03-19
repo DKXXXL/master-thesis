@@ -32,3 +32,5 @@ paper.fdb_latexmk
 _minted-*
 
 local
+
+submission-expanded.tex
