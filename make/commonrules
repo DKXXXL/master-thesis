@@ -162,5 +162,7 @@ arxiv:
 	@$(MAKE) SHELL=$(BINSH) DOC=arxiv
 arxiv-expanded.tex: arxiv
 	latexpand -o arxiv-expanded.tex arxiv.tex
+submission-expanded.tex: submission
+	latexpand -o submission-expanded.tex submission.tex
 
 .PHONY: markup draft tr trdraft local submission final finaldraft blindtr web arxiv
