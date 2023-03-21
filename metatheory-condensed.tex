@@ -70,6 +70,7 @@ dependent pair types \nTySigma{x}{A}{B}, and
 identity types \TyId{t_1}{t_2} are standard.
 So are their introduction and elimination forms.
 Capture-avoiding substitution is notated $\bullet[\bullet/x]$.
+We use $x$ and $\mathit{self}$ to denote variables.
 A singleton type $\TyS{t}$ helps expose the definition of a term~$t$
 in its type (rule \ruleref{tm/s})~\cite{aspinall1995singleton,stone2000}.
 Definitional equalities have the forms %(for each judgement)
@@ -312,17 +313,17 @@ In \TT, families are expressed through linkages, and late binding of
 field references is achieved by requiring that typing be polymorphic to
 the definition of that field.
 
-Well-formed \emph{linkage signatures} have the judgment form
-$\goodSig{\Gm}{\lsig}{n}$.
+\emph{Linkage signatures} have the form $\goodSig{\Gm}{\lsig}{n}$.
 As rules \ruleref{lsig/empty} and \ruleref{lsig/add} show, a linkage
 signature is a list of $n$~types.
 %
-Well-formed \emph{linkages} have the judgment form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
+\emph{Linkages} have the form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
 where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
 As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
 of $n$~terms, each representing a field of the family modeled by the linkage.
 
-In rule \ruleref{l/add}, the second premise $\goodTerm{\Gm, \mathit{self} : A}{t}{T}$ is
+In rules \ruleref{l/add} and \ruleref{lsig/add},
+the second premise $\goodTerm{\Gm, \mathit{self} : A}{t}{T}$ is
 responsible for late binding.
 Here, $A$ abstracts the context of the current field~$t$, controlling
 how the types of the fields prior to~$t$ are exposed to the typing of~$t$.
@@ -364,7 +365,7 @@ is how the corresponding fields are modeled and typed in \TT.
 $\lkg_i$ is the linkage that adds the $i$-th field~$t_i$ with the typing
 $\goodTerm{%
 \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i}(-0.02,-0.10)(-0.02,0.28)
-\mathit{self}_i : A_i%
+\mathit{self} : A_i%
 \tikzmarkend{A-i}%
 }{%
 \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t-i}(-0.02,-0.10)(-0.02,0.28)%
@@ -391,7 +392,7 @@ we write them as dependent record types that give labels to the fields.
 \item 
 The first field $t_1$ is defined as $\wcode{\wsig_{\texttt{tm}}}$
 and given the singleton type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$, where $\wsig_{\texttt{tm}}$
-is the W-type signature for \lsti{tm}.
+is the W-type signature constructed earlier for the extensible inductive type~\lsti{tm}.
 This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
 \item 
@@ -405,7 +406,7 @@ So $\El{\mathit{self}.\texttt{tm}}$ and $\El{\wcode{\wsig_{\texttt{tm}}}}$ can b
 as required by rule \ruleref{tm/wsup}.
 
 \item
-Similarly, $\wsig_{\texttt{tm}}$ is exposed in the typing context of
+Likewise, $\wsig_{\texttt{tm}}$ is exposed in the typing context of
 $t_{10}$, which models the recursive function \lsti{subst} by invoking
 the recursor $\Wrec{\wsig_{\texttt{tm}}}{\cDot}{\cDot}$.
 %
@@ -427,39 +428,42 @@ the case handlers can be reused by a linkage modeling \lsti{STLCFix}.
 
 \end{itemize}
 
-The third premise
-$\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$
-in rules \ruleref{l/add} and \ruleref{lsig/add} is
+In rules \ruleref{l/add} and \ruleref{lsig/add},
+the third premise $\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$ is
 responsible for hiding W-type signatures.
-Here, $\TyTkg{\lsig}$ is a dependent tuple type (rule \ruleref{tyeq/pk/add})
-that packages the types of all fields preceding the current field~$t$,
-and $\seal$ is the term turning the tuple $\Tkg{\lkg}$ of type
-$\TyTkg{\lsig}$ (rule \ruleref{tmeq/pk/add}) into a new tuple of type~$A$
+Here, $\TyTkg{\lsig}$ packages $\lsig$---recall that $\lsig$ contains the
+(self-parameterized) types of all the fields preceding the current
+field~$t$---into a dependent tuple type (\ruleref{tyeq/pk/add}).
+The term $\seal$ turns a tuple of type $\TyTkg{\lsig}$ into a new tuple of type~$A$
 that hides W-type signatures behind $\cU$, if necessary.
 %
 It is straightforward to find the~$\seal$ that fits the bill, though this process
 is not automated in \TT.
-In particular, when no hiding is needed, $\seal$ is $\var{0}$
+In particular, when no hiding is needed, $\seal$ is simply~$x$,
 %\EDJ{$\var{0}$ is not identity (substitution), but the first variable, right? Or you meant to say it is identity ``sealing''?}\YZreply{Yes, I meant identity sealing. I cannot say 'sealing' because the paper currently does not use the word sealing anywhere.}\EDJreply{What about just remove the parenthesis and ``the identity''}
 and $A$ is $\TyTkg{\lsig}$.
-In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are $\var{0}$,\YZ{lingering de Bruijn indices}
-and $\seal_6$ is from
+In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are simply $x$,
+and $\seal_6$ has the typing
 \begingroup
 \fontsize{9}{9}\selectfont%
-$\big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$
+\goodTerm{
+  \mathit{self} :
+  \big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+}{
+  \seal_6
+}{
+  \big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+}.
 \endgroup
-to
-\begingroup
-\fontsize{9}{9}\selectfont%
-$\big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]$%
-\endgroup
-.
 
 When a family is concluded (e.g., \lsti!End!~\lsti!STLC!),
 a linkage~$\lkg$ containing all the fields is available
 (e.g., $\lkg_{53}$ in \cref{fig:stlc-linkage-typing}).
 Fields of the family can then be accessed by projecting them out of the tuple
 $\Tkg{\lkg}$.
+As \ruleref{tmeq/pk/add} indicates, $\Tkg{\lkg}$ ties the recursive knot:
+it packages the linkage~$\lkg$ into a dependent tuple of type~$\TyTkg{\lsig}$,
+by instantiating the $\mathit{self}$ parameters.
 
 
 \noindentparagraph{Linkage transformers.}

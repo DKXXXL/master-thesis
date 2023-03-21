@@ -16,7 +16,7 @@
     \lsigproj{2}{\lsig} \mid \CaseSig{A}{x.B}{T}
 \tikzmarkend{New2}
     \\
-\text{Variables} & x, x' &\Coloneqq &  ..., \mathit{self}, \mathit{self}_1, \mathit{self}_2, ... \\
+%\text{Variables} & x, x' &\Coloneqq &  ..., \mathit{self}, \mathit{self}_1, \mathit{self}_2, ... \\
 \text{Terms} & t, s, \lkg &\Coloneqq &
     ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New3}(0.05,-0.15)(-0.10,0.30)
@@ -112,7 +112,7 @@
     \goodType{\Gm}{
         \CaseSig{A}{B}{T}
         \equiv
-        \nTyPi{x}{A}{(\El{B(x)} \to T) \to T}
+        \nTyPi{x}{A}{(\El{\napp{B}{x}} \to T) \to T}
         % \TyPi{A}{\TyPi {\TyPi{B}{\sub{T}{\SubstWeak{2}}}} {\sub{T}{\SubstWeak{2}}}}
     }{}
 }
@@ -172,9 +172,9 @@
 \Rule[name=tyeq/pk/add]{
     \goodSig{\Gm}{\lsig}{n} 
     \\
-    \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
-    \\
     \goodType{\Gm, \mathit{self} : A}{T}{}
+    \\
+    \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
 }{
     \goodType{\Gm}{
         \TyTkg {\LSigAdd  {\lsig} {\seal} {T}}
@@ -186,9 +186,9 @@
 \Rule[name=tmeq/pk/add]{
     \goodTerm{\Gm}{\lkg}{\TyLkg {\lsig}} 
     \\
-    \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
-    \\
     \goodTerm{\Gm, \mathit{self}: A}{t}{T}
+    \\
+    \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
 }{
     \goodTerm{\Gm}{
         \Tkg{\LkgAdd{\lkg}{\mathit{self}.t}}
