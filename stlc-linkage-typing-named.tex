@@ -175,11 +175,22 @@
     \dadada
     \tikzmarkend{t6-b}
 }{
-    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T6-b}(-0.02,-0.10)(-0.02,0.28)
-    \CaseSig{\top}{\bot}{
-        \fontsize{8.5}{10.2}\selectfont
-        \text{$\El{\mathit{self}.\texttt{tm}}\to\mathit{id}\to\El{\mathit{self}.\texttt{tm}}$}
-    }
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T6-b}(-0.05,-0.30)(-0.02,0.46)
+%   \CaseSig{\top}{\bot}{
+    \texttt{CaseTy}\left(\top,\bot,
+        \begin{minipage}{.15\textwidth}%
+        \vspace{-7.5pt}%
+        \fontsize{8.0}{9.2}\selectfont%
+        \begin{gather*}
+        \begin{array}{@{}l@{}}
+            \El{\mathit{self}.\texttt{tm}} \to
+            \\
+            \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+        \end{array}
+        \end{gather*}
+        \end{minipage}
+    \right)
+%   }
     \tikzmarkend{T6-b}
 }
 }
@@ -248,15 +259,17 @@
     \lambda t.\,\Wrec{\wsig_{\texttt{tm}}}{\dadada}{t}
     \tikzmarkend{t10-b}
 }{
-    \begin{minipage}{.20\textwidth}%
+    \begin{minipage}{.15\textwidth}%
     \vspace{-7.5pt}%
     \fontsize{8.0}{9.2}\selectfont%
     \begin{gather*}
-    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T10-b}(-0.02,-0.26)(-0.02,0.40)
+    \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T10-b}(-0.02,-0.45)(-0.02,0.60)
     \begin{array}{@{}l@{}}
-        \El{\mathit{self}.\texttt{tm}} \to \El{\mathit{self}.\texttt{tm}}
+        \El{\mathit{self}.\texttt{tm}} \to
         \\
-        \to \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+        \El{\mathit{self}.\texttt{tm}} \to
+        \\
+        \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
     \end{array}
     \tikzmarkend{T10-b}
     \end{gather*}
