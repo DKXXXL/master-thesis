@@ -20,14 +20,14 @@ Please note that for technical difficulties we had to exclude Figures 6 and 7
 
   We add a new section (Section 5) commenting on the current limitations, including those identified by the reviewers.
 
-  `revision.pdf` Line 613
+  `revision.pdf` Line 613  
   `diff.pdf` Line 625
 
 * **Remark on the trusted base of FPOP developments**
 
   We add a paragraph at the end of Section 4.
 
-  `revision.pdf` Line 606
+  `revision.pdf` Line 606  
   `diff.pdf` Line 617
 ​
 * **Improve the presentation in the FMLTT section**
@@ -44,7 +44,7 @@ Please note that for technical difficulties we had to exclude Figures 6 and 7
   - We explain W-types in greater detail and include an example showing how
     the `tm` inductive type can be expressed.
 
-    `revision.pdf` Line 727
+    `revision.pdf` Line 727  
     `diff.pdf` Line 721
   
   - Appendix A.4 now contains pen-and-paper proofs of consistency and canonicity,
@@ -67,6 +67,6 @@ Please note that for technical difficulties we had to exclude Figures 6 and 7
 
     We add a paragraph at the end of the related work section.
 
-    `revision.pdf` Line 1011
+    `revision.pdf` Line 1011  
     `diff.pdf` Line 1072
 
