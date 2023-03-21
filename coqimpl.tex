@@ -229,7 +229,8 @@ facility for inductive types.
 Mutually inductive types and parameterized inductive types are not yet extensible,
 though indexed inductive types are supported and can be used to encode parameterized ones.
 Partial recursors are automatically generated only for non-indexed inductive types.
-The case studies in \cref{sec:casestudies} do not exercise these features.
+These features are not exercised by our case studies (\cref{sec:casestudies})
+but may be useful for modeling other languages.
 We believe that they do not pose conceptual challenges and can be
 addressed with more engineering effort of the same kind that went into \Lang.
 
@@ -249,7 +250,7 @@ restriction that recursion and induction (on extensible types) cannot be nested.
 A possible solution is to make the plugin generate proof obligations for
 nested pattern matches when the inductive types acquire new constructors.
 %
-Also limiting (and interesting for future research) is
+Also limiting---and interesting for future research---is
 that generated propositional equalities cannot be used by Coq to automatically
 reduce terms to definitionally equal forms, which causes inconveniences for
 developments using intrinsically typed syntax.
