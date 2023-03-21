@@ -34,7 +34,10 @@
       \\
   \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
   \text{Linkage transformers} & h & \Coloneqq &
-      \InhId \mid \InhExt{h}{t} \mid \InhOv{h}{t} \mid \InhInh{h} \mid \InhNest{h}{h'}
+      \InhId \mid \InhExt{h}{t} \mid \InhOv{h}{t} \mid \InhInh{h} \mid
+      \\
+      &&&
+      \InhNest{h}{h'} \mid \sub{h}{\gm}
   \tikzmarkend{New4}
   \end{array}
   \end{gather*}
@@ -414,7 +417,7 @@
 % \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}
 }
 {\goodTerm{\Gamma}{\Wrec{\wsig}{h}{\Wsup{j}{\wsig}{a}{b}} \equiv 
-(\app{ (\app{\Recproj{j}{h}} )[("id", a)]} )[("id", \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
+\app{ \app{\Recproj{j}{h}} [("id", a)]} [("id", \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
 }{R}}
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}
