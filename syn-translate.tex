@@ -61,7 +61,7 @@ mutually inductively on $n$, the signature length.
 With the above two helpers, we can define denotation $\denotesT{}$.
 
 \begin{align*}
-  \denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}} &\in \{t : \goodTerm{\Gm}{t}{\Sigr{\Gm}{n}{j}} \} \\
+  \denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}} &\in \{t \,|\, \goodTerm{\Gm}{t}{\Sigr{\Gm}{n}{j}} \} \\
   {\goodType{\Gamma}{\TyTkg{\lsig}}{}} &= \mathscr{P}(\denotesT{\lsig}) \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\lsig} 
   \text{ and inductively on the signature length} \\
