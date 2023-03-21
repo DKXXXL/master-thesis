@@ -250,9 +250,9 @@ restriction that recursion and induction (on extensible types) cannot be nested.
 A possible solution is to make the plugin generate proof obligations for
 nested pattern matches when the inductive types acquire new constructors.
 %
-Also limiting---and interesting for future research---is
-that generated propositional equalities cannot be used by Coq to automatically
-reduce terms to definitionally equal forms, which causes inconveniences for
+Also interesting for future research is the support for automatically converting
+terms to propositionally equally typed forms using generated propositional equalities.
+The lack of this automation currently may cause inconveniences for
 developments using intrinsically typed syntax.
 
 %\begin{itemize}
