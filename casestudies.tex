@@ -32,8 +32,11 @@ form new STLC variants.
 Composing features can lead to \emph{feature interactions}~\cite{batory2011feature}:
 features working correctly in isolation may require coordination when composed.
 For example, composing \lsti{STLCIsorec} and \lsti{STLCProd}
-(\cref{fig:stlc-isorec-prod}) creates a need to extend \lsti{tysubst} to
+(\cref{fig:stlc-isorec-prod}) creates an obligation to extend \lsti{tysubst} to
 handle \lsti{ty_prod}, which the type-checker enforces.
+%
+Composing contradictory features (e.g., a fixpoints construct and a strong
+normalization theorem) would lead to unprovable proof obligations.
 
 Elimination of inductive types defined via \lsti{FInductive} is
 mostly via the \lsti{FRecursion} and \lsti{FInduction} commands.
