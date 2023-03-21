@@ -37,7 +37,7 @@ We will first define two helpers
   such that $\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}}$
   \item and a function $\mathscr{P} : \setc{\lsig'}{ \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n}{j}} } \to \setc{T}{ \goodType{\Gm}{T}{} }$ mapping a term of type $\Sigr{\Gm}{n}{j}$ into a type.
 \end{itemize}
-mutually inductively on $n$, the signature length.
+They are defined mutually inductively on $n$, the signature length.
 
 \begin{align*}
   {\Sigr{\Gamma}{(n+1)}{j}} &= 
@@ -78,7 +78,7 @@ With the above two helpers, we can define denotation $\denotesT{}$.
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
   (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
-  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{\snd{\denotesT{m}}}, f = p_f\nu~\sigma 
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{\snd{\denotesT{m}}}, f = p_f\nu~\sigma\YZ{syntax pf nu undefined?}
 \end{align*}
 % \begin{align*}
 %   \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\
