@@ -62,7 +62,7 @@
 
 \Rule[name=wsig/add]{
     \goodWSigU{m}{\Gm}{\wsig}{n}
-    \\\\
+    \\
     \goodType{\Gm}{A}{m}
     \\
     \goodType{\Gm, A}{B}{m}
@@ -305,9 +305,9 @@
 {\goodType{\Gm}{\TyTkg{\LSigEmp} \equiv \top}{} 
 \\
 \goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {\seal} {T}} \equiv 
-    \TySigma {(\TyTkg {\lsig})} {T[\SubstExt{\pi_1}{\seal} ]} }{}
+    \TySigma {\TyTkg {\lsig}} {T[\SubstExt{\pi_1}{\seal} ]} }{}
 \\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
-\\ \goodTerm{\Gm}{\Tkg {(\LkgAdd {\lkg} {t})} \equiv (\Tkg {\lkg}, t[\SubstExt{\pi_1}{\seal} ][(id, \Tkg {\lkg})]) }{}
+\\ \goodTerm{\Gm}{\Tkg {\LkgAdd {\lkg} {t}} \equiv (\Tkg {\lkg}, t[\SubstExt{\pi_1}{\seal} ][(id, \Tkg {\lkg})]) }{}
 }
 
 \end{mathparpagebreakable}

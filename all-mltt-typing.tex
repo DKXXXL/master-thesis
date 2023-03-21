@@ -56,7 +56,7 @@
 
 \begin{gather*}
   \begin{array}{@{}r@{\hspace{2ex}}c@{\ \ }c@{\ \ }l@{}}
-  \text{Contexts} & \Gm, \Dl &\Coloneqq &
+  \text{Contexts} & \Gm, \Dl, \Theta &\Coloneqq &
       \cdot \mid \Gm, A
       \\ 
   \text{Substitutions} & \gm &\Coloneqq &
@@ -66,7 +66,7 @@
       \sub{T}{\gm} \mid
       \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{t_1}{t_2} \mid \TyS{t} \mid \El{t}
       \\
-  \text{Terms} & t &\Coloneqq &
+  \text{Terms} & t, s &\Coloneqq &
       \sub{t}{\gm} \mid \var{n} \mid \pi_2 \gm \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \lam{t} \mid \app{t} \mid
       \\ &&&
       \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid \eqrefl{t} \mid  \Jeq{t_1}{t_2}
