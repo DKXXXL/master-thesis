@@ -60,14 +60,14 @@
       \cdot \mid \Gm, A
       \\ 
   \text{Substitutions} & \gm &\Coloneqq &
-      \SubstWeak{n} \mid \SubstExt{\gm}{t} \mid \SubstComp{\gm_1}{\gm_2}
+      \SubstWeak{n} \mid \SubstExt{\gm}{t} \mid \SubstComp{\gm_1}{\gm_2} \mid \pi_1 \gm
       \\
   \text{Types} & A, B, T  &\Coloneqq &
       \sub{T}{\gm} \mid
       \cU \mid \cB \mid \bot \mid \top \mid \TyPi{A}{B} \mid \TySigma{A}{B} \mid \TyId{t_1}{t_2} \mid \TyS{t} \mid \El{t}
       \\
   \text{Terms} & t &\Coloneqq &
-      \sub{t}{\gm} \mid \var{n} \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \lam{t} \mid \app{t} \mid 
+      \sub{t}{\gm} \mid \var{n} \mid \pi_2 \gm \mid \codety{T} \mid \unit \mid \true \mid \false \mid \ifb{t_1}{t_2}{t_3} \mid \lam{t} \mid \app{t} \mid
       \\ &&&
       \pair{t_1}{t_2} \mid \fst{t} \mid \snd{t} \mid \eqrefl{t} \mid  \Jeq{t_1}{t_2}
   \end{array}

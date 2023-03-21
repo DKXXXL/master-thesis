@@ -65,7 +65,7 @@ that has type $\TySigma{A}{B}$, then $\snd{t}$ has type
 $\sub{B}{\SubstExt{\SubstWeak{0}}{\fst{t}}}$,
 where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
-To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.\YZ{$\pi_1$ and $\pi_2$ should be added to the syntax figure}\EDJreply{I added it, it is right after sub/dbj/shift.}
+To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
 
 Consequently, function application changes to a equivalent formulation, and becomes a ``direct inverse'' of typing rule for function abstraction. For example, the named notation $\napp{f}{t}$ can be equivalently represented by $\sub{\app{f}}{\SubstExt{\SubstId}{t}}$.
 
