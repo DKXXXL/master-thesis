@@ -35,7 +35,7 @@ We will first define two helpers
   \item a new type $\goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}$  when
   $\goodCtx{\Gamma}{}$  is well-formed and $n \in \mathbb{N}$
   such that $\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}}$
-  \item and a function $\mathscr{P} : \{\lsig' : \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n}{j}} \} \to \{ T : \goodType{\Gm}{T}{} \}$ map one syntax term of $\Sigr{\Gm}{n}{j}$ into a type.
+  \item and a function $\mathscr{P} : \setc{\lsig'}{ \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n}{j}} } \to \setc{T}{ \goodType{\Gm}{T}{} }$ mapping a term of type $\Sigr{\Gm}{n}{j}$ into a type.
 \end{itemize}
 mutually inductively on $n$, the signature length.
 
@@ -61,7 +61,7 @@ mutually inductively on $n$, the signature length.
 With the above two helpers, we can define denotation $\denotesT{}$.
 
 \begin{align*}
-  \denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}} &\in \{t \,|\, \goodTerm{\Gm}{t}{\Sigr{\Gm}{n}{j}} \} \\
+  \denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}} &\in \setc{t}{ \goodTerm{\Gm}{t}{\Sigr{\Gm}{n}{j}} } \\
   {\goodType{\Gamma}{\TyTkg{\lsig}}{}} &= \mathscr{P}(\denotesT{\lsig}) \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\lsig} 
   \text{ and inductively on the signature length} \\
