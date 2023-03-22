@@ -322,12 +322,11 @@ witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$, arriving at
 Further, with the help of eta rules, we have the following canonical forms
 \begin{theorem}[Canonical Forms]\hfill
   \begin{itemize}
-    \item If $\goodTerm{\cdot}{t}{El~(\wcode{\tau})}$ with $\goodWSig{\cdot}{\tau}{n}$, then $\goodTerm{\cdot}{t \equiv "Wsup"~j~a~b}{El~(\wcode{\tau})}$ for some $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot, B[(id, a)]}{b}{El~(\wcode{\tau})}$ and $j < n$
+    \item If $\goodTerm{\cdot}{t}{\El{\wcode{\tau}}}$ and $\goodWSig{\cdot}{\tau}{n}$, then $\goodTerm{\cdot}{t \equiv \Wsup{j}{\tau}{a}{b}}{\El{\wcode{\tau}}}$ for some $\goodTerm{\cdot}{a}{A}$, $\goodTerm{B[("id", a)]}{b}{\El{\wcode{\tau}}}$, and $j < n$
     \item If $\goodTerm{\cdot}{t}{\mathbb{B}}$ then $\goodTerm{\cdot}{t \equiv "tt"}{\mathbb{B}}$ or $\goodTerm{\cdot}{t \equiv "ff"}{\mathbb{B}}$ 
-    \item If $\goodTerm{\cdot}{t}{\cL\sigma}$ with $\goodSig{\cdot}{\sigma}{n}$, then $\goodTerm{\cdot}{t \equiv \LkgAdd{o}{t}}{\cL\sigma}$ 
-    
-      $\quad$ for some $\goodTerm{\cdot}{o}{\cL(\lkgproj{1}{\sigma})}$ and $\goodTerm{\cdot, \lsigproj{2}{\sigma}}{t}{\lkgproj{2}{\sigma}}$
-    \item If $\goodTerm{\cdot}{t}{\Sigma A B}$ then $\goodTerm{\cdot}{t = (a, b)}{\Sigma A B}$ with $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot}{b}{B[(id, a)]}$
+    \item If $\goodTerm{\cdot}{t}{\TyLkg{\lsig}}$ with $\goodSig{\cdot}{\sigma}{n}$, then $\goodTerm{\cdot}{t \equiv \LkgAdd{o}{t}}{\TyLkg{\lsig}}$ 
+      for some $\goodTerm{\cdot}{o}{\TyLkg{\lkgproj{1}{\sigma}}}$ and $\goodTerm{\lsigproj{2}{\sigma}}{t}{\lkgproj{2}{\sigma}}$
+    \item If $\goodTerm{\cdot}{t}{\TySigma A B}$ then $\goodTerm{\cdot}{t \equiv (a, b)}{\TySigma A B}$ with $\goodTerm{\cdot}{a}{A}$ and $\goodTerm{\cdot}{b}{B[("id", a)]}$
     \footnote{We emphasize the last one because $\Tkg{\ell}$ is a dependent pair}
   \end{itemize}
 \end{theorem}
