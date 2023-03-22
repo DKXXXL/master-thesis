@@ -92,15 +92,13 @@ In addition to a soundness proof, this case study produces abstract
 interpreters that are directly ready for program extraction.
 
 The code is organized into four families.
-A base family, \lsti{Imp}, defines via \lsti{FInductive} the abstract
+A base family \lsti{Imp} (\textasciitilde 200~LOC) defines via \lsti{FInductive} the abstract
 syntax of a while-language with pure expressions and impure statements.
 The semantics is given by an interpreter defined as a CEK-style abstract
 machine~\cite{felleisen1986control} and parameterized by a fuel value.
 Family \lsti{Imp} defines the interpreter via \lsti{FRecursion}.
-It contains \textasciitilde 200~LOC.
 
-A second family, \lsti{ImpGAI}, extends \lsti{Imp} and uses
-\textasciitilde 550~LOC.
+A second family \lsti{ImpGAI} (\textasciitilde 550~LOC) extends \lsti{Imp}.
 It exports a generic framework for deriving
 abstract interpreters with partial-correctness guarantees.
 Soundness of the abstract interpreter, \lsti{analyze},
@@ -132,24 +130,30 @@ extend the abstract syntax), to create a sound, runnable abstract
 interpreter for a (possibly extended) while-language.
 %\EDJ{It is not very relaxed. Currently everything is using a dicionary as memory model and stick with that. The abstract value for each expression is the one *really* unspecified.}
 
-The other two families then extend \lsti{ImpGAI}.
+The next two families then extend \lsti{ImpGAI}.
 Family \lsti{ImpTI} (\textasciitilde200~LOC) is an abstract
 interpreter that does type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
-with natural number arithmetic,
+with natural-number arithmetic,
 and further binds the generic abstract interpreter to perform constant propagation.
+%
+An alternative to \Lang would be to define \lsti{ImpGAI} as a functor parameterized
+by the abstract domain and such. But it would prevent \lsti{ImpCP} from reusing
+the code and proofs in \lsti{ImpGAI}, because \lsti{ImpCP} involves extending
+inductive types with new constructors.
 
 Our implementation of family polymorphism is compatible with Coq's
 program extraction feature.
-We extract the two verified abstract interpreters to OCaml
-and put them to test over simple queries. %\rD{What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results? What sorts of benchmarks did you use?}
+We extract the two verified abstract interpreters to OCaml.
+Testing the extracted program over simple queries returns expected results.
+%\rD{What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results? What sorts of benchmarks did you use?}
 
-We note that our plugin cannot yet allow the expression of two derived abstract
+We note that \Lang cannot yet allow the expression of two derived abstract
 interpreters nested within the same family.
 Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
 to further increase the expressive power of our language design.
 
-If not using \Lang, we can construct \lsti{Imp}, \lsti{ImpGAI} and \lsti{ImpTI} in a similar way---but \lsti{Imp} is now a module instead of a family, \lsti{ImpGAI} is now a functor instead of a family with overridable fields, and \lsti{ImpTI} is a concrete instantiation of the functor \lsti{ImpGAI}. However, \lsti{ImpCP} cannot reuse the above framework as it extends syntax with natural numbers. Thus \lsti{ImpCP} will require repeating a large amount of definitions, and it alone will needs about 900~LOCs.
+%If not using \Lang, we can construct \lsti{Imp}, \lsti{ImpGAI} and \lsti{ImpTI} in a similar way---but \lsti{Imp} is now a module instead of a family, \lsti{ImpGAI} is now a functor instead of a family with overridable fields, and \lsti{ImpTI} is a concrete instantiation of the functor \lsti{ImpGAI}. However, \lsti{ImpCP} cannot reuse the above framework as it extends syntax with natural numbers. Thus \lsti{ImpCP} will require repeating a large amount of definitions, and it alone will needs about 900~LOCs.
 
 In addition to the two case studies above, we also use extensible
 inductive types for modeling extensible context-free grammars and derive
