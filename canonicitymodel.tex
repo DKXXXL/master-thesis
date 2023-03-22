@@ -85,10 +85,10 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
     \begin{cases}
       \{\star^1\} & \text{if } t \equiv \true \\
       \{\star^2\} & \text{if } t \equiv \false
-    \end{cases}\YZ{Is this more accurate than 'disjoint union'?}
+    \end{cases}\YZ{Is this more accurate than 'disjoint union'?}\EDJreply{It is accurate. It is actually the way Coquand write it. But I find this way weird type-theoretically---at the very end, when we want to prove a closed term t is either true or false, we will use this cB. But defining in this Coquand way, type-theoretically, we cannot extract a proof term t = true. (i.e. there is no proof term stored here!). I know my above sentence is a bit awkward but I just find this Coquand way of saying very...counter-intuitive.}
     \\
 %   \setc{\star^1}{ \text{ when } t \equiv \true } \dot{\cup} \setc{\star^2}{\text{ when } t \equiv \false } \quad \text{disjoint union} \\
-  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \YZ{What if the conditions do not hold? Empty set?}\\
+  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \YZ{What if the conditions do not hold? Empty set?}\EDJreply{Yes. It is a family of set indexed by t (or just a function maps t to a set), and if t is neither of the above, then the function will map to empty set.}\\
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
@@ -131,9 +131,9 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 
 
 
-The difficult part of the proof-relevant logical-relations model is the
+The eccentric part of the proof-relevant logical-relations model is the
 treatment of propositions.
-The model treats proposition in a special way : \EDJ{Without this first sentence, this paragraph seems unmotivated.}\YZreply{Why is it 'difficult'? Is there a more appropriate adjective than 'difficult'?}
+The model treats proposition in a special way : \EDJ{Without this first sentence, this paragraph seems unmotivated.}\YZreply{Why is it 'difficult'? Is there a more appropriate adjective than 'difficult'?}\EDJreply{Don't you find difficult? At first sight, I cannot understand why this sentence, proposed by Sterling in two of his paper, can be valid mathematically. It only makes sense to me until I am in a type-theoretic world (by Kaposi, since Eq is an inductive type now) (or maybe topos-theoretically where categorical logic will encode equality using data like equalizer). What about changing the phrase to "eccentric" or "weird"?}
 a proposition is encoded as a sub\-singleton. For
 example, $\{\star^1 \ | \text{ when } t \equiv \true  \} \dot{\cup} \{\star^2 \
 | \text{ when } t \equiv \false  \}$ represents a disjoint union of two
