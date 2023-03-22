@@ -12,14 +12,17 @@ STLC and those of its extensions,
 which has been occurring in the examples in this paper.
 The code base is ported from Software Foundations~\cite{sf-pl}.
 %
-The base STLC family consists of about 400~LOC.
-Lines of code in each of the four derived families
-($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
-vary from 100 to 250, largely depending on how many constructors they
-add to the inductive types.
-%
 The linguistic nature of our approach allows us to retain a programming
 style similar to the original proofs in Software Foundations.
+
+The base STLC family consists of \textasciitilde360~LOC,
+about the same as an STLC development not using \Lang.
+%
+Lines of code in each of the four derived families
+($\mathrm{Y}$, $\times$, $+$, and $\mu$ in the Venn diagram)
+vary from 100 to 250,
+largely depending on how many constructors they add to the inductive types.
+Without \Lang, the same STLC code would have to be duplicated for each feature.
 
 \input{stlc-venn.tex}
 
@@ -27,11 +30,13 @@ Using individual families to organize the mechanization of individual
 language features leads to a modular design that also facilitates code reuse.
 %
 Individually developed features can be easily composed (as mixins) to
-form new STLC variants.
+form new STLC variants (e.g., $\mathrm{Y}$$+$$\mu$).
+%
+Such a feature composition often requires only a few lines of code.
 
 Composing features can lead to \emph{feature interactions}~\cite{batory2011feature}:
 features working correctly in isolation may require coordination when composed.
-For example, composing \lsti{STLCIsorec} and \lsti{STLCProd}
+For example, composing $\times$ and $\mu$  %\lsti{STLCIsorec} and \lsti{STLCProd}
 (\cref{fig:stlc-isorec-prod}) creates an obligation to extend \lsti{tysubst} to
 handle \lsti{ty_prod}, which the type-checker enforces.
 %
@@ -75,9 +80,9 @@ by the triviality of the lemmas and the terseness of the proof scripts.
 
 % After using \Lang, the 
 % STLC base family also take about 350 LOCs. However, one feature as children family takes only about 100~250 LOCs. What's more, the mixin of two features usually only take 1~20 LOCs.
-When programming in a direct style, before using \Lang, the STLC base module will take around 350 LOCs while using \Lang, the STLC base family takes about same amount of the code. 
+%When programming in a direct style, before using \Lang, the STLC base module will take around 350 LOCs while using \Lang, the STLC base family takes about same amount of the code. 
 
-However, without \Lang, STLC with one feature will require around 400 LOCs as the definition of STLC base is repeated. On the other hand, using \Lang, each feature as extended family only requires ranging from 100~250 LOCs. What's more, without \Lang, STLC with multiple features will require more and more while using \Lang's mixin feature, tens of LOCs is enough.
+%However, without \Lang, STLC with one feature will require around 400 LOCs as the definition of STLC base is repeated. On the other hand, using \Lang, each feature as extended family only requires ranging from 100~250 LOCs. What's more, without \Lang, STLC with multiple features will require more and more while using \Lang's mixin feature, tens of LOCs is enough.
 
 \noindentparagraph{Abstract interpreters for imperative languages.}
 
