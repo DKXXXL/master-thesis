@@ -85,3 +85,4 @@ metatheoretic
 Grothendieck
 QIITs
 latexdiff
+subsingleton
