@@ -32,13 +32,12 @@ When the context~$\Gm$ is clear, we use $\denotesT{T}$ to mean $\denotesT{\goodT
 
 We will first define two helpers
 \begin{itemize}
-  \item a new type $\goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}$  when
-  $\goodCtx{\Gamma}{}$  is well-formed and $n \in \mathbb{N}$
-  such that $\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}}$
-  \item and a function $\mathscr{P} : \setc{\lsig'}{ \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n}{j}} } \to \setc{T}{ \goodType{\Gm}{T}{} }$ mapping a term of type $\Sigr{\Gm}{n}{j}$ into a type.
+  \item A type $\goodType{\Gamma}{\Sigr{\Gamma}{n}{j}}{}$ where
+  $\goodCtx{\Gamma}{}$ and $n \in \mathbb{N}$.
+  The idea is that $\goodTerm{\Gm}{\denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}}}{\Sigr{\Gm}{n}{j}}$
+  \item A function $\mathscr{P} : \setc{\lsig'}{ \goodTerm{\Gm}{\lsig'}{\Sigr{\Gm}{n}{j}} } \to \setc{T}{ \goodType{\Gm}{T}{} }$ mapping a term of type $\Sigr{\Gm}{n}{j}$ to a type.
 \end{itemize}
 They are defined mutually inductively on $n$, the signature length.
-
 \begin{align*}
   {\Sigr{\Gamma}{(n+1)}{j}} &= 
     \Sigma~(\Sigr{\Gamma}{n}{j})
@@ -59,11 +58,11 @@ They are defined mutually inductively on $n$, the signature length.
 % &\text{, and thus } \denotesT{\goodSig{\Gamma}{\sigma}{n}} \text{ defined} \iff \goodTerm{\Gamma}{\denotesT{\sigma}}{\Sigr{\Gamma}{n}} \\
 
 With the above two helpers, we can define denotation $\denotesT{}$.
-
+%
 \begin{align*}
   \denotesT{\goodSigU{j}{\Gamma}{\lsig}{n}} &\in \setc{t}{ \goodTerm{\Gm}{t}{\Sigr{\Gm}{n}{j}} } \\
   {\goodType{\Gamma}{\TyTkg{\lsig}}{}} &= \mathscr{P}(\denotesT{\lsig}) \\
-  \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ defines upon } \denotesT{\lsig} 
+  \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &\text{ is defined upon } \denotesT{\lsig}
   \text{ and inductively on the signature length} \\
   \denotesT{\goodType{\Gamma}{\TyLkg{\sigma}}{}} &=
   \denotesT{\TyLkg{\lsigproj{1}{\sigma}}} \times \Pi(\El{\fst{(\snd{\denotesT{\sigma}})}})(\El{\app{"snd"^3~\denotesT{\sigma}}}) \\

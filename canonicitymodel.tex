@@ -6,7 +6,9 @@ The meta\-languages of these prior models are based on QIITs, categories with
 families \cite{dybjer1995internal}, and the generalized algebraic theory
 \cite{cartmell1986generalised}, respectively.
 Without exposing the reader to too many technical details, our meta\-language
-should be understood an instance of any of the above logical frameworks---the difference is our formulation did quotient manually but if we use their framework, quotient is done automatically.
+should be understood as an instance of any of the above logical frameworks---the
+difference is that quotienting is manual in our formulation, whereas it is
+automatic with the logical frameworks.
 %Our model works directly on the earlier introduced syntax for readability\footnote{We still
 %take quotient, so ultimately our syntax should be considered as an instance of
 %any of the above logical framework, without exposing the reader too many
@@ -20,7 +22,7 @@ We state the canonicity theorem first:
 \end{theorem}
 
 \noindent
-Canonicity is a basic criterion that should be met by a dependent type theory serving as
+Canonicity is a fundamental property that should be satisfied by a dependent type theory serving as
 a programming language or as a computational foundation for mathematics.
 %\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
 % We can even argue that, if this theorem is proven in a computable meta\-logic, 
@@ -40,7 +42,7 @@ a programming language or as a computational foundation for mathematics.
 %  So earlier you say ``normalize'' a recursion on an inductive type, that is no doable -- if the programmer wants to program on meta-theory, they will have to manually write out the a chain of judgemental equality (with a bunch of beta rules inside) by themselves. 
 %}
 
-We first need the mathematical setup to interpret universe levels, following \citet{sterling2019algebraic}:
+First, we need the mathematical setup to interpret universe levels, following \citet{sterling2019algebraic}:
 
 \newcommand{\Set}[1]{\ensuremath{\texttt{Set}_{#1}}}
 \newtheorem{assumption}{Assumption}[section]
@@ -55,7 +57,7 @@ We can roughly consider each Grothendieck universe $\Set{i}$ as the $\Set{i}$ in
   types, when we have $\denotesC{A}, \denotesC{B} \in \Set{i}$, we will have
   $\denotesC{\TyPi{A}{B}} \in \Set{i}$.
   \item The universe hierarchy is cumulative, as $\Set{i} \in \Set{i+1}$ and $\Set{i} \subseteq \Set{i+1}$.
-  \item Thus if $\denotesC{A} \in \Set{i}, \denotesC{B} \in \Set{j}$, we will
+  \item Thus, if $\denotesC{A} \in \Set{i}, \denotesC{B} \in \Set{j}$, we will
   have $\denotesC{\TyPi{A}{B}} \in \Set{i} \cup \Set{j} = \Set{i \lcup j}$.
 \end{itemize}
 
@@ -71,13 +73,13 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
-  \denotesC{\goodCtx{\Gm}{k}} \text{ is a function }&: \{\gm : \goodSub{\cdot}{\gm}{\Gm} \} \to \Set{k} \quad \text{ (also sets indexed by closed substitution)}\\
+  \denotesC{\goodCtx{\Gm}{k}} \text{ is a function }&: \setc{\gm}{\goodSub{\cdot}{\gm}{\Gm}} \to \Set{k} \quad \text{ (i.e., sets indexed by closed substitution)}\\
   % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
-  \denotesC{\goodType{\Gm}{T}{j}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\{t : \goodTerm{\cdot}{t}{\sub{T}{\gm}}\}\to\Set{j} \\
+  \denotesC{\goodType{\Gm}{T}{j}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\setc{t}{\goodTerm{\cdot}{t}{\sub{T}{\gm}}}\to\Set{j} \\
   % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
   \denotesC{\goodSub{\Gm}{\delta}{\Delta}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)} \denotesC{\goodCtx{\Dl}{}}(\delta \circ \gm) \\
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
-  \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
+  \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
   \denotesC{\goodType{\Gm}{\sub{T}{\sigma}}{}}(\gm)(\gm')(t) &= \denotesC{T}(\sigma \circ \gm)(\denotes{\sigma}(\gm)(\gm'))(t)\\
   \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
@@ -89,7 +91,7 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
     \\
 %   \setc{\star^1}{ \text{ when } t \equiv \true } \dot{\cup} \setc{\star^2}{\text{ when } t \equiv \false } \quad \text{disjoint union} \\
   \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \{\star \ |  \text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm} \} \YZ{What if the conditions do not hold? Empty set?}\EDJreply{Yes. It is a family of set indexed by t (or just a function maps t to a set), and if t is neither of the above, then the function will map to empty set.}\\
-  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
+  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})(\gm', u')(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \setc{ (\gamma' , t') }{ \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  } \\
@@ -100,7 +102,7 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
   \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{a}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
   \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
   \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm)(\gm') &= \star\\
-  \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) ((\gm' , u')) \\
+  \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) (\gm' , u') \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}}(\gm)(\gm') &= \denotesC{t}(\pi_1 \gm)(\gm'[0])(\pi_2 \gm)(\gm'[1]) \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}}(\gm)(\gm') &= (\denotesC{a}(\gm)(\gm') , \denotesC{b}(\gm)(\gm') )\\
   \denotesC{\goodTerm{\Gm}{\fst{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[0] \\
