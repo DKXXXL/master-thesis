@@ -137,10 +137,10 @@ Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural-number arithmetic,
 and further binds the generic abstract interpreter to perform constant propagation.
 %
-An alternative to \Lang would be to define \lsti{ImpGAI} as a functor parameterized
-by the abstract domain and such. But it would prevent \lsti{ImpCP} from reusing
-the code and proofs in \lsti{ImpGAI}, because \lsti{ImpCP} involves extending
-inductive types with new constructors.
+%An alternative to \Lang would be to define \lsti{ImpGAI} as a functor parameterized
+%by the abstract domain and such. But it would prevent \lsti{ImpCP} from reusing
+%the code and proofs in \lsti{ImpGAI}, because \lsti{ImpCP} involves extending
+%inductive types with new constructors.
 
 Our implementation of family polymorphism is compatible with Coq's
 program extraction feature.
