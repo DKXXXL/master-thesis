@@ -44,13 +44,30 @@ h_1 \coloneqq
         \tikzmarkend{t1'-b}%
     }
 &
-\goodInh{\cdot}{
-    h_1 
-}{
-    \LSigAdd{\LSigEmp}{x.\seal_1}{\mathit{self}.\TyS{\wcode{\wsig_{\texttt{tm}}}}}
-}{
-    \LSigAdd{\LSigEmp}{x.\seal'_1}{\mathit{self}.\TyS{\wcode{\wsig'_{\texttt{tm}}}}}
+\goodTerm{\cdot}{h_1}{}{
+    {%
+    \begin{minipage}{.27\textwidth}%
+    \vspace{-7.5pt}%
+    \begin{gather*}
+    \begin{array}{@{}l@{}}
+        \LSigAdd{\LSigEmp}{x.\seal_1}{\mathit{self}.\TyS{\wcode{\wsig_{\texttt{tm}}}}}
+        \twoheadrightarrow
+        \\
+    \LSigAdd{\LSigEmp}{x'\!.\seal'_1}{\mathit{self}'\!.\TyS{\wcode{\wsig'_{\texttt{tm}}}}}
+    \end{array}
+    \end{gather*}
+    \end{minipage}
+    }
 }
+%\\
+%& &
+%\goodInh{\cdot}{
+%    h_1 
+%}{
+%    \LSigAdd{\LSigEmp}{x.\seal_1}{\mathit{self}.\TyS{\wcode{\wsig_{\texttt{tm}}}}}
+%}{
+%    \LSigAdd{\LSigEmp}{x.\seal'_1}{\mathit{self}.\TyS{\wcode{\wsig'_{\texttt{tm}}}}}
+%}
 \end{tabular}
 \end{minipage}
 %\caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.}
