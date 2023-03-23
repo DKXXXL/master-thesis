@@ -303,7 +303,13 @@
     \tikzmarkend{t-STLC-b}
 }{\TyTkg{\lsig_{53}}}
 \end{tabular}
-
+\begin{tabular}{ll}
+  \hline
+  $\TyTkg{\lsig_1} = \nTySigma{\_}{\top}{\TyS{\wcode{\wsig_{\texttt{tm}}}}} $ &  
+  $\TyTkg{\lsig_2} = \nTySigma{\_}{\TyTkg{\lsig_1}}{\El{\wcode{\wsig_{\texttt{tm}}}}}$ \\  
+  $\TyTkg{\lsig_6} = \nTySigma{P_5}{\TyTkg{\lsig_5}}{\CaseSig{\top}{\bot}{\El{P_5.tm} \to \mathit{id} \to \El{P_5.tm}}}$\EDJ{It strike me that, we don't have field projection for dependent tuple... so it is a bit ambiguous. I am not sure if I should continue; but some explanation of this field projection is required I believe} & \\ 
+  $\TyTkg{\lsig_{10}} = \nTySigma{\_}{\TyTkg{\lsig_9}}{\El{\wcode{\wsig_{\texttt{tm}}}} \to \El{\wcode{\wsig_{\texttt{tm}}}} \to \mathit{id} \to \El{\wcode{\wsig_{\texttt{tm}}}}}$ & \\ 
+\end{tabular}
 \caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.
 Each row $\goodTerm{\mathit{self}\!:\!
 \tikzmarkin[disable rounded corners=true,set fill color=A-color,set border color=A-color]{A-i-cap}(-0.02,-0.10)(-0.02,0.28)
@@ -321,4 +327,5 @@ T_i%
 The type $A_i$ controls how the typing of field $t_i$ sees the types of the fields prior to $t_i$.
 }
 \label{fig:stlc-linkage-typing}
+
 \end{figure}
