@@ -105,6 +105,14 @@ linkage signatures and linkages, and linkage transformers.
 
 
 % Deal with intuition
+\noindentparagraph{The necessity of $\TyTkg{\cdot}$.} 
+According to the equality rules of $\ruleref{}$, for a fixed $\lsig$, $\TyTkg{\lsig}$ is very similar to $\TyLkg{\lsig}$ but we are using dependent pair $\pair{}{}$ instead of $ $ to package the fields of a linkage. We can compute a concrete example to persuade the audience.
+
+
+Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because we cannot do \emph{abstraction} with $\TyLkg{\cdot}$ alone, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{}$ is usually a dependent tuple type. We make a small example here.
+
+
+
 
 \noindentparagraph{Linkage transformers as syntactic sugar.}
 
