@@ -480,14 +480,15 @@ type~$\TyLkg{\lsig_2}$ (\ruleref{tm/inh}).
 
 Derived families can be modeled as linkage transformers inductively
 constructed from the introduction forms
-$\small\InhId$, $\small\InhExt{h}{x.t}$, $\small\InhOv{h}{x.t}$, $\small\InhInh{h}$, etc.
+$\small\InhId$, $\small\InhExt{h}{\mathit{self}.t}$, $\small\InhOv{h}{\mathit{self}.t}$, %$\small\InhInh{h}$,
+etc.
 \cref{fig:fmltt-selected} shows the $\beta$-rule of an exemplary transformer,
 \ruleref{tmeq/ov/beta}.
-It states that applying the transformer $\small\InhOv{h}{\mathit{self}_2.t_2}$ to
-a linkage of form $\LkgAdd{\lkg}{\mathit{self}_1.t_1}$
+It states that applying the transformer $\small\InhOv{h}{\mathit{self}_{\!2}.t_2}$ to
+a linkage of form $\LkgAdd{\lkg}{\mathit{self}_{\!1}.t_1}$
 overrides the linkage's last field~$t_1$ with~$t_2$.
 For instance, the construction below shows that 
-$\small\InhOv{\InhId}{\wcode{\wsig'_{\texttt{tm}}}}$
+$\small\InhOv{\InhId}{\mathit{self}.\wcode{\wsig'_{\texttt{tm}}}}$
 is used as the first step in creating a linkage transformer modeling a derived family that
 overrides $\wsig_{\texttt{tm}}$ with an extended
 signature~$\wsig'_{\texttt{tm}}$:
