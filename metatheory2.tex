@@ -144,9 +144,9 @@ $\TyS{\wcode{\wsig_2}}$ in $\lsig$ behind $\cU$ in $\lsig^A$:
 
 The problem lies in that the type $\TyLkg{\lsig^A}$ above cannot be inhabited.
 Suppose there is some $\lkg^A$ such that $\cdot \vdash \lkg^A : \TyLkg{\lsig^A}$.
-Then it follows from the self-parameterization that projecting out the field~$f$
+Then it follows from the self-parameterization that projecting out the last field~$f$
 has the typing
-$\goodTerm{T_A : \cU, T_B: \cU}{\getfield{\lkg^A}{f}}{\El{T_A} \to \El{T_B}}$\EDJ{This field projection should be the usual one right? because ellA here is a linkage}.
+$\goodTerm{T_A : \cU, T_B: \cU}{\lkgproj{2}{\lkg^A}}{\El{T_A} \to \El{T_B}}$.
 This typing means that there is a function of type
 $\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A}
 \to \El{T_B}}}$, i.e., a function from an arbitrary type to another arbitrary
@@ -167,8 +167,9 @@ we can apply it to $\top$ and $\bot$ and get $\top \to \bot$.
 
 Thus, it is critical that the hiding of W-type signatures operate on dependent
 tuple types rather than linkage types.
-In \TT, we introduce the syntax $\TyTkg{\lsig}$, $\Tkg{\lkg}$, and their computation rules to make
-this hiding process more succinct.
+To this end, we introduce the syntax $\TyTkg{\lsig}$ and its computation rules
+(e.g., \ruleref{tyeq/pk/add}) to make it convenient to package linkage signatures
+into dependent tuple types.
 
 %To summarize, the reason we need dependent tuple type is because of the overridability nature of our linkages, together with the frequent usage of universe type in the context of dependent type programming. Once we want to abstract a type in a signature, we may have to use dependent tuple type as the abstraction instead of linkages. Since abstraction is usually dependent tuple type, we introduce $\TyTkg{\cdot}$ and its computation rules to make the process of doing abstraction in \TT easier.
 
