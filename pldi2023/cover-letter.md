@@ -47,6 +47,13 @@ for latexdiff to work.
     `revision.pdf` Line 727  
     `diff.pdf` Line 721
   
+  - We explain the structure of bold-P and illustrate some concrete examples. 
+    We also explain its necessity in the appendices.
+
+    `revision.pdf` 
+    `diff.pdf`
+    `appendix/blindtr.pdf` 
+  
   - Appendix A.4 now contains pen-and-paper proofs of consistency and canonicity,
     which subsume the proofs in the original supplemental material. The
     technical content is still quite involved, but we hope that the presentation
