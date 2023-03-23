@@ -335,7 +335,7 @@ over how the fields in $t$'s context are defined.
 Late binding enables reuse.
 A different linkage~$\ell'$ that overrides fields in $t$'s context (and thus models a derived family)
 can reuse~$t$---without retyping it---by first
-projecting~$t$ from $\LkgAdd{\lkg}{t}$ and then appending it to~$\lkg'$.
+projecting~$t$ from $\LkgAdd{\lkg}{\mathit{self}.t}$ and then appending it to~$\lkg'$.
 %\EDJ{I suggest change this sentence to `by projecting it out of parent linkage and adding it in the derived linkage'}.
 
 %recorded by the first premise $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$
@@ -397,7 +397,7 @@ This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 
 \item 
 The next four fields model the four constructors of~\lsti{tm}.
-Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{\bot}$
+Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{x.\bot}$
 and typed with $\El{\mathit{self}.\texttt{tm}}$, where $\mathit{self}$ stands for
 the typing context containing the first field~\lsti{tm}.
 The W-type signature $\wsig_{\texttt{tm}}$ is exposed in
