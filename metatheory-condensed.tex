@@ -398,11 +398,11 @@ This typing is recorded by $\lsig_1$ and is thus available in all $\lsig_i$'s.
 \item 
 The next four fields model the four constructors of~\lsti{tm}.
 Constructor \lsti{tm_unit} is modeled as $\Wsup{}{\wsig_{\texttt{tm}}}{\top}{x.\bot}$
-and typed with $\El{\mathit{self}.\texttt{tm}}$, where $\mathit{self}$ stands for
+and typed with $\El{\mathit{self}."tm"}$, where $\mathit{self}$ stands for
 the typing context containing the first field~\lsti{tm}.
 The W-type signature $\wsig_{\texttt{tm}}$ is exposed in
-this typing context; that is, \lsti{tm} has type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$.
-So $\El{\mathit{self}.\texttt{tm}}$ and $\El{\wcode{\wsig_{\texttt{tm}}}}$ can be equated,
+this typing context; that is, $\mathit{self}."tm"$ has type $\TyS{\wcode{\wsig_{\texttt{tm}}}}$.
+So $\El{\mathit{self}."tm"}$ and $\El{\wcode{\wsig_{\texttt{tm}}}}$ can be equated,
 as required by rule \ruleref{tm/wsup}.
 
 \item

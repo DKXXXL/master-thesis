@@ -22,7 +22,7 @@ We state the canonicity theorem first:
 \end{theorem}
 
 \noindent
-Canonicity is a fundamental property that should be satisfied by a dependent type theory serving as
+Canonicity is a key criterion for a dependent type theory to be considered as
 a programming language or as a computational foundation for mathematics.
 %\footnote{See nlab explanation: \href{https://ncatlab.org/nlab/show/canonical+form}{Canonical Form}}
 % We can even argue that, if this theorem is proven in a computable meta\-logic, 
@@ -316,16 +316,19 @@ $\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmo
 in a strictly positive position. %So it is a well-founded definition.
 We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
 
-We state the fundamental property of logical relation here---in our proof relevant model, it is admitting that our model is really a model, and our syntax is the initial model so there is map from our syntax to our canonicity model:
-\begin{lemma}[Fundamental Theorem of Logical Relation]
-  If we have a (intrinsically well-typed) term $\goodTerm{\Gm}{t}{T}$, then we have its interpretation as a dependent function \\ $\denotesC{t} : \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})$
-\end{lemma}
+We state the fundamental property of the logical-relations model.
+%in our proof relevant model, it is admitting that our model is really a model,
+%and our syntax is the initial model so there is map from our syntax to our
+%canonicity model:
+\begin{theorem}[Fundamental Property]
+  If\/ $\goodTerm{\Gm}{t}{T}$, then its semantic interpretation is a dependent function such that
+  $\denotesC{t} : \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})$.
+\end{theorem}
 
 The first consequence of this model is the consistency of \TT---we cannot derive
 $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we would have an element in the empty set,
 $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in
 \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, a contradiction.
-\YZ{Have you stated the fundamental property of the logical-relations model?}\EDJreply{No. Now stated.}
 
 \begin{theorem}[Consistency]
   The typing judgment $\goodTerm{\cdot}{t}{\bot}$ is not derivable for any term~$t$.
@@ -338,7 +341,7 @@ witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$ by the defin
 \cref{thm:canonicity-appendix}.
 
 
-Further, with the help of eta rules, we have the following canonical forms
+Further, with the help of eta rules, we have the following canonical forms.
 \begin{theorem}[Canonical Forms]\hfill
   \begin{itemize}
     \item If $\goodTerm{\cdot}{t}{\El{\wcode{\tau}}}$ and $\goodWSig{\cdot}{\tau}{n}$, then $\goodTerm{\cdot}{t \equiv \Wsup{j}{\tau}{a}{b}}{\El{\wcode{\tau}}}$ for some $\goodTerm{\cdot}{a}{A}$, $\goodTerm{B[("id", a)]}{b}{\El{\wcode{\tau}}}$, and $j < n$
