@@ -460,8 +460,8 @@
 {\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\\\
-\goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
-{\goodInh{\Gm}{\InhNest{h}{i}}{\LSigAdd {\lsig_1} {\seal_1}  {\TyLkg\tau_1}}{\LSigAdd   {\lsig_2} {\seal_2} {\TyLkg{\tau_2}}}}
+\goodInh{\Gm, A_2}{h_{\mathit{inner}}}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+{\goodInh{\Gm}{\InhNest{h}{h_{\mathit{inner}}}}{\LSigAdd {\lsig_1} {\seal_1}  {\TyLkg{\tau_1}}}{\LSigAdd   {\lsig_2} {\seal_2} {\TyLkg{\tau_2}}}}
 \\
 
 \\
@@ -485,12 +485,12 @@
 \\
 \\
 \Rule[name=tm/inh/sub]{}{
-    \goodTerm{\Gm}{\subst{\inh{h}{\lkg}}{\gm} \equiv \inh{\sub{h}{\gm}}{\sub{\lkg}{\gm}}}{\sub{\TyLkg{\lsig_2}}{\gm}}
+    \goodTerm{\Gm}{\sub{\inh{h}{\lkg}}{\gm} \equiv \inh{\sub{h}{\gm}}{\sub{\lkg}{\gm}}}{\sub{\TyLkg{\lsig_2}}{\gm}}
 }
 
 \Rule[name=inh/nest/sub]
 {}
-{\goodType{\Gm}{\sub{\InhNest{h}{i}}{\gm} \equiv \InhNest{\sub{h}{\gm}}{\sub{i}{\gm^\uparrow}} }{}}
+{\goodType{\Gm}{\sub{\InhNest{h}{h_{\mathit{inner}}}}{\gm} \equiv \InhNest{\sub{h}{\gm}}{\sub{h_{\mathit{inner}}}{\gm^\uparrow}} }{}}
 \\
 
 \\
@@ -550,12 +550,12 @@
 {\goodInh{\Gm}{h}{\lsig_1}{\lsig_2}
 \\ \goodTerm{\Gm, A_2}{\uparrow^s}{\sub{A_1}{\pi_1}}
 \\
-\goodInh{\Gm, A_2}{i}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
+\goodInh{\Gm, A_2}{h_{\mathit{inner}}}{\tau_1[(\pi_1, \uparrow^s)]}{\tau_2}}
 {
 \goodTerm{\Gm}
 {
-\inh{\InhNest{h}{i}}{\LkgAdd{\lkg}{t}} \equiv 
-\LkgAdd{\inh{h}{\lkg}}{\inh{i}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
+\inh{\InhNest{h}{h_{\mathit{inner}}}}{\LkgAdd{\lkg}{t}} \equiv 
+\LkgAdd{\inh{h}{\lkg}}{\inh{h_{\mathit{inner}}}{\sub{t}{ \SubstExt{\pi_1}{\uparrow^s}}}}
 }
 {\TyLkg{\LSigAdd{\lsig_1}{\seal_2}{\TyLkg{\tau_2}}}}
 }
