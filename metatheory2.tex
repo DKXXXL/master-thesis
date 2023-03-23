@@ -106,10 +106,16 @@ linkage signatures and linkages, and linkage transformers.
 
 % Deal with intuition
 \noindentparagraph{The necessity of $\TyTkg{\cdot}$.} 
-According to the equality rules of $\ruleref{}$, for a fixed $\lsig$, $\TyTkg{\lsig}$ is very similar to $\TyLkg{\lsig}$ but we are using dependent pair $\pair{}{}$ instead of $ $ to package the fields of a linkage. We can compute a concrete example to persuade the audience.
+According to the equality rules of $\ruleref{tyeq/pk/add}$, for a fixed $\lsig$, $\TyTkg{\lsig}$ is very similar to $\TyLkg{\lsig}$ but we are using dependent tuple $\pair{\cdot}{\cdot}$ instead of $\LkgAdd{\cdot}{\cdot}$ to package the fields of a linkage. We have computed several examples in \cref{fig:stlc-linkage-typing}.
+
+Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because we cannot do \emph{abstraction} with $\TyLkg{\cdot}$ alone, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{lsig/add}$ and $\ruleref{l/add}$ is usually a dependent tuple type. 
+
+We illustrate with a small example, say given two inductive type $\wsig_1$ and $\wsig_2$ and a function maps from the first to the second type. Then we will have a linkage $\goodTerm{\cdot}{\ell}{\TyLkg{}}$. Say we want to add a new field into this linkage and abstracting both extensible inductive types, then in $\ruleref{l/add}$, the chosen $A$ must abstract both inductive type to $\cU$. The  question now is whether $A$ is a linkage type or a dependent tuple type; and for each case we will intuitively choose the following approach to do abstraction.
 
 
-Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because we cannot do \emph{abstraction} with $\TyLkg{\cdot}$ alone, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{}$ is usually a dependent tuple type. We make a small example here.
+However, the first approach won't work because such linkage cannot exist.
+
+To summarize, the reason we need dependent tuple type is because of the overridability nature of our linkages, together with the frequent usage of universe type in the context of dependent type programming. Once we want to abstract a type in a signature, we may have to use dependent tuple type as the abstraction.
 
 
 
