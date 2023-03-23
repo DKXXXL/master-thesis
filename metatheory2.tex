@@ -105,41 +105,72 @@ linkage signatures and linkages, and linkage transformers.
 
 
 % Deal with intuition
-\noindentparagraph{The necessity of $\TyTkg{\cdot}$.} 
+\noindentparagraph{Why $\TyTkg{\cdot}$?} 
 
-As shown by the equality rule \ruleref{tyeq/pk/add},
-for a given linkage signature $\lsig \coloneq \LSigAdd{\cdot}{\cdot}{\cdot}$,
-the type $\TyTkg{\lsig}$ is structurally similar to the linkage type $\TyLkg{\lsig}$
-except that $\TyTkg{\lsig}$ is a dependent tuple type---%
-it packages the fields of $\lsig$ into a dependent tuple type.
+%As shown by the equality rule \ruleref{tyeq/pk/add},
+%for a given linkage signature $\lsig \coloneq \LSigAdd{\cdot}{\cdot}{\cdot}$,
+%the type $\TyTkg{\lsig}$ is structurally similar to the linkage type $\TyLkg{\lsig}$
+%except that $\TyTkg{\lsig}$ is a dependent tuple type---%
+%it packages the fields of $\lsig$ into a dependent tuple type.
 %
-We have computed several examples in
-\cref{fig:stlc-linkage-typing}, where the reader should also notice the high
-similarity between $\TyTkg{\lsig}$ and $\TyLkg{\lsig}$.
+%We have computed several examples in
+%\cref{fig:stlc-linkage-typing}, where the reader should also notice the high
+%similarity between $\TyTkg{\lsig}$ and $\TyLkg{\lsig}$.
 
-Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because \emph{we cannot do abstraction with $\TyLkg{\cdot}$ alone}, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{lsig/add}$ and $\ruleref{l/add}$ is \emph{usually a dependent tuple type}. 
+$\TyTkg{\lsig}$ is needed in rules $\ruleref{lsig/add}$ and $\ruleref{l/add}$:
+these rules have a premise  $\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$
+responsible for possibly hiding W-type signatures (in $\TyTkg{\lsig}$) behind $\cU$ (in $A$);
+see $\seal_6$ in \cref{fig:stlc-linkage-typing} for an example.
+Here, both $\TyTkg{\lsig}$ and $A$ are dependent tuple types rather than linkage types.
 
+%Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because \emph{we cannot do abstraction with $\TyLkg{\cdot}$ alone}, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{lsig/add}$ and $\ruleref{l/add}$ is \emph{usually a dependent tuple type}. 
+
+An alternative to $\TyTkg{\lsig}$ would be to use linkage types $\TyLkg{\cdot}$ in this premise.
+However, this alternative is infeasible.
+We illustrate using a simple example.
+Consider the linkage signature $\lsig$ below (it is written using the record
+syntax for illustration but should not be confused with records, as a later field
+is universally quantified over a $\mathit{self}$ variable).
+The job is to hide the W-types $\TyS{\wcode{\wsig_1}}$ and
+$\TyS{\wcode{\wsig_2}}$ in $\lsig$ behind $\cU$ in $\lsig^A$:
+%
 \begin{align*}
-  \lsig &\coloneq \{ T_A : \TyS{\wcode{\wsig_1}}; &&T_B : \TyS{\wcode{\wsig_2}}; &&f : \El{T_A} \to \El{T_B} \} \\
-  \lsig^A &\coloneq \{T_A : \cU; &&T_B : \cU; &&f : \El{T_A} \to \El{T_B} \}
+  \lsig &\coloneq \{ T_A : \TyS{\wcode{\wsig_1}}; &&T_B : \TyS{\wcode{\wsig_2}}; &&f : \El{\getfield{\mathit{self}}{T_A}} \to \El{\getfield{\mathit{self}}{T_B}} \} \\
+  \lsig^A &\coloneq \{T_A : \cU; &&T_B : \cU; &&f : \El{\getfield{\mathit{self}}{T_A}} \to \El{\getfield{\mathit{self}}{T_B}} \} \\
+  & && \goodTerm{x : \TyLkg{\lsig}}{\seal}{\TyLkg{\lsig^A}}
 \end{align*}
 
-We illustrate with a small example using named convention, say given two inductive type $\wsig_1$ and $\wsig_2$ and a function $f$ maps from the first to the second type. Then we will have a linkage $\goodTerm{\cdot}{\ell}{\TyLkg{\lsig}}$. Say we want to add a new field into this linkage, and in $\ruleref{l/add}$, we chose $A$ to abstract both inductive type to $\cU$, resulting something like $\lsig^A$. The question now is whether $A$ is a linkage type $\TyLkg{\lsig^A}$ or a dependent tuple type $\TyTkg{\lsig^A}$; and for each case we will intuitively choose the following approach to do abstraction (choose $s$).
+%We illustrate with a small example using named convention, say given two inductive type $\wsig_1$ and $\wsig_2$ and a function $f$ maps from the first to the second type. Then we will have a linkage $\goodTerm{\cdot}{\ell}{\TyLkg{\lsig}}$. Say we want to add a new field into this linkage, and in $\ruleref{l/add}$, we chose $A$ to abstract both inductive type to $\cU$, resulting something like $\lsig^A$. The question now is whether $A$ is a linkage type $\TyLkg{\lsig^A}$ or a dependent tuple type $\TyTkg{\lsig^A}$; and for each case we will intuitively choose the following approach to do abstraction (choose $s$).
 
-\begin{align*}
-  & \text{doing abstraction (choosing appropriate $s$ in \ruleref{l/add})} \\ 
-  \text{\textcolor{red}{Approach $\alpha$}}  \quad&\quad {\color{red} \TyLkg{\lsig} \longrightarrow \TyLkg{\lsig^A}} \\
-  \text{Approach } \beta \quad&\quad  \TyLkg{\lsig} \longrightarrow \TyTkg{\lsig} \longrightarrow \TyTkg{\lsig^A}\\
-\end{align*}
+The problem lies in that the type $\TyLkg{\lsig^A}$ above cannot uninhabited.
+Suppose there is some $\lkg^A$ such that $\cdot \vdash \lkg^A : \TyLkg{\lsig^A}$.
+Then it follows from the self-parameterization that projecting out the field~$f$
+has the typing
+$\goodTerm{T_A : \cU, T_B: \cU}{\getfield{\lkg^A}{f}}{\El{T_A} \to \El{T_B}}$.
+This typing means that there is a function of type
+$\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A}
+\to \El{T_B}}}$, i.e., a function from an arbitrary type to another arbitrary
+type. We can easily derive inconsistency from this function:
+we can apply it to $\top$ and $\bot$ and get $\top \to \bot$.
 
+%\begin{align*}
+%  & \text{doing abstraction (choosing appropriate $s$ in \ruleref{l/add})} \\ 
+%  \text{\textcolor{red}{Approach $\alpha$}}  \quad&\quad {\color{red} \TyLkg{\lsig} \longrightarrow \TyLkg{\lsig^A}} \\
+%  \text{Approach } \beta \quad&\quad  \TyLkg{\lsig} \longrightarrow \TyTkg{\lsig} \longrightarrow \TyTkg{\lsig^A}\\
+%\end{align*}
+%
+%However, the seemingly easier approach $\alpha$ is impossible because linkage
+%$\TyLkg{\lsig^A}$ is uninhabited---%
+%say we have $\ell^A : \TyLkg{\lsig^A}$, then by projection we will have an impossible term $\goodTerm{T_A : \cU, T_B: \cU}{\ell^A.f}{\El{T_A} \to \El{T_B}}$ due to the nature of overridability of linkage. To make the inconsistency clearer, by double abstraction we will have an impossible function $g \coloneq \goodTerm{\cdot}{\nlam{T_A}{\nlam{T_B}{\ell^A.f}}}{\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A} \to \El{T_B}}}} $, i.e. a function maps from arbitrary type to another arbitrary type . We can easily derive inconsistency by applying $\napp{\napp{g}{\top}}{\bot} : \top \to \bot$. 
+%
+%Thus we can only choose the approach $\beta$ instead, which justifies why we have $\TyTkg{\cdot}$ in our typing rule, as $\TyTkg{\lsig}$ is usually the first step to do abstraction.
 
-However, the seemingly easier approach $\alpha$ is impossible because linkage
-$\TyLkg{\lsig^A}$ is uninhabited---%
-say we have $\ell^A : \TyLkg{\lsig^A}$, then by projection we will have an impossible term $\goodTerm{T_A : \cU, T_B: \cU}{\ell^A.f}{\El{T_A} \to \El{T_B}}$ due to the nature of overridability of linkage. To make the inconsistency clearer, by double abstraction we will have an impossible function $g \coloneq \goodTerm{\cdot}{\nlam{T_A}{\nlam{T_B}{\ell^A.f}}}{\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A} \to \El{T_B}}}} $, i.e. a function maps from arbitrary type to another arbitrary type . We can easily derive inconsistency by applying $\napp{\napp{g}{\top}}{\bot} : \top \to \bot$. 
+Thus, it is critical that the hiding of W-type signatures operate on dependent
+tuple types rather than linkage types.
+In \TT, we introduce the syntax $\TyTkg{\lsig}$, $\Tkg{\lkg}$, and their computation rules to make
+this hiding process more succinct.
 
-Thus we can only choose the approach $\beta$ instead, which justifies why we have $\TyTkg{\cdot}$ in our typing rule, as $\TyTkg{\lsig}$ is usually the first step to do abstraction.
-
-To summarize, the reason we need dependent tuple type is because of the overridability nature of our linkages, together with the frequent usage of universe type in the context of dependent type programming. Once we want to abstract a type in a signature, we may have to use dependent tuple type as the abstraction instead of linkages. Since abstraction is usually dependent tuple type, we introduce $\TyTkg{\cdot}$ and its computation rules to make the process of doing abstraction in \TT easier.
+%To summarize, the reason we need dependent tuple type is because of the overridability nature of our linkages, together with the frequent usage of universe type in the context of dependent type programming. Once we want to abstract a type in a signature, we may have to use dependent tuple type as the abstraction instead of linkages. Since abstraction is usually dependent tuple type, we introduce $\TyTkg{\cdot}$ and its computation rules to make the process of doing abstraction in \TT easier.
 
 
 
