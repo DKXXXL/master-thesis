@@ -106,7 +106,16 @@ linkage signatures and linkages, and linkage transformers.
 
 % Deal with intuition
 \noindentparagraph{The necessity of $\TyTkg{\cdot}$.} 
-According to the equality rules $\ruleref{tyeq/pk/add}$, for a fixed $\lsig$, $\TyTkg{\lsig}$ is structurally similar to $\TyLkg{\lsig}$ but we are using dependent tuple $\pair{\cdot}{\cdot}$ instead of $\LkgAdd{\cdot}{\cdot}$ to package the fields of a linkage. We have computed several examples in \cref{fig:stlc-linkage-typing}, where the reader should also notice the high similarity between $\TyTkg{\lsig}$ and $\TyLkg{\lsig}$.
+
+As shown by the equality rule \ruleref{tyeq/pk/add},
+for a given linkage signature $\lsig \coloneq \LSigAdd{\cdot}{\cdot}{\cdot}$,
+the type $\TyTkg{\lsig}$ is structurally similar to the linkage type $\TyLkg{\lsig}$
+except that $\TyTkg{\lsig}$ is a dependent tuple type---%
+it packages the fields of $\lsig$ into a dependent tuple type.
+%
+We have computed several examples in
+\cref{fig:stlc-linkage-typing}, where the reader should also notice the high
+similarity between $\TyTkg{\lsig}$ and $\TyLkg{\lsig}$.
 
 Thus the mystery of $\TyTkg{\cdot}$ really lies in its necessity. $\TyTkg{\cdot}$ is indispensible because \emph{we cannot do abstraction with $\TyLkg{\cdot}$ alone}, which in turn is due to the fact that an abstraction $A$ inside $\ruleref{lsig/add}$ and $\ruleref{l/add}$ is \emph{usually a dependent tuple type}. 
 
@@ -124,7 +133,9 @@ We illustrate with a small example using named convention, say given two inducti
 \end{align*}
 
 
-However, the seemingly easier approach $\alpha$ is impossible because linkage $\TyLkg{\lsig^A}$ is uninhabited---say we have $\ell^A : \TyLkg{\lsig^A}$, then by projection we will have an impossible term $\goodTerm{T_A : \cU, T_B: \cU}{\ell^A.f}{\El{T_A} \to \El{T_B}}$ due to the nature of overridability of linkage. To make the inconsistency clearer, by double abstraction we will have an impossible function $g \coloneq \goodTerm{\cdot}{\nlam{T_A}{\nlam{T_B}{\ell^A.f}}}{\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A} \to \El{T_B}}}} $, i.e. a function maps from arbitrary type to another arbitrary type . We can easily derive inconsistency by applying $\napp{\napp{g}{\top}}{\bot} : \top \to \bot$. 
+However, the seemingly easier approach $\alpha$ is impossible because linkage
+$\TyLkg{\lsig^A}$ is uninhabited---%
+say we have $\ell^A : \TyLkg{\lsig^A}$, then by projection we will have an impossible term $\goodTerm{T_A : \cU, T_B: \cU}{\ell^A.f}{\El{T_A} \to \El{T_B}}$ due to the nature of overridability of linkage. To make the inconsistency clearer, by double abstraction we will have an impossible function $g \coloneq \goodTerm{\cdot}{\nlam{T_A}{\nlam{T_B}{\ell^A.f}}}{\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A} \to \El{T_B}}}} $, i.e. a function maps from arbitrary type to another arbitrary type . We can easily derive inconsistency by applying $\napp{\napp{g}{\top}}{\bot} : \top \to \bot$. 
 
 Thus we can only choose the approach $\beta$ instead, which justifies why we have $\TyTkg{\cdot}$ in our typing rule, as $\TyTkg{\lsig}$ is usually the first step to do abstraction.
 
