@@ -177,7 +177,7 @@
     \goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}
 }{
     \goodType{\Gm}{
-        \TyTkg {\LSigAdd  {\lsig} {\seal} {T}}
+        \TyTkg {\LSigAdd  {\lsig} {x.\seal} {\mathit{self}.T}}
         \equiv 
         \nTySigma{x}{\TyTkg {\lsig}}{\nsub{T}{\mathit{self}}{s}}
     }{}
