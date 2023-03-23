@@ -116,7 +116,7 @@
     \tikzmarkend{t2-b}
 }{
     \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T2-b}(-0.02,-0.10)(-0.02,0.28)
-    \El{\mathit{self.}\texttt{tm}}
+    \El{\getfield{\mathit{self}}{\texttt{tm}}}
     \tikzmarkend{T2-b}
 }
 }
@@ -189,9 +189,9 @@
         \fontsize{8.0}{9.2}\selectfont%
         \begin{gather*}
         \begin{array}{@{}l@{}}
-            \El{\mathit{self}.\texttt{tm}} \to
+            \El{\getfield{\mathit{self}}{\texttt{tm}}} \to
             \\
-            \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+            \mathit{id} \to \El{\getfield{\mathit{self}}{\texttt{tm}}}
         \end{array}
         \end{gather*}
         \end{minipage}
@@ -264,7 +264,7 @@
     \tikzmarkend{A10-b}%
 }{
     \tikzmarkin[disable rounded corners=true,set fill color=t-color,set border color=t-color]{t10-b}(-0.02,-0.10)(-0.02,0.28)
-    \lambda t.\,\Wrec{\wsig_{\texttt{tm}}}{\dadada}{t}
+    \lambda x.\,\Wrec{\wsig_{\texttt{tm}}}{\dadada}{x}
     \tikzmarkend{t10-b}
 }{
     \begin{minipage}{.15\textwidth}%
@@ -273,11 +273,11 @@
     \begin{gather*}
     \tikzmarkin[disable rounded corners=true,set fill color=T-color,set border color=T-color]{T10-b}(-0.02,-0.45)(-0.02,0.60)
     \begin{array}{@{}l@{}}
-        \El{\mathit{self}.\texttt{tm}} \to
+        \El{\getfield{\mathit{self}}{\texttt{tm}}} \to
         \\
-        \El{\mathit{self}.\texttt{tm}} \to
+        \El{\getfield{\mathit{self}}{\texttt{tm}}} \to
         \\
-        \mathit{id} \to \El{\mathit{self}.\texttt{tm}}
+        \mathit{id} \to \El{\getfield{\mathit{self}}{\texttt{tm}}}
     \end{array}
     \tikzmarkend{T10-b}
     \end{gather*}
@@ -307,7 +307,7 @@
   \hline
   $\TyTkg{\lsig_1} = \nTySigma{\_}{\top}{\TyS{\wcode{\wsig_{\texttt{tm}}}}} $ &  
   $\TyTkg{\lsig_2} = \nTySigma{\_}{\TyTkg{\lsig_1}}{\El{\wcode{\wsig_{\texttt{tm}}}}}$ \\  
-  $\TyTkg{\lsig_6} = \nTySigma{P_5}{\TyTkg{\lsig_5}}{\CaseSig{\top}{\bot}{\El{P_5.tm} \to \mathit{id} \to \El{P_5.tm}}}$\EDJ{It strike me that, we don't have field projection for dependent tuple... so it is a bit ambiguous. I am not sure if I should continue; but some explanation of this field projection is required I believe} & \\ 
+  $\TyTkg{\lsig_6} = \nTySigma{P_5}{\TyTkg{\lsig_5}}{\CaseSig{\top}{\bot}{\El{\getfield{P_5}{"tm"}} \to \mathit{id} \to \El{\getfield{P_5}{"tm"}}}}$\EDJ{It strike me that, we don't have field projection for dependent tuple... so it is a bit ambiguous. I am not sure if I should continue; but some explanation of this field projection is required I believe} & \\ 
   $\TyTkg{\lsig_{10}} = \nTySigma{\_}{\TyTkg{\lsig_9}}{\El{\wcode{\wsig_{\texttt{tm}}}} \to \El{\wcode{\wsig_{\texttt{tm}}}} \to \mathit{id} \to \El{\wcode{\wsig_{\texttt{tm}}}}}$ & \\ 
 \end{tabular}
 \caption{\TT encoding of the \texttt{STLC} family from \cref{fig:stlc-mechanized}.
