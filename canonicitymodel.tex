@@ -85,9 +85,17 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= 
     %\YZ{Is this more accurate than 'disjoint union'?}\EDJreply{It is accurate. It is actually the way Coquand write it. But I find this way weird type-theoretically---at the very end, when we want to prove a closed term t is either true or false, we will use this cB. But defining in this Coquand way, type-theoretically, we cannot extract a proof term t = true. (i.e. there is no proof term stored here!). I know my above sentence is a bit awkward but I just find this Coquand way of saying very...counter-intuitive.}
-  \setc{\star^1}{ \text{ when } t \equiv \true } \uplus \setc{\star^2}{\text{ when } t \equiv \false } \quad \text{disjoint union} \\
-  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= \setc{\star}{\text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}} %\YZ{What if the conditions do not hold? Empty set?}\EDJreply{Yes. It is a family of set indexed by t (or just a function maps t to a set), and if t is neither of the above, then the function will map to empty set.}
-  \\
+    \begin{cases}
+      \{\star^1\} & \text{if } t \equiv \true \\
+      \{\star^2\} & \text{if } t \equiv \false \\
+      \emptyset & \text{otherwise }
+    \end{cases}\\
+  \denotesC{\goodType{\Gm}{\TyId{a}{b}}{}}(\gm)(\gm')(t) &= 
+  \begin{cases}
+    \{\star\} & \text{if } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}\\
+    \emptyset & \text{otherwise }
+  \end{cases}\\
+  % \setc{\star}{\text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}} %\YZ{What if the conditions do not hold? Empty set?}\EDJreply{Yes. It is a family of set indexed by t (or just a function maps t to a set), and if t is neither of the above, then the function will map to empty set.}
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})(\gm', u')(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
@@ -96,8 +104,13 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
   \denotesC{\goodTerm{\Gm}{\false}{\cB}}(\gm)(\gm') &= \star^2 \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{a}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
-  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
+  \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= 
+  \begin{cases}
+    \denotesC{a}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
+    \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2
+  \end{cases}\\
+  % \denotesC{a}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^1 \\
+  % \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
   \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) (\gm' , u') \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}}(\gm)(\gm') &= \denotesC{t}(\pi_1 \gm)(\gm'[0])(\pi_2 \gm)(\gm'[1]) \\
@@ -130,15 +143,15 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 
 
 
-What is perhaps unintuitive about the proof-relevant logical-relations model is the
-treatment of propositions.
+% What is perhaps unintuitive about the proof-relevant logical-relations model is the
+% treatment of propositions.
 %The model treats propositions in a special way : \EDJ{Without this first sentence, this paragraph seems unmotivated.}\YZreply{Why is it 'difficult'? Is there a more appropriate adjective than 'difficult'?}\EDJreply{Don't you find difficult? At first sight, I cannot understand why this sentence, proposed by Sterling in two of his paper, can be valid mathematically. It only makes sense to me until I am in a type-theoretic world (by Kaposi, since Eq is an inductive type now) (or maybe topos-theoretically where categorical logic will encode equality using data like equalizer). What about changing the phrase to "eccentric" or "weird"?}
-A proposition is encoded as a sub\-singleton. For
-example, $\setc{\star^1}{\text{ when } t \equiv \true} \uplus \setc{\star^2}{\text{ when } t \equiv \false}$ represents a disjoint union of two
-sub\-singleton sets, where the first one is either a singleton if we have a proof of
-$t \equiv \true $ or an empty set otherwise.
-In other words,
-$\star^1$ witnesses a proof that $t \equiv \true$.
+% A proposition is encoded as a sub\-singleton. For
+% example, $\setc{\star^1}{\text{ when } t \equiv \true} \uplus \setc{\star^2}{\text{ when } t \equiv \false}$ represents a disjoint union of two
+% sub\-singleton sets, where the first one is either a singleton if we have a proof of
+% $t \equiv \true $ or an empty set otherwise.
+% In other words,
+% $\star^1$ witnesses a proof that $t \equiv \true$.
 Here, $\star$, $\star^1$, $\star^2$ are just some arbitrary fixed elements.  
 
 
@@ -301,13 +314,18 @@ and its eliminator $\CWrec$
 Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of
 $\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmodel$
 in a strictly positive position. %So it is a well-founded definition.
-We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity.
+We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
+
+We state the fundamental property of logical relation here---in our proof relevant model, it is admitting that our model is really a model, and our syntax is the initial model so there is map from our syntax to our canonicity model:
+\begin{lemma}[Fundamental Theorem of Logical Relation]
+  If we have a (intrinsically well-typed) term $\goodTerm{\Gm}{t}{T}$, then we have its interpretation as a dependent function $\denotesC{t} : \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})$
+\end{lemma}
 
 The first consequence of this model is the consistency of \TT---we cannot derive
 $\goodTerm{\cdot}{t}{\bot}$. Otherwise, we would have an element in the empty set,
 $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in
 \denotesC{\bot}(\SubstEmp)(\star)(\sub{t}{\gm}) = \emptyset$, a contradiction.
-\YZ{Have you stated the fundamental property of the logical-relations model?}
+\YZ{Have you stated the fundamental property of the logical-relations model?}\EDJreply{No. Now stated.}
 
 \begin{theorem}[Consistency]
   The typing judgment $\goodTerm{\cdot}{t}{\bot}$ is not derivable for any term~$t$.
@@ -316,7 +334,7 @@ $\denotesC{\goodTerm{\cdot}{t}{\bot}}(\SubstEmp)(\star) \in
 Next, with the logical-relations model, we can map an arbitrary closed boolean
 term $\goodTerm{\cdot}{t}{\cB}$ to get the result
 $\denotesC{\goodTerm{\cdot}{t}{\cB}}(\SubstEmp)(\star) = \star^1$ or $\star^2$,
-witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$, arriving at
+witnessing the proof of $t \equiv \true \text{ or } t \equiv\false$ by the definition of our model, arriving at
 \cref{thm:canonicity-appendix}.
 
 
