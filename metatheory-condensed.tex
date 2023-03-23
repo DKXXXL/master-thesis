@@ -437,7 +437,10 @@ Here, $\TyTkg{\lsig}$ packages $\lsig$---recall that $\lsig$ contains the
 (self-parameterized) types of all the fields preceding the current
 field~$t$---into a dependent tuple type (\ruleref{tyeq/pk/add}).
 The term $\seal$ turns a tuple of type $\TyTkg{\lsig}$ into a new tuple of type~$A$
-that hides W-type signatures behind $\cU$, if necessary.
+that hides W-type signatures behind $\cU$, if necessary.\footnote{%
+In the presence of hiding, it is important that the context type~$A$ be a
+dependent tuple type rather than a linkage type; we expand on this issue in an
+appendix.}
 %
 It is straightforward to find the~$\seal$ that fits the bill, though this process
 is not automated in \TT.
@@ -445,18 +448,23 @@ In particular, when no hiding is needed, $\seal$ is simply~$x$,
 %\EDJ{$\var{0}$ is not identity (substitution), but the first variable, right? Or you meant to say it is identity ``sealing''?}\YZreply{Yes, I meant identity sealing. I cannot say 'sealing' because the paper currently does not use the word sealing anywhere.}\EDJreply{What about just remove the parenthesis and ``the identity''}
 and $A$ is $\TyTkg{\lsig}$.
 In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are simply $x$,
-and $\seal_6$ has the typing
-\begingroup
-\fontsize{9}{9}\selectfont%
-\goodTerm{
-  x :
-  \big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
-}{
-  \seal_6
-}{
-  \big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
-}.
-\endgroup
+while $\seal_6$ hides $"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}}}$
+as $"tm" : \cU$ in $A_6$
+so that the typing of~$t_6$ is oblivious to the concrete signature
+$\wsig_{\texttt{tm}}$ and therefore can be reused.
+%\begingroup
+%\fontsize{9}{9}\selectfont%
+%\goodTerm{
+%  x :
+%  \big[\texttt{tm} : \TyS{\wcode{\wsig_{\texttt{tm}}}},\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+%}{
+%  \seal_6
+%}{
+%  \big[\texttt{tm} : \cU,\ \texttt{tm\_unit} : \El{\texttt{tm}},\ \dadada\big]
+%}.
+%\endgroup
+
+
 
 When a family is concluded (e.g., \lsti!End!~\lsti!STLC!),
 a linkage~$\lkg$ containing all the fields is available

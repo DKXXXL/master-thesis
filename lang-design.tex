@@ -104,7 +104,7 @@ defined has type \lsti{tm -> id -> tm -> tm}.
 %
 The "subst" function in "STLC" is further bound by the "subst" in "STLCFix":
 the four cases from "STLC" are automatically inherited and reused,
-with "STLCFix" retroactively adding a fifth case to form the new "subst" function.
+with "STLCFix" adding a fifth case retroactively to form a new "subst" function.
 %
 For exhaustivity, it is a static error if the programmer fails to
 further bind "subst" and define this fifth case.
