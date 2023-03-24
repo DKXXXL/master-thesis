@@ -49,8 +49,8 @@ for latexdiff to work.
     `diff.pdf` Line 721
   
   - We explain $\mathbb{P}(\cdot)$ in greater detail,
-    giving the concrete constructions of $\mathbb{P}(\sigma_i)$ from $\mathbb{P}(\sigma_{i-1})$ in Figure 8
-    and remarking on why it is technically necessary in Appendix A.2.
+    giving the concrete constructions of $\mathbb{P}(\sigma_i)$ in Figure 8
+    and remarking on why $\mathbb{P}(\cdot)$ is technically necessary in Appendix A.2.
 
     `revision.pdf` Line 839  
     `diff.pdf`  Line 879  
