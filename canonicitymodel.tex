@@ -69,7 +69,7 @@ unlike most logical-relations proofs, our logical-relations model is proof-relev
 which is essential for modeling universes
 properly~\cite{coquand2018canonicity}.
 Our canonicity model for the base MLTT fragment is close to the ones
-in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
+in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}, where we utilize the machinary from ambient meta-logic (e.g. use dependent function and dependent tuple in ambient meta-logic to model the one in \TT).
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
@@ -81,7 +81,7 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
   % &\text{and we define } \goodSubC{\Gm}{\gm}{\Delta} :\iff \denotesC{\goodSub{\Gm}{\gm}{\Delta}} \text{ is defined} \\
   \denotesC{\goodTerm{\Gm}{t}{T}} \text{ is a dependent function}&: \prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\denotesC{\goodType{\Gm}{T}{}}(\gm)(\gm')(\sub{t}{\gm})\\
   \denotesC{\goodType{\Gm}{\sub{T}{\sigma}}{}}(\gm)(\gm')(t) &= \denotesC{T}(\sigma \circ \gm)(\denotes{\sigma}(\gm)(\gm'))(t)\\
-  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \\
+  \denotesC{\goodType{\Gm}{\top}{}}(\gm)(\gm')(t) &= \{\star \} \quad \text{  a singleton set } \\
   \denotesC{\goodType{\Gm}{\bot}{}}(\gm)(\gm')(t) &= \emptyset \\
   \denotesC{\goodType{\Gm}{\cB}{}}(\gm)(\gm')(t) &= 
     %\YZ{Is this more accurate than 'disjoint union'?}\EDJreply{It is accurate. It is actually the way Coquand write it. But I find this way weird type-theoretically---at the very end, when we want to prove a closed term t is either true or false, we will use this cB. But defining in this Coquand way, type-theoretically, we cannot extract a proof term t = true. (i.e. there is no proof term stored here!). I know my above sentence is a bit awkward but I just find this Coquand way of saying very...counter-intuitive.}
@@ -95,12 +95,15 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
     \{\star\} & \text{if } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}\\
     \emptyset & \text{otherwise }
   \end{cases}\\
-  \denotesC{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{t} }}}(\gm)(\gm') &= \denotesC{w}(\gm)(\gm') \quad \quad \text{ for } \goodTerm{\Gm}{t}{\TyId{u}{v}} \\ 
+  \denotesC{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{t} }}}(\gm)(\gm') &= \denotesC{w}(\gm)(\gm') \quad \quad \text{ given } \goodTerm{\Gm}{t}{\TyId{u}{v}} \\ 
   & \text{Since $\denotesC{t}(\gm)(\gm')$ witnesses } \sub{t}{\gm} \equiv \eqrefl{\sub{u}{\gm}} \text{ and } \sub{u}{\gm} \equiv \sub{v}{\gm} \\
-  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{\SubstId}{u}})\\
+  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
-  \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
+  \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\}  \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \setc{ (\gamma' , t') }{ \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  } \\
+  \denotesC{\goodSub{\Gm}{\pi_1 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[0] \quad \text{ get the first element of the tuple} \\
+  \denotesC{\goodTerm{\Gm}{\pi_2 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[1] \quad \text{ get the second element of the tuple} \\
+  \denotesC{\goodSub{\Gm}{\SubstExt{\delta}{t}}{\Dl}}(\gm)(\gm') &= (\denotesC{\delta}(\gm)(\gm'),\denotesC{t}(\gm)(\gm')) \\ 
   \denotesC{\goodTerm{\Gm}{\sub{t}{\sigma}}{\sub{T}{\sigma}}}(\gm)(\gm') &= \denotesC{t}(\sigma \circ \gm)(\denotesC{\sigma}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
@@ -116,7 +119,7 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) (\gm' , u') \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}}(\gm)(\gm') &= \denotesC{t}(\pi_1 \gm)(\gm'[0])(\pi_2 \gm)(\gm'[1]) \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}}(\gm)(\gm') &= (\denotesC{a}(\gm)(\gm') , \denotesC{b}(\gm)(\gm') )\\
-  \denotesC{\goodTerm{\Gm}{\fst{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[0] \\
+  \denotesC{\goodTerm{\Gm}{\fst{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[0]  \quad \text{ extract the first element in the tuple }\\
   \denotesC{\goodTerm{\Gm}{\snd{t}}{T}}(\gm)(\gm') &= \denotesC{t}(\gm)(\gm')[1]\\
   \denotesC{\goodType{\Gm}{\cU_j}{j+1}}(\gm)(\gm')(T) &= \setc{t} { \goodTerm{\cdot}{t}{\El{T}} }  \to \Set{j} \\
   \denotesC{\goodTerm{\Gm}{\codety{T}}{\cU_j}}(\gm)(\gm') &= \denotesC{T}(\gm)(\gm') \\ 
@@ -138,7 +141,7 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
 \newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
 \newcommand{\GEl}[1]{\ensuremath{\Glued{\texttt{El}}({#1})}}
 \newcommand{\Gwcode}[1]{\ensuremath{\Glued{\texttt{W}}({#1})}}
-\newcommand{\GSubstId}{\ensuremath{\GSubstWeak{0}}}
+\newcommand{\GSubstId}{\ensuremath{\Glued{"id"}}}
 \newcommand{\Gwsigproj}[3]{\ensuremath{\Glued{{\texttt{w}\pi^{#1}_{\texttt{#2}}}}({#3})}}
 \newcommand{\GRecproj}[2]{\ensuremath{\Glued{{\texttt{R}\pi^{#1}}}({#2})}}
 
@@ -241,7 +244,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodWSigU{j}{\Gm}{\wsig}{n}} &: \GMWSig{j}{\denotesCC{\Gm}}{n} \\ 
     &\text{ i.e., a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
-  & \text{we define }\TyLkg{}, \TyTkg{} \text{ inductively on its input signature} \\ 
+  \text{we define }\TyLkg{}, \TyTkg{} & \text{ inductively on its input signature, by defining } \mathit{L},\Glued{\mathit{P}} \text{ first}  \\ 
   \mathit{L}("nil") &=  \denotesC{\top}  \\
   \mathit{L}((A,s,T) :: tl)(\gm)(\gm')(t) &= {\mathit{L}(tl)}(\gm)(\gm')(\lkgproj{1}{t}) \times \Gmodel{\GluedPi{A}{T}}(\gm)(\gm')(\lam{\lkgproj{2}{t}})   \\
   \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
@@ -250,7 +253,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{P}}(\denotesC{\lsig})} \quad \text{ discard syntax info}  \\
   % 
   \denotesC{\goodSig{\Gm}{\LSigEmp}{0}} &= "nil"\\ 
-  \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesCC{A}, \denotesCC{s}, \denotesCC{T})::\denotesC{\lsig}\\ 
+  \denotesC{\goodSig{\Gm}{\LSigAdd{\lsig}{s}{T}}{n+1}} &= (\denotesCC{A}, \denotesCC{s}, \denotesCC{T})::\denotesC{\lsig} \quad \text{ given } \goodTerm{\Gm, \TyTkg{\lsig}}{s}{A} \\ 
   \denotesC{\goodSig{\Gm}{\sub{\lsig}{\gm}}{n}} & \text{ is done by point-wise/component-wise substitution} \\
   \denotesC{\goodSig{\Gm}{\lsigproj{1}{\lsig}}{n}} &= "tl"~\denotesC{\lsig}\\ 
   \denotesC{\goodType{\Gm}{\lsigprojT{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[0]} \quad \text{ take the first element in the tuple,...}\\ 
@@ -260,7 +263,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{(\SubstId)}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}}
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}}
   \\ &\text{ when} \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}}(\gm_+)(\gm_+') &= ((\denotesC{\ell}(\pi_1{\gm_+})(\gm_+'[0]))[1])(\pi_2{\gm_+})(\gm_+'[1]) \\
@@ -291,8 +294,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
    \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
 
-The semantic interpretations above are 
-mutually recursively defined with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
+The semantic interpretations above are defined together with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
 %
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
@@ -305,14 +307,14 @@ and its eliminator $\CWrec$
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
     & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
-    \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{\SubstId}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
-    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\SubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
+    \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
+    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \quad \text{ (square bracket here just to make things readable)} \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
 \end{align*}
 
-Note that in $\CWmodel$, the $\Glued{b}$ uses the definition of
+Note that in $\CWsup$, the $\Glued{b}$ uses the definition of
 $\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmodel$
 in a strictly positive position. %So it is a well-founded definition.
 We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
