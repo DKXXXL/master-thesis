@@ -74,6 +74,8 @@ Having these names and their types available through the context parameters (\ls
 suffices for the translations of the subsequent fields to be type-checked by Coq.
 Leaving the definitions unspecified enables \lsti{STLC} and \lsti{STLCFix}
 to instantiate \lsti{tm} differently upon \lsti{End}~\lsti{STLC} and upon \lsti{End}~\lsti{STLCFix}.
+In particular, non-exhaustive pattern matching is prevented because
+an ordinary recursor like \lsti{tm_rect} is not available.
 
 The command \lsti{FInductive tm : Set += tm_fix : }\dadada~in family
 \lsti{STLCFix} is again translated to a module type \lsti{STLCFix\_tm} (\cref{fig:stlcfix-compiled}).
