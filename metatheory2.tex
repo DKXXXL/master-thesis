@@ -6,8 +6,12 @@ use \citeauthor{debruijn1964} indices and \emph{explicit
 substitutions}~\cite{abadi1989subst,substcalculus}:
 substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}, which
 applies~$\gm$ to the type~$T$) are part of the syntax rather than
-meta-operations. 
-We work in an intrinsically typed setting: terms are well typed by construction.
+meta-operations. We specifically use based path induction
+as eliminator for identity type~\cite{program2013homotopy}.
+We work in an intrinsically typed setting: terms are well typed by construction, 
+%
+and consequently some premises are omitted without ambiguity and can be inferred from the context. \EDJ{I added this sentence back here. Why removed this sentence earlier?}
+% 
 This style of syntax formulation follows a recent
 trend~\cite{altkap2016,coquand2018canonicity,gratzer-sterling-birkedal-2019}
 known as the ``algebraic presentation'' of MLTT.
@@ -89,7 +93,7 @@ inhabit universe~$\cU_i$.
 The notation $i \lcup j$ denotes $\max(i,j)$.
 
 %Since we work in an intrinsic-typed setting, some required premises can be omitted without ambiguity. For omitted context judgement $\goodCtx{\Gm}{k}$, the universe level is always $k$, hinted at the figure of judgement specification. Similar for type judgement $\goodType{\Gm}{T}{j}$.
-
+\EDJ{Why removing the mentioning of ``omitted/inferrable k here?'' I know it is confusing but I think it is important to make things rigorous.}
 
 
 % Copy and Paste Intuition of MLTT from other places to here
