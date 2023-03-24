@@ -268,7 +268,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= \Gmodel{("hd"~\denotesC{\lsig})[1]} \quad \text{  ... and discard syntax}\\ 
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[2]}\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{{\LkgAdd{\lkg}{t}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
+  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
