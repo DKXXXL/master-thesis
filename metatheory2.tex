@@ -6,8 +6,7 @@ use \citeauthor{debruijn1964} indices and \emph{explicit
 substitutions}~\cite{abadi1989subst,substcalculus}:
 substitutions~$\gm$ and their applications (e.g., \sub{T}{\gm}, which
 applies~$\gm$ to the type~$T$) are part of the syntax rather than
-meta-operations. We specifically use based path induction
-as eliminator for identity type~\cite{program2013homotopy}.
+meta-operations.
 We work in an intrinsically typed setting: terms are well typed by construction, 
 %
 and consequently some premises are omitted without ambiguity and can be inferred from the context. \EDJ{I added this sentence back here. Why removed this sentence earlier?}\YZreply{I don't find a strong causal connection between the two parts of the sentence}
@@ -31,6 +30,8 @@ Furthermore, the semantic model we develop in this appendix respects these
 judgmental equalities by construction.
 %This means 
 %(1) our model have to respect the judgemental equalities to be a legitimate model for the quotiented syntax, and (2) we have convertibility for free---when we have definitionally equal $A \equiv B$, thanks to the quotient syntax, the derivation of $t : A$ is the same as the derivation of $t : B$.
+We use based path induction
+as the elimination principle for identity types~\cite{program2013homotopy}.
 
 %After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
 
