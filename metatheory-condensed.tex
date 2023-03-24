@@ -441,16 +441,18 @@ that hides W-type signatures behind $\cU$, if necessary.\footnote{%
 In the presence of hiding, it is important that the context type~$A$ be a
 dependent tuple type rather than a linkage type; we expand on this point in an
 appendix.}
-%
+
 It is straightforward to find the~$\seal$ that fits the bill, though this process
 is not automated in \TT.
-In particular, when no hiding is needed, $\seal$ is simply~$x$,
-%\EDJ{$\var{0}$ is not identity (substitution), but the first variable, right? Or you meant to say it is identity ``sealing''?}\YZreply{Yes, I meant identity sealing. I cannot say 'sealing' because the paper currently does not use the word sealing anywhere.}\EDJreply{What about just remove the parenthesis and ``the identity''}
+In particular, when no hiding is needed (that is, when the field being checked
+invokes a W-type constructor or eliminator), $\seal$ is simply~$x$,
 and $A$ is $\TyTkg{\lsig}$.
-In \cref{fig:stlc-linkage-typing}, $\seal_1$, $\seal_2$, and $\seal_{10}$ are simply $x$,
-while $\seal_6$ hides $"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}}}$
-as $"tm" : \cU$ in $A_6$
-so that the typing of~$t_6$ is oblivious to the concrete signature
+In \cref{fig:stlc-linkage-typing}, $\seal_2$ and $\seal_{10}$ are~$x$.
+%\EDJ{$\var{0}$ is not identity (substitution), but the first variable, right? Or you meant to say it is identity ``sealing''?}\YZreply{Yes, I meant identity sealing. I cannot say 'sealing' because the paper currently does not use the word sealing anywhere.}\EDJreply{What about just remove the parenthesis and ``the identity''}
+Otherwise, it is needed to hide W-type signatures. In \cref{fig:stlc-linkage-typing},
+$\seal_6$ hides $"tm" : \TyS{\wcode{\wsig_{\texttt{tm}}}}$
+as $"tm" : \cU$ in~$A_6$,
+so that~$t_6$, typed under $\mathit{self}:A_6$, is oblivious to the concrete signature
 $\wsig_{\texttt{tm}}$ and therefore can be reused.
 %\begingroup
 %\fontsize{9}{9}\selectfont%
