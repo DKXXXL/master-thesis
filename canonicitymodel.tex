@@ -107,6 +107,7 @@ dependent tuples in the ambient meta\-logic to model dependent functions and tup
   \denotesC{\goodTerm{\Gm}{\pi_2 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[1] \quad \text{ get the second element of the tuple} \\
   \denotesC{\goodSub{\Gm}{\SubstExt{\delta}{t}}{\Dl}}(\gm)(\gm') &= (\denotesC{\delta}(\gm)(\gm'),\denotesC{t}(\gm)(\gm')) \\ 
   \denotesC{\goodSub{\Gm}{"id"}{\Gm}}(\gm)(\gm') &= \gm' \\
+  \denotesC{\goodSub{\Gm}{\SubstEmp}{\cdot}}(\gm)(\gm') &= \star \\
   \denotesC{\goodSub{\Gm}{\delta_1 \circ \delta_2}{\Dl}}(\gm)(\gm') &= \denotesC{\delta_1}(\SubstComp{\delta_2}{\gm})(\denotesC{\delta_2}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\sub{t}{\sigma}}{\sub{T}{\sigma}}}(\gm)(\gm') &= \denotesC{t}(\sigma \circ \gm)(\denotesC{\sigma}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
@@ -226,7 +227,10 @@ Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A}
 \in \GTy{j}{\Glued{\Gm}}} \GTy{j}{(\GSubstExt{\Glued{\Gm}}{\Glued{A}})}$ for
 $\Glued{\Gm} \in \GCon{k}$, a length-$n$ list of pairs of types.
 As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n}
-\coloneq \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} \times
+\coloneq 
+% \{ \wsig : \goodWSig{\cdot}{\wsig}{n} \} 
+\setc{\wsig}{\goodWSig{\cdot}{\wsig}{n}}
+\times
 \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgments for
 W-type signatures.
 
@@ -281,8 +285,8 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm')(t) &= \CWmodel~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~t \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~(\Gsub{\denotesCC{a}}{\Glued{\gm}})~(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}}) \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
-  \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
-  \Gmodel{\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
+  \denotesC{\goodType{\Gm}{\CaseSig{"A"}{"B"}{"R"}}{}} &= 
+  \Gmodel{\GluedPi{\denotesCC{"A"}}{\GluedPi {\GluedPi{\denotesCC{"B"}}{\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}} {\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}}} \\
   % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
   \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
   RS~"nil"~R &= \denotesCC{\LSigEmp} \\
