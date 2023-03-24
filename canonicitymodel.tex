@@ -292,13 +292,13 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}}(\gm)(\gm') = \CWrec \quad &\Gsub{\denotesCC{\wsig}}{\Glued{\gm}} \\ 
   & (\lambda w. \denotesC{"R"}(\gm)(\gm')(\Wrec{\sub{\wsig}{\gm}}{\sub{\lkg}{\gm}}{w}))\\
   &f^r\\ &\sub{t}{\gm}\\ 
-  &(\denotesC{t}(\gm)(\gm')) \\
-  \text{ where } \quad f^r~j~\Glued{a}~b~b^C = 
-  \texttt{let}~\Glued{\rho}  \in& \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
-  \\
-  \texttt{ s.t.}~\Glued{\rho} &\coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } 
+  &(\denotesC{t}(\gm)(\gm')) 
 \end{align*}
-\begin{align*}
+\begin{align*}  
+  \text{ where } \quad f^r~j~\Glued{a}~b~b^C &= 
+  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
+  \\
+  &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
   & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
    \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
