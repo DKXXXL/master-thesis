@@ -68,7 +68,7 @@ we omit contexts for brevity, the syntax piece is still well-typed. However,
 unlike most logical-relations proofs, our logical-relations model is proof-relevant,
 which is essential for modeling universes
 properly~\cite{coquand2018canonicity}.
-Our canonicity model for the base MLTT fragment is close to the ones
+Our canonicity model for the base MLTT fragment is following the ones
 in \citet{coquand2018canonicity} and \citet{sterling2019algebraic} in that it
 utilizes the facilitates of the ambient meta\-logic; for example, we use dependent functions and
 dependent tuples in the ambient meta\-logic to model dependent functions and tuples in \TT.
@@ -301,10 +301,10 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   &(\denotesC{t}(\gm)(\gm')) 
 \end{align*}
 \begin{align*}  
-  \text{ where } \quad f^r~j~\Glued{a}~b~b^C &= 
+  \text{ where } \quad f^r~j~\Glued{a}~b~b^c &= 
   \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
   \\
-  &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
+  &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^c)~\texttt{ in } \\
   & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
    \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
@@ -316,7 +316,8 @@ The semantic interpretations above are defined together with the following induc
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
-    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}) \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
+    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}) \\
+    & \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
 and its eliminator $\CWrec$
 \begin{align*}
@@ -325,17 +326,17 @@ and its eliminator $\CWrec$
     & \to 
     [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
-    \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
-    & \quad \quad \to b^C : (\Glued{\gm} \in \GSub{\Glued{\cdot}}{(\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}})} \to P~(\sub{b}{ \gm })) \\
+    \setc{b}{\goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}} \\ 
+    & \quad \quad \to  \prod_{\Glued{\gm} \in \GSub{\Glued{\cdot}}{(\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}})}} P~(\sub{b}{ \gm }) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \quad \text{ (square bracket here just to make things readable)} \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
-  \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
+  \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\gm})~(\Gmodel{\Glued{b}}~\Glued{\gm}))
 \end{align*}
 
 Note that in $\CWsup$, the $\Glued{b}$ uses the definition of
 $\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmodel$
 in a strictly positive position. %So it is a well-founded definition.
-We do not distinguish $(b, b^C)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
+We do not distinguish $(b, b^c)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
 
 We state the fundamental property of the logical-relations model.
 %in our proof relevant model, it is admitting that our model is really a model,
