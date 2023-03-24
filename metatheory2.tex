@@ -73,9 +73,9 @@ where $\SubstId$ is the identity substitution (\ruleref{sub/id}).
 
 To simplify, $\SubstWeak{n}$ is a short hand for $\pi_1^n~"id"$ and $\var{n}$ is a short hand for $\pi_2~\pi_1^{n}$. Thus during meta-theoretic reasoning, we will only deal with $\pi_1$ and $\pi_2$.
 
-Consequently, function application changes to a equivalent formulation, and becomes a ``direct inverse'' of typing rule for function abstraction. For example, the named notation $\napp{f}{t}$ can be equivalently represented by $\sub{\app{f}}{\SubstExt{\SubstId}{t}}$.
+Consequently, function application changes to an equivalent formulation, and becomes a ``direct inverse'' of typing rule for function abstraction. For example, the named notation $\napp{f}{t}$ can be equivalently represented by $\sub{\app{f}}{\SubstExt{\SubstId}{t}}$.
 
-Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ on the earlier part of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.
+Finally, we have \ruleref{sub/dbj/shift} defined using \ruleref{sub/wk} and \ruleref{tm/var}. This rule applying substitution $\gm$ to the earlier portion of the context. We usually omit $A$ in the $\gm^{\uparrow A}$ because it can be inferred from the context.
 
 
 
