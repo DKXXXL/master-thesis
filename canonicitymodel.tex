@@ -104,6 +104,8 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}, where we uti
   \denotesC{\goodSub{\Gm}{\pi_1 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[0] \quad \text{ get the first element of the tuple} \\
   \denotesC{\goodTerm{\Gm}{\pi_2 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[1] \quad \text{ get the second element of the tuple} \\
   \denotesC{\goodSub{\Gm}{\SubstExt{\delta}{t}}{\Dl}}(\gm)(\gm') &= (\denotesC{\delta}(\gm)(\gm'),\denotesC{t}(\gm)(\gm')) \\ 
+  \denotesC{\goodSub{\Gm}{"id"}{\Gm}}(\gm)(\gm') &= \gm' \\
+  \denotesC{\goodSub{\Gm}{\delta_1 \circ \delta_2}{\Dl}}(\gm)(\gm') &= \denotesC{\delta_1}(\SubstComp{\delta_2}{\gm})(\denotesC{\delta_2}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\sub{t}{\sigma}}{\sub{T}{\sigma}}}(\gm)(\gm') &= \denotesC{t}(\sigma \circ \gm)(\denotesC{\sigma}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\unit}{\top}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\true}{\cB}}(\gm)(\gm') &= \star^1 \\
@@ -260,11 +262,12 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm, \TyTkg{\lsigproj{1}{\lsig}}}{\lsigproj{s}{\lsig}}{\lsigprojT{\lsig}}} &= \Gmodel{("hd"~\denotesC{\lsig})[1]} \quad \text{  ... and discard syntax}\\ 
   \denotesC{\goodType{\Gm, \lsigprojT{\lsig}}{\lsigproj{2}{\lsig}}{}} &= \Gmodel{("hd"~\denotesC{\lsig})[2]}\\
   \denotesC{\goodTerm{\Gm}{\LkgEmp}{\TyLkg{\LSigEmp}}} &= \denotesC{\unit} \\
-  \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
+  \denotesC{{\LkgAdd{\lkg}{t}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{\denotesC{\Tkg{\lkgproj{1}{\lkg}}}}}}}
-  \\ &\text{ when} \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
+  \\ &\text{ where } \Glued{\ell'} = \denotesCC{\Tkg{\lkgproj{1}{\lkg}}} 
+  \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}}(\gm_+)(\gm_+') &= ((\denotesC{\ell}(\pi_1{\gm_+})(\gm_+'[0]))[1])(\pi_2{\gm_+})(\gm_+'[1]) \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
@@ -274,7 +277,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm')(t) &= \CWmodel~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~t \\
-  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~(\Gsub{\denotesCC{a}}{\Glued{\gm}})~(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}}) \\
+  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~(\Gsub{\denotesCC{a}}{\Glued{\gm}})~(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}}) \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{A}{B}{R}}{}} &= 
   \Gmodel{\GluedPi{\denotesC{A}}{\GluedPi {\GluedPi{\denotesC{B}}{\Gsub{\denotesC{R}}{\GSubstWeak{2}}}} {\Gsub{\denotesC{R}}{\GSubstWeak{2}}}}} \\
@@ -283,15 +286,23 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   RS~"nil"~R &= \denotesCC{\LSigEmp} \\
   RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
   \denotesC{\goodType{\Gm}{\RecSig{\wsig}{"R"}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{"R"}} \\
-  \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg \\
-  \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}}(\gm)(\gm') &= \CWrec~(\lambda w. \denotesC{"R"}(\gm)(\gm')(\Wrec{\wsig}{\sub{\lkg}{\gm'}}{w}))~f^r~\sub{t}{\gm'}~(\denotesC{t}(\gm)(\gm')) \\
-  \text{ where } \quad f^r~j~\Glued{a}~b~b^C &= 
-  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
+  \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg 
+\end{align*}
+\begin{align*}
+  \denotesC{\goodTerm{\Gm}{\Wrec{\wsig}{\lkg}{t}}{T}}(\gm)(\gm') = \CWrec \quad &\Gsub{\denotesCC{\wsig}}{\Glued{\gm}} \\ 
+  & (\lambda w. \denotesC{"R"}(\gm)(\gm')(\Wrec{\sub{\wsig}{\gm}}{\sub{\lkg}{\gm}}{w}))\\
+  &f^r\\ &\sub{t}{\gm}\\ 
+  &(\denotesC{t}(\gm)(\gm')) \\
+  \text{ where } \quad f^r~j~\Glued{a}~b~b^C = 
+  \texttt{let}~\Glued{\rho}  \in& \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
   \\
-  & \ \texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } \\
+  \texttt{ s.t.}~\Glued{\rho} &\coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^C)~\texttt{ in } 
+\end{align*}
+\begin{align*}
   & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
-   \text{ and also } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \quad ,\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
+   \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
+   & \quad \text{ where }\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
 \end{align*}
 
 The semantic interpretations above are defined together with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
