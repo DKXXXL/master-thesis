@@ -213,11 +213,11 @@ etc.
 Notice that
 $\prod_{\goodSub{\cdot}{\gm}{\Gm}} \prod_{\gm' \in \Gmodel{\Glued{\Gm}}(\gm)}$
 is part of $\GTy{\!}{\!}$, $\GTm{\!}{\!}$, and $\GSub{\!}{\!}$.
-An interesting fact about them is : given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$
+A useful fact about them is : given a pair of arbitrary $\goodSub{\cdot}{\gm}{\Gm}$
 and $\gm' \in \Gmodel{\Glued{\Gm}}(\gm)$, we can consider $(\gm, \gm')$ as an
-element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
-Thus, we can consider the pair $(\gm,
-\gm')$ as an element $\Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
+element of $\GSub{\Glued{\cdot}}{\Glued{\Gm}}$, and vice versa.
+Thus, we consider the pair $(\gm,
+\gm')$ the equivalent form of an element $\Glued{\gm} \in \GSub{\Glued{\cdot}}{\Glued{\Gm}}$.
 
 
 Then we define $\GMWSig{j}{\Glued{\Gm}}{n} \coloneq "Vector"^n~\sum_{\Glued{A}
@@ -316,10 +316,11 @@ and its eliminator $\CWrec$
 \begin{align*}
   \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
-    & \to [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
+    & \to 
+    [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
     \goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}} \\ 
-    & \quad \quad \to b^C : (\Glued{\gm} \in (\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}) \to P~\sub{b}{\Gmodel{\Glued{\gm}}}) \\
+    & \quad \quad \to b^C : (\Glued{\gm} \in \GSub{\Glued{\cdot}}{(\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}})} \to P~(\sub{b}{ \gm })) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \quad \text{ (square bracket here just to make things readable)} \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\Gmodel{\Glued{\gm}}})~(b^C~\Glued{\gm}))
