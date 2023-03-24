@@ -145,13 +145,13 @@ $\TyS{\wcode{\wsig_2}}$ in $\lsig$ behind $\cU$ in $\lsig^A$:
 The problem lies in that the type $\TyLkg{\lsig^A}$ above cannot be inhabited.
 Suppose there is some $\lkg^A$ such that $\cdot \vdash \lkg^A : \TyLkg{\lsig^A}$.
 Then it follows from the self-parameterization that projecting out the last field~$f$
-has the typing
-$\goodTerm{T_A : \cU, T_B: \cU}{\lkgproj{2}{\lkg^A}}{\El{T_A} \to \El{T_B}}$.
+from $\lkg^A$ (notated as $\lkg^A.f$ for illustration) has the typing
+$\goodTerm{T_A : \cU, T_B: \cU}{\lkg^A.f}{\El{T_A} \to \El{T_B}}$.
 This typing means that there is a function of type
 $\nTyPi{T_A}{\cU}{\nTyPi{T_B}{\cU}{\El{T_A}
 \to \El{T_B}}}$, i.e., a function from an arbitrary type to another arbitrary
 type. We can easily derive inconsistency from this function:
-we can apply it to $\top$ and $\bot$ and get $\top \to \bot$.
+applying it to $\top$ and $\bot$ yields a function of type $\top\to\bot$.
 
 %\begin{align*}
 %  & \text{doing abstraction (choosing appropriate $s$ in \ruleref{l/add})} \\ 
