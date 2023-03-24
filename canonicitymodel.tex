@@ -95,8 +95,9 @@ in \citet{coquand2018canonicity} and \citet{sterling2019algebraic}.
     \{\star\} & \text{if } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}\\
     \emptyset & \text{otherwise }
   \end{cases}\\
-  % \setc{\star}{\text{ when } t \equiv \eqrefl{\sub{a}{\gm}} \text{ and } \sub{a}{\gm} \equiv \sub{b}{\gm}} %\YZ{What if the conditions do not hold? Empty set?}\EDJreply{Yes. It is a family of set indexed by t (or just a function maps t to a set), and if t is neither of the above, then the function will map to empty set.}
-  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})(\gm', u')(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
+  \denotesC{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{t} }}}(\gm)(\gm') &= \denotesC{w}(\gm)(\gm') \quad \quad \text{ for } \goodTerm{\Gm}{t}{\TyId{u}{v}} \\ 
+  & \text{Since $\denotesC{t}(\gm)(\gm')$ witnesses } \sub{t}{\gm} \equiv \eqrefl{\sub{u}{\gm}} \text{ and } \sub{u}{\gm} \equiv \sub{v}{\gm} \\
+  \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{\SubstId}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\} \quad \text{  a singleton set } \\ 
   \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \setc{ (\gamma' , t') }{ \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  } \\
