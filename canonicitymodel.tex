@@ -371,7 +371,7 @@ $\Glued{\gm}$ is an equivalent form of $(\gm, \gm')$.
 The semantic interpretations above are defined together with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
 %
 \begin{align*}
-  "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
+  "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \setc{t}{\goodTerm{\cdot}{t}{\El{\wcode{\wsig}}}} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\
     & \to \Glued{b} \in (\GTm{
       \colorbox{blue!15}{(\Glued{\cdot} \Glued{,} 
@@ -384,7 +384,7 @@ The semantic interpretations above are defined together with the following induc
 and its eliminator $\CWrec$
 \begin{align*}
   \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
-    (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
+    (P : \setc{t}{\goodTerm{\cdot}{t}{\El{\wcode{\wsig}}}} \to \Set{k})  \\
     & \to 
     \Bigg( j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
