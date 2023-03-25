@@ -140,7 +140,7 @@ dependent tuples in the ambient meta\-logic to model dependent functions and tup
 \newcommand{\Gsub}[2]{\ensuremath{{#1}\!\left[{#2}\right]^\bullet}}
 \newcommand{\Glam}[1]{\ensuremath{\lambda^\bullet({#1})}}
 \newcommand{\Gapp}[1]{\ensuremath{\texttt{app}^\bullet({#1})}}
-\newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^\bullet)^{#1}}}
+\newcommand{\GSubstWeak}[1]{\ensuremath{(\texttt{p}^{#1})^{\bullet}}}
 \newcommand{\GLSigAdd}[3]{\ensuremath{\nu^{+\bullet}({#1},{#2},{#3})}}
 \newcommand{\GCaseSig}[3]{\ensuremath{\texttt{CaseTy}^\bullet({#1},{#2},{#3})}}
 \newcommand{\Gmodel}[1]{\ensuremath{{({#1})}^c}}
@@ -256,7 +256,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \mathit{L}("nil") &=  \denotesC{\top}  \\
   \mathit{L}((A,s,T) :: tl)(\gm)(\gm')(t) &= {\mathit{L}(tl)}(\gm)(\gm')(\lkgproj{1}{t}) \times \Gmodel{\GluedPi{A}{T}}(\gm)(\gm')(\lam{\lkgproj{2}{t}})   \\
   \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
-  \Glued{\mathit{P}}((A,s,T) :: tl) &= \Glued{\Sigma}(\Glued{\mathit{P}}(tl), \Gsub{T}{\GSubstExt{\Glued{\pi_1}}{s}}) \quad \text{(doing substitution on $T$)} \\
+  \Glued{\mathit{P}}((A,s,T) :: tl) &= \Glued{\Sigma}(\Glued{\mathit{P}}(tl), \Gsub{T}{\GSubstExt{{\GSubstWeak{1}}}{s}}) \quad \text{(doing substitution on $T$)} \\
   \denotesC{\goodType{\Gm}{\TyLkg{\lsig}}{}} &= {\mathit{L}(\denotesC{\lsig})} \\
   \denotesC{\goodType{\Gm}{\TyTkg{\lsig}}{}} &= \Gmodel{\Glued{\mathit{P}}(\denotesC{\lsig})} \quad \text{ discard syntax info}  \\
   % 
@@ -271,7 +271,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{\Glued{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
   \\ &\text{ where } \Glued{\ell'} = \denotesCC{\Tkg{\lkgproj{1}{\lkg}}} 
   \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
@@ -308,7 +308,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
    \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
-   & \quad \text{ where }\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\Glued{\wsig}}
+   & \quad \text{ where }\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\denotesCC{\wsig}}
 \end{align*}
 
 The semantic interpretations above are defined together with the following inductively defined indexed set $\CWmodel$ (with only one constructor $\CWsup$)
