@@ -54,8 +54,8 @@ for latexdiff to work.
     we give the concrete constructions of $\mathbb{P}(\sigma_i)$ in Figure 8
     and elaborate on the technical role that $\mathbb{P}(\cdot)$ plays in Appendix A.2.
 
-    `revision.pdf` Line 843  
-    `diff.pdf`  Line 885  
+    `revision.pdf` Line 843           (Figure 8 at Line 785)  
+    `diff.pdf`  Line 885              (Figure 8 at Line 834)
     `appendix/blindtr.pdf` Line 1444
   
   - Appendix A.4 now contains the detailed construction of the
