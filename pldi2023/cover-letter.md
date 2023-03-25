@@ -54,9 +54,8 @@ for latexdiff to work.
     we give the concrete constructions of $\mathbb{P}(\sigma_i)$ in Figure 8
     and elaborate on the technical role that $\mathbb{P}(\cdot)$ plays in Appendix A.2.
 
-    `revision.pdf` Line 785 (Figure 8), Line 843  
-    `diff.pdf`  Line 834 (Figure 8), Line 885  
-    `appendix/blindtr.pdf` Line 1444
+    `revision.pdf` Line 785 (Figure 8), Line 843, Line 1444 (Appendix A.2)
+    `diff.pdf`  Line 834 (Figure 8), Line 885 
   
   - Appendix A.4 now contains the detailed construction of the
     logical-relations model that we use to prove consistency and canonicity.
