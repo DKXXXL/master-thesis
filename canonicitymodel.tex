@@ -178,7 +178,7 @@ but also on the syntax $\goodType{\Gm}{A}{}$ and $\goodType{\Gm, A}{B}{}$.
 Thus, we define a new denotation $\denotesCC{S} \coloneq (S, \denotesC{S})$
 that also returns the syntax piece $S$.\footnote{This is also called
 glued interpretation in \citet{sterling2019algebraic}.}
-Thus, we can have a
+Then, we can have a
 function $\Glued{\Pi}$ such that $\GluedPi{\denotesCC{A}}{\denotesCC{B}} =
 \denotesCC{\TyPi{A}{B}}$ now that the syntax is available.
 Similarly, there are functions $\Glued{\Sigma}$, $\Gpair{a}{b}$, and
@@ -252,7 +252,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodWSigU{j}{\Gm}{\wsig}{n}} &: \GMWSig{j}{\denotesCC{\Gm}}{n} \\ 
     &\text{ i.e., a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
-  \text{we define }\TyLkg{}, \TyTkg{} & \text{ inductively on its input signature, by defining } \mathit{L},\Glued{\mathit{P}} \text{ first}  \\ 
+  \text{we define }\TyLkg{}, \TyTkg{} & \text{ inductively on its input signature, via } \mathit{L},\Glued{\mathit{P}}  \\ 
   \mathit{L}("nil") &=  \denotesC{\top}  \\
   \mathit{L}((A,s,T) :: tl)(\gm)(\gm')(t) &= {\mathit{L}(tl)}(\gm)(\gm')(\lkgproj{1}{t}) \times \Gmodel{\GluedPi{A}{T}}(\gm)(\gm')(\lam{\lkgproj{2}{t}})   \\
   \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
@@ -288,7 +288,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodType{\Gm}{\CaseSig{"A"}{"B"}{"R"}}{}} &= 
   \Gmodel{\GluedPi{\denotesCC{"A"}}{\GluedPi {\GluedPi{\denotesCC{"B"}}{\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}} {\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}}} \\
   % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
-  \text{we define } \RecSig{}{} &\text{ by induction on the signature} \\
+  \text{we define } \RecSig{}{} &\text{ by induction on the signature, via } RS \\
   RS~"nil"~R &= \denotesCC{\LSigEmp} \\
   RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
   \denotesC{\goodType{\Gm}{\RecSig{\wsig}{"R"}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{"R"}} \\
