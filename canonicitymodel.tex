@@ -347,7 +347,20 @@ The interpretation for $\CaseSig{"A"}{"B"}{"R"}$ is also bullet-drowned. However
     } 
   \\
   &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^c)~\texttt{ in } \\
-  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\Gsub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
+  & \Gmodel{
+    \Gsub{
+      \colorbox{blue!27}{\Gapp{
+        \colorbox{blue!18}{\Gsub{
+          \colorbox{blue!9}{\Gapp{
+            \colorbox{blue!0}{\GRecproj{j}{\Gsub{\denotesCC{\lkg}}{\Glued{\gm}}}}
+            }}
+          }{
+            \GSubstExt{\GSubstId}{\Glued{a}}
+          }}}}
+      }{
+        \GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}
+      }
+    }(\epsilon)(\star) \\
   & \quad 
    \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
    & \quad \text{ where }\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\denotesCC{\wsig}}
@@ -359,7 +372,8 @@ The semantic interpretations above are defined together with the following induc
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\
     & \to \Glued{b} \in (\GTm{
-      \colorbox{blue!10}{(\Glued{\cdot} \Glued{,} \Gsub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}})} 
+      \colorbox{blue!15}{(\Glued{\cdot} \Glued{,} 
+      \colorbox{blue!5}{\Gsub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}} )} 
       }{
         \colorbox{green!10}{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}
         }) \\
