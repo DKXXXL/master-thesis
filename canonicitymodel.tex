@@ -210,7 +210,7 @@ and $\GSub{\Glued{\Gm}}{\Glued{\Dl}} \coloneq \sum_{\goodSub{\Gm}{\delta}{\Dl}} 
 These four sets are collecting the glued interpretation.
 For each well-formed type $\goodType{\Gm}{T}{j}$, we have its denotation $\denotesCC{T} \in \GTy{j}{\denotesCC{\Gm}}$;
 for each well-typed term $\goodTerm{\Gm}{t}{T}$, we have its denotation $\denotesCC{t} \in \GTm{\denotesCC{\Gm}}{\denotesCC{T}}$;
-etc.
+etc. The audience should reminisce these structure with the one appearing at the beginning of the MLTT canonicity model.
 
 
 Notice that
@@ -234,13 +234,14 @@ As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n}
 \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgments for
 W-type signatures.
 
+\textbf{Unfortunately}, at this point, our notation is already highly densed because of frequent appearances of $\bullet$. These burden 
 
 Now we can extend the model above to include \TT constructs.
 %We still start with the judgments.
 %Since linkage transformers are just syntactic sugar, we will not interpret it.
 The key idea of this extension is similar to that of the syntactic translation:
 we interpret linkage types using the canonicity model of sigma types (developed in the prior work).
-We use the inductive facility of the ambient meta\-logic to justify our W-types.
+We use the inductive facility of the ambient meta\-logic to justify our W-types. 
 
 \newcommand{\CWmodel}{\ensuremath{\mathit{W}^C}}
 \newcommand{\CWsup}{\ensuremath{\mathit{W^Csup}}}
@@ -271,9 +272,27 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesC{\lkgproj{2}{\lkg}}}{\GSubstExt{{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesCC{\lkgproj{2}{\lkg}}}{\GSubstExt{{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
   \\ &\text{ where } \Glued{\ell'} = \denotesCC{\Tkg{\lkgproj{1}{\lkg}}} 
-  \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\
+  \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\ 
+\end{align*}
+This is the first point our proof becomes cryptic because of this bullet notation. 
+
+The first complexity comes from the three ``bullets after comma'' notation. The way to interpret this notation is that, this ``$\GSubstExt{\_}{\_}$'' should be considered as a binary function requiring two input of glued interpretation. 
+
+However, a careful reader will notice that, because of the overloading of the notation of dependent tuple construction and substitution extension, our glued notation is also overloading. The first one ``$\Gpair{\Glued{\ell'}}{...}$'' should be the glued interpretation for dependent tuple, but the other two should be the one for substitution extension.
+
+Similarly, the second complexity comes from the bullets after the square bracket, which as expected, is the glued interpretation for substitution. Again, ``$\Gsub{\_}{\_}$'' should be considered as a binary function consuming two glued interpretation, corresponding to the substitution operation ``$\sub{\_}{\_}$''.
+
+In all, the whole interpretation should be considered as:
+\begin{enumerate}
+  \item We first get $\denotesCC{\lkgproj{2}{\lkg}}$, the glued interpretation of the projection of the linkage 
+  \item Then we apply it with two substitution,  $\GSubstExt{{\GSubstWeak{1}}}{s}$ and $\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }$
+  \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{...}$
+\end{enumerate}
+
+
+\begin{align*}
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
   \denotesC{\goodTerm{\Gm, \lsigprojT{\lsig}}{\lkgproj{2}{\lkg}}{T}}(\gm_+)(\gm_+') &= ((\denotesC{\ell}(\pi_1{\gm_+})(\gm_+'[0]))[1])(\pi_2{\gm_+})(\gm_+'[1]) \\
   \denotesC{\goodWSig{\Gm}{\WSigEmp}{0}} &= "nil" \\
