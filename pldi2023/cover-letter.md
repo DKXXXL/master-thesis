@@ -48,14 +48,14 @@ for latexdiff to work.
     the `tm` inductive type can be expressed.
 
     `revision.pdf` Line 727  
-    `diff.pdf` Line 721
+    `diff.pdf` Line 723
   
   - We explain $\mathbb{P}(\cdot)$ in greater detail:
     we give the concrete constructions of $\mathbb{P}(\sigma_i)$ in Figure 8
     and elaborate on the technical role that $\mathbb{P}(\cdot)$ plays in Appendix A.2.
 
-    `revision.pdf` Line 839  
-    `diff.pdf`  Line 879  
+    `revision.pdf` Line 843  
+    `diff.pdf`  Line 885  
     `appendix/blindtr.pdf` Line 1444
   
   - Appendix A.4 now contains the detailed construction of the
@@ -63,23 +63,3 @@ for latexdiff to work.
     It subsumes the proofs in the original supplemental material. The
     technical content is still quite involved, but we hope that the presentation
     is now more accessible than the original pseudo-Agda proofs.
-
-  <!-- and emphasize the indispensibility of 
-          (but that sentence is not commented out in the latex) 
-     We include a table for all aspects of differences related to sections about FMLTT.
-
-  |                          | General   | Debruijn Index | Explicit Subst | Universe  |
-  |--------------------------|-----------|----------------|----------------|-----------|
-  | revision.pdf             | Line 627  | Removed        | Removed        | Line 681  |
-  | diff.pdf                 | Line 639  | Line 670       | Line 670       | Line 710  |
-  | appendix/blindtr.pdf     | Line 1177 | Line 1269      | Line 1269      | Line 1286 |
-  -->
-
-<!--
-* **Add discussions on ML-style modules**
-
-    We add a paragraph at the end of the related work section.
-
-    `revision.pdf` Line 1011  
-    `diff.pdf` Line 1072
-  -->
