@@ -386,7 +386,7 @@ and its eliminator $\CWrec$
   \CWrec \  &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to 
     (P : \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{k})  \\
     & \to 
-    \Big( j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
+    \Bigg( j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
     \setc{b}{\goodTerm{({\cdot} , 
     \colorbox{blue!10}{\sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}}
@@ -396,7 +396,7 @@ and its eliminator $\CWrec$
         \colorbox{blue!11}{(\Glued{\cdot} \Glued{,} 
     \colorbox{blue!1}{\sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}} )}}
     }\to P~(\sub{b}{ \gm }) \right) \\
-    & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) \Big) \\
+    & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) \Bigg) \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
   \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~\Glued{\wsig}~P~f~(\sub{b}{\gm})~(\Gmodel{\Glued{b}}~\Glued{\gm}))
 \end{align*}
