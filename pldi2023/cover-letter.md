@@ -58,7 +58,7 @@ for latexdiff to work.
     `diff.pdf`  Line 879  
     `appendix/blindtr.pdf` Line 1444
   
-  - Appendix A.4 now contains a detailed, pen-and-paper construction of the
+  - Appendix A.4 now contains the detailed construction of the
     logical-relations model that we use to prove consistency and canonicity.
     It subsumes the proofs in the original supplemental material. The
     technical content is still quite involved, but we hope that the presentation

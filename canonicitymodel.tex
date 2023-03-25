@@ -234,13 +234,13 @@ As before, we can define glued interpretation $\GWSig{j}{\Glued{\Gm}}{n}
 \GMWSig{j}{\Glued{\Gm}}{n}$. This will be useful when we interpret judgments for
 W-type signatures.
 
-\textbf{Unfortunately}, at this point, our notation is already highly densed because of frequent appearances of $\bullet$. These burden 
+%\textbf{Unfortunately}, at this point, our notation is already highly densed because of frequent appearances of $\bullet$. These burden 
 
 Now we can extend the model above to include \TT constructs.
 %We still start with the judgments.
 %Since linkage transformers are just syntactic sugar, we will not interpret it.
 The key idea of this extension is similar to that of the syntactic translation:
-we interpret linkage types using the canonicity model of sigma types (developed in the prior work).
+we interpret linkage types using the canonicity model of $\Sigma$-types (developed in the prior work).
 We use the inductive facility of the ambient meta\-logic to justify our W-types. 
 
 \newcommand{\CWmodel}{\ensuremath{\mathit{W}^C}}
@@ -253,7 +253,7 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodWSigU{j}{\Gm}{\wsig}{n}} &: \GMWSig{j}{\denotesCC{\Gm}}{n} \\ 
     &\text{ i.e., a list of 2-tuple of length $n$ } \\
   % & \text{ and we define } \goodWSigC{\Gm}{\wsig}{n} :\iff \denotesC{\goodWSig{\Gm}{\tau}{n}} \text{ is defined} \\
-  \text{we define }\TyLkg{}, \TyTkg{} & \text{ inductively on its input signature, via } \mathit{L},\Glued{\mathit{P}}  \\ 
+  \text{we interpret }\TyLkg{}, \TyTkg{} & \text{ by induction on the input linkage signature, via } \mathit{L} \text{ and } \Glued{\mathit{P}}  \\ 
   \mathit{L}("nil") &=  \denotesC{\top}  \\
   \mathit{L}((A,s,T) :: tl)(\gm)(\gm')(t) &= {\mathit{L}(tl)}(\gm)(\gm')(\lkgproj{1}{t}) \times \Gmodel{\GluedPi{A}{T}}(\gm)(\gm')(\lam{\lkgproj{2}{t}})   \\
   \Glued{\mathit{P}}("nil") &= ( \TyTkg{\LSigEmp} , \denotesC{\top} )\\
@@ -274,25 +274,29 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesCC{\lkgproj{2}{\lkg}}}{\GSubstExt{{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
   \\ &\text{ where } \Glued{\ell'} = \denotesCC{\Tkg{\lkgproj{1}{\lkg}}} 
-  \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\ 
+  \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_
+  \\ &{~\begin{minipage}{.58\textwidth}\small
+    In this definition, $\Gpair{\_}{\_}$ notates the glued interpretation of
+    dependent tuple construction, $[\GSubstExt{\_}{\_}]$ notates the glued
+    interpretation of substitution extension, and $\Gsub{\_}{\_}$ notates the
+    glued interpretation of applying a substitution.
+  \end{minipage}}
 \end{align*}
-This is the first point our proof becomes cryptic because of this bullet notation. 
 
-The first complexity comes from the three ``bullets after comma'' notation. The way to interpret this notation is that, this ``$\GSubstExt{\_}{\_}$'' should be considered as a binary function requiring two input of glued interpretation. 
+%The first complexity comes from the three ``bullets after comma'' notation. The way to interpret this notation is that, this ``$\GSubstExt{\_}{\_}$'' should be considered as a binary function requiring two input of glued interpretation. 
 
-However, a careful reader will notice that, because of the overloading of the notation of dependent tuple construction and substitution extension, our glued notation is also overloading. The first one ``$\Gpair{\Glued{\ell'}}{...}$'' should be the glued interpretation for dependent tuple, but the other two should be the one for substitution extension.
+%However, a careful reader will notice that, because of the overloading of the notation of dependent tuple construction and substitution extension, our glued notation is also overloaded. The first one ``$\Gpair{\Glued{\ell'}}{...}$'' should be the glued interpretation for dependent tuple, but the other two should be the one for substitution extension.
 
-Similarly, the second complexity comes from the bullets after the square bracket, which as expected, is the glued interpretation for substitution. Again, ``$\Gsub{\_}{\_}$'' should be considered as a binary function consuming two glued interpretation, corresponding to the substitution operation ``$\sub{\_}{\_}$''.
+%Similarly, the second complexity comes from the bullets after the square bracket, which as expected, is the glued interpretation for substitution. Again, ``$\Gsub{\_}{\_}$'' should be considered as a binary function consuming two glued interpretation, corresponding to the substitution operation ``$\sub{\_}{\_}$''.
 
-Also note that, the only non-bullet-upscripted $s$ is from the pattern matching of the interpretation of $\lsig$.
+%Also note that, the only non-bullet-upscripted $s$ is from the pattern matching of the interpretation of $\lsig$.
 
-In all, the whole interpretation should be considered as:
-\begin{enumerate}
-  \item We first get $\denotesCC{\lkgproj{2}{\lkg}}$, the glued interpretation of the projection of the linkage 
-  \item Then we apply it with two substitution,  $\Gsub{\_}{\GSubstExt{{\GSubstWeak{1}}}{s}}$ and $\Gsub{\_}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}$
-  \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{\_}$
-\end{enumerate}
-
+%The right-hand side can be read as follows:
+%\begin{enumerate}
+%  \item $\denotesCC{\lkgproj{2}{\lkg}}$ is the glued interpretation of a linkage projection
+%  \item Then we apply it with two substitution,  $\Gsub{\_}{\GSubstExt{{\GSubstWeak{1}}}{s}}$ and $\Gsub{\_}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}$
+%  \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{\_}$
+%\end{enumerate}
 
 \begin{align*}
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
