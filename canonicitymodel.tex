@@ -284,11 +284,13 @@ However, a careful reader will notice that, because of the overloading of the no
 
 Similarly, the second complexity comes from the bullets after the square bracket, which as expected, is the glued interpretation for substitution. Again, ``$\Gsub{\_}{\_}$'' should be considered as a binary function consuming two glued interpretation, corresponding to the substitution operation ``$\sub{\_}{\_}$''.
 
+Also note that, the only non-bullet-upscripted $s$ is from the pattern matching of the interpretation of $\lsig$.
+
 In all, the whole interpretation should be considered as:
 \begin{enumerate}
   \item We first get $\denotesCC{\lkgproj{2}{\lkg}}$, the glued interpretation of the projection of the linkage 
-  \item Then we apply it with two substitution,  $\GSubstExt{{\GSubstWeak{1}}}{s}$ and $\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }$
-  \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{...}$
+  \item Then we apply it with two substitution,  $\Gsub{\_}{\GSubstExt{{\GSubstWeak{1}}}{s}}$ and $\Gsub{\_}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}$
+  \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{\_}$
 \end{enumerate}
 
 
@@ -307,9 +309,17 @@ In all, the whole interpretation should be considered as:
   \denotesC{\goodType{\Gm}{\CaseSig{"A"}{"B"}{"R"}}{}} &= 
   \Gmodel{\GluedPi{\denotesCC{"A"}}{\GluedPi {\GluedPi{\denotesCC{"B"}}{\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}} {\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}}} \\
   % CsTy~\denotesC{A}~\denotesC{B}~\denotesC{R}\\
+\end{align*}
+We note that, the interpretation of $\Wsup{i}{\wsig}{a}{b}$ is defined by $\CWsup$ (defined below) will take three elements, $i$, a glued $(\Gsub{\denotesCC{a}}{\Glued{\gm}})$ and a glued $(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}})$.  As we mentioned earlier, $\Glued{\gm}$ is the equivalent form of $(\gm, \gm')$.
+
+The interpretation for $\CaseSig{"A"}{"B"}{"R"}$ is also bullet-drowned. However, it should be read as the glued interpretation of $ \TyPi{A}{\TyPi {\TyPi{B}{\sub{R}{\SubstWeak{2}}}} {\sub{R}{\SubstWeak{2}}}} $, which is exactly from the debruinj indxed-version of the typing rule \ruleref{tyeq/casety}. 
+
+In the following interpretation, parsing might be hard, so we might use background colour to make things easier to read, and there is no meaning for the choice of colour.
+
+\begin{align*}
   \text{we define } \RecSig{}{} &\text{ by induction on the signature, via } RS \\
   RS~"nil"~R &= \denotesCC{\LSigEmp} \\
-  RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\
+  RS~((A, B) :: tl)~R &= \GLSigAdd{RS~tl~R}{\Glued{\pi_2}}{\GCaseSig{A}{B}{R}} \\ 
   \denotesC{\goodType{\Gm}{\RecSig{\wsig}{"R"}}{}} &= \Gmodel{RS~\denotesC{\tau}~\denotesC{"R"}} \\
   \denotesC{\Recproj{j}{\lkg}} &= \text{ take the $j$-th field from } \lkg 
 \end{align*}
@@ -334,8 +344,12 @@ The semantic interpretations above are defined together with the following induc
 %
 \begin{align*}
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \{ t : \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \} \to \Set{i + 1} \quad "where" \\
-    \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\wsigproj{j}{1}{\Glued{\wsig}}} \\
-    & \to \Glued{b} \in (\GTm{(\Glued{\cdot} \Glued{,} \Gsub{\wsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}) }{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}) \\
+    \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\
+    & \to \Glued{b} \in (\GTm{
+      \colorbox{blue!10}{(\Glued{\cdot} \Glued{,} \Gsub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}})} 
+      }{
+        \colorbox{green!10}{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}
+        }) \\
     & \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
 and its eliminator $\CWrec$
@@ -345,11 +359,14 @@ and its eliminator $\CWrec$
     & \to 
     [j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
-    \setc{b}{\goodTerm{({\cdot} {,} \sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}} \\ 
-    & \quad \quad \to  \prod_{\Glued{\gm} \in \GSub{\Glued{\cdot}}{(\Glued{\cdot} \Glued{,} \sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}})}} P~(\sub{b}{ \gm }) \\
+    \setc{b}{\goodTerm{({\cdot} , 
+    \colorbox{blue!10}{\sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}}
+    ) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}} \\ 
+    & \quad \quad \to  \prod_{\Glued{\gm} \in \GSub{\Glued{\cdot}}{(\Glued{\cdot} \Glued{,} 
+    \colorbox{blue!10}{\sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}} )}} P~(\sub{b}{ \gm }) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) ] \quad \text{ (square bracket here just to make things readable)} \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
-  \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~P~f~(\sub{b}{\gm})~(\Gmodel{\Glued{b}}~\Glued{\gm}))
+  \CWrec \  & \Glued{\wsig}~P~f~t~(\CWsup~\Glued{a}~\Glued{b}) = f~\Glued{a}~b~(\lambda \Glued{\gm}. \CWrec~\Glued{\wsig}~P~f~(\sub{b}{\gm})~(\Gmodel{\Glued{b}}~\Glued{\gm}))
 \end{align*}
 
 Note that in $\CWsup$, the $\Glued{b}$ uses the definition of
