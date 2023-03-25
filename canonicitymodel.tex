@@ -272,7 +272,13 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodTerm{\Gm}{\LkgAdd{\lkg}{t}}{\TyLkg{\LSigAdd{\lsig}{s}{T}}}}(\gm)(\gm') &= (\denotesC{\lkg}(\gm)(\gm') , \Gmodel{\Glam{\denotesCC{t}}}(\gm)(\gm')) \\
   \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \denotesC{\unit}
   \quad \text{ when \goodSig{\Gm}{\lsig}{0}} \\
-  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{\Gsub{\Gsub{\denotesCC{\lkgproj{2}{\lkg}}}{\GSubstExt{{\GSubstWeak{1}}}{s}}}{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}}
+  \denotesC{\goodTerm{\Gm}{\Tkg{\lkg}}{\TyTkg{\lsig}}} &= \Gmodel{\Gpair{\Glued{\ell'}}{
+    \colorbox{blue!17}{\Gsub{
+    \colorbox{blue!9}{\Gsub{
+    \colorbox{blue!1}{\denotesCC{\lkgproj{2}{\lkg}}}
+    }{\GSubstExt{{\GSubstWeak{1}}}{s}}}
+    }{\GSubstExt{\Glued{("id")}}{ \Glued{\ell'} }}}
+    }}
   \\ &\text{ where } \Glued{\ell'} = \denotesCC{\Tkg{\lkgproj{1}{\lkg}}} 
   \\ &\text{ when } \denotesC{\goodSig{\Gm}{\lsig}{n+1}} = (A, s, T)::\_ \\ 
 \end{align*}
@@ -293,6 +299,8 @@ In all, the whole interpretation should be considered as:
   \item Then we use glued interpretation of dependent tuple to combine it with $\Gpair{\Glued{\ell'}}{\_}$
 \end{enumerate}
 
+To reflect that, we use background colour to help parsing for the proof, and there is no meaning for the choice of colour.
+
 
 \begin{align*}
   \denotesC{\goodTerm{\Gm}{\lkgproj{1}{\lkg}}{\TyLkg{\lsig}}}(\gm)(\gm') &= \denotesC{\ell}(\gm)(\gm')[0] \quad \text{ take the first element in the tuple} \\
@@ -304,7 +312,9 @@ In all, the whole interpretation should be considered as:
   \denotesC{\goodType{\Gm, \wsigproj{j}{1}{\wsig}}{\wsigproj{j}{2}{\wsig}}{}} &= \Gmodel{(\text{ $j$-th element of }~\denotesC{\wsig})[1]}\\
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm')(t) &= \CWmodel~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~t \\
-  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~(\Gsub{\denotesCC{a}}{\Glued{\gm}})~(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}}) \\
+  \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~
+  \colorbox{blue!10}{(\Gsub{\denotesCC{a}}{\Glued{\gm}})}~
+  \colorbox{green!10}{(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}})} \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{"A"}{"B"}{"R"}}{}} &= 
   \Gmodel{\GluedPi{\denotesCC{"A"}}{\GluedPi {\GluedPi{\denotesCC{"B"}}{\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}} {\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}}} \\
@@ -314,7 +324,6 @@ We note that, the interpretation of $\Wsup{i}{\wsig}{a}{b}$ is defined by $\CWsu
 
 The interpretation for $\CaseSig{"A"}{"B"}{"R"}$ is also bullet-drowned. However, it should be read as the glued interpretation of $ \TyPi{A}{\TyPi {\TyPi{B}{\sub{R}{\SubstWeak{2}}}} {\sub{R}{\SubstWeak{2}}}} $, which is exactly from the debruinj indxed-version of the typing rule \ruleref{tyeq/casety}. 
 
-In the following interpretation, parsing might be hard, so we might use background colour to make things easier to read, and there is no meaning for the choice of colour.
 
 \begin{align*}
   \text{we define } \RecSig{}{} &\text{ by induction on the signature, via } RS \\
@@ -331,10 +340,14 @@ In the following interpretation, parsing might be hard, so we might use backgrou
 \end{align*}
 \begin{align*}  
   \text{ where } \quad f^r~j~\Glued{a}~b~b^c &= 
-  \texttt{let}~\Glued{\rho}  \in \GTm{(\Glued{\cdot} \Glued{,} \Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}})}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})} 
+  \texttt{let}~\Glued{\rho}  \in \GTm{
+    \colorbox{blue!15}{(\Glued{\cdot} \Glued{,} \colorbox{blue!5}{\Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}}})}
+    }{
+      \colorbox{green!10}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})}
+    } 
   \\
   &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^c)~\texttt{ in } \\
-  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\sub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
+  & \Gmodel{\Gsub{\Gapp{\Gsub{\Gapp{\GRecproj{j}{\Gsub{\denotesCC{\lkg}}{\Glued{\gm}}}}}{\GSubstExt{\GSubstId}{\Glued{a}}}}}{\GSubstExt{\GSubstId}{\Glam{\Glued{\rho}}}}}(\epsilon)(\star) \\
   & \quad 
    \text{ given } \goodTerm{\Gm}{\lkg}{\RecSig{\wsig}{"R"}} \\
    & \quad \text{ where }\Glued{R} = \denotesCC{"R"}, \Glued{B} = \Gwsigproj{j}{2}{\denotesCC{\wsig}}
@@ -372,7 +385,11 @@ and its eliminator $\CWrec$
 Note that in $\CWsup$, the $\Glued{b}$ uses the definition of
 $\denotesC{\wcode{\wsig}}$, which after unfolding, recursively references $\CWmodel$
 in a strictly positive position. %So it is a well-founded definition.
-We do not distinguish $(b, b^c)$ and $\Glued{b}$ for simplicity. Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
+We do not distinguish $(b, b^c)$ and $\Glued{b}$ for simplicity. 
+
+The idea of the proof of W-type is, as mentioned, mirroring the facility of the inductive type in the ambient logic into \TT. The main difference between $\CWmodel$ in the ambient logic and $\wcode{\cdot}$ in the \TT, is that $\CWmodel$ is only witnessing those reducible \emph{closed terms}. Thus when using $\CWmodel$ to model $\wcode{\cdot}$, we need to do closed substitution properly. 
+
+Again, we omit validating the equational rules ($\beta$, $\eta$, and substitution) here.
 
 We state the fundamental property of the logical-relations model.
 %in our proof relevant model, it is admitting that our model is really a model,
