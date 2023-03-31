@@ -523,6 +523,7 @@ construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option
 C) → option C}, generally not provable, unless we have
 \mintinline{Coq}{option (Bᵢ a → C)} instead.\YZ{Don't you really mean
 "unless we have the Detectable Partiality assumption instead"?}
+\EDJreply{I am telling a more detailed technical point, i.e., how to use detectable partiality to prove linv.}
 This \ref{prop:detectable-partiality} is exactly transforming the former to
 the latter:
 recall that, according to the semantic of inductive type,
