@@ -3,9 +3,20 @@
 % \end{abstract}
 
 % \maketitle
+% adding chapter here
+\newcounter{Chapcounter}
+\newcommand\showmycounter{\addtocounter{Chapcounter}{1}\themycounter}
+\newcommand{\chapter}[1] 
+{ {\centering          
+  \addtocounter{Chapcounter}{1} \Large \underline{\textsc{ Chapter \theChapcounter: ~#1}} }   
+  \addcontentsline{toc}{section}{ \color{blue} Chapter~\theChapcounter:~~ #1}    
+}
 
+\tableofcontents
 
-\section*{Family Polymorphism by Coq Plugin}
+\newpage
+
+\chapter{Family Polymorphism as Coq Plugin}
 
 % lstlisting coq style (inspired from a file of Assia Mahboubi)
 % https://tex.stackexchange.com/questions/434523/coq-syntax-highlighting
@@ -64,7 +75,7 @@
 
 \newpage
 
-\section*{Technicality of \TT}
+\chapter{Technicality of \TT}
 
 \section{Syntax and Semantic Models of \TT}
 \label{sec:complete-fmltt}
