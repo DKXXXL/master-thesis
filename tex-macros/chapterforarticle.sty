@@ -6,13 +6,12 @@
 \newcommand\showmycounter{\addtocounter{Chapcounter}{1}\themycounter}
 \newcommand{\chapter}[1] 
 { {\centering          
-  \addtocounter{Chapcounter}{1} \LARGE \textbf{\textsc{ Chapter \theChapcounter: ~#1}} }   
-  \addcontentsline{toc}{section}{ \color{blue} Chapter~\theChapcounter:~~ #1}    
+  \addtocounter{Chapcounter}{1} \Huge \textbf{\textsc{ Chapter \theChapcounter: ~#1}} }   
+  \addcontentsline{toc}{section}{  Chapter~\theChapcounter:~~ #1}    
 }
 \newcommand{\chapterN}[1] 
-{ {          
-  \Huge \textbf{\textsc{{#1}}} 
-  \vspace{1cm}
-  }
+{ {{\centering  \Huge \textbf{\textsc{~#1}} }   
+\addcontentsline{toc}{section}{ #1}   
+\vspace{1cm}} 
 }
 \fi
