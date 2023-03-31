@@ -1,26 +1,30 @@
-\ifreport
-    \ifblinded
-        \documentclass[acmsmall,review,screen,nocopyrightspace]{acmart}
-    \else
-        \documentclass[acmsmall,screen,nocopyrightspace]{acmart}
-    \fi
-\else
-    \iffinalformat
-        \ifweb
-            \typeout{>>> web distribution version}
-            \documentclass[acmsmall,screen]{acmart}
-        \else
-            \typeout{>>> final conference version}
-            \documentclass[acmsmall,screen]{acmart}
-        \fi
-    \else
-        \ifblinded
-            \documentclass[acmsmall,review,screen]{acmart}
-            \pagestyle{plain}
-        \else
-            \documentclass[acmsmall,screen]{acmart}
-        \fi
-    \fi
+\ifthesis
+  \documentclass[12pt]{report}
+  \else 
+  \ifreport
+      \ifblinded
+          \documentclass[acmsmall,review,screen,nocopyrightspace]{acmart}
+      \else
+          \documentclass[acmsmall,screen,nocopyrightspace]{acmart}
+      \fi
+  \else
+      \iffinalformat
+          \ifweb
+              \typeout{>>> web distribution version}
+              \documentclass[acmsmall,screen]{acmart}
+          \else
+              \typeout{>>> final conference version}
+              \documentclass[acmsmall,screen]{acmart}
+          \fi
+      \else
+          \ifblinded
+              \documentclass[acmsmall,review,screen]{acmart}
+              \pagestyle{plain}
+          \else
+              \documentclass[acmsmall,screen]{acmart}
+          \fi
+      \fi
+  \fi
 \fi
 \citestyle{acmauthoryear}
 \setcitestyle{nosort}

@@ -44,6 +44,7 @@
 \newif\iffinalformat\finalformatfalse
 \newif\ifweb\webfalse
 \newif\ifexternalize\externalizetrue
+\newif\ifthesis\thesisfalse
 
 % The condition \ifblinded is turned on if the file
 % .blinded exists or if \anonymoussubmission is defined to be 1, unless
@@ -158,6 +159,15 @@ local, submission, final, web, tr, trdraft)}
     \finalformattrue
     \externalizefalse
     \webtrue
+\or %thesis
+    \thesistrue
+    \blindedfalse
+    \singlecolumntrue
+    \showcommentstrue
+    \sawversiontrue
+    \reporttrue
+    \showlinenumstrue
+    \warningtrue
 \fi
 
 \ifsawversion

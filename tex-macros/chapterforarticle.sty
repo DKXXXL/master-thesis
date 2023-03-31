@@ -1,5 +1,7 @@
 \ProvidesPackage{chapterforarticle}
 
+\ifthesis 
+\else
 \newcounter{Chapcounter}
 \newcommand\showmycounter{\addtocounter{Chapcounter}{1}\themycounter}
 \newcommand{\chapter}[1] 
@@ -7,3 +9,4 @@
   \addtocounter{Chapcounter}{1} \Large \underline{\textsc{ Chapter \theChapcounter: ~#1}} }   
   \addcontentsline{toc}{section}{ \color{blue} Chapter~\theChapcounter:~~ #1}    
 }
+\fi
