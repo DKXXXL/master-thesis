@@ -463,17 +463,103 @@ tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]op
 \end{minipage}
 \end{centered}
 
-%\begin{centered}
-%\begin{minipage}{.97\textwidth}
-%\newcommand\hlcase[1]{\tikzmarkin[disable rounded corners=true,set fill color=yellow!18,set border color=yellow!18]{#1}(0.00,-0.05)(-0.00,0.20)}
-%\begin{lstlisting}[basicstyle=\fontsize{8.25}{9.9}\ttfamily]
-%tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] -> [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] ->
-%                [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
-%                [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] ->
-%                \forall t, option (P t)
-%\end{lstlisting}
-%\end{minipage}
-%\end{centered}
+
+\noindentparagraph{Property about Partial Recursors.}
+
+Partial recursor is simply adding partiality into the signature of the eliminator, by wrapping each motive with "option". This partial recursor seems non-canonical compared to the (dependent) eliminator for Inductive type as the latter can be considered as universal property. This extensionality makes dependent eliminator one of \textit{the most powerful} reasoning tools around inductive type. 
+
+
+Even though we cannot prove partial recursors are \textit{the
+most powerful} reasoning tool for extensible inductive types,
+the fact that propositional partial
+recursors can derive injectivity alreadt demonstrate itself as a good \textit{extensional characterization} of
+(non-indexed) extensible inductive type (under certain
+constraints)---because we can ``embed'' vanilla inductive types into
+types supporting a partial recursor: a bit more formally, and
+restricting our focus to non-indexed inductive types:
+
+\begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$ s.t.
+
+
+  \begin{itemize}
+    \item \textlabel{(Detectable Partiality)}{prop:detectable-partiality} for each pair $x : A_i \vdash B_i(x)$,
+    \begin{minted}{Coq}
+      Axiom detectable:
+      forall {T} {a} (f: Bᵢ a -> option T),
+        {forall x, f x <> None} + {exists x, f x = None}.
+    \end{minted} 
+    \item Define $"C"$ as the inductive type using this list, i.e.,
+    \begin{minted}{Coq}
+Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
+    \end{minted}
+    \item Assume an arbitrary type \mintinline{Coq}{D : Set} with
+    \begin{itemize}
+      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
+      \item a partial recursor
+      \begin{minted}[escapeinside=@@]{Coq}
+prec : forall (R : Set), ..,
+  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), ..,@\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}\YZreply{Is this constraint Detectable Partiality?}@
+      D -> option R
+      \end{minted}
+      \item and $n$ (propositional) computational axioms: for all $i$, 
+      \begin{minted}{Coq}
+prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
+    = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
+      \end{minted}
+    % where \mintinline{Coq}{(lift rᵢ) : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)} is defined as expected
+    \end{itemize}
+  \end{itemize}
+  Then there exists an \textbf{embedding} from "C" to "D".
+  More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
+  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of\/
+  "C" and "prec" of\/ "D" (both acting like identity) such that
+  \begin{minted}[escapeinside=@@]{Coq}
+    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
+  \end{minted}
+\end{theorem}
+The reason we have this weird looking \ref{prop:detectable-partiality}
+is due to the construction of "linv"---at one point, using "prec" to
+construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option
+C) → option C}, generally not provable, unless we have
+\mintinline{Coq}{option (Bᵢ a → C)} instead.\YZ{Don't you really mean
+"unless we have the Detectable Partiality assumption instead"?}
+This \ref{prop:detectable-partiality} is exactly transforming the former to
+the latter:
+recall that, according to the semantic of inductive type,
+\mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using
+"linv" on the substructure of "D". This function points out each of the
+translation result from "D" to "C" and some of them are "None" because
+of failing. For us, we only care about if \textbf{any} of the
+substructure of "D" fails to translate---if any substructure fails,
+then the whole translation fails and thus we should have "None" as
+return.
+
+\ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that includes all of the examples shown in this paper. 
+
+\ref{prop:detectable-partiality} is not generally supported when using function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". However, in those cases, we still have partial recursor provable and useful---we just cannot see the partial recursor as a strong toolkit anymore.
+
+
+We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
+actually be considered as a constructor, because they can be reflected
+to real constructors of "C" using the left inverse "linv". Thus, \cref{thm:prec-complete}
+implies that (1) every future extension of the inductive type can
+support this partial recursion (trivially); (2) every type supporting
+this partial recursor with its computational axioms at least supports
+these constructors because of the embedding. In other words, \textit{a
+type (at least) supports these constructors if and only if this type
+supports the corresponding partial recursor (with the computational
+axioms)}.  Thus, we can argue that the partial recursor gives a sound and
+complete extensional characterization of all the extension of a given (non-indexed)
+inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also have a formalization of this proof now, for indexed type and dependent eliminator. Though the formalization is about single constructor.}
+
+We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
+\begin{minted}{Coq}
+  pdelim : ∀ (P : D -> Set), .., 
+  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) 
+    -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
+\end{minted}
+To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. 
+% Please refer to the supplementary material and appendix for a formalization of the left inverse in the context of indexed inductive type. 
 
 \noindent
 As expected, "tm_prect_STLC" is axiomatized along with
