@@ -5,14 +5,14 @@ with different focuses and trade-offs.
 
 \citet{delaware2011} engineer product lines of theorems and proofs built
 from feature modules. Feature composition is manual, which seems to have
-motivated later approaches based on \emph{data types à la carte} (DTC)~\cite{dtc}.
+motivated later approaches based on \ac{DTC}~\cite{dtc}.
 %\rB{ define abbreviation DTC at first use?}
 
 %DTC is as a source of inspiration for may approaches
 %\cite{delaware2013,delaware2013b,schwaab2013modular,keuchel2013generic,forsta2020}.
 The original DTC encoding requires type-level general recursion that
 fails the strict positivity check imposed by proof assistants including Coq and Agda.
-\citet{delaware2013} introduce \emph{meta-theory à la carte} (MTC):
+\citet{delaware2013} introduce \ac{MTC}:
 it overcomes the problem by using Church encodings for
 data types and using Mendler-style folds for evaluation,
 though it requires \lsti{Set} impredicativity.
