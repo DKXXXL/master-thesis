@@ -13,7 +13,8 @@ TEXS = $(DOC).tex abstract.tex title.tex header.tex body.tex	\
 	stlc-compiled.tex stlcfix-compiled.tex stlc-linkage-typing-named.tex stlcfix-linkage-typing.tex stlc-venn.tex	stlc-linkTran-typing.tex\
 	fmltt-selected-named.tex cc-condensed.tex	mltt-selected-named.tex\
 	stlc-intro.pdf ai-casestudy.pdf \
-	all-mltt-typing.tex all-fmltt-typing.tex frontmatters.tex
+	all-mltt-typing.tex all-fmltt-typing.tex \
+	frontmatters.tex listofabbrev.tex
 
 # Included figures (usually .pdf files)
 FIGS = graphics
