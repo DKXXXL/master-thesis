@@ -103,7 +103,7 @@ It exports a generic framework for deriving
 abstract interpreters with partial-correctness guarantees.
 Soundness of the abstract interpreter, \lsti{analyze},
 is stated with respect to the interpreter, \lsti{eval}, inherited from \lsti{Imp}.
-The theorem says that the abstraction relation \lsti{RState} over a
+The theorem says that the concretization relation \lsti{RState} over a
 concrete state~\lsti{S} and an abstract state~\lsti{absS} is preserved
 by the analysis:
 
@@ -123,7 +123,7 @@ by the analysis:
 \lsti{analyze} is defined via \lsti{FRecursion}, and the soundness theorem
 is proved via \lsti{FInduction}.
 This family leaves fields representing the abstract domain, the
-abstraction relation, monotonicity of transfer functions, etc.\ 
+concretization relation, monotonicity of transfer functions, etc.\ 
 largely unspecified or unproven---a derived family can further bind
 these ``parameters'' by overriding appropriate fields (and also possibly
 extend the abstract syntax), to create a sound, runnable abstract
