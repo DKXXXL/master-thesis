@@ -9,8 +9,14 @@ while maintaining consistency and canonicity.
 
 For accessibility of the main text, \cref{sec:metatheory2} presents \TT using
 named variables and meta-level substitution.
-For clarity of proof details, a technical appendix supplementing
-\cref{sec:metatheory2} instead uses \citeauthor{debruijn1964} indices and explicit substitution \cite{abadi1989subst}.
+For clarity of proof details,
+\ifreport
+\cref{sec:complete-fmltt}
+\else
+a technical appendix \cite{fpop-tr}
+\fi
+supplementing \cref{sec:metatheory2}
+instead uses \citeauthor{debruijn1964} indices and explicit substitution \cite{abadi1989subst}.
 %
 We acknowledge that the presentation is dense for an audience
 without intimate knowledge of MLTT, so we summarize the salient points first.
@@ -446,8 +452,13 @@ field~$t$---into a dependent tuple type (\ruleref{tyeq/pk/add}).
 The term $\seal$ turns a tuple of type $\TyTkg{\lsig}$ into a new tuple of type~$A$
 that hides W-type signatures behind $\cU$, if necessary.\footnote{%
 In the presence of hiding, it is important that the context type~$A$ be a
-dependent tuple type rather than a linkage type; we expand on this point in an
-appendix.}
+dependent tuple type rather than a linkage type; we expand on this point in
+\ifreport
+\cref{sec:complete-fmltt}.
+\else
+an appendix.
+\fi
+}
 
 It is straightforward to find the~$\seal$ that fits the bill, though this process
 is not automated in \TT.
@@ -538,7 +549,7 @@ can be used to model the construction of a derived family as a linkage transform
 
 The definitive version containing all the rules in \TT is stated in
 \ifreport \cref{sec:complete-fmltt}.
-\else a technical appendix.
+\else a technical appendix \cite{fpop-tr}.
 \fi
 This definitive version uses de Bruijn indices and explicit substitution.
 An effort to mechanize the formalization is underway. It follows \citet{altkap2016}

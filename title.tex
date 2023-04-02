@@ -4,18 +4,16 @@ Application and Theory of \mbox{Family Polymorphism} in \mbox{Proof Assistant}
 %Family Polymorphism for Extensible Metatheory Mechanization in a Type Theory with Inductive Types
 }
 
-\def\thesubtitle{%
-Technical Report with Appendices
-}
-
 \ifreport
-\title{\textls[-0]{\thetitle}}
-\subtitle{\thesubtitle}
+\title{\thetitle: Technical Report}
 \else
-\title{\textls[-0]{\thetitle}}
+\title{\thetitle}
 \fi
 
-%\subtitle{\thesubtitle}
+\fancypagestyle{tr-style}{
+    \fancyhf{}
+    \fancyhead[L]{\small\sffamily Technical Report CS-2023-01, School of Computer Science, University of Waterloo}
+}
 
 \newcommand{\TT}{\mbox{\textls[-20]{FMLTT}}\xspace}
 \newcommand{\Lang}{\mbox{\scshape\textls[-10]{fpop}}\xspace}
