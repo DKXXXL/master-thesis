@@ -307,7 +307,7 @@
 \goodType{\Gm}{\TyTkg {\LSigAdd  {\lsig} {\seal} {T}} \equiv 
     \TySigma {\TyTkg {\lsig}} {T[\SubstExt{\pi_1}{\seal} ]} }{}
 \\\\ \goodTerm{\Gm}{ \Tkg {\LkgEmp} \equiv ()}{\TyTkg{\LSigEmp}}
-\\ \goodTerm{\Gm}{\Tkg {\LkgAdd {\lkg} {t}} \equiv (\Tkg {\lkg}, t[\SubstExt{\pi_1}{\seal} ][(id, \Tkg {\lkg})]) }{}
+\\ \goodTerm{\Gm}{\Tkg {\LkgAdd {\lkg} {t}} \equiv (\Tkg {\lkg}, t[\SubstExt{\pi_1}{\seal} ][(\SubstId, \Tkg {\lkg})]) }{}
 }
 
 \end{mathparpagebreakable}
@@ -407,7 +407,7 @@
 }
 
 \Rule[name=recl/proj/def0]{}{
-  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{("id", \Tkg{\lkgproj{1}{\lkg}})}}{\sub{(\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R})}{\pi_1}}
+  \goodTerm{\Gm}{\Recproj{0}{\lkg} \equiv \sub{\lkgproj{2}{\lkg}}{(\SubstId, \Tkg{\lkgproj{1}{\lkg}})}}{\sub{(\CaseSig{\wsigproj{0}{1}{\wsig}}{\wsigproj{0}{2}{\wsig}}{R})}{\pi_1}}
 }
 \\
 
@@ -417,7 +417,7 @@
 % \\ \goodTerm{\Gamma}{T}{\TyWSingle{\tau}}
 }
 {\goodTerm{\Gamma}{\Wrec{\wsig}{h}{\Wsup{j}{\wsig}{a}{b}} \equiv 
-\app{ \app{\Recproj{j}{h}} [("id", a)]} [("id", \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
+\app{ \app{\Recproj{j}{h}} [(\SubstId, a)]} [(\SubstId, \lam{\Wrec{\wsig}{h[\pi_1]}{b}})]
 }{R}}
 \end{mathparpagebreakable}
 \begin{mathparpagebreakable}

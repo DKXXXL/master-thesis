@@ -193,7 +193,7 @@
 
 \Rule[name=tmeq/subst/id]
 {""}
-{\goodTerm{\Gm}{ \sub{t}{id} \equiv t}{ T }}
+{\goodTerm{\Gm}{ \sub{t}{\SubstId} \equiv t}{ T }}
 
 \Rule[name=tm/lam]
 {\goodTerm{\Gm, A}{t}{B}}
@@ -213,19 +213,19 @@
 
 \Rule[name=tm/pair]
 {\goodTerm{\Gm}{u}{A} 
-\\ \goodTerm{\Gm}{v}{B[(id, u)]}}
+\\ \goodTerm{\Gm}{v}{B[(\SubstId, u)]}}
 {\goodTerm{\Gm}{(u,v)}{\TySigma {A} {B}}}
 
 \Rule[name=tm/pair/proj]
 {\goodTerm{\Gm}{t}{\TySigma {A} {B}}}
 {\goodTerm{\Gm}{\fst{t}}{A}
-\\ \goodTerm{\Gm}{\snd{t}}{B[(id, \fst{t})]}
+\\ \goodTerm{\Gm}{\snd{t}}{B[(\SubstId, \fst{t})]}
 }
 
 \Rule[name=tmeq/pair/proj/beta]
 {}
 {\goodTerm{\Gm}{\fst{\pair{u}{v}} \equiv u}{A}
-\\ \goodTerm{\Gm}{\snd{\pair{u} {v}} \equiv v}{B[(id, u)]}
+\\ \goodTerm{\Gm}{\snd{\pair{u} {v}} \equiv v}{B[(\SubstId, u)]}
 }
 
 \Rule[name=tmeq/pair/proj/eta]
@@ -250,11 +250,11 @@
 \Rule[name=tm/J/BasePathInduction]
 {\goodTerm{\Gm}{u}{A} 
  \\ \goodType{\Gm, A, \TyId{\sub{u}{\pi_1}}{\pi_2}}{C}{}
-  \\  \goodTerm{\Gm}{w}{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}} 
+  \\  \goodTerm{\Gm}{w}{\sub{C}{\SubstExt{\SubstExt{\SubstId}{u}}{\eqrefl{u}}}} 
   \\ \goodTerm{\Gm}{v}{A} 
   \\ \goodTerm{\Gm}{t}{\TyId{u}{v}}
   }
-{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{t}}}}
+{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{\SubstId}{v}}{t}}}}
 
 \Rule[name=tmeq/ifb/beta]
 {}
@@ -263,7 +263,7 @@
 
 \Rule[name=tmeq/J/beta]
 {}
-{\goodTerm{\Gm}{\Jeq{w}{\eqrefl{u}} \equiv w }{\sub{C}{\SubstExt{\SubstExt{id}{u}}{\eqrefl{u}}}}}
+{\goodTerm{\Gm}{\Jeq{w}{\eqrefl{u}} \equiv w }{\sub{C}{\SubstExt{\SubstExt{\SubstId}{u}}{\eqrefl{u}}}}}
 
 \Rule[name=tm/singleton]
 {\goodTerm{\Gm}{a}{A}}
@@ -299,7 +299,7 @@
 }{\goodSub{\Gm}{ \SubstComp{\delta}{\gm}}{\Theta}}
 \\
 \RuleWithName[name=sub/id]
-{""}{\goodSub{\Gm}{"id"}{\Gm}}
+{""}{\goodSub{\Gm}{\SubstId}{\Gm}}
 
 \RuleWithName[name=sub/ext]
 {\goodSub{\Gm}{\gm}{\Delta} \\ \goodTerm{\Gm}{t}{ \sub{A}{\gm}}}
@@ -349,7 +349,7 @@
 
 \Rule[name=substeq/comp/id]
 {}
-{\goodSub{\Gm}{ \SubstComp{id}{\gm} \equiv \SubstComp{\gm}{id} \equiv \gm}{\Theta}}
+{\goodSub{\Gm}{ \SubstComp{\SubstId}{\gm} \equiv \SubstComp{\gm}{\SubstId} \equiv \gm}{\Theta}}
 
 \end{mathparpagebreakable}
 
