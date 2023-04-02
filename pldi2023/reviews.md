@@ -314,6 +314,126 @@ of benchmarks (describe the benchmarks).
 
 
 
+Author Response by Ende Jin <ende.jin@uwaterloo.ca> (769 words)
+---------------------------------------------------------------------------
+We thank all the reviewers for their critical and encouraging feedback.
+Below we address the main concerns, which we may have paraphrased for brevity.
+
+* (A, B, C, D) __There are limitations with the current design and implementation, such as
+  restricting induction to the top level and the awkwardness in handling terms like `denoteTy t`.__
+
+  We will clearly state the current limitations. We believe the limitations
+  identified by the reviewers represent interesting opportunities for future research.
+  For example, future work could explore a normalization algorithm for an
+  extended dependent type theory that admits more conversion equations on
+  elimination of extensible inductive types, as well as proof assistant
+  implementations that natively support extensible inductive types and thus
+  streamline normalization for open terms.
+
+  We will also add a comment about the trusted base of any developments using the
+  plugin, as the reviewers suggested.
+  
+* (A, B, D) **The presentation of FMLTT is tough.**
+
+  We sympathize with the reviewers. We will expand the section to clarify things
+  in response to the reviewers' questions. We will also use an appendix to
+  explain the formalization and proofs in greater detail.
+
+
+* (B, C) __Consistency is already implied for FMLTT by a translation to MLTT, and for FPOP by a translation to Coq__.
+
+  We agree with the reviewers' insights.
+
+  We note that the effort required to prove consistency directly for FMLTT is
+  similar to that required to prove type preservation for a translation to MLTT:
+  both proofs are structured as type-preserving interpretations
+  into another dependent type theory.
+
+
+* (B, D) __The plugin implementation is not included as a supplement.__
+
+  We will ensure the release of our research artifacts for public access.
+
+
+* (A) __Connection to work on ML-style modules [DCH 2003, DR 2008]?__
+
+  Thank you for the references.
+  Both ML-style modules and our families are modularity mechanisms.
+  ML-style modules are more about abstraction (caring about issues such as
+  signature ascription), while our families are more about extensibility.
+  Both use singletons to model and control the propagation of
+  definitions inside a module or family.
+  Work on mixin composition for ML-style modules focuses on making 
+  mixins play well with the peculiarities of ML-style modules,
+  while our work focuses on supporting mixins in the presence of extensible
+  inductive types.
+
+
+* (B) __Rules TYEQ/PK/ADD and LSIG/ADD do not seem to prescribe how to choose $A$.__
+
+  The FMLTT typing rules do not commit to a particular choice of the context type $A$,
+  though there exists a simple algorithm for picking the right $A$ (lines 785–787): a
+  field is checked in a context of type $A$ that hides W-type signatures behind
+  $\mathbb{U}$, unless that field invokes a constructor or eliminator of some
+  W-type. Intuitively, the type system is sound without this algorithm because
+  it restricts the ways a field can be used if a wrong $A$ is chosen.
+
+
+
+* (B) __What happens if the programmer tries to mix contradictory language features?__
+
+  We expect mixing two contradictory developments to cause the plugin to
+  generate unprovable proof obligations (cf. line 386). One example is mixing
+  HM-style polymorphism and references, which the reviewer mentioned. Another
+  example is mixing fixpoints into a family that proves strong normalization for
+  STLC.
+
+
+* (D) __What happens if a user tries to use `tm_rect` with standard pattern matching?__
+
+  The programmer is prevented from using `tm_rect` within the family in which `tm` is defined,
+  because the plugin makes `tm` appear in the typing context as an axiomatized
+  type without exposing its concrete definition (line 494).
+ 
+
+* (D) __What does it mean to place a new field using annotations?__
+
+  We clarify this using the following example.
+  The programmer uses the annotation `Inherit a2` to indicate that the new field
+  `b` should be placed immediately after the existing field `a2`.
+
+  ```C
+  Family A.
+    FDefinition a1 := ....
+    FDefinition a2 := ....
+    FDefinition c := ....
+  End A.
+  
+  Family B extends A.
+    Inherit a2.
+    FDefinition b := ...
+  End B.
+  ```
+
+* (D) __Line 487__ ("a module named `STLC◦subst◦Cases` is generated interactively ...") __is confusing.__
+
+  We wanted to emphasize that programming is interactive even within an `FRecursion` definition:
+  the programmer need not wait until the entire `FRecursion` definition is completed to have
+  their `Case` commands checked and translated by the plugin.
+
+* (D) __Out of curiosity, how does your plugin integrate with universes?__
+
+  We do not have intimate knowledge of Coq's universe polymorphism feature, but we expect
+  it to have the same level of compatibility with families as it does with Coq
+  modules—under the hood, upon closing a family, the plugin is just doing
+  module inclusion and instantiation repeatedly.
+
+
+We will address in our revision other reviewer comments not mentioned above.
+Again, we thank all the reviewers for their thoughtful and detailed comments, which will help improve the paper.
+
+
+
 Review #430E
 ===========================================================================
 
@@ -336,3 +456,95 @@ The reviewers are pleased to conditionally accept this paper. We ask that the au
     - Use more standard notations for substitution.
     - Use named variables consistently instead of a mixture of named and DeBruijn.
     - Include some small examples inline, next to the descriptions in Section 5, instead of waiting until the end of the section to discuss the big example in Figure 8.
+
+
+
+Comment @A1 by Ende Jin <ende.jin@uwaterloo.ca>
+---------------------------------------------------------------------------
+Dear reviewers,
+
+We are happy to submit the revised version of our paper for
+consideration for publication at PLDI'23.
+The reviewers' comments were immensely helpful, and we tried to implement
+the required revisions as well as many other suggestions.
+We believe that the comments helped us substantially improve the paper.
+
+Attached are our revised paper (including appendices) and a diff generated by latexdiff.
+The main changes we made for this revision are listed below. Please
+refer to the latexdiff version for other minor changes including those suggested in the reviews.
+Please note that for technical difficulties we had to exclude Figures 6–8
+for latexdiff to work.
+
+
+## Changes proposed in our response
+
+* **State the current limitations**
+
+  We add a new section (Section 5) commenting on the current limitations, including those identified by the reviewers.
+
+  `revision.pdf` Line 613  
+  `diff.pdf` Line 625
+
+* **Remark on the trusted base of FPOP developments**
+
+  We add a paragraph at the end of Section 4.
+
+  `revision.pdf` Line 606  
+  `diff.pdf` Line 617
+
+## Main changes suggested by the reviewers
+
+* **Improve the presentation in the FMLTT section**
+
+  The main changes to this section are the following:
+
+  - As suggested by the reviewers, the presentation in this section now
+    consistently uses the more accessible notations for binders and
+    substitutions, namely named variables and substitutions as
+    meta-operations.
+    
+    For exactness of technical details, the technical appendix uses de Bruijn
+    indices and explicit substitutions, and also makes universe levels explicit.
+    We also include explanations of these notations in the appendix.
+  
+  - We explain W-types in greater detail and include an example showing how
+    the `tm` inductive type can be expressed.
+
+    `revision.pdf` Line 727  
+    `diff.pdf` Line 723
+  
+  - We explain $\mathbb{P}(\cdot)$ in greater detail:
+    we give the concrete constructions of $\mathbb{P}(\sigma_i)$ in Figure 8
+    and elaborate on the technical role that $\mathbb{P}(\cdot)$ plays in Appendix A.2.
+
+    `revision.pdf` Line 785 (Figure 8), Line 843, Line 1444 (Appendix A.2)
+    `diff.pdf`  Line 834 (Figure 8), Line 885 
+  
+  - Appendix A.4 now contains the detailed construction of the
+    logical-relations model that we use to prove consistency and canonicity.
+    It subsumes the proofs in the original supplemental material. The
+    technical content is still quite involved, but we hope that the presentation
+    is now more accessible than the original pseudo-Agda proofs.
+
+
+Comment @A2
+---------------------------------------------------------------------------
+Congratulations, your paper is officially accepted.
+
+Here are a few additional suggestions from the reviewers. It would be great if you could take these into account as you prepare the camera-ready version.
+
+1. The discussion of their FMLTT formalization is still *quite* dense, although the updated presentation has improved the situation. 
+2. The proof in the appendix is also an improvement over the previous pseudo Agda development. I haven't checked it thoroughly, but it is now possible to follow the high-level proof strategy.
+3. The discussion of $\mathbb{P}(\sigma)$ is still too late, so I would like to recommend that the authors describe P on the same line as L/Add and LSig/Add (l771), or at least provide a forward reference to the discussion on line 843.  
+4. I caught some typos in the updated text: 
+- l609: Ramifications --> The ramifications
+- l619: "of the same kind that went into FPop." --> on the same level as FPop. 
+- l653: TyEq/El has an extraneous _j (probably an accidentally included universe level from the rule in the appendix. )
+- l676: inductionas —> induction as 
+- l685: Term c(T) —> The term c(T)
+- l642: J is never mentioned in the text; it is not so standard that it should be omitted. 
+- l722: Type El(t) —> The type El(t)
+- l750: a type of form —> a type of the form
+- l755: Rules —> The rules 
+- l785 (+ many others) —> The syntax self_\triangleright tm is never explained. 
+- l863: exemplary transformer --> example transformer
