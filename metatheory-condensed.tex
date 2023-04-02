@@ -317,20 +317,25 @@ In \TT, families are expressed through linkages, and late binding of
 field references is achieved by requiring that typing be polymorphic to
 the definition of that field.
 
-\emph{Linkage signatures} have the form $\goodSig{\Gm}{\lsig}{n}$.
-As rules \ruleref{lsig/empty} and \ruleref{lsig/add} show, a linkage
-signature is a list of $n$~types.
+\emph{Linkage signatures} have the judgment form $\goodSig{\Gm}{\lsig}{n}$.
+A linkage signature is a list of $n$~types
+(\ruleref{lsig/empty} and \ruleref{lsig/add}).
 %
-\emph{Linkages} have the form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
+\emph{Linkages} have the judgment form $\goodTerm{\Gm}{\lkg}{\TyLkg{\lsig}}$,
 where $\TyLkg{\lsig}$ is a type formed by~$\lsig$.
-As rules \ruleref{l/empty} and \ruleref{l/add} show, a linkage is a list
-of $n$~terms, each representing a field of the family modeled by the linkage.
+A linkage is a list of $n$~terms, each representing a field of the family
+modeled by the linkage (\ruleref{l/empty} and \ruleref{l/add}).
 
-In rules \ruleref{l/add} and \ruleref{lsig/add},
+In the rules \ruleref{l/add} and \ruleref{lsig/add},
 the second premise $\goodTerm{\Gm, \mathit{self} : A}{t}{T}$ is
 responsible for late binding.
 Here, $A$ abstracts the context of the current field~$t$, controlling
 how the types of the fields prior to~$t$ are exposed to the typing of~$t$.
+%
+As discussed later, the third premise $\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$
+is responsible for creating the context type~$A$ that possibly hides W-type
+signatures in $\lsig$, which records the types of the prior fields.
+
 Crucially, %unlike the second field in a dependent pair (\ruleref{tm/pair}),
 the premise $\goodTerm{\Gm, \mathit{self} : A}{t}{T}$ makes clear that
 the typing of~$t$ in \ruleref{l/add} is \emph{universally} quantified---%
@@ -350,7 +355,7 @@ because a field defined as the code $\wcode{\wsig}$ of a W-type has to
 expose different types to different fields that come after it.
 Later fields that invoke
 $\Wsup{}{\wsig}{\cDot}{\cDot}$ or $\Wrec{\wsig}{\cDot}{\cDot}$
-should see the concrete signature~$\wsig$, as rules \ruleref{tm/wsup}
+should see the concrete signature~$\wsig$, as the rules \ruleref{tm/wsup}
 and \ruleref{tm/wrec} stipulate.
 By contrast, $\wsig$ should be hidden
 from all other fields, so that they can be reused
@@ -431,7 +436,7 @@ the case handlers can be reused by a linkage modeling \lsti{STLCFix}.
 
 \end{itemize}
 
-In rules \ruleref{l/add} and \ruleref{lsig/add},
+In \ruleref{l/add} and \ruleref{lsig/add},
 the third premise $\goodTerm{\Gm,x : \TyTkg{\lsig}}{\seal}{A}$ is
 responsible for hiding W-type signatures.
 Here, $\TyTkg{\lsig}$ packages $\lsig$---recall that $\lsig$ contains the
