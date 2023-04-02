@@ -218,7 +218,7 @@ Coq conveniently reduces the trusted base of any development using \Lang to Coq.
 %and improves compatibility with different versions of Coq.
 In particular, once a family is closed, \lsti{Print Assumptions} can be used
 to verify that there are no lingering \lsti{Axiom}s introduced by the translation.
-Ramifications of possible bugs in the \Lang implementation are limited to
+The ramifications of possible bugs in the \Lang implementation are limited to
 the usability of the plugin.
 %Finally, we emphasize that our compilation can make sure the trusted code base is restricted to the Coq's kernel, as all the feature supported by our plugin has been compiled into Coq's surface syntax/Vernacular commands.
 
@@ -234,7 +234,7 @@ Partial recursors are automatically generated only for non-indexed inductive typ
 These features are not exercised by our case studies (\cref{sec:casestudies})
 but may be useful for modeling other languages.
 We believe that they do not pose conceptual challenges and can be
-addressed with more engineering effort of the same kind that went into \Lang.
+addressed with more engineering effort on the same level as the current \Lang implementation.
 
 %We list some of the current limitation of our implementation. We believe the following limitation can be rememdied by more engineering effort:
 %\begin{itemize}
