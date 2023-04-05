@@ -86,6 +86,10 @@ by the triviality of the lemmas and the terseness of the proof scripts.
 
 \noindentparagraph{Abstract interpreters for imperative languages.}
 
+\begin{wrapfigure}[13]{r}{0.132\textwidth}
+\includegraphics[scale=.66]{graphics/ai-casestudy.pdf}
+\end{wrapfigure}
+
 Our second case study is a mechanization of abstract interpreters
 for simple imperative languages.
 In addition to a soundness proof, this case study produces abstract
@@ -115,10 +119,6 @@ by the analysis:
 \end{minipage}
 \end{centered}
 
-\begin{wrapfigure}[13]{r}{0.138\textwidth}
-\includegraphics[scale=.68]{graphics/ai-casestudy.pdf}
-\end{wrapfigure}
-
 \noindent
 \lsti{analyze} is defined via \lsti{FRecursion}, and the soundness theorem
 is proved via \lsti{FInduction}.
@@ -130,9 +130,9 @@ extend the abstract syntax), to create a sound, runnable abstract
 interpreter for a (possibly extended) while-language.
 %\EDJ{It is not very relaxed. Currently everything is using a dicionary as memory model and stick with that. The abstract value for each expression is the one *really* unspecified.}
 
-The next two families then extend \lsti{ImpGAI}.
+The next two families both extend \lsti{ImpGAI}.
 Family \lsti{ImpTI} (\textasciitilde200~LOC) is an abstract
-interpreter that does type inference~\cite{cousot1997types}.
+interpreter doing type inference~\cite{cousot1997types}.
 Family \lsti{ImpCP} (\textasciitilde300~LOC) extends the abstract syntax
 with natural-number arithmetic,
 and further binds the generic abstract interpreter to perform constant propagation.
