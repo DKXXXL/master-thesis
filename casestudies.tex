@@ -148,10 +148,10 @@ We extract the two verified abstract interpreters to OCaml.
 Testing the extracted program over simple queries returns expected results.
 %\rD{What were the results of testing the extracted abstract interpreters? I don't expect much in the way of performance, but did they return the correct results? What sorts of benchmarks did you use?}
 
-We note that \Lang cannot yet allow the expression of two derived abstract
-interpreters nested within the same family.
-Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
-to further increase the expressive power of our language design.
+%We note that \Lang cannot yet allow the expression of two derived abstract
+%interpreters nested within the same family.
+%Work on nested inheritance~\cite{ncm2004,zm2017} points to a direction
+%to further increase the expressive power of our language design.
 
 %If not using \Lang, we can construct \lsti{Imp}, \lsti{ImpGAI} and \lsti{ImpTI} in a similar way---but \lsti{Imp} is now a module instead of a family, \lsti{ImpGAI} is now a functor instead of a family with overridable fields, and \lsti{ImpTI} is a concrete instantiation of the functor \lsti{ImpGAI}. However, \lsti{ImpCP} cannot reuse the above framework as it extends syntax with natural numbers. Thus \lsti{ImpCP} will require repeating a large amount of definitions, and it alone will needs about 900~LOCs.
 
