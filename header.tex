@@ -450,12 +450,24 @@
 \authorsaddresses{}
 
 \ifcopyrightspace
-%    \setcopyright{acmcopyright}
-%    \settopmatter{printacmref=true}
+  \setcopyright{rightsretained}
+  %\settopmatter{printacmref=true}
+  \acmPrice{}
+  \acmDOI{10.1145/3591286}
+  \acmYear{2023}
+  \copyrightyear{2023}
+  \acmSubmissionID{pldi23main-p430-p}
+  \acmJournal{PACMPL}
+  \acmVolume{7}
+  \acmNumber{PLDI}
+  \acmArticle{172}
+  \acmMonth{6}
+  \received{2022-11-10}
+  \received[accepted]{2023-03-31}
 \else
-    \setcopyright{none}
-    \renewcommand\footnotetextcopyrightpermission[1]{}
-    \settopmatter{printacmref=false}
+  \setcopyright{none}
+  \renewcommand\footnotetextcopyrightpermission[1]{}
+  \settopmatter{printacmref=false}
 \fi
 
 \ifwarning
