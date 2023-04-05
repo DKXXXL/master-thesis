@@ -309,8 +309,8 @@ We use the inductive facility of the ambient meta\-logic to justify our W-types.
   \denotesC{\goodWSig{\Gm}{\WSigSub{\wsig}}{n}} &= "tl"~\denotesC{\wsig}\\
   \denotesC{\goodTerm{\Gm}{\wcode{\wsig}}{\cU}}(\gm)(\gm')(t) &= \CWmodel~(\Gsub{\denotesCC{\wsig}}{\Glued{\gm}})~t \\
   \denotesC{\goodTerm{\Gm}{\Wsup{i}{\wsig}{a}{b}}{\El{\wcode{\wsig}}}}(\gm)(\gm') &= \CWsup~i~
-  \colorbox{blue!10}{(\Gsub{\denotesCC{a}}{\Glued{\gm}})}~
-  \colorbox{green!10}{(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}})} \\
+  \colorbox{blue!9}{(\Gsub{\denotesCC{a}}{\Glued{\gm}})}~
+  \colorbox{green!9}{(\Gsub{\denotesCC{b}}{{\Glued{\gm^\uparrow}}})} \\
   % CsTy~A~B~R &= {\GluedPi{A}{\GluedPi {\GluedPi{B}{\Gsub{R}{\GSubstWeak{2}}}} {\Gsub{R}{\GSubstWeak{2}}}}} \\
   \denotesC{\goodType{\Gm}{\CaseSig{"A"}{"B"}{"R"}}{}} &= 
   \Gmodel{\GluedPi{\denotesCC{"A"}}{\GluedPi {\GluedPi{\denotesCC{"B"}}{\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}} {\Gsub{\denotesCC{"R"}}{\GSubstWeak{2}}}}} \\
@@ -341,25 +341,25 @@ $\Glued{\gm}$ is an equivalent form of $(\gm, \gm')$.
 \begin{align*}  
   \text{ where } \quad f^r~j~\Glued{a}~b~b^c &= 
   \texttt{let}~\Glued{\rho}  \in \GTm{
-    \colorbox{blue!15}{(\Glued{\cdot} \Glued{,} \colorbox{blue!5}{\Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}}})}
+    \colorbox{blue!17}{(\Glued{\cdot} \Glued{,} \colorbox{blue!9}{\Gsub{\Glued{B}}{\GSubstExt{\Glued{"id"}}{\Glued{a}}}})}
     }{
-      \colorbox{green!10}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})}
+      \colorbox{green!9}{(\Gsub{\Gsub{\Glued{R}}{\Glued{\gm}}}{\GSubstWeak{1}})}
     } 
   \\
   &\texttt{ s.t.}~\Glued{\rho} \coloneq (\Wrec{\wsig}{\sub{\lkg}{\SubstComp{\gm}{\SubstWeak{1}}}}{b},b^c)~\texttt{ in } \\
   & \Gmodel{
     \Gsub{
       \colorbox{blue!27}{\Gapp{
-        \colorbox{blue!18}{\Gsub{
+        \colorbox{blue!17}{\Gsub{
           \colorbox{blue!9}{\Gapp{
-            \colorbox{blue!0}{\GRecproj{j}{\Gsub{\denotesCC{\lkg}}{\Glued{\gm}}}}
+            \colorbox{blue!1}{\GRecproj{j}{\Gsub{\denotesCC{\lkg}}{\Glued{\gm}}}}
             }}
           }{
             \GSubstExt{\GSubstId}{\Glued{a}}
           }}}}
       }{
         \GSubstExt{\GSubstId}{
-          \colorbox{green!10}{\Glam{\Glued{\rho}}}
+          \colorbox{green!9}{\Glam{\Glued{\rho}}}
           }
       }
     }(\epsilon)(\star) \\
@@ -376,10 +376,10 @@ The semantic interpretations above are defined together with the following induc
   "Inductive"~\CWmodel &: (\Glued{\wsig} \in \GWSig{i}{\denotesCC{\cdot}}{N}) \to \setc{t}{\goodTerm{\cdot}{t}{\El{\wcode{\wsig}}}} \to \Set{i + 1} \quad "where" \\
     \CWsup &: j < N \to \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\
     & \to \Glued{b} \in (\GTm{
-      \colorbox{blue!15}{(\Glued{\cdot} \Glued{,} 
-      \colorbox{blue!5}{\Gsub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}} )} 
+      \colorbox{blue!17}{(\Glued{\cdot} \Glued{,} 
+      \colorbox{blue!9}{\Gsub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\SubstExt{\GSubstId}{\Glued{a}}}} )} 
       }{
-        \colorbox{green!10}{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}
+        \colorbox{green!9}{\Gsub{\GEl{\Gwcode{\Glued{\wsig}}}}{\GSubstWeak{1}}}
         }) \\
     & \to \CWmodel~\Glued{\wsig}~\Wsup{j}{\wsig}{a}{b}
 \end{align*}
@@ -391,12 +391,12 @@ and its eliminator $\CWrec$
     \Bigg( j < N \to  \Glued{a} \in \GTm{\Glued{\cdot}}{\Gwsigproj{j}{1}{\Glued{\wsig}}} \\ 
     & \quad \quad \to 
     \setc{b}{\goodTerm{({\cdot} , 
-    \colorbox{blue!10}{\sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}}
+    \colorbox{blue!9}{\sub{\wsigproj{j}{2}{{\wsig}}}{\SubstExt{"id"}{{a}}}}
     ) }{b}{\sub{\El{\wcode{\wsig}}}{\SubstWeak{1}}}} \\ 
     &  \quad \quad \to  
       \left( {\Glued{\gm} \in \GSub{\Glued{\cdot}}{
-        \colorbox{blue!11}{(\Glued{\cdot} \Glued{,} 
-    \colorbox{blue!1}{\sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}} )}}
+        \colorbox{blue!17}{(\Glued{\cdot} \Glued{,} 
+    \colorbox{blue!9}{\sub{\Gwsigproj{j}{2}{\Glued{\wsig}}}{\GSubstExt{\GSubstId}{\Glued{a}}}} )}}
     }\to P~(\sub{b}{ \gm }) \right) \\
     & \quad \quad \to P~(\Wsup{j}{\wsig}{a}{b}) \Bigg) \\
     & \to \goodTerm{\cdot}{t}{\El{\wcode{\wsig}}} \to \CWmodel~\Glued{\wsig}~t \to P~t \\
