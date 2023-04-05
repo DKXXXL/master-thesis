@@ -25,6 +25,7 @@ Moreover, universe levels are explicit in this appendix. Other aspects of the sy
 We still use based path induction
 as the elimination principle for identity types~\cite{program2013homotopy}.
 
+
 %After the syntax, we detail the models and proofs for syntactic translation (that translate away linkages),  consistency and canonicity. 
 
 
@@ -36,7 +37,9 @@ as the elimination principle for identity types~\cite{program2013homotopy}.
 We review the base MLTT fragment of \TT first.
 \input{all-mltt-typing}
 
+
 \noindentparagraph{MLTT as a programming language.}  Conventionally, the operational semantic sketches \emph{the interpreter} of a given formalization of a programming language. However, compared to this traditional setup, a careful reader will notice the absence of operational semantic in our MLTT. It is no doubt that MLTT is a logical system where we can write proofs, but it is unclear if MLTT can really be considered as a programming language.
+
 
 Indeed, for MLTT, we only have syntactic term and their judgemental equality (conversion rules) among them. However, we still can have \emph{an interpreter} about our MLTT in our ambient meta-logic. For a programmer, this is like writting a Haskell meta-circular interpreter~\cite{abelson1996structure} that interprets an abstract syntax tree into Haskell's data structure. For a logician, this is interpreting the syntactic $\goodTerm{\cdot}{t}{\cB}$ to an element $\llbracket {t} \rrbracket \in \{\true, \false \}$. For a formal semanticist, this can be considered as a naive form of denotational semantic. 
 
