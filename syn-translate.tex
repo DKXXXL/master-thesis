@@ -2,7 +2,7 @@ We present a translation from the \TT syntax to the fragment of \TT without
 linkage signatures or linkages.
 The translation echoes how the \Lang plugin is implemented (\cref{sec:coqimpl})
 as a translation to Coq without facilities for family polymorphism.
-%In \Lang, families are compiled to Coq modules; similarly, in this appendix
+%In \Lang, families are compiled to Coq modules; similarly, here
 %we translate linkages in \TT to dependent tuples.
 The translation is type-preserving by construction, as we work in an
 intrinsically typed setting.
@@ -110,9 +110,6 @@ ${\Sigr{\Gamma}{n}{}}$ (of signatures $\denotesT{\goodSig{\Gamma}{t}{n}}$), and 
 $\denotesT{\cP} = \mathscr{P}$ above, we actually have to prove the two substitution laws
 $\sub{(\TyTkg{\lsig})}{\gm}\equiv \TyTkg{\sub{\lsig}{\gm}}$ and $\sub{(\Sigr{\Delta}{n}{})}{\gm}
 \equiv \Sigr{\Gamma}{n}{}$ together. 
-% The details (of all the equational rules) can be found in the appendices written in (pseudo-)Agda form. We encourage the reader to read that (pseudo-)Agda-style proof because it is more friendly to type theorists, easy to do type checking and
-% validate the proof and it is clearer on the mathematical object each
-% translation uses.
 
 
 We have constructed a model for the \TT syntax using
