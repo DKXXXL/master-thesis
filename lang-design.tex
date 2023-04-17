@@ -517,13 +517,17 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
   \end{minted}
 \end{theorem}
 The reason we have this weird looking \ref{prop:detectable-partiality}
-is due to the construction of "linv"---at one point, using "prec" to
+is due to a technical detail of the construction of "linv". 
+
+At one point, using "prec" to
 construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option
-C) → option C}, generally not provable, unless we have
+C) → option C}. This is generally not provable, unless we have
 \mintinline{Coq}{option (Bᵢ a → C)} instead.\YZ{Don't you really mean
 "unless we have the Detectable Partiality assumption instead"?}
 \EDJreply{I am telling a more detailed technical point, i.e., how to use detectable partiality to prove linv.}
-This \ref{prop:detectable-partiality} is exactly transforming the former to
+
+
+This \ref{prop:detectable-partiality} can be used to transform the former to
 the latter:
 recall that, according to the semantic of inductive type,
 \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using
