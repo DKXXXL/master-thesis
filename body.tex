@@ -5,7 +5,7 @@
 \newpage
 \pagenumbering{arabic}
 \setcounter{page}{1}
-\chapter{Family Polymorphism as Coq Plugin}
+
 
 \ifreport
 \thispagestyle{tr-style}
@@ -46,6 +46,18 @@
 \input{metatheory-condensed.tex}
 
 
+\section{Syntax and Semantic Models of \TT}
+\label{sec:complete-fmltt}
+% \input{all-typing-rule.tex} -- we make all-typing rules into metatheory2.tex
+\input{metatheory2.tex}
+
+% \newpage
+
+\subsection{Using \TT's Linkage Transformers to Model a Derived Family}
+\label{sec:lt-in-action}
+\input{stlc-linkTran-typing.tex}
+
+
 \section{Case Studies}
 \label{sec:casestudies}
 \input{casestudies.tex}
@@ -58,36 +70,9 @@
 
 \input{conclusion.tex}
 
-\newpage
 
-\chapter{Technicality of \TT}
 
-\section{Syntax and Semantic Models of \TT}
-\label{sec:complete-fmltt}
-% \input{all-typing-rule.tex} -- we make all-typing rules into metatheory2.tex
-\input{metatheory2.tex}
 
-% \newpage
-
-\section{Using \TT's Linkage Transformers to Model a Derived Family}
-\label{sec:lt-in-action}
-\input{stlc-linkTran-typing.tex}
-
-% \newpage
-
-% \section{Definitive Version of the Formalization and Proofs}
-% \label{sec:agda-files}
-% \input{agda-files.tex}
-
-%\section{Metatheory, in detail}
-%\label{sec:metatheory}
-%\input{metatheory.tex}
-%
-%\section{Example in Metatheory}
-%\label{sec:coqexample}
-%\input{coq-example.tex}
-
-% \fi
 
 % \ifacknowledgments
 % \section*{Acknowledgments}
