@@ -729,10 +729,10 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
 \end{theorem}
 The reason we have this weird looking \ref{prop:detectable-partiality}
 is that the construction of "linv"---at one point, using "prec" to
-construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option
+construct "linv", we need to prove \\ \mintinline{Coq}{∀ a, (Bᵢ a → option
 C) → option C}, generally not provable, unless we have
 \mintinline{Coq}{option (Bᵢ a → C)} as an argument instead.
-This \ref{prop:detectable-partiality} is exactly transforming former to
+To resolve that, the \ref{prop:detectable-partiality} can help to transform the former to
 the latter:
 recall that, according to the semantic of inductive type,
 \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using

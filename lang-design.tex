@@ -520,14 +520,11 @@ The reason we have this weird looking \ref{prop:detectable-partiality}
 is due to a technical detail of the construction of "linv". 
 
 At one point, using "prec" to
-construct "linv", we need to prove \mintinline{Coq}{∀ a, (Bᵢ a → option
-C) → option C}. This is generally not provable, unless we have
+construct "linv", we need to prove \\ \mintinline{Coq}{∀ a, (Bᵢ a → option
+C) → option C}. This is generally not provable, unless we have \\
 \mintinline{Coq}{option (Bᵢ a → C)} instead.\YZ{Don't you really mean
 "unless we have the Detectable Partiality assumption instead"?}
-\EDJreply{I am telling a more detailed technical point, i.e., how to use detectable partiality to prove linv.}
-
-
-This \ref{prop:detectable-partiality} can be used to transform the former to
+\EDJreply{I am telling a more detailed technical point, i.e., how to use detectable partiality to prove linv.} To resolve that, the \ref{prop:detectable-partiality} can be used to transform the former to
 the latter:
 recall that, according to the semantic of inductive type,
 \mintinline{Coq}{(Bᵢ a → option C)} is actually the result of using
@@ -562,10 +559,9 @@ We can support partial dependent eliminator as well, but partial dependent elimi
   (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) 
     -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
 \end{minted}
-To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017} and dependent eliminator is unavoidable. 
+To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}.
 
 
-\noindent
 As expected, "tm_prect_STLC" is axiomatized along with
 four equalities describing its computational behaviors, one for each constructor.
 For instance, the equality for constructor "tm_abs" is as follows:
