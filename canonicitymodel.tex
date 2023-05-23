@@ -75,7 +75,8 @@ dependent tuples in the ambient meta\-logic to model dependent functions and tup
 % We will omit the treatment of the universe and the verification of most equality for simplicity (and the treatment of the universe will not affect our model). Interested audience can refer to \citet{kaposi2019gluing, coquand2018canonicity,sterling2019algebraic} for a complete technical treatements.
 
 \begin{align*}
-  \denotesC{\goodCtx{\Gm}{k}} \text{ is a function }&: \setc{\gm}{\goodSub{\cdot}{\gm}{\Gm}} \to \Set{k} \quad \text{ (i.e., sets indexed by closed substitution)}\\
+  \denotesC{\goodCtx{\Gm}{k}} \text{ is a function }&: \setc{\gm}{\goodSub{\cdot}{\gm}{\Gm}} \to \Set{k} \quad \\
+   & \text{ (i.e., sets indexed by closed substitution)}\\
   % &\text{and we define } \goodCtxS{\Gm}{i} :\iff \denotesC{\goodCtx{\Gm}{i}} \text{ is defined} \\
   \denotesC{\goodType{\Gm}{T}{j}} \text{ is a dependent function }&: \prod_{\goodSub{\cdot}{\gm}{\Gm}}\prod_{\gm' \in \denotesC{\goodCtx{\Gm}{}}(\gm)}\setc{t}{\goodTerm{\cdot}{t}{\sub{T}{\gm}}}\to\Set{j} \\
   % &\text{and we define } \goodTypeS{\Gm}{T}{i} : \iff \denotesC{\goodType{\Gm}{T}{i}} \text{ is defined } \\ 
@@ -100,7 +101,7 @@ dependent tuples in the ambient meta\-logic to model dependent functions and tup
   \denotesC{\goodType{\Gm}{\TyPi{A}{B}}{}}(\gm)(\gm')(t) &= \prod_{\goodTerm{\cdot}{u}{\sub{A}{\gm}}} \ \ \prod_{u' \in \denotesC{A}(\gm)(\gm')(u)} \denotesC{B}(\SubstExt{\gm}{u})((\gm', u'))(\sub{\app{t}}{\SubstExt{"id"}{u}})\\
   \denotesC{\goodType{\Gm}{\TySigma{A}{B}}{}}(\gm)(\gm')(t) &= \sum_{u' \in \denotesC{A}(\gm)(\gm')(\fst{t})} \denotesC{B}(\SubstExt{\gm}{\fst{t}})((\gm', u'))(\snd{t}) \\
   \denotesC{\goodCtx{\cdot}{}}(\gm) &= \{\star\}  \\ 
-  \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \setc{ (\gamma' , t') }{ \gm' \in \denotesC{\goodCtx{\Gm}{}}(\pi_1 \gm_t), t' \in \denotesC{\goodType{\cdot}{\sub{T}{\gm}}{}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  } \\
+  \denotesC{\goodCtx{\Gm, T}{}}(\gm_t) &= \setc{ (\gamma' , t') }{ \gm' \in \denotesC{{\Gm}}(\pi_1 \gm_t), t' \in \denotesC{{\sub{T}{\gm}}}(\pi_1 \gm_t)(\gm')(\pi_2 \gm_t)  } \\
   \denotesC{\goodSub{\Gm}{\pi_1 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[0] \quad \text{ get the first element of the tuple} \\
   \denotesC{\goodTerm{\Gm}{\pi_2 \delta}{\Dl}}(\gm)(\gm') &= \denotesC{\delta}(\gm)(\gm')[1] \quad \text{ get the second element of the tuple} \\
   \denotesC{\goodSub{\Gm}{\SubstExt{\delta}{t}}{\Dl}}(\gm)(\gm') &= (\denotesC{\delta}(\gm)(\gm'),\denotesC{t}(\gm)(\gm')) \\ 

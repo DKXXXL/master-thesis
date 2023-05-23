@@ -78,7 +78,8 @@ With the above two helpers, we can define denotation $\denotesT{}$:
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= () \quad \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{0}} \\
   \denotesT{\goodTerm{\Gamma}{\Tkg {m}}{\TyTkg {\sigma}}} &= 
   (\denotesT{\Tkg {o}}, t[(\SubstExt{p^1}{f})][(\SubstExt{"id"}{\denotesT{\Tkg {o}}})]) \\
-  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \text{ where } o = \lsigproj{1}{m}, t = \app{\snd{\denotesT{m}}}, f = \lsigproj{s}{\lsig}
+  & \text{given } \denotesT{\goodSig{\Gamma}{\sigma}{n+1}}, \\ 
+  & \text{ where } o = \lsigproj{1}{m}, t = \app{\snd{\denotesT{m}}}, f = \lsigproj{s}{\lsig}
 \end{align*}
 % \begin{align*}
 %   \denotesT{\goodInh{\Gamma}{\_}{\sigma_1}{\sigma_2}} &= \goodTerm{\Gamma, \TyLkg{\sigma_1}}{\_}{\TyLkg{\sigma_2[p^1]}} \\ \text{ and thus } \denotesT{\goodInh{\Gamma}{h}{\sigma_1}{\sigma_2}} &\iff  \goodTerm{\Gamma, \TyLkg{\sigma_1}}{h}{\TyLkg{\sigma_2[p^1]}} \\

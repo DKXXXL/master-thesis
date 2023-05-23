@@ -188,13 +188,13 @@ and $T_{\texttt{id}}$ a type encoding~\lsti{id}:
 \begin{align*}
 \small
 \begin{tabular}{@{}llll@{}}
-\lsti!tm_unit : tm!
+\lsti!unit : tm!
 &
-\lsti!tm_var : id -> tm!
+\lsti!var : id -> tm!
 &
-\lsti!tm_abs : id -> tm -> tm!
+\lsti!abs : id -> tm -> tm!
 &
-\lsti!tm_app : tm -> tm -> tm!
+\lsti!app : tm -> tm -> tm!
 \smallskip\\
 $\wsig_{\texttt{tm}}^0 \coloneq \WSigAdd{\WSigEmp}{\bbone}{\lambda \_ . \bbzero}$ 
 & $\wsig_{\texttt{tm}}^1 \coloneq \WSigAdd{\wsig_{\texttt{tm}}^0}{T_{\texttt{id}}}{\lambda \_ . \bbzero}$

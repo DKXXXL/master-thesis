@@ -6,7 +6,7 @@
 \definecolor{new}{HTML}{FFFFFF}
 
 \begin{gather*}
-\begin{array}{@{}r@{\hspace{2ex}}c@{\ \ }c@{\ \ }l@{}}
+\begin{array}{@{\hspace{-2pt}}r@{\hspace{2ex}}c@{\ \ }c@{\ \ }l@{}}
 \text{Types} & A, B, T  &\Coloneqq &
     ... \mid
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New2}(0.05,-0.15)(-0.10,0.30)
@@ -40,7 +40,8 @@
     \\
 \tikzmarkin[disable rounded corners=true,set fill color=new,set border color=new]{New4}(0.05,-0.15)(-0.10,0.30)
 \text{Linkage transformers} & h & \Coloneqq &
-    \InhId \mid \InhExt{h}{\mathit{self}.t} \mid \InhOv{h}{\mathit{self}.t} \mid \InhInh{h} \mid \InhNest{h}{h'}
+    \InhId \mid \InhExt{h}{\mathit{self}.t} \mid \InhOv{h}{\mathit{self}.t} \mid \InhInh{h} \\
+    &&& \mid \InhNest{h}{h'}
 \tikzmarkend{New4}
 \end{array}
 \end{gather*}

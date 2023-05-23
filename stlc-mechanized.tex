@@ -1,4 +1,5 @@
 \begin{figure}
+\vspace{-10pt}
 \begin{minipage}{\textwidth}
 \begin{multicols}{2}
 
@@ -70,7 +71,8 @@ Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End substlem.[@\tanc{STLC-fstcol-end}\columnbreak@]
 FInduction preserve on hasty[@\hfill\codecomment{Preserv.\ theorem}@][@\tanc{STLC-sndcol-start}@]
   motive \lambda G t T (_ : hasty G t T),
-  G = empty -> \forall t', step t t' -> hasty empty t' T.
+  G = empty -> \forall t', step t t' -> 
+  hasty empty t' T.
 Case ht_unit. [@\dadada@] Qed.[@\hfill@]Case ht_var. [@\dadada@] Qed.
 Case ht_abs.  [@\dadada@] Qed.[@\hfill@]Case ht_app. [@\dadada@] Qed.
 End preserve.
@@ -102,14 +104,14 @@ Family STLCFix extends STLC.[@\tanc{STLCFix-start}@]
 [@\hfill\codecomment{STLC extended with fixpoints}@]
 FInductive tm : Set +=
 | tm_fix : id -> tm -> tm.
-
-FRecursion subst on tm motive \lambda _, id -> tm -> tm.
+FRecursion subst on tm 
+      motive (\lambda _, id -> tm -> tm).
 Case tm_fix := \lambda y t' IHt' x t, [@\dadada@].
 End subst.
 
 FInductive hasty : env -> tm -> ty -> Prop +=
-| ht_fix : \forall G x t T, hasty (extend G x T) t T ->
-  hasty G (tm_fix x t) T.
+| ht_fix : \forall G x t T, hasty (extend G x T) t T 
+-> hasty G (tm_fix x t) T.
 
 FInductive step : tm -> tm -> Prop +=
 | st_fix : \forall x t,

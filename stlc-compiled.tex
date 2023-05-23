@@ -64,10 +64,10 @@ Def env : Type := id -> option self.ty.
 [@\outdent@]Module STLC.[@\innersep@]
 [@\codecomment{Instantiate \texttt{tm} \& its constructors}@][@\tanc{c-STLC-d-tm-start}@]
 Inductive tm : Set :=
-| tm_unit : tm | tm_var : id -> tm
-| tm_abs : id -> tm -> tm | tm_app : tm -> tm -> tm.
-[@\codecomment{Instantiate \texttt{tm} partial recursor \& its computational behaviors}@]
-Def tm_prect_STLC := \lambda P, tm_rect (\lambda[@\,@]t, option (P t)).
+| tm_unit | tm_var (v : id) [@\dadada@]
+[@\codecomment{Inst. partial recursor \& computational behaviors}@]
+Def tm_prect_STLC P := 
+      tm_rect (\lambda[@\,@]t, option (P t)).
 Fact [@\textls[-0]{tm\_unit\_eq\_STLC}@] : [@\dadada@]. reflexivity. Qed.
 Fact [@\dadada@][@\tanc{c-STLC-d-tm-end}@][@\innersep@]
 Include STLC\_subst\_Cases.[@\tanc{c-STLC-d-subst-start}@]
