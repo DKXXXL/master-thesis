@@ -121,7 +121,7 @@ dependent tuples in the ambient meta\-logic to model dependent functions and tup
   % \denotesC{\goodTerm{\Gm}{\ifb{c}{a}{b}}{T}}(\gm)(\gm') &= \denotesC{b}(\gm)(\gm') \quad \text{ if } \denotes{c}(\gm)(\gm') = \star^2 \\
   \denotesC{\goodTerm{\Gm}{\eqrefl{t}}{\TyId{t}{t}}}(\gm)(\gm') &= \star\\
   \denotesC{\goodTerm{\Gm}{\Jeq{w}{t}}{\sub{C}{\SubstExt{\SubstExt{id}{v}}{t} }}}(\gm)(\gm') &= \denotesC{w}(\gm)(\gm') \quad \quad \text{ given } \goodTerm{\Gm}{t}{\TyId{u}{v}} \\ 
-  & \text{Since $\denotesC{t}(\gm)(\gm')$ witnesses } \sub{t}{\gm} \equiv \eqrefl{\sub{u}{\gm}} \text{ and } \sub{u}{\gm} \equiv \sub{v}{\gm} \\
+   \text{Since $\denotesC{t}(\gm)(\gm')$ witnesses } &\sub{t}{\gm} \equiv \eqrefl{\sub{u}{\gm}} \text{ and } \sub{u}{\gm} \equiv \sub{v}{\gm} \\
   \denotesC{\goodTerm{\Gm}{\lam{t}}{\TyPi{A}{B}}}(\gm)(\gm') &= \lambda u \lambda u' . \denotesC{t}(\SubstExt{\gm}{u}) (\gm' , u') \\
   \denotesC{\goodTerm{\Gm}{\app{t}}{B}}(\gm)(\gm') &= \denotesC{t}(\pi_1 \gm)(\gm'[0])(\pi_2 \gm)(\gm'[1]) \\
   \denotesC{\goodTerm{\Gm}{\pair{a}{b}}{\TySigma{A}{B}}}(\gm)(\gm') &= (\denotesC{a}(\gm)(\gm') , \denotesC{b}(\gm)(\gm') )\\
