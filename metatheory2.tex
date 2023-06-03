@@ -38,7 +38,7 @@ We review the base MLTT fragment of \TT first.
 \input{all-mltt-typing}
 
 
-\noindentparagraph{MLTT as a programming language.}  Conventionally, the operational semantic sketches \emph{the interpreter} of a given formalization of a programming language. However, compared to this traditional setup, a careful reader will notice the absence of operational semantic in our MLTT. It is no doubt that MLTT is a logical system where we can write proofs, but it is unclear if MLTT can really be considered as a programming language.
+\noindentparagraph{MLTT as a programming language.}  Conventionally, the operational semantics sketches \emph{the interpreter} of a given formalization of a programming language. However, compared to this traditional setup, a careful reader will notice the absence of operational semantics in our MLTT. It is no doubt that MLTT is a logical system where we can write proofs, but it is unclear if MLTT can really be considered as a programming language.
 
 
 Indeed, for MLTT, we only have syntactic term and their judgemental equality (conversion rules) among them. However, we still can have \emph{an interpreter} about our MLTT in our ambient meta-logic. For a programmer, this is like writting a Haskell meta-circular interpreter~\cite{abelson1996structure} that interprets an abstract syntax tree into Haskell's data structure. For a logician, this is interpreting the syntactic $\goodTerm{\cdot}{t}{\cB}$ to an element $\llbracket {t} \rrbracket \in \{\true, \false \}$. For a formal semanticist, this can be considered as a naive form of denotational semantic. 
@@ -63,7 +63,7 @@ of MLTT is given.
 Once it is clear that the syntax of our MLTT as a logic system is a quotiented 
 data, then it is natural to consider model of this logic system 
 as a function mapping from those quotiented data (syntax). The (semantic) model introduced below 
-will follow this idea. More specifically, the semantic model as a function will have to respects 
+will follow this idea. More specifically, the semantic model as a function will have to respect 
 judgemental equalities to be a well-defined function from quotiented data. In other words,
 for two judgementally equal syntax pieces, the model needs to map them into the same data.  
 

@@ -469,7 +469,7 @@ tm_app_eq_STLC  : tmPR (tm_app a b) = [@$r_4$@] a (tmPR a) b (tmPR b)
 \end{minipage}
 \end{centered}
 
-These four equations uniquely describe the "tm_prect_STLC" on the four constructors and thus "tm_prect_STLC" cannot be a trivial function. This partial recursor also corresponds to the dependent eliminator for the non-extensible version of "tm".
+"tm_prect_STLC" cannot be a trivial function even though its return type has "option". Because these four equations uniquely describe the "tm_prect_STLC" on the four constructors and make "tm_prect_STLC" behave similar to the ordinary dependent eliminator of the non-extensible version of "tm". 
 
 \noindentparagraph{Property about Partial Recursors.}
 
@@ -629,7 +629,7 @@ these constructors because of the embedding. In other words, \textit{a
 type (at least) supports these constructors if and only if this type
 supports the corresponding partial recursor (with the computational
 axioms)}.  Thus, we can argue that the partial recursor gives a sound and
-complete extensional characterization of all the extension of a given (non-indexed)
+complete extensional characterization of all the extensions of a given (non-indexed)
 inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also have a formalization of this proof now, for indexed type and dependent eliminator. Though the formalization is about single constructor.}
 
 We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
