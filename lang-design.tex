@@ -632,7 +632,7 @@ axioms)}.  Thus, we can argue that the partial recursor gives a sound and
 complete extensional characterization of all the extensions of a given (non-indexed)
 inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also have a formalization of this proof now, for indexed type and dependent eliminator. Though the formalization is about single constructor.}
 
-We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to construct this left inverse for (non-indexed) inductive type. 
+We can support a partial dependent eliminator as well. Though the partial dependent eliminator can deduce "prec", our "prec" is enough to construct this left inverse for (non-indexed) inductive type. 
 \begin{minted}{Coq}
   pdelim : ∀ (P : D → Set), .., 
   (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x → D), (∀ (b : Bᵢ x), option (P (w b))) 
