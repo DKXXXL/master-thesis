@@ -145,7 +145,7 @@ The programmer can use tactic programming to discharge the goal.
 %The idiomatic programming experience with Coq is largely preserved.
 Because the lemma is by \lsti!FInduction! on "hasty" and because "STLCFix" adds
 a constructor "ht_fix" to "hasty", the programmer is required in family "STLCFix" to
-extend the proof of "substlem" to handle this extra case.
+extend the proof of "weakenlem" to handle this extra case.
 
 
 \subsection{Late Binding and Equalities}
@@ -449,7 +449,8 @@ However,
 a key observation is that extensible inductive types still admit a
 weakened elimination principle where the motive is an \lsti{option} type.
 For example, within family "STLC", the partial recursor for
-"tm" has the following type:
+"tm" has the following type, with extra equations describing
+its behvaiour on each constuctors:
 
 \begin{centered}
 \begin{minipage}{\textwidth}
@@ -458,20 +459,30 @@ For example, within family "STLC", the partial recursor for
 tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]option (P tm_unit)[@\tikzmarkend{tm-partialrec-case-unit}@] -> [@\hlcase{tm-partialrec-case-var}@](\forall x, option (P (tm_var x)))[@\tikzmarkend{tm-partialrec-case-var}@] ->
   [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
   [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] -> \forall t, option (P t)
+(* For arbitrary [@P@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@], and we denote tmPR := tm_prect_STLC [@P@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@] *)
+(* We will have following equations *)
+tm_prect_STLC_unit : tmPR tm_unit      = [@$r_1$@]
+tm_prect_STLC_var  : tmPR (tm_var x)   = [@$r_2$@] x
+tm_prect_STLC_abs  : tmPR (tm_abs x b) = [@$r_3$@] a b (tmPR b)
+tm_prect_STLC_app  : tmPR (tm_app a b) = [@$r_4$@] a (tmPR a) b (tmPR b)
 \end{lstlisting}
 \end{minipage}
 \end{centered}
 
+This corresponds to the dependent eliminator for the non-extensible version of "tm".
 
 \noindentparagraph{Property about Partial Recursors.}
 
-Partial recursor is simply adding partiality into the signature of the eliminator, by wrapping each motive with "option". This partial recursor seems non-canonical compared to the (dependent) eliminator for Inductive type as the latter can be considered as universal property. This extensionality makes dependent eliminator one of \textit{the most powerful} reasoning tools around inductive type. 
+A partial recursor is simply adding partiality into the signature of the ordinary eliminator---by wrapping each motive with "option"---together 
+with the equations describing its computational behaviors inherited from the ordinary eliminators.
+
+This partial recursor seems non-canonical compared to the (dependent) eliminator for Inductive type as the latter can be considered as universal property. This extensionality makes dependent eliminator one of \textit{the most powerful} reasoning tools around inductive type. 
 
 
 Even though we cannot prove partial recursors are \textit{the
 most powerful} reasoning tool for extensible inductive types,
 the fact that propositional partial
-recursors can derive injectivity alreadt demonstrate itself as a good \textit{extensional characterization} of
+recursors can derive injectivity already demonstrate itself as a good \textit{extensional characterization} of
 (non-indexed) extensible inductive type (under certain
 constraints)---because we can ``embed'' vanilla inductive types into
 types supporting a partial recursor: a bit more formally, and
