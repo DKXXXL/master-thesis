@@ -461,15 +461,15 @@ tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]op
   [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] -> \forall t, option (P t)
 (* For arbitrary [@$P$@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@], and we denote [@"tmPR"@] := [@"tm_prect_STLC"@] [@$P$@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@] *)
 (* We will have following equations *)
-tm_prect_STLC_unit : tmPR tm_unit      = [@$r_1$@]
-tm_prect_STLC_var  : tmPR (tm_var x)   = [@$r_2$@] x
-tm_prect_STLC_abs  : tmPR (tm_abs x b) = [@$r_3$@] a b (tmPR b)
-tm_prect_STLC_app  : tmPR (tm_app a b) = [@$r_4$@] a (tmPR a) b (tmPR b)
+tm_unit_eq_STLC : tmPR tm_unit      = [@$r_1$@]
+tm_var_eq_STLC  : tmPR (tm_var x)   = [@$r_2$@] x
+tm_abs_eq_STLC  : tmPR (tm_abs x b) = [@$r_3$@] a b (tmPR b)
+tm_app_eq_STLC  : tmPR (tm_app a b) = [@$r_4$@] a (tmPR a) b (tmPR b)
 \end{lstlisting}
 \end{minipage}
 \end{centered}
 
-This corresponds to the dependent eliminator for the non-extensible version of "tm".
+These four equations uniquely describe the "tm_prect_STLC" on the four constructors and thus "tm_prect_STLC" cannot be a trivial function. This partial recursor also corresponds to the dependent eliminator for the non-extensible version of "tm".
 
 \noindentparagraph{Property about Partial Recursors.}
 
@@ -495,41 +495,41 @@ restricting our focus to non-indexed inductive types:
     \item \textlabel{(Detectable Partiality)}{prop:detectable-partiality} for each pair $x : A_i \vdash B_i(x)$,
     \begin{minted}{Coq}
       Axiom detectable:
-      forall {T} {a} (f: Bᵢ a -> option T),
+      forall {T} {a} (f: Bᵢ a → option T),
         {forall x, f x <> None} + {exists x, f x = None}.
     \end{minted} 
     \item Define $"C"$ as the inductive type using this list, i.e.,
     \begin{minted}{Coq}
-Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x -> C) -> C | ...
+Inductive C : Set := ... | cᵢ : forall (x : Aᵢ), (Bᵢ x → C) → C | ...
     \end{minted}
     \item Assume an arbitrary type \mintinline{Coq}{D : Set} with
     \begin{itemize}
-      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x -> D) -> D}  
+      \item $n$ \textbf{functions} \mintinline{Coq}{dᵢ : forall (x : Aᵢ), (Bᵢ x → D) → D}  
       \item a partial recursor
       \begin{minted}[escapeinside=@@]{Coq}
 prec : forall (R : Set), ..,
-  (rᵢ : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)), ..,@\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}\YZreply{Is this constraint Detectable Partiality?}@
-      D -> option R
+  (rᵢ : (forall (x : Aᵢ), (Bᵢ x → option R) → option R)), ..,@\YZ{Can R be indexed?}\EDJreply{This part actually currently incorrect and needs an extra constraint. Let me fix other parts first}\YZreply{Is this constraint Detectable Partiality?}@
+      D → option R
       \end{minted}
       \item and $n$ (propositional) computational axioms: for all $i$, 
       \begin{minted}{Coq}
 prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ) 
-    = rᵢ aᵢ (fun x => prec {R} r₁ r₂ .. rₙ (bᵢ x))
+    = rᵢ aᵢ (fun x ⇒ prec {R} r₁ r₂ .. rₙ (bᵢ x))
       \end{minted}
     % where \mintinline{Coq}{(lift rᵢ) : (forall (x : Aᵢ), (Bᵢ x -> option R) -> option R)} is defined as expected
     \end{itemize}
   \end{itemize}
   Then there exists an \textbf{embedding} from "C" to "D".
-  More concretely, we can have \mintinline{Coq}{inj : C -> D} and 
-  \mintinline{Coq}{linv : D -> option C} defined using the eliminator of\/
+  More concretely, we can have \mintinline{Coq}{inj : C → D} and 
+  \mintinline{Coq}{linv : D → option C} defined using the eliminator of\/
   "C" and "prec" of\/ "D" (both acting like identity) such that
   \begin{minted}[escapeinside=@@]{Coq}
     forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
   \end{minted}
 \end{theorem}
 \begin{proof} 
-First, for a fixed \mintinline{Coq}{x : Aᵢ}, given \mintinline{Coq}{fᵢ :  Bᵢ x -> T},
-\\ we have \mintinline{Coq}{lift fᵢ : Bᵢ x -> option T}, simply wrapping option around the returning result.
+First, for a fixed \mintinline{Coq}{x : Aᵢ}, given \mintinline{Coq}{fᵢ :  Bᵢ x → T},
+\\ we have \mintinline{Coq}{lift fᵢ : Bᵢ x → option T}, simply wrapping option around the returning result.
   
 Second, with \ref{prop:detectable-partiality} we can construct
 \begin{minted}{Coq}
@@ -539,7 +539,7 @@ Definition unlift:
     {g : (forall c: B a, T) | f = lift g}.
   
 Theorem detect_lifted:
-  forall {a} {T : B a -> Type} (f: (forall c: B a, option (T c))),
+  forall {a} {T : Set} (f: (forall c: B a, option T)),
     { g | f = lift g} + {exists x, f x = None}.
 \end{minted}
 The idea of "unlift" is that if "f" never returns "None", then it is always a result of a "lift". "detect_lifted" is just another way of saying  \ref{prop:detectable-partiality}.
@@ -547,20 +547,20 @@ The idea of "unlift" is that if "f" never returns "None", then it is always a re
   
 Then we can construct "inj" and "linv" as follows, using eliminator and partial recursor.
 \begin{minted}{Coq}
-Definition inj : C -> D :=
+Definition inj : C → D :=
   C_rect (fun (_ : C) ⇒ D) 
     ...
-    (fun (xᵢ : Aᵢ) (_ : Bᵢ x -> Cᵢ) (Xᵢ : Bᵢ x -> D) ⇒ dᵢ xᵢ Xᵢ)
+    (fun (xᵢ : Aᵢ) (_ : Bᵢ x → Cᵢ) (Xᵢ : Bᵢ x → D) ⇒ dᵢ xᵢ Xᵢ)
     ... .
 
-Definition linv : D -> option C :=
+Definition linv : D → option C :=
   prec C 
     ...
     (fun (aᵢ : Aᵢ) (bᵢ' : Bᵢ aᵢ → option C) ⇒
        match (detectable bᵢ') with
-       | left h =>
+       | left h ⇒
            let (bᵢ, _) := unlift bᵢ' h in Some (cᵢ aᵢ bᵢ)
-       | right _ => None
+       | right _ ⇒ None
        end)
     ... .
 \end{minted}
@@ -572,16 +572,16 @@ The definition of "inj" and "linv" is well-formed but their behaviour is still b
 (* inj_compute can be proved thanks to 
     the computational behaviour about C_rect built-in Coq *)
 Lemma inj_compute  : forall a b,
-  inj (cᵢ a b)  = dᵢ a (fun x => inj (b x)).
+  inj (cᵢ a b)  = dᵢ a (fun x ⇒ inj (b x)).
 
 (* linv_compute can be proved thanks to 
     the n (propositional) computational axioms about prec *)
 Lemma linv_compute : forall a b,
   linv (dᵢ a b) = 
-    let b' := fun x => linv (b x) in 
+    let b' := fun x ⇒ linv (b x) in 
     match detect_lifted b' with
-    | inleft (exist _ x _) => Some (cᵢ a x)
-    | inright _ => None
+    | inleft (exist _ x _) ⇒ Some (cᵢ a x)
+    | inright _ ⇒ None
     end.
 \end{minted}
 
@@ -590,7 +590,7 @@ Finally,  these two equations is enough to prove that "linv" is really a left in
 linv (inj (cᵢ a b)) 
 = linv (dᵢ a (fun x ⇒ inj (b x)))         (* by inj_compute *)
 = Some (cᵢ a (fun x ⇒ linv (inj (b x))))  (* by linv_compute *)
-= Some (cᵢ a (fun x => b x))              (* by I.H. *)
+= Some (cᵢ a (fun x ⇒ b x))              (* by I.H. *)
 = Some (cᵢ a b)                           (* by eta rule *)
 \end{minted}
 \end{proof}
@@ -634,16 +634,16 @@ inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also ha
 
 We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
 \begin{minted}{Coq}
-  pdelim : ∀ (P : D -> Set), .., 
-  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x -> D), (∀ (b : Bᵢ x), option (P (w b))) 
-    -> option (P (dᵢ x w)))),  .., ∀ (d : D) -> option (P d)
+  pdelim : ∀ (P : D → Set), .., 
+  (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x → D), (∀ (b : Bᵢ x), option (P (w b))) 
+    → option (P (dᵢ x w)))),  .., ∀ (d : D) → option (P d)
 \end{minted}
-To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. We have mechanized the argument for indexed inductive type and dependent eliminator, but for the case we only have one constructor in "C" and "D". This mechanization is a direct generalization of the proof given in 
+To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. We have mechanized the argument for indexed W type and dependent eliminator, but for the case with only one constructor in "C" and "D". This mechanization\footnote{\url{https://gist.github.com/DKXXXL/9b4e48350b966fa3739cfb71f1a9a852}} is a direct generalization of the proof for \cref{thm:prec-complete}.
 
 
-As expected, "tm_prect_STLC" is axiomatized along with
+As mentioned, "tm_prect_STLC" is axiomatized along with
 four equalities describing its computational behaviors, one for each constructor.
-For instance, the equality for constructor "tm_abs" is as follows:
+After unfold the definition of "tmPR", the equality for constructor "tm_abs" is as follows:
 
 \begin{centered}
 \begin{minipage}{\textwidth}
