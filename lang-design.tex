@@ -450,7 +450,7 @@ a key observation is that extensible inductive types still admit a
 weakened elimination principle where the motive is an \lsti{option} type.
 For example, within family "STLC", the partial recursor for
 "tm" has the following type, with extra equations describing
-its behvaiour on each constuctors:
+its behavior on each constuctor:
 
 \begin{centered}
 \begin{minipage}{\textwidth}
@@ -460,7 +460,7 @@ tm_prect_STLC : \forall (P : tm -> Type), [@\hlcase{tm-partialrec-case-unit}@]op
   [@\hlcase{tm-partialrec-case-abs}@](\forall x t, option (P t) -> option (P (tm_abs x t)))[@\tikzmarkend{tm-partialrec-case-abs}@] ->
   [@\hlcase{tm-partialrec-case-app}@](\forall t1, option (P t1) -> \forall t2, option (P t2) -> option (P (tm_app t1 t2)))[@\tikzmarkend{tm-partialrec-case-app}@] -> \forall t, option (P t)
 (* For arbitrary [@$P$@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@], and we denote [@"tmPR"@] := [@"tm_prect_STLC"@] [@$P$@] [@$r_1$@] [@$r_2$@] [@$r_3$@] [@$r_4$@] *)
-(* We will have following equations *)
+(* We will have the following equations *)
 tm_unit_eq_STLC : tmPR tm_unit      = [@$r_1$@]
 tm_var_eq_STLC  : tmPR (tm_var x)   = [@$r_2$@] x
 tm_abs_eq_STLC  : tmPR (tm_abs x b) = [@$r_3$@] a b (tmPR b)
@@ -469,14 +469,14 @@ tm_app_eq_STLC  : tmPR (tm_app a b) = [@$r_4$@] a (tmPR a) b (tmPR b)
 \end{minipage}
 \end{centered}
 
-"tm_prect_STLC" cannot be a trivial function even though its return type has "option". Because these four equations uniquely describe the "tm_prect_STLC" on the four constructors and make "tm_prect_STLC" behave similar to the ordinary dependent eliminator of the non-extensible version of "tm". 
+"tm_prect_STLC" cannot be a trivial function even though its return type has "option". Because these four equations uniquely describe the "tm_prect_STLC" on the four constructors and make "tm_prect_STLC" behave similarly to the ordinary dependent eliminator of the non-extensible version of "tm". 
 
 \noindentparagraph{Property about Partial Recursors.}
 
 A partial recursor is simply adding partiality into the signature of the ordinary eliminator---by wrapping each motive with "option"---together 
 with the equations describing its computational behaviors inherited from the ordinary eliminators.
 
-This partial recursor seems non-canonical compared to the (dependent) eliminator for Inductive type as the latter can be considered as universal property. This extensionality makes dependent eliminator one of \textit{the most powerful} reasoning tools around inductive type. 
+This partial recursor seems non-canonical compared to the (dependent) eliminator for inductive types as the latter can be considered a universal property. This extensionality makes dependent eliminator one of \textit{the most powerful} reasoning tools around inductive type. 
 
 
 Even though we cannot prove partial recursors are \textit{the
@@ -485,7 +485,7 @@ the fact that propositional partial
 recursors can derive injectivity already demonstrate itself as a good \textit{extensional characterization} of
 (non-indexed) extensible inductive type (under certain
 constraints)---because we can ``embed'' vanilla inductive types into
-types supporting a partial recursor: a bit more formally, and
+types supporting a partial recursor: a bit more formally speaking, and
 restricting our focus to non-indexed inductive types:
 
 \begin{theorem}\label{thm:prec-complete} Given a list of $n$ pairs of types $\{ x : "A"_i \vdash "B"_i(x) \}_{i}$ s.t.
@@ -524,7 +524,7 @@ prec {R} r₁ r₂ .. rₙ (dᵢ aᵢ bᵢ)
   \mintinline{Coq}{linv : D → option C} defined using the eliminator of\/
   "C" and "prec" of\/ "D" (both acting like identity) such that
   \begin{minted}[escapeinside=@@]{Coq}
-    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correpsond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
+    forall c : C, linv (inj c) = some c@\YZ{Does 'linv' correspond to 'reflect' above? If so, then the reader should be explicitly reminded of this fact rather than having to guess it.}\EDJreply{Added below. I mentioned left inverse 'linv' is the generalization}@
   \end{minted}
 \end{theorem}
 \begin{proof} 
@@ -564,9 +564,9 @@ Definition linv : D → option C :=
        end)
     ... .
 \end{minted}
-Since each ``constructor'' in "C" and "D" are well-correpsonded, when invoking "C_rect" and "prec", each case is handled similarly, and they only vary along the $\{ "A"_i \vdash "B"_i \}_{i}$ types.
+Since each ``constructor'' in "C" and "D" are well-corresponded, when invoking "C_rect" and "prec", each case is handled similarly, and they only vary along the $\{ "A"_i \vdash "B"_i \}_{i}$ types.
 
-The definition of "inj" and "linv" is well-formed but their behaviour is still burried in the definition. The following two equations can clarify them. 
+The definition of "inj" and "linv" is well-formed but their behavior is still buried in this complicated formulation. The following two equations can clarify them. 
 
 \begin{minted}{Coq}
 (* inj_compute can be proved thanks to 
@@ -585,7 +585,7 @@ Lemma linv_compute : forall a b,
     end.
 \end{minted}
 
-Finally,  these two equations is enough to prove that "linv" is really a left inverse, via induction
+Finally,  these two equations are enough to prove that "linv" is really a left inverse, via induction
 \begin{minted}{Coq}
 linv (inj (cᵢ a b)) 
 = linv (dᵢ a (fun x ⇒ inj (b x)))         (* by inj_compute *)
@@ -616,11 +616,11 @@ linv (inj (cᵢ a b))
 
 \ref{prop:detectable-partiality} is derivable for all the finitary branching inductive type\footnote{By simply enumerating through the finite domain "Bᵢ a"}---that includes all of the examples shown in this paper. 
 
-\ref{prop:detectable-partiality} is not generally supported when using function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". However, in those cases, we still have partial recursor provable and useful---we just cannot see the partial recursor as a strong toolkit anymore.
+\ref{prop:detectable-partiality} is not generally supported when using a function (infinitary branching) in the constructors, for example, the case of using \textit{higher order abstract syntax} to represent functions in "tm". However, in those cases, we still have the partial recursor provable and useful---we just cannot see the partial recursor as a strong toolkit anymore.
 
 
 We emphasize that in \cref{thm:prec-complete}, each function $"d"_i$ can
-actually be considered as a constructor, because they can be reflected
+actually be considered a constructor because they can be reflected
 to real constructors of "C" using the left inverse "linv". Thus, \cref{thm:prec-complete}
 implies that (1) every future extension of the inductive type can
 support this partial recursion (trivially); (2) every type supporting
@@ -632,7 +632,7 @@ axioms)}.  Thus, we can argue that the partial recursor gives a sound and
 complete extensional characterization of all the extensions of a given (non-indexed)
 inductive type.\YZ{What about indexed inductive types?}\EDJreply{Done. I also have a formalization of this proof now, for indexed type and dependent eliminator. Though the formalization is about single constructor.}
 
-We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to contruct this left inverse for (non-indexed) inductive type. 
+We can support partial dependent eliminator as well, but partial dependent eliminator can deduce "prec" and our "prec" is enough to construct this left inverse for (non-indexed) inductive type. 
 \begin{minted}{Coq}
   pdelim : ∀ (P : D → Set), .., 
   (rᵢ : (∀ (x : Aᵢ) (w : Bᵢ x → D), (∀ (b : Bᵢ x), option (P (w b))) 
@@ -641,9 +641,9 @@ We can support partial dependent eliminator as well, but partial dependent elimi
 To generalize to indexed inductive type, we need to base on indexed W type~\cite{martin1982constructive, morris2009indexed,jashug2017}. We have mechanized the argument for indexed W type and dependent eliminator, but for the case with only one constructor in "C" and "D". This mechanization\footnote{\url{https://gist.github.com/DKXXXL/9b4e48350b966fa3739cfb71f1a9a852}} is a direct generalization of the proof for \cref{thm:prec-complete}.
 
 
-As mentioned, "tm_prect_STLC" is axiomatized along with
+As mentioned earlier, "tm_prect_STLC" is axiomatized along with
 four equalities describing its computational behaviors, one for each constructor.
-After unfold the definition of "tmPR", the equality for constructor "tm_abs" is as follows:
+After unfolding the definition of "tmPR", the equality for constructor "tm_abs" is as follows:
 
 \begin{centered}
 \begin{minipage}{\textwidth}
