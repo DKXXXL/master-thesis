@@ -34,7 +34,9 @@ as the elimination principle for identity types~\cite{program2013homotopy}.
 \subsection{MLTT with Explicit Substitutions and Universe Levels}
 \label{sec:mltt-full}
 
-We review the base MLTT fragment of \TT first.
+We review the base MLTT fragment of \TT first. The following rules are the fully expanded version of \cref{fig:mltt-selected}, where each type (except universes) has four kinds of rules: introduction, elimination, computation and uniqueness rules. Computation rules indicate the judgemental equality when elimination rules apply to the introduction form. Uniqueness rules indicate how some terms are possibly uniquely constructed by introduction rules. The substitution rule is in the form of de Bruijn indices.
+
+The first four rules are following the style of \citet{program2013homotopy, pfenning2009lecture}, while the substitution rules are naturally required for any language with first-class functions.
 \input{all-mltt-typing}
 
 
@@ -132,7 +134,12 @@ The notation $i \lcup j$ denotes $\max(i,j)$.
 \label{sec:fmltt-full}
 
 \TT extends the MLTT in \cref{sec:mltt-full} with W-type signatures and W-types,
-linkage signatures and linkages, and linkage transformers.
+linkage signatures and linkages, and linkage transformers. The following rules are the fully expanded version of \cref{fig:fmltt-selected}, where each type has five kinds of rules: introduction, elimination, computation, uniqueness rules and substitution lemma. 
+Computation rules indicate the judgemental equality when elimination rules apply to the introduction form. Uniqueness rules indicates how some terms are possibly uniquely constructed by introduction rules. The substitution rule is in the form of de Bruijn indices.
+
+The first four rules are following the style of \citet{program2013homotopy, pfenning2009lecture}, while the substitution rules are naturally required for any language with first-class functions.
+
+Apart from types, we also lay out the complete version of judgements for signatures and linkage transformers. The signature judgements are also following these four parts---introduction, elimination, computation and uniqueness.
 
 \input{all-fmltt-typing}
 

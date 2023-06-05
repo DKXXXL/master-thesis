@@ -21,7 +21,7 @@ $ t \ \Coloneqq\ () \bnf x \bnf \lambda x.\,t \bnf t_1~t_2 $
 \begin{mathpar}
   \subst{()}{t}{x} \defeq ()
 
-  \subst{y}{t}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ e, & \text{if } x = y \end{cases}
+  \subst{y}{t}{x} \defeq \begin{cases} y, & \text{if } x \neq y \\ t, & \text{if } x = y \end{cases}
 
   \subst{(\lambda y.\,t')}{t}{x} \defeq \begin{cases} \lambda y.\,\subst{t'}{t}{x}, & \text{if } x \neq y \\ \lambda y.\,t', & \text{if } x = y \end{cases}
 
