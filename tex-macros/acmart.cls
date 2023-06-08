@@ -2977,7 +2977,9 @@
       \fancyhead[RE]{\@headfootfont\@shortauthors}%
       \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
       \if@ACM@nonacm\else%
-        \ifreport\else % YZ: remove unwanted footer
+        \ifreport
+        \fancyfoot[C]{\small\thepage} % EDJ : add page number at bottom middle
+        \else % YZ: remove unwanted footer
         \fancyfoot[RO,LE]{\footnotesize \@journalNameShort, Vol. \@acmVolume, No.
         \@acmNumber, Article \@acmArticle.  Publication date: \@acmPubDate.}%
         \fi
