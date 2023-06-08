@@ -2955,10 +2955,10 @@
   \renewcommand{\headrulewidth}{\z@}%
   \renewcommand{\footrulewidth}{\z@}%
   \def\@acmArticlePage{%
-    \ifx\@acmArticle\empty%
-      \if@ACM@printfolios\thepage\fi%
+    \ifx\@acmArticle\empty% % EDJ : remove page from header
+      \if@ACM@printfolios\fi%
     \else%
-      \@acmArticle\if@ACM@printfolios:\thepage\fi%
+      \@acmArticle\if@ACM@printfolios\fi%
     \fi%
   }%
   \if@ACM@journal@bibstrip
