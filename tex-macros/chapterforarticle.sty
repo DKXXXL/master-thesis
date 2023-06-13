@@ -10,7 +10,10 @@
   \addcontentsline{toc}{section}{Chapter~\theChapcounter:~~ #1}    
 }
 \newcommand{\chapterN}[1] 
-{{{\centering\Huge\textbf{\textsc{~#1}}}   
+{{
+\begin{center}
+  {\textsc{~#1}}
+\end{center}  
 \addcontentsline{toc}{section}{#1}   
 
 \vspace{1cm}} 
