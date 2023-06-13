@@ -83,8 +83,10 @@ reflect the position of any funding agency.
 
 \newpage
 \renewcommand{\contentsname}{Table of Contents}
+% don't allow add content entry into the content
 \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
 \tableofcontents
+% now allow add content entry into the content
 \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
 \newpage 
