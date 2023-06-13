@@ -2972,13 +2972,14 @@
         \fancyfoot[RO,LE]{\footnotesize Manuscript submitted to ACM}
       \fi%
     \or % acmsmall
-      \fancyhead[LE]{\ACM@linecountL\@headfootfont\@acmArticlePage}%
-      \fancyhead[RO]{\@headfootfont\@acmArticlePage}%
-      \fancyhead[RE]{\@headfootfont\@shortauthors}%
-      \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
+      % EDJ: remove header
+      % \fancyhead[LE]{\ACM@linecountL\@headfootfont\@acmArticlePage}%
+      % \fancyhead[RO]{\@headfootfont\@acmArticlePage}%
+      % \fancyhead[RE]{\@headfootfont\@shortauthors}%
+      % \fancyhead[LO]{\ACM@linecountL\@headfootfont\shorttitle}%
       \if@ACM@nonacm\else%
         \ifreport
-        \fancyfoot[C]{\small\thepage} % EDJ : add page number at bottom middle
+        \fancyfoot[C]{\thepage} % EDJ : add page number at bottom middle
         \else % YZ: remove unwanted footer
         \fancyfoot[RO,LE]{\footnotesize \@journalNameShort, Vol. \@acmVolume, No.
         \@acmNumber, Article \@acmArticle.  Publication date: \@acmPubDate.}%

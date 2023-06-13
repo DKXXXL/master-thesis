@@ -1,4 +1,4 @@
-DOC = trdraft
+DOC = tr
 
 # Name of the top-level TeX file sans .tex extension.
 CONF = paper
